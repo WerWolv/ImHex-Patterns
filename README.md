@@ -19,7 +19,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 
 | Name | Path | Description |
 |------|------|-------------|
-| cstdint | `includes/cstdint.hexpat | C standard style fixed width integer types |
+| cstdint | `includes/cstdint.hexpat` | C standard style fixed width integer types |
 ---
 <br/>
 
