@@ -2,8 +2,6 @@
 
 Hex patterns, include patterns and magic files for the use with the ImHex Hex Editor
 
-<br/>
-
 ## Table of Contents
 
 ### Hex Patterns
@@ -12,24 +10,18 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 |------|------|------|-------------|
 | ELF  | `application/x-executable` | `patterns/elf.hexpat` | ELF header in elf binaries |
 | PE   | `application/x-dosexec` | `patterns/pe.hexpat` | PE header, COFF header, Standard COFF fields and Windows Specific fields |
----
-<br/>
 
 ### Include Patterns
 
 | Name | Path | Description |
 |------|------|-------------|
 | cstdint | `includes/cstdint.hexpat` | C standard style fixed width integer types |
----
-<br/>
 
 ### Magic files
 
 | Name | Path | Description |
 |------|------|-------------|
 | Nintendo Switch | `magic/nintendo_switch_magic` | Identifies common file types used on the Nintendo Switch |
-
-<br/><br/>
 
 ## Contributing
 
