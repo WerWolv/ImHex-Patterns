@@ -33,6 +33,35 @@ enum TrackChunk : u32 {
     MTrk = 0x4D54726B
 };
 
+struct TimeSigEvent {
+    Delta delta;
+    MetaFlag flag;
+    u16 numerator;
+    u8 denominator;
+    u8 ticks_per_click; // not used
+    u8 thirty_second_notes_per_crotchet;
+};
+
+struct KeySigEvent {
+    Delta delta;
+    MetaFlag flag;
+    u16 key;
+    u8 mode;
+};
+
+struct TempoEvent {
+    Delta delta;
+    MetaFlag flag;
+    u32 micro_seconds_per_click; // default 1 million
+};
+
+struct TrackNameEvent {
+    Delta delta;
+    MetaFlag flag;
+    u8 length;
+    u8 text;
+};
+
 struct Note {
     Delta delta;
     NoteEvent ne;
