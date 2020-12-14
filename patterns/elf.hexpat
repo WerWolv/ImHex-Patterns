@@ -21,7 +21,7 @@ struct Elf32_Ehdr {
   Elf32_Word	e_version;
   Elf32_Addr	e_entry;
   Elf32_Off	e_phoff;
-  Elf32_Off     e_shoff;
+  Elf32_Off	e_shoff;
   Elf32_Word	e_flags;
   Elf32_Half	e_ehsize;
   Elf32_Half	e_phentsize;
@@ -48,3 +48,4 @@ struct Elf64_Ehdr {
   Elf64_Half    e_shstrndx;
 };
 
+Elf64_Ehdr header @ 0x00;
