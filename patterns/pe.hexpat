@@ -1,8 +1,5 @@
 #pragma MIME application/x-dosexec
 
-// Replace by 64 for PE32+ format (64bits)
-#define FORMAT 32
-
 enum MachineType : u16 {
 	Unknown = 0x00,
 	AM33 = 0x1D3,
@@ -55,7 +52,7 @@ struct DataDirectory {
 	u32 size;
 };
 
-struct OptionalHeader {
+struct OptionalHeader32 {
 	u16 magic;
 	u8 majorLinkerVersion;
 	u8 minorLinkerVersion;
@@ -64,14 +61,8 @@ struct OptionalHeader {
 	u32 sizeOfUninitializedData;
 	u32 addressOfEntryPoint;
 	u32 baseOfCode;
-	
-	if (FORMAT == 64) {
-		u64 imageBase;
-	} else {
-		u32 baseOfData;
-		u32 imageBase;
-	}
-	
+	u32 baseOfData;
+	u32 imageBase;
 	u32 sectionAlignment;
 	u32 fileAlignment;
 	u16 majorOperatingSystemVersion;
@@ -86,19 +77,43 @@ struct OptionalHeader {
 	u32 checksum;
 	u16 subsystem;
 	u16 dllCharacteristics;
-	
-	if (FORMAT == 64) {
-		u64 sizeOfStackReserve;
-		u64 sizeOfStackCommit;
-		u64 sizeOfHeapReserve;
-		u64 sizeOfHeapCommit;
-	} else {
-		u32 sizeOfStackReserve;
-		u32 sizeOfStackCommit;
-		u32 sizeOfHeapReserve;
-		u32 sizeOfHeapCommit;
-	}
-	
+	u32 sizeOfStackReserve;
+	u32 sizeOfStackCommit;
+	u32 sizeOfHeapReserve;
+	u32 sizeOfHeapCommit;
+	u32 loaderFlags;
+	u32 numberOfRvaAndSizes;
+	DataDirectory directories[numberOfRvaAndSizes];
+};
+
+struct OptionalHeader64 {
+	u16 magic;
+	u8 majorLinkerVersion;
+	u8 minorLinkerVersion;
+	u32 sizeOfCode;
+	u32 sizeOfInitializedData;
+	u32 sizeOfUninitializedData;
+	u32 addressOfEntryPoint;
+	u32 baseOfCode;
+	u64 imageBase;
+	u32 sectionAlignment;
+	u32 fileAlignment;
+	u16 majorOperatingSystemVersion;
+	u16 minorOperatingSystemVersion;
+	u16 majorImageVersion;
+	u16 minorImageVersion;
+	u16 majorSubsystemVersion;
+	u16 minorSubSystemVersion;
+	u32 win32VersionValue;
+	u32 sizeOfImage;
+	u32 sizeOfHeaders;
+	u32 checksum;
+	u16 subsystem;
+	u16 dllCharacteristics;
+	u64 sizeOfStackReserve;
+	u64 sizeOfStackCommit;
+	u64 sizeOfHeapReserve;
+	u64 sizeOfHeapCommit;
 	u32 loaderFlags;
 	u32 numberOfRvaAndSizes;
 	DataDirectory directories[numberOfRvaAndSizes];
@@ -113,7 +128,12 @@ struct COFFHeader {
 	u32 numberOfSymbolTable;
 	u16 sizeOfOptionalHeader;
 	Characteristics characteristics;
-	OptionalHeader optionalHeader;
+	
+	if (machine == MachineType::AMD64) {
+		OptionalHeader64 optionalHeader;
+	} else {
+		OptionalHeader32 optionalHeader;
+	}
 };
 
 struct DOSHeader {
