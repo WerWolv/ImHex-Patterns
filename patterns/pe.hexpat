@@ -116,15 +116,10 @@ struct COFFHeader {
 	OptionalHeader optionalHeader;
 };
 
-union COFFHeaderPtr {
-	COFFHeader *header : u32;
-	u32 address;
-};
-
 struct DOSHeader {
 	u16 signature;
 	u8 header[0x3A];
-	COFFHeaderPtr coffHeaderPointer;
+	COFFHeader *coffHeaderPointer : u32;
 };
 
 struct DOSStub {
@@ -157,4 +152,7 @@ struct PEHeader {
 };
 
 PEHeader peHeader @ 0x00;
-Section sectionsTable[peHeader.dosHeader.coffHeaderPointer.header.numberOfSections] @ peHeader.dosHeader.coffHeaderPointer.address + 0x18 + peHeader.dosHeader.coffHeaderPointer.header.sizeOfOptionalHeader;
+
+#define COFF_HEADER peHeader.dosHeader.coffHeaderPointer
+
+Section sectionsTable[COFF_HEADER.numberOfSections] @ nextAfter("COFF_HEADER");
