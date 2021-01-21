@@ -1,5 +1,8 @@
 #pragma MIME application/x-dosexec
 
+// Replace by 64 for PE32+ format (64bits)
+#define FORMAT 32
+
 enum MachineType : u16 {
 	Unknown = 0x00,
 	AM33 = 0x1D3,
@@ -61,8 +64,14 @@ struct OptionalHeader {
 	u32 sizeOfUninitializedData;
 	u32 addressOfEntryPoint;
 	u32 baseOfCode;
-	u32 baseOfData;
-	u32 imageBase;
+	
+	if (FORMAT == 64) {
+		u64 imageBase;
+	} else {
+		u32 baseOfData;
+		u32 imageBase;
+	}
+	
 	u32 sectionAlignment;
 	u32 fileAlignment;
 	u16 majorOperatingSystemVersion;
@@ -77,10 +86,19 @@ struct OptionalHeader {
 	u32 checksum;
 	u16 subsystem;
 	u16 dllCharacteristics;
-	u32 sizeOfStackReserve;
-	u32 sizeOfStackCommit;
-	u32 sizeOfHeapReserve;
-	u32 sizeOfHeapCommit;
+	
+	if (FORMAT == 64) {
+		u64 sizeOfStackReserve;
+		u64 sizeOfStackCommit;
+		u64 sizeOfHeapReserve;
+		u64 sizeOfHeapCommit;
+	} else {
+		u32 sizeOfStackReserve;
+		u32 sizeOfStackCommit;
+		u32 sizeOfHeapReserve;
+		u32 sizeOfHeapCommit;
+	}
+	
 	u32 loaderFlags;
 	u32 numberOfRvaAndSizes;
 	DataDirectory directories[numberOfRvaAndSizes];
@@ -140,4 +158,3 @@ struct PEHeader {
 
 PEHeader peHeader @ 0x00;
 Section sectionsTable[peHeader.dosHeader.coffHeaderPointer.header.numberOfSections] @ peHeader.dosHeader.coffHeaderPointer.address + 0x18 + peHeader.dosHeader.coffHeaderPointer.header.sizeOfOptionalHeader;
-
