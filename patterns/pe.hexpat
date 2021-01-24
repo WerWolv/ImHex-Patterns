@@ -47,7 +47,12 @@ bitfield Characteristics {
 	bytesReversedHi : 1;
 };
 
-struct OptionalHeader {
+struct DataDirectory {
+	u32 virtualAddress;
+	u32 size;
+};
+
+struct OptionalHeader32 {
 	u16 magic;
 	u8 majorLinkerVersion;
 	u8 minorLinkerVersion;
@@ -78,6 +83,40 @@ struct OptionalHeader {
 	u32 sizeOfHeapCommit;
 	u32 loaderFlags;
 	u32 numberOfRvaAndSizes;
+	DataDirectory directories[numberOfRvaAndSizes];
+};
+
+struct OptionalHeader64 {
+	u16 magic;
+	u8 majorLinkerVersion;
+	u8 minorLinkerVersion;
+	u32 sizeOfCode;
+	u32 sizeOfInitializedData;
+	u32 sizeOfUninitializedData;
+	u32 addressOfEntryPoint;
+	u32 baseOfCode;
+	u64 imageBase;
+	u32 sectionAlignment;
+	u32 fileAlignment;
+	u16 majorOperatingSystemVersion;
+	u16 minorOperatingSystemVersion;
+	u16 majorImageVersion;
+	u16 minorImageVersion;
+	u16 majorSubsystemVersion;
+	u16 minorSubSystemVersion;
+	u32 win32VersionValue;
+	u32 sizeOfImage;
+	u32 sizeOfHeaders;
+	u32 checksum;
+	u16 subsystem;
+	u16 dllCharacteristics;
+	u64 sizeOfStackReserve;
+	u64 sizeOfStackCommit;
+	u64 sizeOfHeapReserve;
+	u64 sizeOfHeapCommit;
+	u32 loaderFlags;
+	u32 numberOfRvaAndSizes;
+	DataDirectory directories[numberOfRvaAndSizes];
 };
 
 struct COFFHeader {
@@ -89,7 +128,12 @@ struct COFFHeader {
 	u32 numberOfSymbolTable;
 	u16 sizeOfOptionalHeader;
 	Characteristics characteristics;
-	OptionalHeader optionalHeader;
+	
+	if (machine == MachineType::AMD64) {
+		OptionalHeader64 optionalHeader;
+	} else {
+		OptionalHeader32 optionalHeader;
+	}
 };
 
 struct DOSHeader {
@@ -104,9 +148,30 @@ struct DOSStub {
 	u8 data[11];
 };
 
+union SectionMisc {
+	u32 physicalAddress;
+	u32 virtualSize;
+};
+
+struct Section {
+	char name[8];
+	SectionMisc misc;
+	u32 virtualAddress;
+	u32 sizeOfRawData;
+	u32 ptrRawData;
+	u32 ptrRelocations;
+	u32 ptrLineNumbers;
+	u16 numberOfRelactions;
+	u16 numberOfLineNumbers;
+	u32 characteristics;
+};
+
 struct PEHeader {
 	DOSHeader dosHeader;
 	DOSStub dosStub;
 };
 
 PEHeader peHeader @ 0x00;
+
+Section sectionsTable[peHeader.dosHeader.coffHeaderPointer.numberOfSections]
+@ nextAfter("peHeader.dosHeader.coffHeaderPointer");
