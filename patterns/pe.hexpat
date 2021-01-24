@@ -154,7 +154,7 @@ union SectionMisc {
 };
 
 struct Section {
-	s8 name[8];
+	char name[8];
 	SectionMisc misc;
 	u32 virtualAddress;
 	u32 sizeOfRawData;
