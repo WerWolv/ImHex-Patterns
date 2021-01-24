@@ -173,6 +173,5 @@ struct PEHeader {
 
 PEHeader peHeader @ 0x00;
 
-#define COFF_HEADER peHeader.dosHeader.coffHeaderPointer
-
-Section sectionsTable[COFF_HEADER.numberOfSections] @ nextAfter("COFF_HEADER");
+Section sectionsTable[peHeader.dosHeader.coffHeaderPointer.numberOfSections]
+@ nextAfter("peHeader.dosHeader.coffHeaderPointer");
