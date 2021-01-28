@@ -1,4 +1,6 @@
 #pragma MIME application/x-dosexec
+#pragma MIME application/octet-stream
+#pragma MIME application/vnd.microsoft.portable-executable
 
 enum MachineType : u16 {
 	Unknown = 0x00,
