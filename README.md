@@ -8,6 +8,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 
 | Name | MIME | Path | Description |
 |------|------|------|-------------|
+| BMP  | `image/bmp` | `patterns/bmp.hexpat` | OS2/Windows Bitmap files |
 | ELF  | `application/x-executable` | `patterns/elf.hexpat` | ELF header in elf binaries |
 | PE   | `application/x-dosexec` | `patterns/pe.hexpat` | PE header, COFF header, Standard COFF fields and Windows Specific fields |
 | MIDI | `audio/midi` | `patterns/midi.hexpat` | MIDI header, event fields provided |
