@@ -1,13 +1,13 @@
 #pragma MIME audio/wav
 
 struct riffHeader{
-	char ckID[4] [[comment("Container Signature")]];
-	u32 ckSize [[comment("Size of RIFF Header")]];
+	char ckID[4] [[comment("Container Signature"), name("RIFF Header Signature")]];
+	u32 ckSize [[comment("Size of RIFF Header"), name("RIFF Chunk Size")]];
 };
 
 struct waveHeader{
-	char format[4] [[comment("This is a WAVE file")]];
-	char ckID[4] [[comment("Format chunk")]];
+	char format[4] [[name("WAVE Header Signature")]];
+	char ckID[4] [[comment("Format Chunk")]];
 	u32 ckSize [[comment("Chunk size")]];
 	u16 wFormatTag;
 	u16 wChannels;
