@@ -1,6 +1,6 @@
 # A libmagic database containing definition for PE files used by MS-DOS based systems
 
 # MS-DOS Portable Executable
-0x0		string/b	MZ
->(0x3c.l)	string/b	PE\0\0
+0x0		    string/b	MZ      MS-DOS Binary
+>(0x3c.l)	string/b	PE\0\0  Portable Executable
 !:mime application/x-dosexec
