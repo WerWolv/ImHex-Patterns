@@ -1,4 +1,5 @@
 #pragma MIME application/x-executable
+#pragma MIME application/x-sharedlib
 
 #define EI_NIDENT 16
 
