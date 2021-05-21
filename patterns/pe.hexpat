@@ -174,4 +174,4 @@ struct PEHeader {
 PEHeader peHeader @ 0x00;
 
 Section sectionsTable[peHeader.dosHeader.coffHeaderPointer.numberOfSections]
-@ nextAfter("peHeader.dosHeader.coffHeaderPointer");
+@ addressof(peHeader.dosHeader.coffHeaderPointer) + sizeof(peHeader.dosHeader.coffHeaderPointer);
