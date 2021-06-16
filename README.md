@@ -15,6 +15,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | WAV  | `audio/wav`  | `patterns/wav.hexpat`  | RIFF header, WAVE header, PCM header |
 | ZIP  | `application/zip` | `patterns/zip.hexpat` | End of Central Directory Header, Central Directory File Headers |
 | PCAP | `application/vnd.tcpdump.pcap` | `patterns/pcap.hexpat` | pcap header and packets | 
+| PNG  | `image/png` | `patterns/png.hexpat` | PNG image files | 
 
 ### Include Patterns
 
