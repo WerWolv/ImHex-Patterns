@@ -42,17 +42,24 @@ struct chunk_t {
     u32 length;
     u32 type;
 
-    if (type == 0x49484452) {
+    #define IHDR_k 0x49484452
+    #define PLTE_k 0x504c5445
+    #define pHYs_k 0x70485973
+    #define iTXt_k 0x69545874
+    #define IDAT_k 0x49444154
+    #define IEND_k 0x49454e44
+
+    if (type == IHDR_k) {
         ihdr_t ihdr [[comment("header chunk"), name("IHDR")]];
-    } else if (type == 0x504c5445) {
+    } else if (type == PLTE_k) {
         palette_entry_t entries[length / 3];
-    } else if (type == 0x70485973) {
+    } else if (type == pHYs_k) {
         phys_t phys;
-    } else if (type == 0x69545874) {
+    } else if (type == iTXt_k) {
         itxt_t text;
-    } else if (type == 0x49444154) {
+    } else if (type == IDAT_k) {
         u8 data[length];
-    } else if (type == 0x49454e44) {
+    } else if (type == IEND_k) {
         // IEND. No data.
     }
 
