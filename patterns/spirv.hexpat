@@ -614,10 +614,10 @@ enum Op : u16 {
 };
 
 struct Version {
-    u8 dummy1;
+    padding[1];
     u8 minor;
     u8 major;
-    u8 dummy2;
+    padding[1];
 };
 
 struct Generator {
