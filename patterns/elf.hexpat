@@ -1,4 +1,7 @@
 #pragma MIME application/x-executable
+#pragma MIME application/x-sharedlib
+
+#define EI_NIDENT 16
 
 using Elf32_Addr  = u32;
 using Elf32_Half  = u16;
@@ -13,13 +16,13 @@ using Elf64_Sword = s32;
 using Elf64_Word  = u32;
 
 struct Elf32_Ehdr {
-  Elf32_Word	e_ident;
+  u8            e_ident[EI_NIDENT];
   Elf32_Half	e_type;
   Elf32_Half	e_machine;
   Elf32_Word	e_version;
   Elf32_Addr	e_entry;
-  Elf32_Off	    e_phoff;
-  Elf32_Off	    e_shoff;
+  Elf32_Off	e_phoff;
+  Elf32_Off	e_shoff;
   Elf32_Word	e_flags;
   Elf32_Half	e_ehsize;
   Elf32_Half	e_phentsize;
@@ -30,7 +33,7 @@ struct Elf32_Ehdr {
 };
 
 struct Elf64_Ehdr {
-  Elf64_Word    e_ident;
+  u8            e_ident[EI_NIDENT];
   Elf64_Half    e_type;
   Elf64_Half    e_machine;
   Elf64_Word    e_version;
