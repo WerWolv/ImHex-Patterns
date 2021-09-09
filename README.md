@@ -17,7 +17,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | PCAP | `application/vnd.tcpdump.pcap` | `patterns/pcap.hexpat` | pcap header and packets | 
 | SPIRV | | `patterns/spirv.hexpat` | SPIR-V header and instructions | 
 
-### Include Patterns
+### Pattern Libraries
 
 | Name | Path | Description |
 |------|------|-------------|
@@ -29,6 +29,15 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 |------|------|-------------|
 | Nintendo Switch | `magic/nintendo_switch_magic` | Identifies common file types used on the Nintendo Switch |
 | Portable Executable | `magic/portable_executable_magic` | Identifies PE files used on Windows
+
+### Constants files
+
+| Name | Path | Description |
+|------|------|-------------|
+| CRC-16 | `constants/crc16.json` | Constants associated with CRC-16 operations |
+| CRC-32 | `constants/crc32.json` | Constants associated with CRC-32 operations |
+| HTTP-Codes | `constants/http_status.json` | HTTP Status code values |
+| Linux Error Codes | `constants/linux_errors.json` | Values of Linux error results |
 
 ## Contributing
 
