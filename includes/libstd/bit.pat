@@ -7,6 +7,10 @@ namespace std::bit {
 		
 		return x % 0xFF;
 	};
+
+	fn has_single_bit(u128 x) {
+		return x != 0 && (x & (x - 1)) == 0;
+	};
 	
 	fn bit_ceil(u128 x) {		
 		if (x == 0) return 0;

@@ -7,7 +7,7 @@ namespace std::fxpt {
 	};
 	
 	fn to_fixed(double flt, u32 precision) {
-		return u128((flt * (1 << precision)));
+		return fixed((flt * (1 << precision)));
 	};
 	
 	fn add(fixed a, fixed b, u32 precision) {
