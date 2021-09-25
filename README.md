@@ -16,12 +16,13 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | ZIP  | `application/zip` | `patterns/zip.hexpat` | End of Central Directory Header, Central Directory File Headers |
 | PCAP | `application/vnd.tcpdump.pcap` | `patterns/pcap.hexpat` | pcap header and packets | 
 | SPIRV | | `patterns/spirv.hexpat` | SPIR-V header and instructions | 
+| AFE2 | | `patterns/afe2.hexpat` | Nintendo Switch Atmosphère CFW Fatal Error log | 
 
 ### Pattern Libraries
 
 | Name | Path | Description |
 |------|------|-------------|
-| cstdint | `includes/cstdint.hexpat` | C standard style fixed width integer types |
+| libstd | `includes/libstd/*` | Pattern Language Standard Libaray |
 
 ### Magic files
 
