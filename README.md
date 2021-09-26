@@ -17,6 +17,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | PCAP | `application/vnd.tcpdump.pcap` | `patterns/pcap.hexpat` | pcap header and packets | 
 | SPIRV | | `patterns/spirv.hexpat` | SPIR-V header and instructions | 
 | AFE2 | | `patterns/afe2.hexpat` | Nintendo Switch Atmosphère CFW Fatal Error log | 
+| AR | `application/x-archive` | `patterns/ar.hexpat` | Static library archive files | 
 
 ### Pattern Libraries
 
