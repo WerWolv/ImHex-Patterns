@@ -44,7 +44,7 @@ namespace std::ctype {
         return std::ctype::isprint(c) && !std::ctype::isspace(c);
     };
 
-    fn isgraph(char c) {
+    fn ispunct(char c) {
         return std::ctype::isgraph(c) && !std::ctype::isalnum(c);
     };
 
