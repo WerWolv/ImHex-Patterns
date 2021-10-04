@@ -9,6 +9,10 @@ namespace std::fxpt {
 	fn to_fixed(double flt, u32 precision) {
 		return fixed((flt * (1 << precision)));
 	};
+
+	fn change_precision(fixed value, u32 start_precision, u32 end_precision) {
+		return std::fxpt::to_fixed(std::fxpt::to_float(value, start_precision), end_precision);
+	}
 	
 	fn add(fixed a, fixed b, u32 precision) {
 		return a + b;
