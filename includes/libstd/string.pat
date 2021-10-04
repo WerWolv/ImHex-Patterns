@@ -27,4 +27,18 @@ namespace std::string {
         return false;
     };
 
+    fn reverse(str string) {	
+        str result;
+        
+        s32 i;
+        i = std::string::length(string);
+        while (i > 0) {
+            i = i - 1;
+            result = result + std::string::at(string, i);
+        }
+            
+        return result;
+    };
+
+
 }
