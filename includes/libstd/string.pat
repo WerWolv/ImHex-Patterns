@@ -40,5 +40,68 @@ namespace std::string {
         return result;
     };
 
+    fn to_upper(str string) {
+		str result;
+		
+		u32 i;
+		char c;
+		while (i < std::string::length(string)) {
+			c = std::string::at(string, i);
+			
+			if (c >= 'a' && c <= 'z')
+				result = result + char(c - 0x20);
+			else
+				result = result + c;
+			
+			i = i + 1;
+		}
+		
+		return result;
+	};
+	
+	fn to_lower(str string) {
+		str result;
+		
+		u32 i;
+		char c;
+		while (i < std::string::length(string)) {
+			c = std::string::at(string, i);
+			
+			if (c >= 'A' && c <= 'Z')
+				result = result + char(c + 0x20);
+			else
+				result = result + c;
+			
+			i = i + 1;
+		}
+		
+		return result;
+	};
+
+    fn replace(str string, str pattern, str replace) {
+    	u32 string_len, pattern_len, replace_len;
+		string_len  = std::string::length(string);
+		pattern_len = std::string::length(pattern);
+		replace_len = std::string::length(replace);
+		
+		if (pattern_len > string_len)
+			return string;
+			
+		str result;
+		u32 i;
+		while (i <= (string_len - pattern_len)) {
+			
+			if (std::string::substr(string, i, pattern_len) == pattern) {
+				result = result + replace;
+				i = i + pattern_len;
+			} else {
+				result = result + std::string::at(string, i);
+				i = i + 1;
+			}
+		}
+		
+		return result;
+	};
+
 
 }
