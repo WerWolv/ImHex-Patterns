@@ -19,6 +19,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | SPIRV | | `patterns/spirv.hexpat` | SPIR-V header and instructions | 
 | AFE2 | | `patterns/afe2.hexpat` | Nintendo Switch Atmosphère CFW Fatal Error log | 
 | AR | `application/x-archive` | `patterns/ar.hexpat` | Static library archive files | 
+| NACP | | `patterns/nacp.hexpat` | Nintendo Switch NACP files | 
 
 ### Pattern Libraries
 
