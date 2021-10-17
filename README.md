@@ -20,6 +20,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | AFE2 | | `patterns/afe2.hexpat` | Nintendo Switch Atmosphère CFW Fatal Error log | 
 | AR | `application/x-archive` | `patterns/ar.hexpat` | Static library archive files | 
 | NACP | | `patterns/nacp.hexpat` | Nintendo Switch NACP files | 
+| NRO | | `patterns/nro.hexpat` | Nintendo Switch NRO files | 
 | Java Class | `application/x-java-applet` | `patterns/java_class.hexpat` | Java Class files | 
 
 ### Pattern Libraries
