@@ -21,6 +21,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | AR | `application/x-archive` | `patterns/ar.hexpat` | Static library archive files | 
 | NACP | | `patterns/nacp.hexpat` | Nintendo Switch NACP files | 
 | NRO | | `patterns/nro.hexpat` | Nintendo Switch NRO files | 
+| ARM VTOR | | `patterns/arm_cm_vtor.hexpat` | ARM Cortex M Vector Table Layout | 
 
 ### Pattern Libraries
 
