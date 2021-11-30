@@ -1,7 +1,7 @@
 {
     "name" : "Reverse Engineering",
     "tips" : [
-        "Reverse Engineering a foregin file format becomes a lot easier if you know some values that should be stored in there.",
+        "Reverse Engineering a foreign file format becomes a lot easier if you know some values that should be stored in there.",
         "Ghidra, binwalk, Unicorn, x86dbg, DetectItEasy, Dependencies and CheatEngine are other fantastic and free reverse engineering tools!",
         "ALWAYS read the documentation if there is one. It will save you a lot of time.",
         "Tools are what you make of them, practice makes perfect.",
