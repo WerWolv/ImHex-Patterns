@@ -26,11 +26,24 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | ARM VTOR | | `patterns/arm_cm_vtor.hexpat` | ARM Cortex M Vector Table Layout | 
 | ICO | | `patterns/ico.hexpat` | Icon (.ico) or Cursor (.cur) files | 
 
+### Scripts
+
+| Name | Path | Description |
+|------|------|-------------|
+| svd2pat | `scripts/svd2pat.py` | Converts a ARM .svd register MMIO definition file into a pattern |
+
 ### Pattern Libraries
 
 | Name | Path | Description |
 |------|------|-------------|
 | libstd | `includes/libstd/*` | Pattern Language Standard Libaray |
+| cstdint | `includes/cstdint.pat` | C integer types |
+
+### Yara rules
+
+| Name | Path | Description |
+|------|------|-------------|
+| Official Rules | `yara/official_rules/*` | Official Yara rules repository |
 
 ### Magic files
 
@@ -47,6 +60,20 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | CRC-32 | `constants/crc32.json` | Constants associated with CRC-32 operations |
 | HTTP-Codes | `constants/http_status.json` | HTTP Status code values |
 | Linux Error Codes | `constants/linux_errors.json` | Values of Linux error results |
+
+### Encoding files
+
+| Name | Path | Description |
+|------|------|-------------|
+| ANSI | `encodings/ansi.tbl` | ANSI encoding |
+| EUC-JP | `encodings/euc_jp.tbl` | EUC-JP encoding with NEC special and IBM extended characters |
+| ISO/IEC 646 | `encodings/iso_646.tbl` | ISO/IEC 646 encoding, an older version of ASCII |
+| ISO/IEC 6937 | `encodings/iso_6937.tbl` | ISO/IEC 6937 encoding, an extension of ASCII containing additional character |
+| Shift-JIS with half-width characters | `encodings/shiftjis_halfchars.tbl` | Shift-JIS encoding including half-width characters at 0xA1 - 0xDF |
+| Shift-JIS UTF-8 | `encodings/shiftjis.tbl` | Shift-JIS encoding in UTF-8 |
+| JIS 0201 | `encodings/jis_x_0201.tbl` | JIS X 0201 encoding in UTF-8 |
+| JIS X 0211 | `encodings/jis_x_0211.tbl` | JIS X 0211 encoding in UTF-8 |
+| JIS 0213 | `encodings/jis_x_0213.tbl` | JIS X 0213 encoding in UTF-8 |
 
 ## Contributing
 
