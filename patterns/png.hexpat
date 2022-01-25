@@ -3,7 +3,11 @@
 
 struct header_t
 {
-    u8 signature[8] [[comment("signature"), name("PNG Signature")]];
+    u8 highBitByte;
+	char signature[3];
+	char dosLineEnding[2];
+	char dosEOF;
+	char unixLineEnding;
 };
 
 struct ihdr_t
@@ -40,14 +44,14 @@ struct itxt_t {
 
 struct chunk_t {
     u32 length;
-    u32 type;
+    char type[4];
 
-    #define IHDR_k 0x49484452
-    #define PLTE_k 0x504c5445
-    #define pHYs_k 0x70485973
-    #define iTXt_k 0x69545874
-    #define IDAT_k 0x49444154
-    #define IEND_k 0x49454e44
+    #define IHDR_k "IHDR"
+    #define PLTE_k "PLTE"
+    #define pHYs_k "pHYs"
+    #define iTXt_k "iTXt"
+    #define IDAT_k "IDAT"
+    #define IEND_k "IEND"
 
     if (type == IHDR_k) {
         ihdr_t ihdr [[comment("header chunk"), name("IHDR")]];
@@ -57,18 +61,14 @@ struct chunk_t {
         phys_t phys;
     } else if (type == iTXt_k) {
         itxt_t text;
-    } else if (type == IDAT_k) {
+    } else {
         u8 data[length];
-    } else if (type == IEND_k) {
-        // IEND. No data.
     }
 
     u32 crc;
 };
 
-struct main_t {
-    header_t header;
-    chunk_t  chunk_set[6];
-};
+header_t header @ 0x00 [[comment("PNG file signature"), name("Signature")]];
+chunk_t  chunk_set[6] @ 0x08 [[comment("PNG file chunks"), name("Chunks")]];
 
-main_t main @ 0x00;
+
