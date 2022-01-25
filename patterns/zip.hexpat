@@ -6,13 +6,13 @@ struct EndOfCentralDirectory{
 	u16 diskStart [[comment("Disk where central directory starts "), name("Central Directory Disk Number")]];
 	u16 CDRCount [[comment("Number of central directory records on this disk"), name("Central Directory Entries")]];
 	u16 CentralDirectoryRecordCount [[comment("Total number of entries in the central directory"), name("Total Central Directory Entries")]];
-	u16 CDSize [[comment("Size of central directory (bytes)"), name("Central Directory Size")]];
+	u32 CDSize [[comment("Size of central directory (bytes)"), name("Central Directory Size")]];
 	u32 CDOffset [[comment("Offset of start of central directory, relative to start of archive"), name("Central Directory Offset")]];
 	u16 commentLength [[color("00000000")]];
 	char coment[commentLength] [[name("Comment")]];
 };
 
-EndOfCentralDirectory fileInfo @ findSequence(0,0x50,0x4B,0x05,0x06) [[name("End of Central Directory Record")]];
+EndOfCentralDirectory fileInfo @ std::mem::find_sequence(0,0x50,0x4B,0x05,0x06) [[name("End of Central Directory Record")]];
 
 struct CentralDirectoryEntry{
 	
@@ -41,4 +41,4 @@ struct CentralDirectoryFileHeader{
 	char comment[fileCommentLength];
 };
 
-CentralDirectoryFileHeader centralDirHeaders[readUnsigned(findSequence(0,0x50,0x4B,0x05,0x06)+10,2)] @ findSequence(0,0x50,0x4b,0x01,0x02) [[name("Files")]];
+CentralDirectoryFileHeader centralDirHeaders[fileInfo.CDRCount] @ (fileInfo.CDOffset) [[name("Files")]];
