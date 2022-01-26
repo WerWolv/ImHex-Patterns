@@ -12,13 +12,13 @@ struct header_t
 
 struct ihdr_t
 {
-    u32 width;
-    u32 height;
+    u32 width [[comment("Image width")]];
+    u32 height [[comment("Image height")]];
     u8 bit_depth;
-    u8 color_type;
+    u8 color_type [[comment("PNG Image Type\n0: greyscale\n2: truecolour\n3: indexed-color\n4: greyscale with alpha\n6: truecolour with alpha")]];
     u8 compression_method;
     u8 filter_method;
-    u8 interlace_method;
+    u8 interlace_method [[comment("values 0 \"no interlace\" or 1 \"Adam7 interlace\"")]];
 };
 
 struct palette_entry_t {
@@ -28,9 +28,9 @@ struct palette_entry_t {
 };
 
 struct phys_t {
-    u32 ppu_x;
-    u32 ppu_y;
-    u8 unit;
+    u32 ppu_x [[comment("Pixels per unit, X axis")]];
+    u32 ppu_y [[comment("Pixels per unit, Y axis")]];
+    u8 unit [[comment("Unit Specifier\n0: unit is unknown\n1: unit is the metre")]];
 };
 
 struct itxt_t {
@@ -40,6 +40,12 @@ struct itxt_t {
     char language_tag[];
     char translated_keyword[];
     char text[parent.length - ($ - addressof(keyword))];
+};
+
+struct iccp_t {
+	char profile [];
+	u8 compression_method;
+	u8 compressed_profile[parent.length - ($ - addressof(profile))];
 };
 
 struct chunk_t {
@@ -52,15 +58,21 @@ struct chunk_t {
     #define iTXt_k "iTXt"
     #define IDAT_k "IDAT"
     #define IEND_k "IEND"
+    #define gAMA_k "gAMA"
+    #define iCCP_k "iCCP"
 
     if (type == IHDR_k) {
-        ihdr_t ihdr [[comment("header chunk"), name("IHDR")]];
+        ihdr_t ihdr [[comment("Image Header chunk"), name("IHDR")]];
     } else if (type == PLTE_k) {
         palette_entry_t entries[length / 3];
     } else if (type == pHYs_k) {
         phys_t phys;
     } else if (type == iTXt_k) {
         itxt_t text;
+    } else if (type == gAMA_k) {
+    	u32 gamma [[name("image gamma"), comment("4 byte unsigned integer representing gamma times 100000")]];
+    } else if (type == iCCP_k) {
+    	iccp_t iccp;
     } else {
         u8 data[length];
     }
@@ -69,6 +81,6 @@ struct chunk_t {
 };
 
 header_t header @ 0x00 [[comment("PNG file signature"), name("Signature")]];
-chunk_t chunk_set[while(std::mem::read_string($ + 4, 4) != "IEND")] @ 0x08 [[comment("PNG file chunks"), name("Chunks")]];
-chunk_t iend_chunk @ $;
+chunk_t chunk_set[while(std::mem::read_string($ + 4, 4) != "IEND")] @ 0x08 [[comment("PNG file chunks"), name("Chunks"), inline]];
+chunk_t iend_chunk @ $ [[name("IEND"), comment("Image End Chunk")]];
 
