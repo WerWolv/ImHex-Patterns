@@ -1,4 +1,28 @@
+#pragma once
+
 namespace std::string {
+
+	fn length(str string) {
+		return builtin::std::string::length(string);
+	};
+
+	fn at(str string, u32 index) {
+		return builtin::std::string::at(string, index);
+	};
+
+	fn substr(str string, u32 pos, u32 count) {
+		return builtin::std::string::substr(string, pos, count);
+	};
+
+
+	fn parse_int(str string, u8 base) {
+		return builtin::std::string::parse_int(string, base);
+	};
+
+	fn parse_float(str string) {
+		return builtin::std::string::parse_float(string);
+	};
+
 
     fn to_string(auto x) {
         return std::format("{}", x);

@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std::ptr {
 
     fn relative_to_pointer(u128 offset) {

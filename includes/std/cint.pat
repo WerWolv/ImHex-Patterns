@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std {
 
     using uint8_t   = u8;

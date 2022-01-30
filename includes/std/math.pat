@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std::math {
 
 	fn min(auto a, auto b) {

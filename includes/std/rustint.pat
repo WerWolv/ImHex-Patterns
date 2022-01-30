@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std {
 
     using i8   = s8;
