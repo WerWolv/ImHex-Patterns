@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std::http {
 
     fn get(str url) {

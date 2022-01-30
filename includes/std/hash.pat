@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std::hash {
 
     fn crc32(u128 address, u64 size, u32 init, u32 poly) {
