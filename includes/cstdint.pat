@@ -1,3 +1,5 @@
+#pragma once
+
 using uint8_t       = u8;
 using uint16_t      = u16;
 using uint32_t      = u32;

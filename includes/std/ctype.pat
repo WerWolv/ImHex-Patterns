@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std::ctype {
 
     fn isdigit(char c) {

@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std::limits {
 	
 	fn u8_min() {

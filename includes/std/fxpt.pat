@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std::fxpt {
 
 	using fixed = s128;

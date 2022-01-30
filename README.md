@@ -36,7 +36,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 
 | Name | Path | Description |
 |------|------|-------------|
-| libstd | `includes/libstd/*` | Pattern Language Standard Libaray |
+| libstd | `includes/std/*` | Pattern Language Standard Libaray |
 | cstdint | `includes/cstdint.pat` | C integer types |
 
 ### Yara rules

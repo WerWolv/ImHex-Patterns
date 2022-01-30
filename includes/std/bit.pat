@@ -1,3 +1,5 @@
+#pragma once
+
 namespace std::bit {
 
 	fn popcount(u128 x) {
