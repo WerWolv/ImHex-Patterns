@@ -1,5 +1,7 @@
 #pragma MIME application/zip
 
+#include <std/mem.pat>
+
 struct EndOfCentralDirectory{
 	u32 headerSignature [[color("00000000")]];
 	u16 diskNum [[comment("Number of this disk "), name("Disk Number")]];

@@ -1,5 +1,7 @@
 #pragma endian little
 
+#include <std/sys.pat>
+
 #pragma MIME image/vnd.microsoft.icon
 #pragma MIME image/x-icon
 #pragma MIME image/icon

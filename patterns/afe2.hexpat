@@ -1,5 +1,7 @@
 #pragma endian little
 
+#include <std/io.pat>
+
 #define ATMOSPHERE_REBOOT_TO_FATAL_MAGIC   	"AFE2"
 #define ATMOSPHERE_REBOOT_TO_FATAL_MAGIC_1 	"AFE1"
 #define ATMOSPHERE_REBOOT_TO_FATAL_MAGIC_0 	"AFE0"

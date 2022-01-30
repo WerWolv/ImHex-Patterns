@@ -1,5 +1,8 @@
 #pragma endian little
 
+#include <std/sys.pat>
+#include <std/io.pat>
+
 struct ApplicationTitle {
 	char name[0x200];
 	char publisher[0x100];
