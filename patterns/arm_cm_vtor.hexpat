@@ -1,5 +1,8 @@
 #pragma endian little
 
+#include <std/io.pat>
+#include <std/mem.pat>
+
 #define VTOR	0x00000000
 #define EXTERNAL_INTERRUPT_COUNT	64
 

@@ -1,5 +1,9 @@
 #pragma MIME application/x-archive
 
+#include <std/string.pat>
+#include <std/mem.pat>
+#include <std/sys.pat>
+
 struct ARFile {
 	char file_name[16];
 	char modification_timestamp[12];

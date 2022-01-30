@@ -1,6 +1,9 @@
 #pragma endian big
 #pragma MIME application/x-java-applet
 
+#include <std/io.pat>
+#include <std/sys.pat>
+
 // The Java documentations use the number of bytes instead of the number of bits for its type names
 using u1 = u8;
 using u2 = u16;

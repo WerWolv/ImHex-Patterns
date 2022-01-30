@@ -1,3 +1,6 @@
+#include <std/io.pat>
+#include <std/sys.pat>
+
 struct MOD0 {
 	char magic[4];
 	u32 dynamic_offset [[name(".dynamic offset")]];
