@@ -81,8 +81,6 @@ struct chunk_t {
 };
 
 header_t header @ 0x00 [[comment("PNG file signature"), name("Signature")]];
-chunk_t ihdr_chunk @ $ [[comment("PNG Header chunk"), name("IHDR")]];
-chunk_t chunk_set[while(std::mem::read_string($ + 4, 4) != "IEND")] @ $ [[comment("PNG file chunks"), name("Chunks"), inline]];
+chunk_t ihdr_chunk @ 0x08 [[comment("PNG Header chunk"), name("IHDR")]];
+chunk_t chunk_set[while(builtin::std::mem::read_string($ + 4, 4) != "IEND")] @ $ [[comment("PNG file chunks"), name("Chunks"), inline]];
 chunk_t iend_chunk @ $ [[name("IEND"), comment("Image End Chunk")]];
-
-
