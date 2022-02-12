@@ -26,6 +26,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | ARM VTOR | | `patterns/arm_cm_vtor.hexpat` | ARM Cortex M Vector Table Layout | 
 | ICO | | `patterns/ico.hexpat` | Icon (.ico) or Cursor (.cur) files | 
 | PNG  | `image/png` | `patterns/png.hexpat` | PNG image files | 
+| DDS | `image/vnd-ms.dds` | `patterns/dds.hexpat` | DirectDraw Surface |
 
 ### Scripts
 
