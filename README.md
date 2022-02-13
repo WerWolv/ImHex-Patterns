@@ -27,6 +27,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | ICO | | `patterns/ico.hexpat` | Icon (.ico) or Cursor (.cur) files | 
 | PNG  | `image/png` | `patterns/png.hexpat` | PNG image files | 
 | DDS | `image/vnd-ms.dds` | `patterns/dds.hexpat` | DirectDraw Surface |
+| TGA | `image/tga` | `patterns/tga.hexpat` | Truevision TGA/TARGA image |
 
 ### Scripts
 
