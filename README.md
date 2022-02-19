@@ -28,6 +28,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | PNG  | `image/png` | `patterns/png.hexpat` | PNG image files | 
 | DDS | `image/vnd-ms.dds` | `patterns/dds.hexpat` | DirectDraw Surface |
 | TGA | `image/tga` | `patterns/tga.hexpat` | Truevision TGA/TARGA image |
+| ISO | | `patterns/iso.hexpat` | ISO 9660 file system |
 
 ### Scripts
 
