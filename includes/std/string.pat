@@ -1,5 +1,7 @@
 #pragma once
 
+#include <std/io.pat>
+
 namespace std::string {
 
 	fn length(str string) {
