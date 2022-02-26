@@ -22,9 +22,12 @@ namespace std::mem {
     };
 
     fn find_sequence(u128 occurrence_index, auto ... bytes) {
-        return builtin::std::mem::find_sequence(occurrence_index, bytes);
+        return builtin::std::mem::find_sequence_in_range(occurrence_index, builtin::std::mem::base_address(), builtin::std::mem::size(), bytes);
     };
 
+    fn find_sequence_in_range(u128 occurrence_index, u128 offsetFrom, u128 offsetTo, auto ... bytes) {
+        return builtin::std::mem::find_sequence_in_range(occurrence_index, offsetFrom, offsetTo, bytes);
+    };
 
     fn read_unsigned(u128 address, u8 size) {
         return builtin::std::mem::read_unsigned(address, size);
