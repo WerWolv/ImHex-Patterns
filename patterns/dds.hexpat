@@ -205,14 +205,14 @@ bitfield DX10MiscFlags {
 struct DDS_HEADER_DX10 {
   DXGI_FORMAT           dxgiFormat;
   DX10ResourceDimension resourceDimension;
-  be DX10MiscFlags      miscFlags;
+  DX10MiscFlags         miscFlags;
   u32                   arraySize;
   DX10AlphaMode         miscFlags2;
 } [[static]];
 
 struct DDS_PIXELFORMAT {
   u32                 size;
-  be PixelFormatFlags flags;
+  PixelFormatFlags    flags;
   char                fourCC[4];
   u32                 RGBBitCount;
   u32                 rBitMask;
@@ -223,7 +223,7 @@ struct DDS_PIXELFORMAT {
 
 struct DDS_HEADER {
   u32             size;
-  be HeaderFlags  flags;
+  HeaderFlags     flags;
   u32             height;
   u32             width;
   u32             pitchOrLinearSize;
@@ -231,8 +231,8 @@ struct DDS_HEADER {
   u32             mipMapCount;
   u32             reserved0[11];
   DDS_PIXELFORMAT ddspf;
-  be CapsFlags    caps;
-  be Caps2Flags   caps2;
+  CapsFlags       caps;
+  Caps2Flags      caps2;
   u32             caps3;
   u32             caps4;
   u32             reserved1;
