@@ -84,12 +84,12 @@ bitfield WaveMPEGFlags {
 };
 
 struct WaveFormatMPEG : WaveFormatEx {
-  be WaveMPEGLayer headLayersUsed;
+  WaveMPEGLayer    headLayersUsed;
   u32              headBitrate;
-  be WaveMPEGMode  headMode;
+  WaveMPEGMode     headMode;
   u16              headModeExt;
   u16              headEmphasis;
-  be WaveMPEGFlags headFlags;
+  WaveMPEGFlags    headFlags;
   u32              PTSLow;
   u32              PTSHigh;
 };
