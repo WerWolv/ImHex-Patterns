@@ -30,6 +30,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | TGA | `image/tga` | `patterns/tga.hexpat` | Truevision TGA/TARGA image |
 | ISO | | `patterns/iso.hexpat` | ISO 9660 file system |
 | VDF | | `patterns/vdf.hexpat` | Binary Value Data Format (.vdf) files | 
+| IP | | `patterns/ip.hexpat` | Ethernet II Frames (IP Packets) | 
 
 ### Scripts
 
