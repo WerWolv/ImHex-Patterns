@@ -158,7 +158,11 @@ namespace program {
     LOOS    = 0x60000000,
     HIOS    = 0x6FFFFFFF,
     LOPROC  = 0x70000000,
-    HIPROC  = 0x7FFFFFFF
+    HIPROC  = 0x7FFFFFFF,
+    GNU_EH_FRAME = program::Type::LOOS + 0x474E550,
+    GNU_STACK = program::Type::LOOS + 0x474E551,
+    GNU_RELRO = program::Type::LOOS + 0x474E552,
+    GNU_PROPERTY = program::Type::LOOS + 0x474E553
   };
 
   struct Header {
