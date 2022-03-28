@@ -1,5 +1,7 @@
 #pragma once
 
+#include <std/limits.pat>
+
 namespace std::bit {
 
 	fn popcount(u128 x) {
