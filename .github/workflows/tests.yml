@@ -36,6 +36,7 @@ jobs:
 
     - name: 🛠️ Build
       run: |
+        cd tests
         mkdir -p build
         cd build
         CC=gcc-11 CXX=g++-11 cmake              \
@@ -47,5 +48,5 @@ jobs:
 
     - name: 🧪 Perform Unit Tests
       run: |
-        cd build
+        cd tests/build
         ctest
