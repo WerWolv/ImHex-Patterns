@@ -1,0 +1,39 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1655988771.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "name",
+    "tips"
+  ],
+  "properties": {
+    "name": {
+      "$id": "#root/name",
+      "title": "Name",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "Tips category"
+      ],
+      "pattern": "^.*$"
+    },
+    "tips": {
+      "$id": "#root/tips",
+      "title": "Tips",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/tips/items",
+        "title": "Items",
+        "type": "string",
+        "default": "",
+        "examples": [
+          "Some interesting tip"
+        ],
+        "pattern": "^.*$"
+      }
+    }
+  }
+}

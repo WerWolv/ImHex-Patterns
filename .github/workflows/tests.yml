@@ -33,6 +33,10 @@ jobs:
             ${PKGCONF:-}          \
             cmake                 \
             make                  \
+            python3               \
+            python3-pip
+        
+        sudo pip install jsonschema
 
     - name: 🛠️ Build
       run: |
@@ -50,3 +54,12 @@ jobs:
       run: |
         cd tests/build
         ctest
+    - name: 📎 Validate JSON Files
+      run: |
+        cd constants
+        for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
+        cd ..
+        
+        cd tips
+        for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
+        cd ..
