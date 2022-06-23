@@ -83,4 +83,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 
 ## Contributing
 
-If you want to contribute a file to the database, please make a PR which adds it to the right folder and adds a new entry to the table in this readme. Thanks a lot :)
+If you want to contribute a file to the database, please make a PR which adds it to the right folder and adds a new entry to the table in this readme. 
+To take advantage of the automatic pattern testing, please consider adding a test file named `<pattern_name>.hexpat.<extension>` to the `/tests/patterns/test_data` directory. Try to keep this file as small as possible so the repository doesn't become excessively large
+
+Thanks a lot :)
