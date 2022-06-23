@@ -5,3 +5,4 @@
 [submodule "tests/lib/pl"]
 	path = tests/lib/pl
 	url = https://github.com/WerWolv/PatternLanguage
+	branch = master
