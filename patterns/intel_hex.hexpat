@@ -4,7 +4,6 @@
  * NOTE: these were ascii hex values for me, so use the calculator tool to convert 
  * values
 */
-#pragma MIME text/plain
 #pragma endian big
 
 enum FileType: u16 {
