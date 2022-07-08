@@ -31,6 +31,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | ISO | | `patterns/iso.hexpat` | ISO 9660 file system |
 | VDF | | `patterns/vdf.hexpat` | Binary Value Data Format (.vdf) files | 
 | IP | | `patterns/ip.hexpat` | Ethernet II Frames (IP Packets) | 
+| UF2 | | `patterns/uf2.hexpat` | [USB Flashing Format](https://github.com/microsoft/uf2) | 
 
 ### Scripts
 
