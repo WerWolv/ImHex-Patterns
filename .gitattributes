@@ -1,2 +1,3 @@
-*.pat linguist-language=Rust
-*.hexpat linguist-language=Rust
+*.pat     linguist-language=Rust
+*.hexpat  linguist-language=Rust
+*         text eol=lf
