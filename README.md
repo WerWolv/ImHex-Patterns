@@ -38,6 +38,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | Name | Path | Description |
 |------|------|-------------|
 | svd2pat | `scripts/svd2pat.py` | Converts a ARM .svd register MMIO definition file into a pattern |
+| csv2tbl | `scripts/csv2tbl.py` | Converts a 010 editor CSV encoding file into a table file |
 
 ### Pattern Libraries
 
