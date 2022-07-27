@@ -102,8 +102,8 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | Thai | `encodings/thai.tbl` | Thai character encoding |
 | Turkish ISO | `encodings/turkish_iso.tbl` | Turkish ISO encoding |
 | Turkish Windows | `encodings/turkish_windows.tbl` | Turkish Windows encoding |
-| UTF-8 | `encodings/thai.tbl` | UTF-8 encoding |
-| Vietnamese | `encodings/thai.tbl` | Vietnamese character encoding |
+| UTF-8 | `encodings/utf8.tbl` | UTF-8 encoding |
+| Vietnamese | `encodings/vietnamese.tbl` | Vietnamese character encoding |
 
 ## Contributing
 
