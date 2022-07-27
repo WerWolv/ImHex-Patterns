@@ -72,15 +72,37 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 
 | Name | Path | Description |
 |------|------|-------------|
-| ANSI | `encodings/ansi.tbl` | ANSI encoding |
+| Arabic ISO | `encodings/arabic_iso.tbl` | Arabic ISO encoding |
+| Arabic Windows | `encodings/arabic_windows.tbl` | Arabic Windows encoding |
+| ASCII | `encodings/ascii.tbl` | Regular ASCII encoding |
+| ASCII+ANSI | `encodings/ascii_ansi.tbl` | Extended ASCII encoding |
+| ASCII+OEM | `encodings/ascii_oem.tbl` | ASCII encoding with Windows OEM characters |
+| Baltic ISO | `encodings/baltic_iso.tbl` | Baltic ISO encoding |
+| Baltic Windows | `encodings/baltic_windows.tbl` | Baltic Windows encoding |
+| Cyrillic ISO | `encodings/cyrillic_iso.tbl` | Cyrillic ISO encoding |
+| Cyrillic Windows | `encodings/cyrillic_windows.tbl` | Cyrillic Windows encoding |
+| Cyrillic KOI8-R | `encodings/cyrillic_koi8_r.tbl` | Cyrillic KOI8-R encoding (Russian Characters) |
+| Cyrillic KOI8-U | `encodings/cyrillic_koi8_u.tbl` | Cyrillic KOI8-U encoding (Ukranian Characters) |
+| Eastern Europe ISO | `encodings/eastern_europe_iso.tbl` | Eastern Europe ISO encoding |
+| Eastern Europe Windows | `encodings/eastern_europe_windows.tbl` | Eastern Europe Windows encoding |
+| EBCDIC | `encodings/ebcdic.tbl` | Extended Binary Coded Decimal Interchange Code, developed by IBM for their Main Frames |
 | EUC-JP | `encodings/euc_jp.tbl` | EUC-JP encoding with NEC special and IBM extended characters |
+| Greek ISO | `encodings/greek_iso.tbl` | Greek ISO encoding |
+| Greek Windows | `encodings/greek_windows.tbl` | Greek Windows encoding |
+| Hebrew ISO | `encodings/hebrew_iso.tbl` | Hebrew ISO encoding |
+| Hebrew Windows | `encodings/hebrew_windows.tbl` | Hebrew Windows encoding |
 | ISO/IEC 646 | `encodings/iso_646.tbl` | ISO/IEC 646 encoding, an older version of ASCII |
 | ISO/IEC 6937 | `encodings/iso_6937.tbl` | ISO/IEC 6937 encoding, an extension of ASCII containing additional character |
-| Shift-JIS with half-width characters | `encodings/shiftjis_halfchars.tbl` | Shift-JIS encoding including half-width characters at 0xA1 - 0xDF |
-| Shift-JIS UTF-8 | `encodings/shiftjis.tbl` | Shift-JIS encoding in UTF-8 |
 | JIS 0201 | `encodings/jis_x_0201.tbl` | JIS X 0201 encoding in UTF-8 |
 | JIS X 0211 | `encodings/jis_x_0211.tbl` | JIS X 0211 encoding in UTF-8 |
 | JIS 0213 | `encodings/jis_x_0213.tbl` | JIS X 0213 encoding in UTF-8 |
+| Macintosh | `encodings/macintosh.tbl` | Macintosh character encoding used by the Kermit protocol |
+| Shift-JIS UTF-8 | `encodings/shiftjis.tbl` | Shift-JIS encoding in UTF-8 |
+| Thai | `encodings/thai.tbl` | Thai character encoding |
+| Turkish ISO | `encodings/turkish_iso.tbl` | Turkish ISO encoding |
+| Turkish Windows | `encodings/turkish_windows.tbl` | Turkish Windows encoding |
+| UTF-8 | `encodings/thai.tbl` | UTF-8 encoding |
+| Vietnamese | `encodings/thai.tbl` | Vietnamese character encoding |
 
 ## Contributing
 
