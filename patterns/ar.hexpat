@@ -17,7 +17,7 @@ struct ARFile {
 		u8 data[std::string::parse_int(this.file_size, 10)];
 		padding[sizeof(data) & 1];
 	}
-} [[static]];
+};
 
 char signature[8] @ 0x00;
 std::assert(signature == "!<arch>\n", "File is not a valid archive!");
