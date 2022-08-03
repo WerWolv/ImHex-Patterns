@@ -8,7 +8,7 @@ file(GLOB PATTERNS
     "${TOP_LEVEL}/patterns/*.hexpat"
 )
 
-set(PATTERN_INCLUDES "${TOP_LEVEL}/includes/std")
+set(PATTERN_INCLUDES "${TOP_LEVEL}/includes")
 
 add_executable(patterns_tests
         source/main.cpp
@@ -24,7 +24,6 @@ foreach (pattern IN LISTS PATTERNS)
 
     file(GLOB TEST_FILES "${CMAKE_CURRENT_SOURCE_DIR}/test_data/${PATTERN_NAME}.*")
 
-    message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/test_data/${PATTERN_NAME}.*)
     if (TEST_FILES)
         list(GET TEST_FILES 0 TEST_FILE)
     else ()

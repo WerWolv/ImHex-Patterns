@@ -2,7 +2,3 @@
 	path = yara/official_rules
 	url = https://github.com/Yara-Rules/rules
 	branch = master
-[submodule "tests/lib/pl"]
-	path = tests/lib/pl
-	url = https://github.com/WerWolv/PatternLanguage
-	branch = master
