@@ -18,5 +18,6 @@ enable_testing()
 
 add_subdirectory(patterns)
 add_subdirectory(includes)
+add_subdirectory(magic)
 
-add_custom_target(test_all DEPENDS patterns_tests includes_test)
+add_custom_target(test_all DEPENDS patterns_tests includes_test magic_test)
