@@ -1,3 +1,5 @@
+#pragma once
+
 #include <std/io.pat>
 #include <std/math.pat>
 
