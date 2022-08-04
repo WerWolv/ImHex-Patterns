@@ -161,7 +161,7 @@ struct Section {
 	u32 ptrRawData;
 	u32 ptrRelocations;
 	u32 ptrLineNumbers;
-	u16 numberOfRelactions;
+	u16 numberOfRelocations;
 	u16 numberOfLineNumbers;
 	u32 characteristics;
 };
