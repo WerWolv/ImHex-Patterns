@@ -12,16 +12,15 @@ namespace type {
 	namespace impl {
 	
 		fn transform_varint_array(auto array) {
-			u64 res = array[0] & 0x7f;
+			u128 res = array[0] & 0x7f;
 			for(u8 i = 1, array[i-1] & 0x80 != 0, i+=1) {
-				res <<= 7;
-				res = res | u64(array[i] & 0x7f);
+				res |= u64(array[i] & 0x7f) << 7 * i;
 			}
 			return res;
 		};
 		
 		fn format_varint(auto varint) {
-			u64 res = type::impl::transform_varint_array(varint.array);
+			u128 res = type::impl::transform_varint_array(varint.array);
 			return std::format("{} ({:#x})", res, res);
 		};
 	
@@ -29,8 +28,6 @@ namespace type {
 			return type::impl::transform_varint_array(varint.array);
 		};
 	}
-
-
 	
 }
 
