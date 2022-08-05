@@ -7,7 +7,7 @@ namespace type {
 	
 	struct LEB128 {
 		u8 array[while($ == addressof(this) || std::mem::read_unsigned($-1, 1) & 0x80 != 0)] [[hidden]];
-	} [[format("type::impl::format_leb128"), transform("type::impl::transform_leb128")]];
+	} [[sealed, format("type::impl::format_leb128"), transform("type::impl::transform_leb128")]];
 	
 	namespace impl {
 	
