@@ -181,7 +181,7 @@ namespace program {
       u64 memory_size;
       u64 alignment;
     }
-  } [[static]];
+  };
 
 }
 
@@ -251,7 +251,7 @@ namespace section {
       u64 address_alignment;
       u64 entry_size;
     }
-  } [[static]];
+  };
 
 }
 
