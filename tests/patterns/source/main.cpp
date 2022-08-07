@@ -1,5 +1,5 @@
 #include <pl.hpp>
-#include <helpers/file.hpp>
+#include <pl/helpers/file.hpp>
 
 #include <fmt/format.h>
 #include <cstdlib>
@@ -27,12 +27,12 @@ int main(int argc, char **argv) {
     fmt::print("Running test {} on test file {}\n", patternName, testFilePath.stem().string());
 
     // Open pattern file
-    pl::fs::File patternFile(patternFilePath, pl::fs::File::Mode::Read);
+    pl::hlp::fs::File patternFile(patternFilePath, pl::hlp::fs::File::Mode::Read);
     if (!patternFile.isValid())
         return EXIT_FAILURE;
 
     // Open test file
-    pl::fs::File testFile(testFilePath, pl::fs::File::Mode::Read);
+    pl::hlp::fs::File testFile(testFilePath, pl::hlp::fs::File::Mode::Read);
     if (!testFile.isValid())
         return EXIT_FAILURE;
 
@@ -55,14 +55,15 @@ int main(int argc, char **argv) {
         fmt::print("Error during execution!\n");
 
         if (const auto &hardError = runtime.getError(); hardError.has_value())
-            fmt::print("Hard error: {}\n\n", hardError.value().what());
+            fmt::print("Hard error: {}:{} - {}\n\n", hardError->line, hardError->column, hardError->message);
 
         for (const auto &[level, message] : runtime.getConsoleLog()) {
             switch (level) {
-                case pl::LogConsole::Level::Debug:      fmt::print("    [DEBUG] "); break;
-                case pl::LogConsole::Level::Info:       fmt::print("    [INFO]  "); break;
-                case pl::LogConsole::Level::Warning:    fmt::print("    [WARN]  "); break;
-                case pl::LogConsole::Level::Error:      fmt::print("    [ERROR] "); break;
+                using enum pl::core::LogConsole::Level;
+                case Debug:      fmt::print("    [DEBUG] "); break;
+                case Info:       fmt::print("    [INFO]  "); break;
+                case Warning:    fmt::print("    [WARN]  "); break;
+                case Error:      fmt::print("    [ERROR] "); break;
             }
 
             fmt::print("{}\n", message);

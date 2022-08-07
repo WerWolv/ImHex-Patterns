@@ -1,5 +1,8 @@
 #include <pl.hpp>
-#include <helpers/file.hpp>
+#include <pl/helpers/file.hpp>
+
+#include <pl/core/errors/preprocessor_errors.hpp>
+#include <pl/core/errors/evaluator_errors.hpp>
 
 #include <fmt/format.h>
 #include <cstdlib>
@@ -19,17 +22,20 @@ int main(int argc, char **argv) {
     fmt::print("Running test {} on test file {}\n", includeName, includeFilePath.filename().string());
 
     // Open pattern file
-    pl::fs::File patternFile(includeFilePath, pl::fs::File::Mode::Read);
+    pl::hlp::fs::File patternFile(includeFilePath, pl::hlp::fs::File::Mode::Read);
     if (!patternFile.isValid())
         return EXIT_FAILURE;
 
     // Setup Pattern Language Runtime
     pl::PatternLanguage runtime;
     {
-        constexpr auto DummyPragmaHandler = [](const auto&, const auto&){ pl::LogConsole::abortEvaluation("Include files should never use this pragma!"); return true; };
+        constexpr auto DummyPragmaHandler = [](const auto&, const auto&){
+            pl::core::err::M0006.throwError("Include files should never use this pragma!");
+            return false;
+        };
 
         runtime.setDataSource([&](pl::u64 address, pl::u8 *data, size_t size) {
-            pl::LogConsole::abortEvaluation("Include files should never read from memory directly!");
+            pl::core::err::E0011.throwError("Include files should never read from memory directly!");
         }, 0x00, 0x100000);
         runtime.setDangerousFunctionCallHandler([]{ return true; });
         runtime.setIncludePaths({ includePath });
@@ -47,14 +53,15 @@ int main(int argc, char **argv) {
         fmt::print("Error during execution!\n");
 
         if (const auto &hardError = runtime.getError(); hardError.has_value())
-            fmt::print("Hard error: {}\n\n", hardError.value().what());
+            fmt::print("Hard error: {}:{} - {}\n\n", hardError->line, hardError->column, hardError->message);
 
         for (const auto &[level, message] : runtime.getConsoleLog()) {
             switch (level) {
-                case pl::LogConsole::Level::Debug:      fmt::print("    [DEBUG] "); break;
-                case pl::LogConsole::Level::Info:       fmt::print("    [INFO]  "); break;
-                case pl::LogConsole::Level::Warning:    fmt::print("    [WARN]  "); break;
-                case pl::LogConsole::Level::Error:      fmt::print("    [ERROR] "); break;
+                using enum pl::core::LogConsole::Level;
+                case Debug:      fmt::print("    [DEBUG] "); break;
+                case Info:       fmt::print("    [INFO]  "); break;
+                case Warning:    fmt::print("    [WARN]  "); break;
+                case Error:      fmt::print("    [ERROR] "); break;
             }
 
             fmt::print("{}\n", message);
