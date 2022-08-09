@@ -53,7 +53,7 @@ jobs:
     - name: 🧪 Perform Unit Tests
       run: |
         cd tests/build
-        ctest
+        ctest --output-on-failure
     - name: 📎 Validate JSON Files
       run: |
         cd constants
