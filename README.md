@@ -32,6 +32,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | VDF | | `patterns/vdf.hexpat` | Binary Value Data Format (.vdf) files | 
 | IP | | `patterns/ip.hexpat` | Ethernet II Frames (IP Packets) | 
 | UF2 | | `patterns/uf2.hexpat` | [USB Flashing Format](https://github.com/microsoft/uf2) | 
+| File System | | `patterns/fs.hexpat` | Drive File System | 
 
 ### Scripts
 
