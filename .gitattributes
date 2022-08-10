@@ -1,10 +1,2 @@
 *.pat               linguist-language=Rust
 *.hexpat            linguist-language=Rust
-constants/*         text eol=lf
-encodings/*         text eol=lf
-includes/*          text eol=lf
-magic/*             text eol=lf
-patterns/*          text eol=lf
-structs/*           text eol=lf
-tips/*              text eol=lf
-yara/*              text eol=lf
