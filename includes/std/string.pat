@@ -39,15 +39,12 @@ namespace std::string {
     };
 
     fn contains(str a, str b) {
-        s32 a_len, b_len;
-        a_len = std::string::length(a);
-        b_len = std::string::length(b);
+        s32 a_len = std::string::length(a);
+        s32 b_len = std::string::length(b);
 
-        s32 i;
-        while (i < a_len - b_len) {
+        for (s32 i = 0, i <= (a_len - b_len), i += 1) {
             if (std::string::substr(a, i, b_len) == b)
                 return true;
-            i = i + 1;
         }
 
         return false;
