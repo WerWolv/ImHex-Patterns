@@ -4,7 +4,7 @@ from pathlib import Path
 
 def extractData(projectName, jsonData, objectName, extension):
     if objectName in jsonData:
-        with open(f"./{projectName}.{extension}", "w") as output:
+        with open(f"./{projectName}.{extension}", mode="w", encoding="utf-8") as output:
             output.write(jsonData[objectName])
 
 def main():
@@ -13,7 +13,7 @@ def main():
         exit(1)
 
     projectPath = sys.argv[1]
-    with open(projectPath, "r") as file:
+    with open(projectPath, mode="r", encoding="utf-8") as file:
         jsonData = json.loads(file.read())
 
         projectName = Path(projectPath).stem
@@ -22,7 +22,7 @@ def main():
         extractData(projectName, jsonData, "pattern", "hexpat")
         
         if "bookmarks" in jsonData:
-            with open(f"./{projectName}.hexbm", "w") as output:
+            with open(f"./{projectName}.hexbm", mode="w", encoding="utf-8") as output:
                 jsonOutput = {}
                 jsonOutput["bookmarks"] = jsonData["bookmarks"]
 
