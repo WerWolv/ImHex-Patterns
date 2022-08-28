@@ -34,6 +34,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | UF2 | | `patterns/uf2.hexpat` | [USB Flashing Format](https://github.com/microsoft/uf2) | 
 | File System | | `patterns/fs.hexpat` | Drive File System | 
 | Bencode | `application/x-bittorrent` | `patterns/bencode.hexpat` | Bencode encoding, used by Torrent files | 
+| Protobuf | | `patterns/protobuf.hexpat` | Google Protobuf encoding | 
 
 ### Scripts
 
