@@ -7,7 +7,7 @@ struct ZigZag32 {
 } [[sealed, format("format_zigzag32")]];
 
 fn format_zigzag32(ZigZag32 zigzag) {
-	return s32((zigzag.value << 1) ^ (zigzag.value >> 31));
+	return s32((s32(zigzag.value) << 1) ^ (s32(zigzag.value) >> 31));
 };
 
 struct ZigZag64 {
@@ -15,7 +15,7 @@ struct ZigZag64 {
 } [[sealed, format("format_zigzag64")]];
 
 fn format_zigzag64(ZigZag64 zigzag) {
-	return s64((zigzag.value << 1) ^ (zigzag.value >> 63));
+	return s64((s64(zigzag.value) << 1) ^ (s64(zigzag.value) >> 63));
 };
 
 enum WireType : u8 {
