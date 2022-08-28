@@ -46,4 +46,12 @@ namespace std::core {
         return builtin::std::core::array_index();
     };
 
+    fn member_count(auto pattern) {
+        return builtin::std::core::member_count(pattern);  
+    };
+
+    fn has_member(auto pattern, str name) {
+        return builtin::std::core::has_member(pattern, name);  
+    };
+
 }
