@@ -35,6 +35,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | File System | | `patterns/fs.hexpat` | Drive File System | 
 | Bencode | `application/x-bittorrent` | `patterns/bencode.hexpat` | Bencode encoding, used by Torrent files | 
 | Protobuf | | `patterns/protobuf.hexpat` | Google Protobuf encoding | 
+| Ogg | | `patterns/ogg.hexpat` | Ogg Audio format | 
 
 ### Scripts
 
