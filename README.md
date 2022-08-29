@@ -36,6 +36,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | Bencode | `application/x-bittorrent` | `patterns/bencode.hexpat` | Bencode encoding, used by Torrent files | 
 | Protobuf | | `patterns/protobuf.hexpat` | Google Protobuf encoding | 
 | Ogg | `audio/ogg` | `patterns/ogg.hexpat` | Ogg Audio format | 
+| Ogg | `model/stl` | `patterns/stl.hexpat` | STL 3D Model format | 
 
 ### Scripts
 
