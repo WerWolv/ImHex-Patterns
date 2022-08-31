@@ -54,4 +54,8 @@ namespace std::core {
         return builtin::std::core::has_member(pattern, name);  
     };
 
+    fn formatted_value(auto pattern) {
+        return builtin::std::core::formatted_value(pattern);
+    };
+
 }
