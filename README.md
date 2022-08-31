@@ -35,8 +35,9 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | File System | | `patterns/fs.hexpat` | Drive File System | 
 | Bencode | `application/x-bittorrent` | `patterns/bencode.hexpat` | Bencode encoding, used by Torrent files | 
 | Protobuf | | `patterns/protobuf.hexpat` | Google Protobuf encoding | 
-| Ogg | `audio/ogg` | `patterns/ogg.hexpat` | Ogg Audio format | 
-| Ogg | `model/stl` | `patterns/stl.hexpat` | STL 3D Model format | 
+| OGG | `audio/ogg` | `patterns/ogg.hexpat` | OGG Audio format | 
+| STL | `model/stl` | `patterns/stl.hexpat` | STL 3D Model format | 
+| VHDX | | `patterns/vhdx.hexpat` | Microsoft Hyper-V Virtual Hard Disk format | 
 
 ### Scripts
 
