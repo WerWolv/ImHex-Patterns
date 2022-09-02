@@ -9,32 +9,35 @@ namespace type {
     namespace impl {
 
         fn size_formatter(u128 size) {
-            double sizeValue = size;
+            double sizeFloat = size;
             
             u32 i = 0;
-            while (sizeValue >= 1024 && i <= 6) {
+            while (sizeFloat >= 1024 && i <= 6) {
                 i += 1;
-                sizeValue /= 1024;
+                sizeFloat /= 1024;
             }
             
-            str result = std::format("{:.3f} ", sizeValue);
-            
-            if (i == 0 && size == 1)
-                return result + "Byte";
-            else if (i == 0)
-                return result + "Bytes";
-            else if (i == 1)
-                return result + "kiB";
-            else if (i == 2)
-                return result + "MiB";
-            else if (i == 3)
-                return result + "GiB";
-            else if (i == 4)
-                return result + "TiB";
-            else if (i == 5)
-                return result + "PiB";
-            else
-                return result + "EiB";
+            if (i == 0) {
+                if (size == 1)
+                    return std::format("{} Byte", size);
+                else
+                    return std::format("{} Bytes", size);   
+            } else {
+                str result = std::format("{:.3f} ", sizeFloat);
+
+                if (i == 1)
+                    return result + "kiB";
+                else if (i == 2)
+                    return result + "MiB";
+                else if (i == 3)
+                    return result + "GiB";
+                else if (i == 4)
+                    return result + "TiB";
+                else if (i == 5)
+                    return result + "PiB";
+                else
+                    return result + "EiB";
+            }
         };
 
     }
