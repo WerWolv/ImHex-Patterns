@@ -39,6 +39,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | STL | `model/stl` | `patterns/stl.hexpat` | STL 3D Model format | 
 | VHDX | | `patterns/vhdx.hexpat` | Microsoft Hyper-V Virtual Hard Disk format | 
 | NTAG | | `patterns/ntag.hexpat` | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC | 
+| Shell Link | `application/x-ms-shortcut` | `patterns/lnk.hexpat` | Windows Shell Link file format | 
 
 ### Scripts
 
