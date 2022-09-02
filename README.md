@@ -38,6 +38,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | OGG | `audio/ogg` | `patterns/ogg.hexpat` | OGG Audio format | 
 | STL | `model/stl` | `patterns/stl.hexpat` | STL 3D Model format | 
 | VHDX | | `patterns/vhdx.hexpat` | Microsoft Hyper-V Virtual Hard Disk format | 
+| NTAG | | `patterns/ntag.hexpat` | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC | 
 
 ### Scripts
 
