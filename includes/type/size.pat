@@ -9,13 +9,15 @@ namespace type {
     namespace impl {
 
         fn size_formatter(u128 size) {
+            double sizeValue = size;
+            
             u32 i = 0;
-            while (size >= 1024 && i <= 6) {
+            while (sizeValue >= 1024 && i <= 6) {
                 i += 1;
-                size /= 1024;
+                sizeValue /= 1024;
             }
             
-            str result = std::format("{} ", size);
+            str result = std::format("{:.3f} ", sizeValue);
             
             if (i == 0 && size == 1)
                 return result + "Byte";
