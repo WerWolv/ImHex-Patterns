@@ -94,6 +94,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | Eastern Europe Windows | `encodings/eastern_europe_windows.tbl` | Eastern Europe Windows encoding |
 | EBCDIC | `encodings/ebcdic.tbl` | Extended Binary Coded Decimal Interchange Code, developed by IBM for their Main Frames |
 | EUC-JP | `encodings/euc_jp.tbl` | EUC-JP encoding with NEC special and IBM extended characters |
+| EUC-KR | `encodings/euc_kr.tbl` | EUC-KR encoding |
 | Greek ISO | `encodings/greek_iso.tbl` | Greek ISO encoding |
 | Greek Windows | `encodings/greek_windows.tbl` | Greek Windows encoding |
 | Hebrew ISO | `encodings/hebrew_iso.tbl` | Hebrew ISO encoding |
