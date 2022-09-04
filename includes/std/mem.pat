@@ -35,12 +35,12 @@ namespace std::mem {
         return builtin::std::mem::find_sequence_in_range(occurrence_index, offsetFrom, offsetTo, bytes);
     };
 
-    fn read_unsigned(u128 address, u8 size) {
-        return builtin::std::mem::read_unsigned(address, size);
+    fn read_unsigned(u128 address, u8 size, Endian endian = Endian::Native) {
+        return builtin::std::mem::read_unsigned(address, size, u32(endian));
     };
 
-    fn read_signed(u128 address, u8 size) {
-        return builtin::std::mem::read_signed(address, size);
+    fn read_signed(u128 address, u8 size, Endian endian = Endian::Native) {
+        return builtin::std::mem::read_signed(address, size, u32(endian));
     };
 
     fn read_string(u128 address, u8 size) {
