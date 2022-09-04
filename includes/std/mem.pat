@@ -2,6 +2,12 @@
 
 namespace std::mem {
   
+    enum Endian : u8 {
+        Native  = 0,
+        Big     = 1,
+        Little  = 2
+    };
+
     fn eof() {
         return $ >= std::mem::size();
     };

@@ -1,12 +1,8 @@
 #pragma once
 
-namespace std::core {
+#include <std/mem.pat>
 
-    enum Endian : u8 {
-        Native  = 0,
-        Big     = 1,
-        Little  = 2
-    };
+namespace std::core {
 
     enum BitfieldOrder : u8 {
         LeftToRight = 0,
@@ -24,7 +20,7 @@ namespace std::core {
     };
 
 
-    fn set_endian(Endian endian) {
+    fn set_endian(std::mem::Endian endian) {
         builtin::std::core::set_endian(u32(endian));
     };
 
