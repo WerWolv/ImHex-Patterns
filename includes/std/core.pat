@@ -25,7 +25,7 @@ namespace std::core {
 
 
     fn set_endian(Endian endian) {
-        builtin::std::core::set_endian(endian);
+        builtin::std::core::set_endian(u32(endian));
     };
 
     fn get_endian() {
