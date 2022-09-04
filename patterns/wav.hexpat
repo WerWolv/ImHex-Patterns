@@ -17,6 +17,7 @@ enum WaveFormatType : u16 {
   Unknown,
   PCM,
   MS_ADPCM,
+  IEEEFloatingPoint,
   ALAW = 6,
   MULAW,
   IMA_ADPCM  = 0x11,
@@ -81,6 +82,10 @@ bitfield WaveMPEGFlags {
   ProtectionBit : 1;
   IdMPEG1 : 1;
   padding : 11;
+};
+
+struct WaveFormatIEEEFloatingPoint : WaveFormatPCM {
+
 };
 
 struct WaveFormatMPEG : WaveFormatEx {
@@ -202,6 +207,9 @@ struct WavData {
     } else if (fmt.formatTag == WaveFormatType::MPEGLAYER3) {
       WaveFormatMPEGLayer3 mpegLayer3ExtraData;
       padding[paddedChunkSize - sizeof(fmt) - sizeof(mpegLayer3ExtraData)];
+    } else if (fmt.formatTag == WaveFormatType::IEEEFloatingPoint) {
+        WaveFormatIEEEFloatingPoint ieeFloatingPointExtraData;
+        padding[paddedChunkSize - sizeof(fmt) - sizeof(ieeFloatingPointExtraData)];
     } else {
       WaveFormatExDummy unknown;
       padding[paddedChunkSize - sizeof(fmt) - sizeof(unknown)];
@@ -227,4 +235,4 @@ struct WavData {
 };
 
 RiffHeader header @0x00;
-WavData    data[while (!std::mem::eof())] @$;
+WavData    data[while (!std::mem::eof())] @ $;
