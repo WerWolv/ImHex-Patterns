@@ -1,26 +1,32 @@
+#pragma MIME application/x-executable
+#pragma MIME application/x-elf
+#pragma MIME application/x-coredump
+#pragma MIME application/x-object
+#pragma MIME application/x-sharedlib
+
 #include <std/core.pat>
 #include <std/mem.pat>
 
-using EI_ABIVERSION 	= u8;
-using Elf32_Addr		= u32;
-using Elf32_BaseAddr 	= u32;
-using Elf32_BaseOff 	= u32;
-using Elf32_Half 		= u16;
-using Elf32_Off 		= u32;
-using Elf32_Sword 		= s32;
-using Elf32_VAddr 		= u32;
-using Elf32_Word 		= u32;
-using Elf64_Addr 		= u64;
-using Elf64_BaseAddr 	= u64;
-using Elf64_BaseOff 	= u64;
-using Elf64_Half 		= u16;
-using Elf64_Off 		= u64;
-using Elf64_Sword 		= s32;
-using Elf64_Sxword 		= s64;
-using Elf64_VAddr 		= u64;
-using Elf64_Word 		= u32;
-using Elf64_Xword 		= u64;
-using E_VERSION 		= u32;
+using EI_ABIVERSION     = u8;
+using Elf32_Addr        = u32;
+using Elf32_BaseAddr    = u32;
+using Elf32_BaseOff     = u32;
+using Elf32_Half        = u16;
+using Elf32_Off         = u32;
+using Elf32_Sword       = s32;
+using Elf32_VAddr       = u32;
+using Elf32_Word        = u32;
+using Elf64_Addr        = u64;
+using Elf64_BaseAddr    = u64;
+using Elf64_BaseOff     = u64;
+using Elf64_Half        = u16;
+using Elf64_Off         = u64;
+using Elf64_Sword       = s32;
+using Elf64_Sxword      = s64;
+using Elf64_VAddr       = u64;
+using Elf64_Word        = u32;
+using Elf64_Xword       = u64;
+using E_VERSION         = u32;
 
 enum EI_CLASS : u8 {
     ELFCLASSNONE = 0x00,
@@ -37,7 +43,7 @@ enum EI_DATA : u8 {
 enum EI_OSABI : u8 {
     SYSV           = 0x00,
     HPUX           = 0x01,
-    NetBSD	       = 0x02,
+    NetBSD         = 0x02,
     Linux          = 0x03,
     GNUHurd        = 0x04,
     Solaris        = 0x06,
