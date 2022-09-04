@@ -720,9 +720,9 @@ struct ELF {
 	E_IDENT e_ident;
 	
 	if (e_ident.EI_DATA == EI_DATA::ELFDATA2LSB)
-		std::core::set_endian(std::core::Endian::Little);
+		std::core::set_endian(std::mem::Endian::Little);
 	else
-		std::core::set_endian(std::core::Endian::Big);
+		std::core::set_endian(std::mem::Endian::Big);
 	
 	if (e_ident.EI_CLASS == EI_CLASS::ELFCLASS32) {
 		Elf32_Ehdr header;
