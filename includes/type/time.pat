@@ -10,7 +10,7 @@ namespace type {
 
     namespace impl {
 
-        fn format_time_t(time_t value) {	
+        fn format_time_t(u128 value) {	
             return std::time::format(std::time::to_utc(value));
         };
 
