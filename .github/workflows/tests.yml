@@ -5,6 +5,8 @@ on:
     branches: [ '*' ]
   pull_request:
     branches: [ '*' ]
+  repository_dispatch:
+    types: [run_tests]
 
 jobs:
   tests:
