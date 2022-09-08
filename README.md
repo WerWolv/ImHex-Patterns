@@ -43,6 +43,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | Xilinx BIT | | `patterns/xilinx_bit.hexpat` | Xilinx FPGA Bitstreams | 
 | FLAC | `audio/flac` | `patterns/flac.hexpat` | Free Lossless Audio Codec, FLAC Audio Format | 
 | BSON | `application/bson` | `patterns/bson.hexpat` | BSON (Binary JSON) format | 
+| msgpack | `application/x-msgpack` | `patterns/msgpack.hexpat` | MessagePack binary serialization format | 
 
 ### Scripts
 
