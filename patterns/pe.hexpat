@@ -1,6 +1,9 @@
 #pragma MIME application/x-msdownload
+#pragma MIME application/x-dosexec
+
 #pragma pattern_limit 100000
 #pragma array_limit 10000
+
 #include <std/mem.pat>
 #include <std/string.pat>
 #include <std/ctype.pat>
