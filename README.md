@@ -44,6 +44,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | FLAC | `audio/flac` | `patterns/flac.hexpat` | Free Lossless Audio Codec, FLAC Audio Format | 
 | BSON | `application/bson` | `patterns/bson.hexpat` | BSON (Binary JSON) format | 
 | msgpack | `application/x-msgpack` | `patterns/msgpack.hexpat` | MessagePack binary serialization format | 
+| MiniDump | `application/x-dmp` | `patterns/minidump.hexpat` | Windows MiniDump files | 
 
 ### Scripts
 
