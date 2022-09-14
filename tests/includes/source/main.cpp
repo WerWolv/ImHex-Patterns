@@ -46,6 +46,8 @@ int main(int argc, char **argv) {
         runtime.addPragma("eval_depth",     DummyPragmaHandler);
         runtime.addPragma("array_limit",    DummyPragmaHandler);
         runtime.addPragma("pattern_limit",  DummyPragmaHandler);
+
+        runtime.addDefine("__PL_UNIT_TESTS__");
     }
 
     // Execute pattern
