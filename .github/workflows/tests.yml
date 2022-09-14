@@ -36,7 +36,8 @@ jobs:
             make                  \
             python3               \
             python3-pip           \
-            libmagic-dev
+            libmagic-dev          \
+            lcov
         
         sudo pip install jsonschema
 
@@ -45,10 +46,10 @@ jobs:
         cd tests
         mkdir -p build
         cd build
-        CC=gcc-12 CXX=g++-12 cmake              \
-          -DCMAKE_C_FLAGS="-fuse-ld=lld"        \
-          -DCMAKE_CXX_FLAGS="-fuse-ld=lld"      \
-          -DLIBPL_ENABLE_TESTS=OFF              \
+        CC=gcc-12 CXX=g++-12 cmake                      \
+          -DCMAKE_C_FLAGS="-fuse-ld=lld --coverage"     \
+          -DCMAKE_CXX_FLAGS="-fuse-ld=lld  --coverage"  \
+          -DLIBPL_ENABLE_TESTS=OFF                      \
           ..
         make -j4
 
@@ -56,6 +57,18 @@ jobs:
       run: |
         cd tests/build
         ctest --output-on-failure
+
+    - name: ⚗️ Generate Coverage Report
+      run: |
+        cd tests/build
+        lcov -d ./includes -d ./patterns --gcov-tool /usr/bin/gcov-12 -c -o coverage.info
+
+    - name: ⬆️ Upload Coverage Report
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: tests/build/coverage.info
+
     - name: 📎 Validate JSON Files
       run: |
         cd constants
