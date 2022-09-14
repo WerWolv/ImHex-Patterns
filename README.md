@@ -58,7 +58,8 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | Name | Path | Description |
 |------|------|-------------|
 | libstd | `includes/std/*` | Pattern Language Standard Libaray |
-| cstdint | `includes/cstdint.pat` | C integer types |
+| libtype | `includes/type/*` | Various custom types with special formatters |
+| libhex | `includes/hex/*` | Functions to interact with ImHex |
 
 ### Yara rules
 
