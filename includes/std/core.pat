@@ -10,12 +10,12 @@ namespace std::core {
     };
 
 
-    fn has_attribute(auto pattern, str attribute) {
+    fn has_attribute(ref auto pattern, str attribute) {
         return builtin::std::core::has_attribute(pattern, attribute);
     };
 
 
-    fn get_attribute_value(auto pattern, str attribute) {
+    fn get_attribute_value(ref auto pattern, str attribute) {
         return builtin::std::core::get_attribute_value(pattern, attribute);
     };
 
@@ -42,15 +42,15 @@ namespace std::core {
         return builtin::std::core::array_index();
     };
 
-    fn member_count(auto pattern) {
+    fn member_count(ref auto pattern) {
         return builtin::std::core::member_count(pattern);  
     };
 
-    fn has_member(auto pattern, str name) {
+    fn has_member(ref auto pattern, str name) {
         return builtin::std::core::has_member(pattern, name);  
     };
 
-    fn formatted_value(auto pattern) {
+    fn formatted_value(ref auto pattern) {
         return builtin::std::core::formatted_value(pattern);
     };
 
