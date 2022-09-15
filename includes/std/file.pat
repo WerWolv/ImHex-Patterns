@@ -12,7 +12,7 @@ namespace std::file {
 
 
 	fn open(str path, Mode mode) {
-		return builtin::std::file::open(path, mode);
+		return builtin::std::file::open(path, u32(mode));
 	};
 
 	fn close(Handle handle) {
