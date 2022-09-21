@@ -70,7 +70,7 @@ bitfield Characteristics {
 	localSymbolsStripped : 1;
 	aggressiveWsTrim : 1;
 	largeAddressAware : 1;
-	reserved : 1;
+	padding : 1;
 	bytesReversedLo : 1;
 	is32BitMachine : 1;
 	debugInfoStripped : 1;
@@ -83,7 +83,7 @@ bitfield Characteristics {
 } [[right_to_left]];
 
 bitfield DLLCharacteristics {
-	reserved : 4;
+	padding : 4;
 	padding : 1;
 	highEntropyVA : 1;
 	dynamicBase : 1;
@@ -99,15 +99,15 @@ bitfield DLLCharacteristics {
 } [[right_to_left]];
 
 bitfield SectionFlags {
-	reserved : 3;
+	padding : 3;
 	doNotPad : 1;
-	reserved : 1;
+	padding : 1;
 	containsCode : 1;
 	containsInitializedData : 1;
 	containsUninitializedData : 1;
 	linkOther : 1;
 	comments : 1;
-	reserved : 1;
+	padding : 1;
 	remove : 1;
 	comdat : 1;
 	padding : 2;
@@ -209,10 +209,10 @@ struct DOSHeader {
 	u16 initialCSValue;
 	u16 relocationsTablePointer;
 	u16 overlayNumber;
-	u16 reservedWords[4];
+	padding[4 * 2];
 	u16 oemIdentifier;
 	u16 oemInformation;
-	u16 reservedWords[10];
+	padding[10 * 2];
 	u32 coffHeaderPointer;
 };
 

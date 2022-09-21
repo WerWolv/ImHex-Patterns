@@ -120,21 +120,21 @@ struct ManufacturerData {
 
 struct DynamicLockBytes {
 	u8 bytes[3];
-	u8 RFUI;
+	padding[1];
 };
 
 bitfield MIRROR {
 	MIRROR_CONF	: 2;
 	MIRROR_BYTE	: 2;
-	RFUI		: 1;
+	padding     : 1;
 	STRG_MOD_EN	: 1;
-	RFUI		: 2;
+	padding     : 2;
 } [[left_to_right]];
 
 bitfield ACCESS {
 	PROT				: 1;
 	CFGLCK				: 1;
-	RFUI				: 1;
+	padding             : 1;
 	NFC_CNT_EN			: 1;
 	NFC_CNT_PWD_PROT	: 1;
 	AUTHLIM				: 3;
