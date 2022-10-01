@@ -10,7 +10,7 @@ namespace hex::type {
 	
     struct MangledName {
         char value[];
-    } [[sealed, format("format_mangled_name")]];
+    } [[sealed, format("hex::type::impl::format_mangled_name")]];
 	
     namespace impl {
 
