@@ -4,36 +4,53 @@
 
 namespace type {
 
-	struct IPv4Address {
-		u8 bytes[4];
-	} [[sealed, format("type::impl::format_ipv4_address")]];
+    struct IPv4Address {
+        u8 bytes[4];
+    } [[sealed, format("type::impl::format_ipv4_address")]];
 
     struct IPv6Address {
-		u16 words[8];
-	} [[sealed, format("type::impl::format_ipv6_address")]];
-						
-	namespace impl {
-				
-		fn format_ipv4_address(IPv4Address address) {
-			return std::format("{}.{}.{}.{}",
-				address.bytes[0],
-				address.bytes[1],
-				address.bytes[2],
-				address.bytes[3]);
-		};
+        u16 words[8];
+    } [[sealed, format("type::impl::format_ipv6_address")]];
+                        
+    namespace impl {
+                
+        fn format_ipv4_address(IPv4Address address) {
+            return std::format("{}.{}.{}.{}",
+                address.bytes[0],
+                address.bytes[1],
+                address.bytes[2],
+                address.bytes[3]);
+        };
 
         fn format_ipv6_address(IPv6Address address) {
-			return std::format("{:04X}:{:04X}:{:04X}:{:04X}:{:04X}:{:04X}:{:04X}:{:04X}",
-				address.words[0],
-				address.words[1],
-				address.words[2],
-				address.words[3],
-				address.words[4],
-				address.words[5],
-				address.words[6],
-				address.words[7]);
-		};
-				
-	}
+            str result;
+            
+            bool hadZeros = false;
+            s8 startIndex = -1;
+            
+            for (u8 i = 0, i < 8, i += 1) {
+                if (address.words[i] == 0x00 && !hadZeros) {
+                    hadZeros = true;
+                    startIndex = i;
+                    
+                    while (i < 7) {
+                        if (address.words[i + 1] != 0x00)
+                            break;
+                        i += 1;
+                    }
+                    
+                    if (startIndex == 0 || i == 7)
+                        result += ":";
+                } else {
+                    result += std::format("{:04X}", address.words[i]);
+                }
+                
+                result += ":";
+            }
+            
+            return std::string::substr(result, 0, std::string::length(result) - 1);
+        };
+                
+    }
 
 }
