@@ -1,6 +1,7 @@
 #pragma once
 
 #include <std/io.pat>
+#include <std/core.pat>
 
 namespace type {
 
