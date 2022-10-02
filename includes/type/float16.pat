@@ -7,23 +7,46 @@ namespace type {
     
     using float16 = u16 [[format("type::impl::format_float16")]];
 
-	namespace impl {
-
-        fn format_float16(float16 value) {	
-            float sign = (value >> 15) == 0b01 ? -1.0 : 1.0;
-            float exponent = std::math::pow(2.0, float((value >> 10) & 0x1F) - 14);
-            u16 mantissa = value & 0x3FF;
-            
-            float fraction = 0;
-            for (s8 i = 9, i >= 0, i -= 1) {
-                if ((mantissa & (1 << i)) != 0) {
-                    fraction += 1.0 / std::math::pow(2.0, (10.0 - i));
-                }
-            }
-            
-            return std::format("{:f}", sign * exponent * fraction);     
+    namespace impl {
+    
+        union U32ToFloatConverter {
+            u32 intValue;
+            float floatValue;
         };
 
-	}
+        fn format_float16(float16 value) {	
+            u32 sign = float16 >> 15;
+            u32 exponent = (float16 >> 10) & 0x1F;
+            u32 mantissa = float16 & 0x3FF;
+    
+            u32 result = 0x00;
+    
+            if (exponent == 0) {
+                if (mantissa == 0) {
+                    result = sign << 31;
+                } else {
+                    exponent = 0x7F - 14;
+    
+                    while ((mantissa & (1 << 10)) == 0) {
+                        exponent -= 1;
+                        mantissa <<= 1;
+                    }
+    
+                    mantissa &= 0x3FF;
+                    result = (sign << 31) | (exponent << 23) | (mantissa << 13);
+                }
+            } else if (exponent == 0x1F) {
+                result = (sign << 31) | (0xFF << 23) | (mantissa << 13);
+            } else {
+                result = (sign << 31) | ((exponent + (0x7F - 15)) << 23) | (mantissa << 13);
+            }
+            
+            U32ToFloatConverter converter;
+            converter.intValue = result;
+            
+            return std::format("{}", converter.floatValue);
+        };
+
+    }
 
 }
