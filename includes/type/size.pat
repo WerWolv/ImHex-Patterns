@@ -1,3 +1,6 @@
+#pragma once
+#include <std/io.pat>
+
 namespace type {
 
     using Size8   = u8   [[format("type::impl::size_formatter")]];
