@@ -11,7 +11,7 @@
     using uchar     = u8;
     using ubyte     = u8;
     using UCHAR     = u8;
-    using ubyte     = u8;
+    using UBYTE     = u8;
 
 
     using short     = s16;
