@@ -15,9 +15,9 @@ namespace type {
         };
 
         fn format_float16(float16 value) {	
-            u32 sign = float16 >> 15;
-            u32 exponent = (float16 >> 10) & 0x1F;
-            u32 mantissa = float16 & 0x3FF;
+            u32 sign = value >> 15;
+            u32 exponent = (value >> 10) & 0x1F;
+            u32 mantissa = value & 0x3FF;
     
             u32 result = 0x00;
     
