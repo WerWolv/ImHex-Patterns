@@ -20,7 +20,7 @@ namespace v2 {
 
     struct SyncSafeInt {
         u8 bytes[4];
-    } [[sealed, format("v2::ssi_value"), transform("v2::ssi_value")]];
+    } [[sealed, static, format("v2::ssi_value"), transform("v2::ssi_value")]];
 
     fn ssi_value(ref SyncSafeInt n) {
         u32 result = 0;
@@ -50,7 +50,7 @@ namespace v2 {
         TagVersion     version;
         TagHeaderFlags flags;
         SyncSafeInt    size;
-    };
+    } [[static]];
     
     bitfield ExtendedFlag {
         padding      : 1;
@@ -72,7 +72,7 @@ namespace v2 {
         TagVersion     version;
         TagHeaderFlags flags;
         SyncSafeInt    size;
-    };
+    } [[static]];
     
     bitfield FrameFlags {
         padding               : 1;
@@ -110,7 +110,7 @@ namespace v2 {
     union FrameId {
         char cdata[4];
         u8   ndata[4];
-    } [[sealed, format("v2::impl::format_frame_id")]];
+    } [[sealed, static, format("v2::impl::format_frame_id")]];
 
     namespace impl {
 
