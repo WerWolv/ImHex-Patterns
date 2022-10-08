@@ -8,50 +8,50 @@ using RVA = ULONG32;
 using RVA64 = ULONG64;
 
 enum MINIDUMP_STREAM_TYPE : ULONG32 {
-	UnusedStream 				= 0,
-	ReservedStream0 			= 1,
-	ReservedStream1 			= 2,
-	ThreadListStream 			= 3,
-	ModuleListStream 			= 4,
-	MemoryListStream 			= 5,
-	ExceptionStream 			= 6,
-	SystemInfoStream 			= 7,
-	ThreadExListStream 			= 8,
-	Memory64ListStream 			= 9,
-	CommentStreamA 				= 10,
-	CommentStreamW 				= 11,
-	HandleDataStream 			= 12,
-	FunctionTableStream			= 13,
-	UnloadedModuleListStream 	= 14,
-	MiscInfoStream 				= 15,
-	MemoryInfoListStream 		= 16,
-	ThreadInfoListStream 		= 17,
-	HandleOperationListStream 	= 18,
-	TokenStream 				= 19,
-	JavaScriptDataStream 		= 20,
-	SystemMemoryInfoStream 		= 21,
-	ProcessVmCountersStream 	= 22,
-	IptTraceStream 				= 23,
-	ThreadNamesStream 			= 24,
-	ceStreamNull 				= 0x8000,
-	ceStreamSystemInfo 			= 0x8001,
-	ceStreamException 			= 0x8002,
-	ceStreamModuleList 			= 0x8003,
-	ceStreamProcessList 		= 0x8004,
-	ceStreamThreadList 			= 0x8005,
-	ceStreamThreadContextList 	= 0x8006,
-	ceStreamThreadCallStackList = 0x8007,
-	ceStreamMemoryVirtualList 	= 0x8008,
-	ceStreamMemoryPhysicalList 	= 0x8009,
-	ceStreamBucketParameters 	= 0x800A,
-	ceStreamProcessModuleMap 	= 0x800B,
-	ceStreamDiagnosisList 		= 0x800C,
-	LastReservedStream 			= 0xFFFF
+    UnusedStream                = 0,
+    ReservedStream0             = 1,
+    ReservedStream1             = 2,
+    ThreadListStream            = 3,
+    ModuleListStream            = 4,
+    MemoryListStream            = 5,
+    ExceptionStream             = 6,
+    SystemInfoStream            = 7,
+    ThreadExListStream          = 8,
+    Memory64ListStream          = 9,
+    CommentStreamA              = 10,
+    CommentStreamW              = 11,
+    HandleDataStream            = 12,
+    FunctionTableStream         = 13,
+    UnloadedModuleListStream    = 14,
+    MiscInfoStream              = 15,
+    MemoryInfoListStream        = 16,
+    ThreadInfoListStream        = 17,
+    HandleOperationListStream   = 18,
+    TokenStream                 = 19,
+    JavaScriptDataStream        = 20,
+    SystemMemoryInfoStream      = 21,
+    ProcessVmCountersStream     = 22,
+    IptTraceStream              = 23,
+    ThreadNamesStream           = 24,
+    ceStreamNull                = 0x8000,
+    ceStreamSystemInfo          = 0x8001,
+    ceStreamException           = 0x8002,
+    ceStreamModuleList          = 0x8003,
+    ceStreamProcessList         = 0x8004,
+    ceStreamThreadList          = 0x8005,
+    ceStreamThreadContextList   = 0x8006,
+    ceStreamThreadCallStackList = 0x8007,
+    ceStreamMemoryVirtualList   = 0x8008,
+    ceStreamMemoryPhysicalList  = 0x8009,
+    ceStreamBucketParameters    = 0x800A,
+    ceStreamProcessModuleMap    = 0x800B,
+    ceStreamDiagnosisList       = 0x800C,
+    LastReservedStream          = 0xFFFF
 };
 
 struct MINIDUMP_LOCATION_DESCRIPTOR {
-	type::Size32 DataSize;
-	RVA Rva;
+    type::Size32 DataSize;
+    RVA Rva;
 };
 
 struct MINIDUMP_MEMORY_DESCRIPTOR {
@@ -70,24 +70,24 @@ struct MINIDUMP_THREAD {
 };
 
 struct MINIDUMP_THREAD_LIST {
-	ULONG32 NumberOfThreads;
-	MINIDUMP_THREAD Threads[NumberOfThreads];
+    ULONG32 NumberOfThreads;
+    MINIDUMP_THREAD Threads[NumberOfThreads];
 };
 
 struct VS_FIXEDFILEINFO {
-	DWORD dwSignature;
-	DWORD dwStrucVersion;
-	DWORD dwFileVersionMS;
-	DWORD dwFileVersionLS;
-	DWORD dwProductVersionMS;
-	DWORD dwProductVersionLS;
-	DWORD dwFileFlagsMask;
-	DWORD dwFileFlags;
-	DWORD dwFileOS;
-	DWORD dwFileType;
-	DWORD dwFileSubtype;
-	DWORD dwFileDateMS;
-	DWORD dwFileDateLS;
+    DWORD dwSignature;
+    DWORD dwStrucVersion;
+    DWORD dwFileVersionMS;
+    DWORD dwFileVersionLS;
+    DWORD dwProductVersionMS;
+    DWORD dwProductVersionLS;
+    DWORD dwFileFlagsMask;
+    DWORD dwFileFlags;
+    DWORD dwFileOS;
+    DWORD dwFileType;
+    DWORD dwFileSubtype;
+    DWORD dwFileDateMS;
+    DWORD dwFileDateLS;
 };
 
 struct MINIDUMP_MODULE {
@@ -101,12 +101,12 @@ struct MINIDUMP_MODULE {
     MINIDUMP_LOCATION_DESCRIPTOR MiscRecord;
     ULONG64 Reserved0;
     ULONG64 Reserved1;
-    
+
     char16 ModuleName[] @ ModuleNameRva + 4 [[hidden]];
 } [[format("format_module")]];
 
 fn format_module(ref MINIDUMP_MODULE module) {
-	return module.ModuleName;
+    return module.ModuleName;
 };
 
 struct MINIDUMP_MODULE_LIST {
@@ -137,10 +137,10 @@ struct MINIDUMP_EXCEPTION_STREAM {
 };
 
 struct CPU_INFORMATION {
-	ULONG32 VendorId[3];
-	ULONG32 VersionInformation;
-	ULONG32 FeatureInformation;
-	ULONG32 AMDExtendedCpuFeatures;
+    ULONG32 VendorId[3];
+    ULONG32 VersionInformation;
+    ULONG32 FeatureInformation;
+    ULONG32 AMDExtendedCpuFeatures;
 };
 
 struct MINIDUMP_SYSTEM_INFO {
@@ -235,7 +235,7 @@ struct MINIDUMP_FUNCTION_TABLE_STREAM {
     type::Size32 SizeOfFunctionEntry;
     ULONG32 NumberOfDescriptors;
     ULONG32 SizeOfAlignPad;
-    
+
     MINIDUMP_FUNCTION_TABLE_DESCRIPTOR FunctionDescriptors[NumberOfDescriptors];
 };
 
@@ -245,19 +245,19 @@ struct MINIDUMP_UNLOADED_MODULE {
     ULONG32 CheckSum;
     ULONG32 TimeDateStamp;
     RVA ModuleNameRva;
-    
+
     char16 ModuleName[] @ ModuleNameRva + 4 [[hidden]];
 } [[format("format_unloaded_module")]];
 
 fn format_unloaded_module(ref MINIDUMP_UNLOADED_MODULE module) {
-	return module.ModuleName;
+    return module.ModuleName;
 };
 
 struct MINIDUMP_UNLOADED_MODULE_LIST {
     ULONG32 SizeOfHeader;
     ULONG32 SizeOfEntry;
     ULONG32 NumberOfEntries;
-    
+
     if (SizeOfHeader > 12)
         padding[header.SizeOfHeader - 12];
         
@@ -271,7 +271,7 @@ struct MINIDUMP_MISC_INFO {
     ULONG32 ProcessCreateTime;
     ULONG32 ProcessUserTime;
     ULONG32 ProcessKernelTime;
-    
+
     if (SizeOfInfo > 24) {
         ULONG32 ProcessorMaxMhz;
         ULONG32 ProcessorCurrentMhz;
@@ -297,7 +297,7 @@ struct MINIDUMP_MEMORY_INFO_LIST {
     ULONG SizeOfHeader;
     ULONG SizeOfEntry;
     ULONG64 NumberOfEntries;
-    
+
     if (SizeOfHeader > 16)
         padding[SizeOfHeader - 16];
         
@@ -321,7 +321,7 @@ struct MINIDUMP_THREAD_INFO_LIST {
     ULONG SizeOfHeader;
     ULONG SizeOfEntry;
     ULONG NumberOfEntries;
-    
+
     if (SizeOfHeader > 12)
         padding[SizeOfHeader - 12];
         
@@ -336,88 +336,88 @@ struct MINIDUMP_HANDLE_OPERATION_LIST {
 };
 
 struct MINIDUMP_DIRECTORY {
-	MINIDUMP_STREAM_TYPE StreamType;
-	MINIDUMP_LOCATION_DESCRIPTOR Location;
-	
-	if (StreamType == MINIDUMP_STREAM_TYPE::ThreadListStream)
-		MINIDUMP_THREAD_LIST ThreadList @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::ModuleListStream)
-		MINIDUMP_MODULE_LIST ModuleList @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::MemoryListStream)
-		MINIDUMP_MEMORY_LIST MemoryList @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::ExceptionStream)
-		MINIDUMP_EXCEPTION_STREAM  ExceptionInfo @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::SystemInfoStream)
-		MINIDUMP_SYSTEM_INFO SystemInfo @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::ThreadExListStream)
-		MINIDUMP_THREAD_EX_LIST ThreadExList @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::Memory64ListStream)
-		MINIDUMP_MEMORY64_LIST Mem64List @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::CommentStreamA)
-		char Comment[] @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::CommentStreamW)
-		char16 Comment[] @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::HandleDataStream)
-		MINIDUMP_HANDLE_DATA_STREAM HandleData @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::FunctionTableStream)
-		MINIDUMP_FUNCTION_TABLE_STREAM FunctionTable @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::UnloadedModuleListStream)
-		MINIDUMP_UNLOADED_MODULE_LIST UnloadModuleList @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::MiscInfoStream)
-		 MINIDUMP_MISC_INFO MiscInfo @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::MemoryInfoListStream)
-		 MINIDUMP_MEMORY_INFO_LIST MemInfoList @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::ThreadInfoListStream)
-		 MINIDUMP_THREAD_INFO_LIST ThreadInfoList @ Location.Rva;
-	else if (StreamType == MINIDUMP_STREAM_TYPE::HandleOperationListStream)
-		 MINIDUMP_HANDLE_OPERATION_LIST HandleOperList @ Location.Rva;
+    MINIDUMP_STREAM_TYPE StreamType;
+    MINIDUMP_LOCATION_DESCRIPTOR Location;
+
+    if (StreamType == MINIDUMP_STREAM_TYPE::ThreadListStream)
+        MINIDUMP_THREAD_LIST ThreadList @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::ModuleListStream)
+        MINIDUMP_MODULE_LIST ModuleList @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::MemoryListStream)
+        MINIDUMP_MEMORY_LIST MemoryList @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::ExceptionStream)
+        MINIDUMP_EXCEPTION_STREAM  ExceptionInfo @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::SystemInfoStream)
+        MINIDUMP_SYSTEM_INFO SystemInfo @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::ThreadExListStream)
+        MINIDUMP_THREAD_EX_LIST ThreadExList @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::Memory64ListStream)
+        MINIDUMP_MEMORY64_LIST Mem64List @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::CommentStreamA)
+        char Comment[] @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::CommentStreamW)
+        char16 Comment[] @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::HandleDataStream)
+        MINIDUMP_HANDLE_DATA_STREAM HandleData @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::FunctionTableStream)
+        MINIDUMP_FUNCTION_TABLE_STREAM FunctionTable @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::UnloadedModuleListStream)
+        MINIDUMP_UNLOADED_MODULE_LIST UnloadModuleList @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::MiscInfoStream)
+            MINIDUMP_MISC_INFO MiscInfo @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::MemoryInfoListStream)
+            MINIDUMP_MEMORY_INFO_LIST MemInfoList @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::ThreadInfoListStream)
+            MINIDUMP_THREAD_INFO_LIST ThreadInfoList @ Location.Rva;
+    else if (StreamType == MINIDUMP_STREAM_TYPE::HandleOperationListStream)
+            MINIDUMP_HANDLE_OPERATION_LIST HandleOperList @ Location.Rva;
 };
 
 bitfield MINIDUMP_TYPE {
-	MiniDumpWithDataSegs 					: 1;
-	MiniDumpWithFullMemory 					: 1;
-	MiniDumpWithHandleData 					: 1;
-	MiniDumpFilterMemory 					: 1;
-	MiniDumpScanMemory 						: 1;
-	MiniDumpWithUnloadedModules 			: 1;
-	MiniDumpWithIndirectlyReferencedMemory	: 1;
-	MiniDumpFilterModulePaths 				: 1;
-	MiniDumpWithProcessThreadData 			: 1;
-	MiniDumpWithPrivateReadWriteMemory 		: 1;
-	MiniDumpWithoutOptionalData 			: 1;
-	MiniDumpWithFullMemoryInfo 				: 1;
-	MiniDumpWithThreadInfo 					: 1;
-	MiniDumpWithCodeSegs 					: 1;
-	MiniDumpWithoutAuxiliaryState 			: 1;
-	MiniDumpWithFullAuxiliaryState 			: 1;
-	MiniDumpWithPrivateWriteCopyMemory 		: 1;
-	MiniDumpIgnoreInaccessibleMemory 		: 1;
-	MiniDumpWithTokenInformation 			: 1;
-	MiniDumpWithModuleHeaders 				: 1;
-	MiniDumpFilterTriage 					: 1;
-	MiniDumpWithAvxXStateContext 			: 1;
-	MiniDumpWithIptTrace 					: 1;
-	MiniDumpScanInaccessiblePartialPages 	: 1;
-	padding									: 40;
+    MiniDumpWithDataSegs                    : 1;
+    MiniDumpWithFullMemory                  : 1;
+    MiniDumpWithHandleData                  : 1;
+    MiniDumpFilterMemory                    : 1;
+    MiniDumpScanMemory                      : 1;
+    MiniDumpWithUnloadedModules             : 1;
+    MiniDumpWithIndirectlyReferencedMemory  : 1;
+    MiniDumpFilterModulePaths               : 1;
+    MiniDumpWithProcessThreadData           : 1;
+    MiniDumpWithPrivateReadWriteMemory      : 1;
+    MiniDumpWithoutOptionalData             : 1;
+    MiniDumpWithFullMemoryInfo              : 1;
+    MiniDumpWithThreadInfo                  : 1;
+    MiniDumpWithCodeSegs                    : 1;
+    MiniDumpWithoutAuxiliaryState           : 1;
+    MiniDumpWithFullAuxiliaryState          : 1;
+    MiniDumpWithPrivateWriteCopyMemory      : 1;
+    MiniDumpIgnoreInaccessibleMemory        : 1;
+    MiniDumpWithTokenInformation            : 1;
+    MiniDumpWithModuleHeaders               : 1;
+    MiniDumpFilterTriage                    : 1;
+    MiniDumpWithAvxXStateContext            : 1;
+    MiniDumpWithIptTrace                    : 1;
+    MiniDumpScanInaccessiblePartialPages    : 1;
+    padding                                 : 40;
 } [[right_to_left]];
 
 struct MINIDUMP_HEADER {
-	char Signature[4];
-	ULONG32 Version;
-	ULONG32 NumberOfStreams;
-	RVA StreamDirectoryRva;
-	ULONG32 Checksum;
-	type::time32_t TimeDateStamp;
-	MINIDUMP_TYPE Flags;
+    char Signature[4];
+    ULONG32 Version;
+    ULONG32 NumberOfStreams;
+    RVA StreamDirectoryRva;
+    ULONG32 Checksum;
+    type::time32_t TimeDateStamp;
+    MINIDUMP_TYPE Flags;
 };
 
 struct MINIDUMP {
-	MINIDUMP_HEADER Header;
-	MINIDUMP_DIRECTORY Streams[Header.NumberOfStreams] [[format_entries("format_stream")]];
+    MINIDUMP_HEADER Header;
+    MINIDUMP_DIRECTORY Streams[Header.NumberOfStreams] [[format_entries("format_stream")]];
 };
 
 fn format_stream(ref MINIDUMP_DIRECTORY stream) {
-	return stream.StreamType;
+    return stream.StreamType;
 };
 
 MINIDUMP MiniDump @ 0x00;
