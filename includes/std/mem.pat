@@ -47,4 +47,26 @@ namespace std::mem {
         return builtin::std::mem::read_string(address, size);
     };
 
+
+    struct MagicSearch<auto Magic, T> {
+        if ($ < (std::mem::size() - std::string::length(Magic) - 1)) {
+            char __potentialMagic__[std::string::length(Magic)] [[hidden, no_unique_address]];
+            
+            if (__potentialMagic__ == Magic) {
+                T data [[inline]];
+            } else {
+                padding[1];
+                continue;
+            }
+        } else {
+            padding[1];
+            continue;
+        }
+    };
+
+    union Reinterpreter<From, To> {
+        From from;
+        To to;
+    };
+
 }
