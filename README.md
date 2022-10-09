@@ -45,6 +45,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | BSON | `application/bson` | [`patterns/bson.hexpat`](patterns/bson.hexpat) | BSON (Binary JSON) format | 
 | msgpack | `application/x-msgpack` | [`patterns/msgpack.hexpat`](patterns/msgpack.hexpat) | MessagePack binary serialization format | 
 | MiniDump | `application/x-dmp` | [`patterns/minidump.hexpat`](patterns/minidump.hexpat) | Windows MiniDump files | 
+| ID3 | `audio/mpeg` | [`patterns/id3tag.hexpat`](patterns/id3tag.hexpat) | ID3 tags in MP3 files |
 
 ### Scripts
 
