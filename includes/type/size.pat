@@ -1,13 +1,14 @@
-#pragma once
 #include <std/io.pat>
 
 namespace type {
 
-    using Size8   = u8   [[format("type::impl::size_formatter")]];
-    using Size16  = u16  [[format("type::impl::size_formatter")]];
-    using Size32  = u32  [[format("type::impl::size_formatter")]];
-    using Size64  = u64  [[format("type::impl::size_formatter")]];
-    using Size128 = u128 [[format("type::impl::size_formatter")]];
+    using Size<T> = T [[format("type::impl::size_formatter")]];
+
+    using Size8   = Size<u8>;
+    using Size16  = Size<u16>;
+    using Size32  = Size<u32>;
+    using Size64  = Size<u64>;
+    using Size128 = Size<u128>;
 
     namespace impl {
 

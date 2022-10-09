@@ -2,6 +2,7 @@
 
 #include <std/io.pat>
 #include <std/math.pat>
+#include <std/mem.pat>
 
 namespace type {
     
@@ -41,10 +42,10 @@ namespace type {
                 result = (sign << 31) | ((exponent + (0x7F - 15)) << 23) | (mantissa << 13);
             }
             
-            U32ToFloatConverter converter;
-            converter.intValue = result;
+            std::mem::Reinterpreter<u32, float> converter;
+            converter.from = result;
             
-            return std::format("{}", converter.floatValue);
+            return std::format("{}", converter.to);
         };
 
     }
