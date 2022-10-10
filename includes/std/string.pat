@@ -4,6 +4,22 @@
 
 namespace std::string {
 
+	struct SizedStringBase<SizeType, DataType> {
+		SizeType size;
+		DataType data[size];
+	} [[sealed, format("std::string::impl::format_sized_string"), transform("std::string::impl::format_sized_string")]];
+
+	using SizedString<SizeType> = SizedStringBase<SizeType, char>;
+	using SizedString16<SizeType> = SizedStringBase<SizeType, char16>;
+
+	namespace impl {
+
+		fn format_sized_string(ref auto string) {
+			return string.data;
+		};
+
+	}
+
 	fn length(str string) {
 		return builtin::std::string::length(string);
 	};
