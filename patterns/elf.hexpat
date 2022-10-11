@@ -732,7 +732,7 @@ struct ELF {
 	
 	if (e_ident.EI_CLASS == EI_CLASS::ELFCLASS32) {
 		Elf32_Ehdr ehdr;
-        Elf32_Phdr phdr[ehdr.e_phnum] @ ehdr.e_phoff;
+		Elf32_Phdr phdr[ehdr.e_phnum] @ ehdr.e_phoff;
 		Elf32_Shdr shdr[ehdr.e_shnum] @ ehdr.e_shoff;
 	} else if (e_ident.EI_CLASS == EI_CLASS::ELFCLASS64) {
 		Elf64_Ehdr ehdr;
