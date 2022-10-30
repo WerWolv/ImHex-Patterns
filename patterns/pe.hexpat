@@ -429,7 +429,11 @@ struct ImportsSection {
 };
 
 struct ReadonlyDataSection {
-	ImportsSection importsSection @ coffHeader.optionalHeader.directories[1].virtualAddress - virtualDataDifference();
+	if (coffHeader.optionalHeader.numberOfRVAsAndSizes >= 0xC) {
+		$ += coffHeader.optionalHeader.directories[0xC].size;
+	}
+	u8 readonlyDataStart[while($ < coffHeader.optionalHeader.directories[1].virtualAddress - virtualDataDifference())];
+	ImportsSection importsSection;
 };
 
 // Resource Section
