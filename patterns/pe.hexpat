@@ -32,7 +32,7 @@ u16 dosMessageOffset;
 fn isntdosmessage(char c) {
 	return c == 0x0D || c == '$';
 };
-  
+
 fn finddosmessage() {
 	for (u8 i = 0, $+i < std::mem::read_unsigned(0x3C, 4), i = i + 1) {
 		if (std::mem::read_unsigned($+i, 1) == 0xBA) {
