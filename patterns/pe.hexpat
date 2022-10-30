@@ -1123,7 +1123,7 @@ bool checkForRichHeader in;
 u16 richHeaderEndPosition;
 fn initializeRichHeader() {
 	if (checkForRichHeader) {
-		for	(u16 richEndCursor = sizeof(peHeader), richEndCursor < addressof(coffHeader), richEndCursor = richEndCursor + 1) {
+		for (u16 richEndCursor = sizeof(peHeader), richEndCursor < addressof(coffHeader), richEndCursor = richEndCursor + 1) {
 			if (std::mem::read_string(richEndCursor, 4) == "Rich") {
 				richHeaderEndPosition = richEndCursor;
 				break;
@@ -1159,7 +1159,7 @@ struct Product {
 struct RichHeaderCorpus {
 	char maskedSignature[4] [[format("formatSignature")]];
 	NullPadding nullPadding[3];
-	Product products[while($ != richHeaderEndPosition)];
+	Product products[while($ < richHeaderEndPosition)];
 } [[inline]];
 
 u8 richHeaderCorpusPosition;
