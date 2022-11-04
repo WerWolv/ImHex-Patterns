@@ -1,8 +1,8 @@
 #pragma MIME image/png
 #pragma endian big
+#pragma pattern_limit 0
 
-struct header_t
-{
+struct header_t {
     u8 highBitByte;
 	char signature[3];
 	char dosLineEnding[2];
@@ -10,8 +10,12 @@ struct header_t
 	char unixLineEnding;
 };
 
-struct ihdr_t
-{
+struct actl_t {
+	u32 frames [[comment("Total № of frames in animation")]];
+	u32 plays [[comment("№ of times animation will loop")]];
+};
+
+struct ihdr_t {
     u32 width [[comment("Image width")]];
     u32 height [[comment("Image height")]];
     u8 bit_depth;
@@ -31,6 +35,33 @@ struct phys_t {
     u32 ppu_x [[comment("Pixels per unit, X axis")]];
     u32 ppu_y [[comment("Pixels per unit, Y axis")]];
     u8 unit [[comment("Unit Specifier\n0: unit is unknown\n1: unit is the metre")]];
+};
+
+enum BlendOp: u8 {
+	Source = 0x0,
+	Over
+};
+
+enum DisposeOp: u8 {
+    None = 0x0,
+    Background,
+    Previous
+};
+
+struct fctl_t {
+	u32 sequence_no [[comment("Sequence №")]];
+	u32 width [[comment("Frame width")]];
+	u32 height [[comment("Frame height")]];
+	u32 xoff;
+	u32 yoff;
+	u16 delay_num [[comment("Frame delay fraction numerator")]];
+	u16 delay_den [[comment("Frame delay fraction denominator")]];
+	DisposeOp dispose_op;
+	BlendOp blend_op;
+};
+
+struct fdat_t {
+    u32 sequence_no;
 };
 
 struct itxt_t {
@@ -60,6 +91,9 @@ struct chunk_t {
     #define IEND_k "IEND"
     #define gAMA_k "gAMA"
     #define iCCP_k "iCCP"
+    #define acTL_k "acTL"
+    #define fdAT_k "fdAT"
+    #define fcTL_k "fcTL"
 
     if (type == IHDR_k) {
         ihdr_t ihdr [[comment("Image Header chunk"), name("IHDR")]];
@@ -67,12 +101,19 @@ struct chunk_t {
         palette_entry_t entries[length / 3];
     } else if (type == pHYs_k) {
         phys_t phys;
+    } else if (type == acTL_k) {
+        actl_t  actl [[comment("Animation control chunk")]];
+    } else if (type == fcTL_k) {
+        fctl_t fctl [[comment("Frame control chunk")]];
     } else if (type == iTXt_k) {
         itxt_t text;
     } else if (type == gAMA_k) {
     	u32 gamma [[name("image gamma"), comment("4 byte unsigned integer representing gamma times 100000")]];
     } else if (type == iCCP_k) {
     	iccp_t iccp;
+    } else if (type == fdAT_k) {
+        fdat_t fdat [[comment("Frame data chunk")]];
+        u8 data[length-sizeof(u32)];
     } else {
         u8 data[length];
     }
