@@ -26,7 +26,9 @@ enum cp_tag : u8 {
     CONSTANT_NameAndType        = 12,
     CONSTANT_MethodHandle       = 15,
     CONSTANT_MethodType         = 16,
-    CONSTANT_InvokeDynamic      = 18
+    CONSTANT_InvokeDynamic      = 18,
+    CONSTANT_Module             = 19,
+    CONSTANT_Package            = 20
 };
 
 enum major_version : u2 {
@@ -36,7 +38,7 @@ enum major_version : u2 {
     JDK_1_4              = 48,
 
     Java_SE_5_0          = 49,
-    Java_SE_6_0          = 50,
+    Java_SE_6            = 50,
     Java_SE_7            = 51,
     Java_SE_8            = 52,
     Java_SE_9            = 53,
@@ -129,37 +131,62 @@ struct CONSTANT_InvokeDynamic_info {
     u2 name_and_type_index;
 };
 
-struct cp_info {
-    cp_tag tag;
+// Tag == CONSTANT_Module
+struct CONSTANT_Module_info {
+    u2 name_index;
+};
 
-    if (tag == cp_tag::CONSTANT_Utf8)
-        CONSTANT_Utf8_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_Integer)
-        CONSTANT_Integer_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_Float)
-        CONSTANT_Float_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_Long)
-        CONSTANT_Long_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_Double)
-        CONSTANT_Double_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_Class)
-        CONSTANT_Class_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_String)
-        CONSTANT_String_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_Fieldref)
-        CONSTANT_Fieldref_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_Methodref)
-        CONSTANT_Methodref_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_InterfaceMethodref)
-        CONSTANT_InterfaceMethodref_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_NameAndType)
-        CONSTANT_NameAndType_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_MethodHandle)
-        CONSTANT_MethodHandle_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_MethodType)
-        CONSTANT_MethodType_info info [[inline]];
-    else if (tag == cp_tag::CONSTANT_InvokeDynamic)
-        CONSTANT_InvokeDynamic_info info [[inline]];
+// Tag == CONSTANT_Package
+struct CONSTANT_Package_info {
+    u2 name_index;
+};
+
+// All 8-byte constants take up two entries in the constant_pool table of the class file
+u1 padding_entry_flag = 0;
+
+struct cp_info {
+    if (padding_entry_flag == 0) {
+        cp_tag tag;
+
+        if (tag == cp_tag::CONSTANT_Utf8)
+            CONSTANT_Utf8_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_Integer)
+            CONSTANT_Integer_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_Float)
+            CONSTANT_Float_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_Long) {
+            CONSTANT_Long_info info [[inline]];
+            padding_entry_flag = 1;
+        }
+        else if (tag == cp_tag::CONSTANT_Double) {
+            CONSTANT_Double_info info [[inline]];
+            padding_entry_flag = 1;
+        }
+        else if (tag == cp_tag::CONSTANT_Class)
+            CONSTANT_Class_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_String)
+            CONSTANT_String_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_Fieldref)
+            CONSTANT_Fieldref_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_Methodref)
+            CONSTANT_Methodref_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_InterfaceMethodref)
+            CONSTANT_InterfaceMethodref_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_NameAndType)
+            CONSTANT_NameAndType_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_MethodHandle)
+            CONSTANT_MethodHandle_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_MethodType)
+            CONSTANT_MethodType_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_InvokeDynamic)
+            CONSTANT_InvokeDynamic_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_Module)
+            CONSTANT_Module_info info [[inline]];
+        else if (tag == cp_tag::CONSTANT_Package)
+            CONSTANT_Package_info info [[inline]];
+    } else {
+        padding_entry_flag = 0;
+    }
 };
 
 bitfield access_flags_method  {
@@ -216,7 +243,7 @@ bitfield access_flags_class  {
     ACC_SYNTHETIC    : 1;    // 0x1000
     ACC_ANNOTATION   : 1;    // 0x2000
     ACC_ENUM         : 1;    // 0x4000
-    padding          : 1;    // 0x8000
+    ACC_MODULE       : 1;    // 0x8000
 };
 
 struct attribute_info {
@@ -279,31 +306,29 @@ fn main() {
 
     std::print("Fields:");
     for (le u16 i = 0, i < class_file.fields_count, i = i + 1) {
-        str method_string = "  ";
+        str field_string = "  ";
 
         if (class_file.fields[i].access_flags.ACC_PUBLIC)
-            method_string = method_string + "public ";
+            field_string = field_string + "public ";
         if (class_file.fields[i].access_flags.ACC_PRIVATE)
-            method_string = method_string + "private ";
+            field_string = field_string + "private ";
         if (class_file.fields[i].access_flags.ACC_PROTECTED)
-            method_string = method_string + "protected ";
+            field_string = field_string + "protected ";
         if (class_file.fields[i].access_flags.ACC_STATIC)
-            method_string = method_string + "static ";
+            field_string = field_string + "static ";
         if (class_file.fields[i].access_flags.ACC_FINAL)
-            method_string = method_string + "final ";
+            field_string = field_string + "final ";
         if (class_file.fields[i].access_flags.ACC_VOLATILE)
-            method_string = method_string + "volatile ";
-        if (class_file.fields[i].access_flags.ACC_NATIVE)
-            method_string = method_string + "native ";
+            field_string = field_string + "volatile ";
         if (class_file.fields[i].access_flags.ACC_TRANSIENT)
-            method_string = method_string + "transient ";
+            field_string = field_string + "transient ";
         if (class_file.fields[i].access_flags.ACC_ENUM)
-            method_string = method_string + "enum ";
+            field_string = field_string + "enum ";
 
-        method_string = method_string + class_file.constant_pool[class_file.fields[i].name_index - 1].info.bytes;
-        method_string = method_string + " [ " + class_file.constant_pool[class_file.fields[i].descriptor_index - 1].info.bytes + " ]";
+        field_string = field_string + class_file.constant_pool[class_file.fields[i].name_index - 1].info.bytes;
+        field_string = field_string + " [ " + class_file.constant_pool[class_file.fields[i].descriptor_index - 1].info.bytes + " ]";
 
-        std::print("{}", method_string);
+        std::print("{}", field_string);
     }
 
     std::print("Methods:");
