@@ -2,6 +2,8 @@
 
 namespace std::mem {
   
+    using Section = u128;
+
     enum Endian : u8 {
         Native  = 0,
         Big     = 1,
@@ -46,6 +48,28 @@ namespace std::mem {
     fn read_string(u128 address, u8 size) {
         return builtin::std::mem::read_string(address, size);
     };
+
+
+    fn create_section(str name) {
+        return builtin::std::mem::create_section(name);
+    };
+
+    fn delete_section(Section section) {
+        builtin::std::mem::delete_section(section);
+    };
+
+    fn get_section_size(Section section) {
+        return builtin::std::mem::get_section_size(section);
+    };
+
+    fn copy_section_to_section(Section from_section, u64 from_address, Section to_section, u64 to_address, u64 size) {
+        return builtin::std::mem::get_section_size(from_section, from_address, to_section, to_address, size);
+    };
+
+    fn copy_value_to_section(ref auto value, Section to_section, u64 to_address) {
+        return builtin::std::mem::copy_value_to_section(value, to_section, to_address);
+    };
+
 
 
     struct MagicSearch<auto Magic, T> {
