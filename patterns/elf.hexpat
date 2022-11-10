@@ -560,7 +560,7 @@ struct Elf32_Phdr {
     PF p_flags;
     Elf32_Word p_align;
     
-    if (p_offset > 0 && p_filesz > 0 && (p_offset + p_filesz) < std::mem::data_size() && p_filesz < std::mem::data_size())
+    if (p_offset > 0 && p_filesz > 0 && (p_offset + p_filesz) < std::mem::size() && p_filesz < std::mem::size())
     	u8 p_data[p_filesz] @ p_offset;
 };
 
@@ -731,7 +731,9 @@ struct ELF {
 		std::core::set_endian(std::mem::Endian::Big);
 	
 	if (e_ident.EI_CLASS == EI_CLASS::ELFCLASS32) {
-		Elf32_Ehdr header;
+		Elf32_Ehdr ehdr;
+		Elf32_Phdr phdr[ehdr.e_phnum] @ ehdr.e_phoff;
+		Elf32_Shdr shdr[ehdr.e_shnum] @ ehdr.e_shoff;
 	} else if (e_ident.EI_CLASS == EI_CLASS::ELFCLASS64) {
 		Elf64_Ehdr ehdr;
 		Elf64_Phdr phdr[ehdr.e_phnum] @ ehdr.e_phoff;

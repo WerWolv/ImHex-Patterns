@@ -30,7 +30,7 @@ namespace std::core {
 
     
     fn set_bitfield_order(BitfieldOrder order) {
-        builtin::std::core::set_bitfield_order(order);
+        builtin::std::core::set_bitfield_order(u32(order));
     };
 
     fn get_bitfield_order() {
@@ -54,4 +54,7 @@ namespace std::core {
         return builtin::std::core::formatted_value(pattern);
     };
 
+    fn is_valid_enum(ref auto pattern) {
+        return builtin::std::core::is_valid_enum(pattern);
+    };
 }
