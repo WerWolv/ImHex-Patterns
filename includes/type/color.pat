@@ -5,6 +5,10 @@
 
 namespace type {
 
+    struct RGB8 {
+        u8 r, g, b;
+    } [[sealed, format("type::impl::format_color")]];
+
     struct RGBA8 {
         u8 r, g, b, a;
     } [[sealed, format("type::impl::format_color")]];
