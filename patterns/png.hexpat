@@ -1,36 +1,91 @@
 #pragma MIME image/png
 #pragma endian big
+#pragma pattern_limit 0
 
-struct header_t
-{
+struct header_t {
     u8 highBitByte;
-	char signature[3];
-	char dosLineEnding[2];
-	char dosEOF;
-	char unixLineEnding;
+    char signature[3];
+    char dosLineEnding[2];
+    char dosEOF;
+    char unixLineEnding;
 };
 
-struct ihdr_t
-{
+struct actl_t {
+    u32 frames [[comment("Total № of frames in animation")]];
+    u32 plays [[comment("№ of times animation will loop")]];
+} [[comment("Animation control chunk"), name("acTL")]];
+
+enum ColorType: u8 {
+    Grayscale = 0x0,
+    RGBTriple = 0x2,
+    Palette,
+    GrayscaleAlpha,
+    RGBA = 0x6
+};
+
+enum Interlacing: u8 {
+    None,
+    Adam7
+};
+
+struct ihdr_t {
     u32 width [[comment("Image width")]];
     u32 height [[comment("Image height")]];
     u8 bit_depth;
-    u8 color_type [[comment("PNG Image Type\n0: greyscale\n2: truecolour\n3: indexed-color\n4: greyscale with alpha\n6: truecolour with alpha")]];
-    u8 compression_method;
-    u8 filter_method;
-    u8 interlace_method [[comment("values 0 \"no interlace\" or 1 \"Adam7 interlace\"")]];
+    ColorType color_type [[comment("PNG Image Type")]];
+    u8 compression_method [[comment("Only 0x0 = zlib supported by most")]];
+    u8 filter_method [[comment("Only 0x0 = adaptive supported by most")]];
+    Interlacing interlacing;
 };
 
-struct palette_entry_t {
-    u8 r;
-    u8 g;
-    u8 b;
+enum sRGB: u8 {
+    Perceptual = 0x0,
+    RelativeColorimetric,
+    Saturation,
+    AbsoluteColorimetric
+};
+
+enum Unit: u8 {
+    Unknown,
+    Meter
 };
 
 struct phys_t {
     u32 ppu_x [[comment("Pixels per unit, X axis")]];
     u32 ppu_y [[comment("Pixels per unit, Y axis")]];
-    u8 unit [[comment("Unit Specifier\n0: unit is unknown\n1: unit is the metre")]];
+    Unit unit;
+};
+
+enum BlendOp: u8 {
+    Source = 0x0,
+    Over
+};
+
+enum DisposeOp: u8 {
+    None = 0x0,
+    Background,
+    Previous
+};
+
+struct fctl_t {
+    u32 sequence_no [[comment("Sequence №")]];
+    u32 width [[comment("Frame width")]];
+    u32 height;
+    u32 xoff;
+    u32 yoff;
+    u16 delay_num;
+    u16 delay_den;
+    DisposeOp dispose_op;
+    BlendOp blend_op;
+};
+
+struct fdat_t {
+    u32 sequence_no;
+};
+
+fn text_len() {
+   u64 len = parent.parent.length - ($ - addressof(parent.keyword));
+   return len;
 };
 
 struct itxt_t {
@@ -39,48 +94,92 @@ struct itxt_t {
     u8 compression_method;
     char language_tag[];
     char translated_keyword[];
-    char text[parent.length - ($ - addressof(keyword))];
+    char text[text_len()];
+};
+
+struct ztxt_t {
+    char keyword[];
+    u8 compression_method;
+    char text[text_len()];
+};
+
+struct text_t {
+    char keyword[];
+    char text[text_len()];
 };
 
 struct iccp_t {
-	char profile [];
-	u8 compression_method;
-	u8 compressed_profile[parent.length - ($ - addressof(profile))];
+    char keyword[];
+    u8 compression_method;
+    u8 compressed_profile[text_len()];
 };
+
+struct palette_entry_t {
+    u24 color;
+} [[inline]];
 
 struct chunk_t {
     u32 length [[color("17BECF")]];
-    char type[4];
+    char name[4];
 
     #define IHDR_k "IHDR"
     #define PLTE_k "PLTE"
+    #define sRGB_k "sRGB"
     #define pHYs_k "pHYs"
     #define iTXt_k "iTXt"
+    #define tEXt_k "tEXt"
+    #define zTXt_k "zTXt"
     #define IDAT_k "IDAT"
     #define IEND_k "IEND"
     #define gAMA_k "gAMA"
     #define iCCP_k "iCCP"
+    #define acTL_k "acTL"
+    #define fdAT_k "fdAT"
+    #define fcTL_k "fcTL"
 
-    if (type == IHDR_k) {
+    if (name == IHDR_k) {
         ihdr_t ihdr [[comment("Image Header chunk"), name("IHDR")]];
-    } else if (type == PLTE_k) {
+    } else if (name == PLTE_k) {
         palette_entry_t entries[length / 3];
-    } else if (type == pHYs_k) {
+    } else if (name == sRGB_k) {
+        sRGB srgb;
+    } else if (name == pHYs_k) {
         phys_t phys;
-    } else if (type == iTXt_k) {
+    } else if (name == acTL_k) {
+        actl_t  actl;
+    } else if (name == fcTL_k) {
+        fctl_t fctl [[comment("Frame control chunk")]];
+    } else if (name == iTXt_k) {
         itxt_t text;
-    } else if (type == gAMA_k) {
-    	u32 gamma [[name("image gamma"), comment("4 byte unsigned integer representing gamma times 100000")]];
-    } else if (type == iCCP_k) {
-    	iccp_t iccp;
+    } else if (name == tEXt_k) {
+        text_t text;
+    } else if (name == zTXt_k) {
+        ztxt_t text;
+    } else if (name == gAMA_k) {
+        u32 gamma [[name("image gamma"), comment("4 byte unsigned integer representing gamma times 100000")]];
+    } else if (name == iCCP_k) {
+        iccp_t iccp;
+    } else if (name == fdAT_k) {
+        fdat_t fdat [[comment("Frame data chunk")]];
+        u8 data[length-sizeof(u32)];
     } else {
         u8 data[length];
     }
 
     u32 crc;
+} [[format("chunkValueName")]];
+
+fn chunkValueName(ref chunk_t chunk) {
+    return chunk.name;
 };
+
+struct chunk_set {
+    chunk_t chunks[while(builtin::std::mem::read_string($ + 4, 4) != "IEND")] [[inline]];
+} [[inline]];
 
 header_t header @ 0x00 [[comment("PNG file signature"), name("Signature")]];
 chunk_t ihdr_chunk @ 0x08 [[comment("PNG Header chunk"), name("IHDR")]];
-chunk_t chunk_set[while(builtin::std::mem::read_string($ + 4, 4) != "IEND")] @ $ [[comment("PNG file chunks"), name("Chunks"), inline]];
-chunk_t iend_chunk @ $ [[name("IEND"), comment("Image End Chunk")]];
+chunk_set set @ $ [[comment("PNG Chunks"), name("Chunks"), inline]];
+chunk_t iend_chunk @ $ [[comment("Image End Chunk"), name("IEND")]];
+
+// vim: syntax=rust
