@@ -142,7 +142,7 @@ struct NEHeader {
     char signature[2];
     u8 majorLinkerVersion;
     u8 minorLinkerVersion;
-    u16 entryTablePointer;
+    u16 entryTableOffset;
     u16 entryTableLength;
     u32 fileCRC;
     ProgramFlags programFlags;
