@@ -2,7 +2,7 @@
 
 #include <std/mem.pat>
 
-struct EndOfCentralDirectory{
+struct EndOfCentralDirectory {
     u32 headerSignature [[color("00000000")]];
     u16 diskNum [[comment("Number of this disk "), name("Disk Number")]];
     u16 diskStart [[comment("Disk where central directory starts "), name("Central Directory Disk Number")]];
@@ -16,11 +16,7 @@ struct EndOfCentralDirectory{
 
 EndOfCentralDirectory fileInfo @ std::mem::find_sequence(0,0x50,0x4B,0x05,0x06) [[name("End of Central Directory Record")]];
 
-struct CentralDirectoryEntry{
-
-};
-
-struct CentralDirectoryFileHeader{
+struct CentralDirectoryFileHeader {
     u32 headerSignature [[color("00000000")]];
     u16 versionMade [[comment("Version file made by")]];
     u16 versionExtract [[comment("Minimum version needed to extract")]];
@@ -34,10 +30,10 @@ struct CentralDirectoryFileHeader{
     u16 fileNameLength [[color("00000000")]];
     u16 extraFieldLength [[color("00000000")]];
     u16 fileCommentLength [[color("00000000")]];
-    u16 diskNumber [[comment("Disk number where file starts ")]];
+    u16 diskNumber [[comment("Disk number where file starts")]];
     u16 internalFileAttributes;
     u32 externalFileAttributes;
-    u32 fileOffset [[comment("Relative offset of local file header. This is the number of bytes between the start of the first disk on which the file occurs, and the start of the local file header. This allows software reading the central directory to locate the position of the file inside the ZIP file.")]];
+    u32 fileOffset [[comment("Offset of local file header, relative to the start of the first disk on which the file occurs.")]];
     char fileName[fileNameLength];
     u8 extraField[extraFieldLength];
     char comment[fileCommentLength];
