@@ -1,6 +1,7 @@
 #pragma MIME application/zip
 
 #include <std/mem.pat>
+#include <std/math.pat>
 
 struct EndOfCentralDirectory {
     u32 headerSignature [[color("00000000")]];
@@ -14,7 +15,24 @@ struct EndOfCentralDirectory {
     char coment[commentLength] [[name("Comment")]];
 };
 
-EndOfCentralDirectory fileInfo @ std::mem::find_sequence(0,0x50,0x4B,0x05,0x06) [[name("End of Central Directory Record")]];
+fn find_eocd() {
+    // If there is no zip comment, which is the common case,
+    // the end-of-central-directory record will be 22 bytes long
+    // at the end of the file; check if size-22 has the signature.
+    if (std::mem::read_unsigned(std::mem::size()-22, 4, std::mem::Endian::Little) == 0x06054B50) {
+        return std::mem::size()-22;
+    } else {
+        // If it's not there, then there's probably a zip comment;
+        // search the last 64KB of the file for the signature.
+        // This is not entirely reliable, since the signature could
+        // randomly appear in compressed data before the actual EOCD,
+        // but it should be good enough...
+        u128 last64k = std::math::max(0, std::mem::size()-65536-22);
+        return std::mem::find_sequence_in_range(0, last64k, std::mem::size(), 0x50,0x4B,0x05,0x06);
+    }
+};
+
+EndOfCentralDirectory fileInfo @ find_eocd() [[name("End of Central Directory Record")]];
 
 struct CentralDirectoryFileHeader {
     u32 headerSignature [[color("00000000")]];
