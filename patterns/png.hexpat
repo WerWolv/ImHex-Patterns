@@ -87,33 +87,6 @@ fn text_len() {
    return len;
 };
 
-enum BlendOp: u8 {
-	Source = 0x0,
-	Over
-};
-
-enum DisposeOp: u8 {
-    None = 0x0,
-    Background,
-    Previous
-};
-
-struct fctl_t {
-	u32 sequence_no [[comment("Sequence №")]];
-	u32 width [[comment("Frame width")]];
-	u32 height [[comment("Frame height")]];
-	u32 xoff;
-	u32 yoff;
-	u16 delay_num [[comment("Frame delay fraction numerator")]];
-	u16 delay_den [[comment("Frame delay fraction denominator")]];
-	DisposeOp dispose_op;
-	BlendOp blend_op;
-};
-
-struct fdat_t {
-    u32 sequence_no;
-};
-
 struct itxt_t {
     char keyword[];
     u8 compression_flag;
@@ -171,15 +144,15 @@ struct chunk_t {
         sRGB srgb;
     } else if (name == pHYs_k) {
         phys_t phys;
-    } else if (type == acTL_k) {
+    } else if (name == acTL_k) {
         actl_t  actl [[comment("Animation control chunk")]];
-    } else if (type == fcTL_k) {
+    } else if (name == fcTL_k) {
         fctl_t fctl [[comment("Frame control chunk")]];
-    } else if (type == iTXt_k) {
+    } else if (name == iTXt_k) {
         itxt_t text;
-    } else if (type == gAMA_k) {
+    } else if (name == gAMA_k) {
     	u32 gamma [[name("image gamma"), comment("4 byte unsigned integer representing gamma times 100000")]];
-    } else if (type == iCCP_k) {
+    } else if (name == iCCP_k) {
     	iccp_t iccp;
     } else if (name == tEXt_k) {
         text_t text;
