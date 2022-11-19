@@ -11,6 +11,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | BMP  | `image/bmp` | [`patterns/bmp.hexpat`](patterns/bmp.hexpat) | OS2/Windows Bitmap files |
 | ELF  | `application/x-executable` | [`patterns/elf.hexpat`](patterns/elf.hexpat) | ELF header in elf binaries |
 | PE   | `application/x-dosexec` | [`patterns/pe.hexpat`](patterns/pe.hexpat) | PE header, COFF header, Standard COFF fields and Windows Specific fields |
+| NE   | | [`patterns/ne.hexpat`](patterns/ne.hexpat) | NE header and Standard NE fields |
 | Intel HEX  | | [`patterns/intel_hex.hexpat`](patterns/intel_hex.hexpat) | [Intel hexadecimal object file format definition]("https://en.wikipedia.org/wiki/Intel_HEX") |
 | MIDI | `audio/midi` | [`patterns/midi.hexpat`](patterns/midi.hexpat) | MIDI header, event fields provided |
 | WAV  | `audio/wav`  | [`patterns/wav.hexpat`](patterns/wav.hexpat)  | RIFF header, WAVE header, PCM header |
