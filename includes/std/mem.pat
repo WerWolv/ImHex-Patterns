@@ -63,7 +63,7 @@ namespace std::mem {
     };
 
     fn copy_section_to_section(Section from_section, u64 from_address, Section to_section, u64 to_address, u64 size) {
-        builtin::std::mem::get_section_size(from_section, from_address, to_section, to_address, size);
+        builtin::std::mem::copy_to_section(from_section, from_address, to_section, to_address, size);
     };
 
     fn copy_value_to_section(ref auto value, Section to_section, u64 to_address) {
