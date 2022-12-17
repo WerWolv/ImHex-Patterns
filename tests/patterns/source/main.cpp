@@ -41,10 +41,12 @@ int main(int argc, char **argv) {
     {
         constexpr auto DummyPragmaHandler = [](const auto&, const auto&){ return true; };
 
-        runtime.setDataSource([&](pl::u64 address, pl::u8 *data, size_t size) {
-            testFile.seek(address);
-            testFile.readBuffer(data, size);
-        }, 0x00, testFile.getSize());
+        runtime.setDataSource(0x00, testFile.getSize(), 
+            [&](pl::u64 address, pl::u8 *data, size_t size) {
+                testFile.seek(address);
+                testFile.readBuffer(data, size);
+            }
+        );
         runtime.setDangerousFunctionCallHandler([]{ return true; });
         runtime.setIncludePaths({ includePath });
         runtime.addPragma("MIME", DummyPragmaHandler);
