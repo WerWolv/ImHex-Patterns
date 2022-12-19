@@ -34,9 +34,11 @@ int main(int argc, char **argv) {
             return false;
         };
 
-        runtime.setDataSource([&](pl::u64 address, pl::u8 *data, size_t size) {
-            pl::core::err::E0011.throwError("Include files should never read from memory directly!");
-        }, 0x00, 0x100000);
+        runtime.setDataSource(0x00, 0x100000, 
+            [&](pl::u64 address, pl::u8 *data, size_t size) {
+                pl::core::err::E0011.throwError("Include files should never read from memory directly!");
+            }
+        );
         runtime.setDangerousFunctionCallHandler([]{ return true; });
         runtime.setIncludePaths({ includePath });
 
