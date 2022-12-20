@@ -48,6 +48,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | MiniDump | `application/x-dmp` | [`patterns/minidump.hexpat`](patterns/minidump.hexpat) | Windows MiniDump files | 
 | ID3 | `audio/mpeg` | [`patterns/id3tag.hexpat`](patterns/id3tag.hexpat) | ID3 tags in MP3 files |
 | TAR | `application/x-tar` | [`patterns/tar.hexpat`](patterns/tar.hexpat) | Tar file format |
+| CPIO | `application/x-cpio` | [`patterns/cpio.hexpat`](patterns/cpio.hexpat) | Old Binary CPIO Format |
 
 ### Scripts
 
