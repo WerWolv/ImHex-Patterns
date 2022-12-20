@@ -49,6 +49,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | ID3 | `audio/mpeg` | [`patterns/id3tag.hexpat`](patterns/id3tag.hexpat) | ID3 tags in MP3 files |
 | TAR | `application/x-tar` | [`patterns/tar.hexpat`](patterns/tar.hexpat) | Tar file format |
 | CPIO | `application/x-cpio` | [`patterns/cpio.hexpat`](patterns/cpio.hexpat) | Old Binary CPIO Format |
+| FDT | | [`patterns/cpio.hexpat`](patterns/fdt.hexpat) | Flat Linux Device Tree blob |
 
 ### Scripts
 
