@@ -12,19 +12,19 @@ namespace type {
 
 	namespace impl {
 
-        fn format_number(auto value, str fmt) {
-            bool negative = value < 0;
+            fn format_number(auto value, str fmt) {
+                bool negative = value < 0;
             
-            if (negative)
-                return std::format("-" + fmt, std::math::abs(value));
-            else
-                return std::format(fmt, value);
-        };
+                if (negative)
+                    return std::format("-" + fmt, std::math::abs(value));
+                else
+                    return std::format(fmt, value);
+            };
 
-        fn format_hex(auto value) { return format_number(value, "0x{:02X}"); };
-        fn format_oct(auto value) { return format_number(value, "0o{:03o}"); };
-        fn format_dec(auto value) { return format_number(value, "{}"); };
-        fn format_bin(auto value) { return format_number(value, "0b{:08b}"); };
+            fn format_hex(auto value) { return type::impl::format_number(value, "0x{:02X}"); };
+            fn format_oct(auto value) { return type::impl::format_number(value, "0o{:03o}"); };
+            fn format_dec(auto value) { return type::impl::format_number(value, "{}"); };
+            fn format_bin(auto value) { return type::impl::format_number(value, "0b{:08b}"); };
 
 	}
 
