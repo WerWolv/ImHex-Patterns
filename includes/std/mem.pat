@@ -92,5 +92,9 @@ namespace std::mem {
         From from;
         To to;
     };
+  
+    struct AlignTo<auto Alignment> {
+        padding[Alignment - ((($ - 1) % Alignment) + 1)];
+    } [[hidden, sealed]];
 
 }
