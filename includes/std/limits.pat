@@ -15,7 +15,7 @@ namespace std::limits {
 	};
 	
 	fn s8_max() {
-		return s8((u8_max() / 2));
+		return s8((std::limits::u8_max() / 2));
 	};
 
 	fn u16_min() {
@@ -31,7 +31,7 @@ namespace std::limits {
 	};
 	
 	fn s16_max() {
-		return s16((u16_max() / 2));
+		return s16((std::limits::u16_max() / 2));
 	};
 	
 	fn u32_min() {
@@ -47,7 +47,7 @@ namespace std::limits {
 	};
 	
 	fn s32_max() {
-		return s32((u32_max() / 2));
+		return s32((std::limits::u32_max() / 2));
 	};
 	
 	fn u64_min() {
@@ -63,7 +63,7 @@ namespace std::limits {
 	};
 	
 	fn s64_max() {
-		return s64((u64_max() / 2));
+		return s64((std::limits::u64_max() / 2));
 	};
 	
 	fn u128_min() {
@@ -79,7 +79,7 @@ namespace std::limits {
 	};
 	
 	fn s128_max() {
-		return s128((u128_max() / 2));
+		return s128((std::limits::u128_max() / 2));
 	};
 	
 }
