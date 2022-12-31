@@ -15,7 +15,7 @@ add_executable(patterns_tests
 )
 
 target_include_directories(patterns_tests PRIVATE include)
-target_link_libraries(patterns_tests libpl)
+target_link_libraries(patterns_tests PRIVATE libpl fmt)
 
 set_target_properties(patterns_tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
