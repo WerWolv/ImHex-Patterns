@@ -59,6 +59,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | WAD | | [`patterns/wad.hexpat`](patterns/wad.hexpat) | DOOM WAD Archive |
 | GIF | `image/gif` | [`patterns/gif.hexpat`](patterns/gif.hexpat) | GIF image files |
 | ZSTD | `application/zstd` | [`patterns/zstd.hexpat`](patterns/zstd.hexpat) | Zstandard compressed data format |
+| COFF | `application/x-coff` | [`patterns/coff.hexpat`](patterns/coff.hexpat) | Common Object File Format (COFF) executable |
 
 ### Scripts
 
