@@ -1,4 +1,3 @@
-#pragma MIME application/octet-stream
 #pragma endian big
 
 #include <type/magic.pat>
