@@ -19,11 +19,12 @@ struct Matrix {
 	u8 zip[compressedDataSize];
 };
 
+// Rotation matrix according to wikipedia
+// https://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
 struct Matrices {
-	u8 mat1[9];
-	u8 mat2[9];
-	u8 mat3[9];
-	u8 mat4[9];
+	float row1[3];
+	float row2[3];
+	float row3[3];
 };
 
 using Node;
@@ -38,13 +39,6 @@ struct Compound {
 	Matrix matrix;
 	u32 childCount;
 	Node nodes[childCount];
-};
-
-struct Digest {
-	u8 first[4]; // changes on each re-save
-	u8 second[4]; // changes if the model changes
-	u8 third[4]; // chnages on each re-save
-	u8 fourth[4]; // changes if the model changes
 };
 
 struct Node {
@@ -77,7 +71,9 @@ struct Header {
 	String company;
 	String website;
 	String copyright;
-	Digest digest;
+	// Maybe change and creation time?
+	double time1;
+	double time2;
 	Node node;
 };
 
