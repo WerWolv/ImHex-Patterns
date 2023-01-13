@@ -50,9 +50,9 @@ struct vxl_limb_tailer_s {
 
 struct vxl_s {
 	name_s name;
-	u32 _reserved;
+	u32 palette_count;
 	u32 limb_count;
-	u32 _limb_count;
+	u32 tailer_count;
 	u32 body_size;
 	u8 remap_start_index;
 	u8 remap_end_index;
