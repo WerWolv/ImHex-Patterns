@@ -28,6 +28,10 @@ namespace std::file {
 		return builtin::std::file::write(handle, data);
 	};
 
+	fn seek(Handle handle, u64 offset) {
+		builtin::std::file::seek(handle, offset);
+	};
+
 
 	fn size(Handle handle) {
 		return builtin::std::file::size(handle);
