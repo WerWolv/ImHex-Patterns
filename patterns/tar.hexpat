@@ -9,7 +9,8 @@
 #include <std/sys.pat>
 
 
-#define HEADER "ustar "
+#define GNU_HEADER "ustar "
+#define PAX_HEADER "ustar\x00"
 #define NULL "\x00"
 
 fn octal_to_decimal(str value) {
@@ -83,6 +84,6 @@ struct tar {
 };
 
 char magic[6] @ 0x00000101 [[hidden]];
-std::assert(magic == HEADER, "Magic bytes are not correct! Perhaps wrong file?");
+std::assert(magic == PAX_HEADER || magic == GNU_HEADER, "Magic bytes are not correct! Perhaps wrong file?");
 
 tar tar[while(!std::mem::eof())] @ 0x000;
