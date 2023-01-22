@@ -72,7 +72,7 @@ struct Footer {
   u32 developerDirectoryOffset;
   char signature[0x10];
   char dot;
-  char null;
+  char zero;
 };
 
 Header header @ 0x0;
