@@ -9,7 +9,7 @@
 #include <std/sys.pat>
 
 
-#define GNU_HEADER "ustar "
+#define GNU_HEADER "ustar"
 #define PAX_HEADER "ustar\x00"
 #define NULL "\x00"
 
@@ -83,7 +83,7 @@ struct tar {
     }
 };
 
-char magic[6] @ 0x00000101 [[hidden]];
+char magic[5] @ 0x00000101 [[hidden]];
 std::assert(magic == PAX_HEADER || magic == GNU_HEADER, "Magic bytes are not correct! Perhaps wrong file?");
 
 tar tar[while(!std::mem::eof())] @ 0x000;
