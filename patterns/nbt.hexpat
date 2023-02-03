@@ -45,6 +45,12 @@ struct Value {
         Value values[listLength] [[static]];
     } else if (parent.tag == Tag::Compound) {       
         Element values[while(true)];
+    } else if (parent.tag == Tag::IntArray){
+        s32 arrayLength;
+        s32 value[arrayLength] [[sealed]];
+    } else if (parent.tag == Tag::LongArray) {
+        s32 arrayLength;
+        s64 value[arrayLength] [[sealed]];
     } else {
         std::error(std::format("Invalid tag {:02X}", TypeTag));
     }
