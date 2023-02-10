@@ -147,6 +147,12 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | UTF-8 | [`encodings/utf8.tbl`](encodings/utf8.tbl) | UTF-8 encoding |
 | Vietnamese | [`encodings/vietnamese.tbl`](encodings/vietnamese.tbl) | Vietnamese character encoding |
 
+### Data Processor Nodes
+| Name | Path | Description |
+|------|------|-------------|
+| Caesar Cipher | [`nodes/caecar.hexnode`](nodes/caecar.hexnode) | Simple adjustable per-byte Caecar Cipher (ROT) |
+| XOR Cipher | [`nodes/xor.hexnode`](nodes/xor.hexnode) | XORs a input with a repeating XOR pad |
+
 ## Contributing
 
 If you want to contribute a file to the database, please make a PR which adds it to the right folder and adds a new entry to the table in this readme. 
