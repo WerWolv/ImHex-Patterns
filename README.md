@@ -150,7 +150,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 ### Data Processor Nodes
 | Name | Path | Description |
 |------|------|-------------|
-| Caesar Cipher | [`nodes/caecar.hexnode`](nodes/caecar.hexnode) | Simple adjustable per-byte Caecar Cipher (ROT) |
+| Caesar Cipher | [`nodes/caesar.hexnode`](nodes/caesar.hexnode) | Simple adjustable per-byte Caecar Cipher (ROT) |
 | XOR Cipher | [`nodes/xor.hexnode`](nodes/xor.hexnode) | XORs a input with a repeating XOR pad |
 
 ## Contributing
