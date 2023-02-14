@@ -38,37 +38,6 @@ bitfield GC_Flags {
     reserved : 3;
 };
 
-namespace format {
-    fn dispose_enum(u8 value) {
-        if(value == 0x00) return "Do nothing";
-        if(value == 0x01) return "Do not remove pixels";
-        if(value == 0x02) return "Restore background pixels";
-        if(value == 0x03) return "Restore previous pixels"; 
-    };
-    
-    fn extension_name(u8 label) {
-        if(label == LABEL_GC) return "Graphical Control Extension";
-        if(label == LABEL_COMMENT) return "Comment Extension";
-        if(label == LABEL_APPLICATION) return "Application Extension";
-        if(label == LABEL_PLAINTEXT) return "Plaintext Extension";
-        return "Unknown Extension";
-    };
-
-    fn content_name(u8 code) {
-        if(code == CODE_FRAME) return "Frame";
-        if(code == CODE_EXTENSION) return "Extension";
-        if(code == CODE_TRAILER) return "End";
-        return "Unknown Content";
-    };
-
-    fn delay(u16 delay) {
-        if(delay == -1) return "forever";
-        else if(delay < 2) return "100ms";
-        else return std::string::to_string(delay * 10) + "ms";
-        return "notime";
-    };
-}
-
 struct color {
   u8 r, g, b;
 } [[color(std::format("{:02X}{:02X}{:02X}", r, g, b))]];
@@ -129,10 +98,6 @@ struct application {
     }
 };
 
-fn get_color(u8 index) {
-    return addressof(globalGif.header.gct.colors[index]);
-};
-
 struct plaintext {
     u8 blockSize [[hidden]];
     u16 gridLeftPos;
@@ -158,6 +123,37 @@ struct graphical_control {
     block b [[hidden]];
 };
 
+namespace format {
+    fn dispose_enum(u8 value) {
+        if(value == 0x00) return "Do nothing";
+        if(value == 0x01) return "Do not remove pixels";
+        if(value == 0x02) return "Restore background pixels";
+        if(value == 0x03) return "Restore previous pixels"; 
+    };
+    
+    fn extension_name(u8 label) {
+        if(label == LABEL_GC) return "Graphical Control Extension";
+        if(label == LABEL_COMMENT) return "Comment Extension";
+        if(label == LABEL_APPLICATION) return "Application Extension";
+        if(label == LABEL_PLAINTEXT) return "Plaintext Extension";
+        return "Unknown Extension";
+    };
+
+    fn content_name(ref frame f) {
+        if(f.code == CODE_FRAME) return "Frame";
+        if(f.code == CODE_EXTENSION) return "Extension";
+        if(f.code == CODE_TRAILER) return "End";
+        return "Unknown Content";
+    };
+
+    fn delay(u16 delay) {
+        if(delay == -1) return "forever";
+        else if(delay < 2) return "100ms";
+        else return std::string::to_string(delay * 10) + "ms";
+        return "notime";
+    };
+}
+
 struct extension {
    u8 label [[format("format::extension_name")]];
    if(label == LABEL_GC) graphical_control gc [[inline]];
@@ -167,11 +163,11 @@ struct extension {
 };
 
 struct content {
-    u8 code [[format("format::content_name")]];
+    u8 code [[hidden]];
     if(code == CODE_FRAME) frame f [[inline]];
     if(code == CODE_EXTENSION) extension e [[inline]];
     if(code == CODE_TRAILER) break;
-};
+} [[format("format::content_name")]];
 
 struct Data {
    content contents[while(!std::mem::eof())] [[inline]];
