@@ -8,10 +8,13 @@
 #define CODE_TRAILER 0x3B
 #define MAX_BLOCKS 4096
 #define GCT_ACCESS parent.parent.parent.parent.header.gct
+
 #include <std/io.pat>
 #include <std/core.pat>
 #include <std/mem.pat>
 #include <std/string.pat>
+
+#pragma MIME image/gif
 
 bitfield GCT_Flags {
     size : 3 [[comment("physical size = 2^(flags.size + 1)")]];
