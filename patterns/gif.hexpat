@@ -1,153 +1,182 @@
+#define LABEL_GC 0xF9
+#define LABEL_COMMENT 0xFE
+#define LABEL_APPLICATION 0xFF
+#define LABEL_PLAINTEXT 0x01
+#define LABEL_APPLICATION_NETSCAPE "NETSCAPE"
+#define CODE_FRAME 0x2C
+#define CODE_EXTENSION 0x21
+#define CODE_TRAILER 0x3B
+#define MAX_BLOCKS 4096
+#define GCT_ACCESS parent.parent.parent.parent.header.gct
+#include <std/io.pat>
+#include <std/core.pat>
 #include <std/mem.pat>
+#include <std/string.pat>
 
-#pragma MIME image/gif
-
-#pragma bitfield_order left_to_right
-
-// gif89a
-
-struct data_subblock_t {
-    u8 block_size;
-    u8 data_values[block_size];
+bitfield GCT_Flags {
+    size : 3 [[comment("physical size = 2^(flags.size + 1)")]];
+    sort : 1 [[comment("Indicates if the table is sorted by importance")]];
+    colorRes : 3 [[comment("Indicates the richness of the original pallet")]];
+    enabled : 1;
+};
+    
+bitfield LCT_Flags {
+    size : 3 [[comment("physical size = 2^(flags.size + 1)")]];
+    padding : 2;
+    sort : 1 [[comment("Indicates if the table is sorted by importance")]];
+    interlace : 1;
+    enable : 1;
+};
+    
+bitfield GC_Flags {
+    transparent : 1;
+    userInput : 1;
+    disposalMode : 3 [[format("format::dispose_enum")]];
+    reserved : 3;
 };
 
-struct data_subblocks_t {
-    data_subblock_t data[while (std::mem::read_unsigned($, 1) != 0x00)];
-    u8 block_terminator;        // 0x00
-} [[inline]];
+namespace format {
+    fn dispose_enum(u8 value) {
+        if(value == 0x00) return "Do nothing";
+        if(value == 0x01) return "Do not remove pixels";
+        if(value == 0x02) return "Restore background pixels";
+        if(value == 0x03) return "Restore previous pixels"; 
+    };
+    
+    fn extension_name(u8 label) {
+        if(label == LABEL_GC) return "Graphical Control Extension";
+        if(label == LABEL_COMMENT) return "Comment Extension";
+        if(label == LABEL_APPLICATION) return "Application Extension";
+        if(label == LABEL_PLAINTEXT) return "Plaintext Extension";
+        return "Unknown Extension";
+    };
 
-struct header_t {
-    char header[3];
+    fn content_name(u8 code) {
+        if(code == CODE_FRAME) return "Frame";
+        if(code == CODE_EXTENSION) return "Extension";
+        if(code == CODE_TRAILER) return "End";
+        return "Unknown Content";
+    };
+
+    fn delay(u16 delay) {
+        if(delay == -1) return "forever";
+        else if(delay < 2) return "100ms";
+        else return std::string::to_string(delay * 10) + "ms";
+        return "notime";
+    };
+}
+
+struct color {
+  u8 r, g, b;
+} [[color(std::format("{:02X}{:02X}{:02X}", r, g, b))]];
+
+struct subblock {
+    u8 size;
+    if(size == 0) break;
+    u8 data[size];
+};
+
+struct block {
+   subblock blocks[MAX_BLOCKS];
+};
+
+fn exp2(auto n) {
+    return 1 << n;
+};
+
+struct Header {
+    char magic[3];
     char version[3];
-};
-
-bitfield lsd_fields_t {
-    global_color_table_flag : 1;
-    color_resolution        : 3;
-    sort_flag               : 1;
-    size_of_global_color_table : 3;
-} [[inline]];
-
-struct logical_screen_descriptor_t {
     u16 width;
     u16 height;
-    lsd_fields_t fields;
-    u8 background_color_index;
-    u8 pixel_aspect_ratio;
-};
-
-struct color_table_entry_t {
-    u8 red;
-    u8 green;
-    u8 blue;
-};
-
-bitfield gce_fields_t {
-    padding         : 3;
-    disposal_method : 3;
-    user_input_flag : 1;
-    transparent_color_flag : 1;
-} [[inline]];
-
-struct graphic_coltrol_extension_t {
-    u8 extension_introducer;    // 0x21
-    u8 graphic_control_label;   // 0xf9
-    u8 block_size;
-    gce_fields_t fields;
-    u16 delay_time;
-    u8 transparent_color_index;
-    u8 block_terminator;
-};
-
-struct comment_extension_t {
-    u8 extension_introducer;    // 0x21
-    u8 comment_label;           // 0xfe
-    data_subblocks_t comment_data;
-};
-
-struct plaintext_extension_t {
-    u8 extension_introducer;    // 0x21
-    u8 plain_text_label;        // 0x01
-
-    u8 block_size;              // 12
-    u16 text_grid_left_position;
-    u16 text_grid_top_position;
-    u16 text_grid_width;
-    u16 text_grid_height;
-    u8 character_cell_width;
-    u8 character_cell_height;
-    u8 text_foreground_color_index;
-    u8 text_background_color_index;
-    data_subblocks_t plain_text_data;
-};
-
-struct application_extension_t {
-    u8 extension_introducer;    // 0x21
-    u8 extension_label;         // 0xff
-
-    u8 block_size;              // 11
-    u8 application_identifier[8];
-    u8 application_authentication_code[3];
-    
-    data_subblocks_t data;
-};
-
-bitfield id_fields_t {
-    local_color_table : 1;
-    interlace_flag    : 1;
-    sort_fla          : 1;
-    padding           : 2;
-    size_of_local_color_table : 3;
-} [[inline]];
-
-struct image_descriptor_t {
-    u8 image_separator;         // 0x2c
-    u16 image_left_position;
-    u16 image_top_position;
-    u16 image_width;
-    u16 image_height;
-    id_fields_t fields;
-};
-
-struct table_based_image_t {
-    u8 lzw_minimum_code_size;
-    data_subblocks_t data;
-};
-
-struct gif_block_t {
-    if (std::mem::read_unsigned($, 1) == 0x21) {
-        if (std::mem::read_unsigned($+1, 1) == 0x01) {
-            plaintext_extension_t plaintext_extension;
-        }
-        else if (std::mem::read_unsigned($+1, 1) == 0xf9) {
-            graphic_coltrol_extension_t graphic_coltrol_extension;
-        }
-        else if (std::mem::read_unsigned($+1, 1) == 0xfe) {
-            comment_extension_t comment;
-        } else {
-            application_extension_t application_extension;
-        }
+    GCT_Flags gctFlags;
+    u8 bgColorIndex;
+    u8 pixelAscpet;
+    if (gctFlags.enabled) {
+        color gct[(exp2(gctFlags.size + 1))];
+        color bgColor = gct[bgColorIndex];
     }
-    else if (std::mem::read_unsigned($, 1) == 0x2c) {
-        image_descriptor_t image_descriptor;
-        if (image_descriptor.fields.local_color_table) {
-            color_table_entry_t local_color_table[1<<(image_descriptor.fields.size_of_local_color_table + 1)];
-        }
-        table_based_image_t image;
-    }
-} [[inline]];
+};    
 
-struct gif_t {
-    header_t header;
-    logical_screen_descriptor_t logical_screen_descriptor;
-    if (logical_screen_descriptor.fields.global_color_table_flag) {
-        color_table_entry_t global_color_table[1<<(logical_screen_descriptor.fields.size_of_global_color_table + 1)];
+struct frame {
+    u16 x;
+    u16 y;
+    u16 width;
+    u16 height;
+    LCT_Flags lctFlags;
+    if(lctFlags.enable) {
+        color lct[(exp2(lctFlags.size + 1))];
     }
-    
-    gif_block_t blocks[while (std::mem::read_unsigned($, 1) != 0x3b)];
-
-    u8 trailer;                 // 0x3b
+    u8 lzwMinCode [[comment("This byte determines the initial number of bits used for LZW codes in the image data")]];
+    block lzwCompressedData [[comment("Data is pallet indecies either into current LDC or GCT and is compressed using LZW")]]; 
 };
 
-gif_t gif @ 0x00;
+struct comment {
+    block data [[hidden]];
+    char comment[] @ addressof(data.blocks) + 1; // TODO : need to find a better way of doing this
+};
 
+struct application {
+    u8 blockSize [[hidden]];
+    char identifier[8] [[comment("Only known are: NETSCAPE")]];
+    char version[3] [[comment("Only known for NETSCAPE: '2.0'")]];
+    block b [[hidden]];
+    if(identifier == LABEL_APPLICATION_NETSCAPE) {
+        u16 loopcount @ addressof(b.blocks[0].data) + 1 [[comment("0, = Forever")]];
+    }
+};
+
+fn get_color(u8 index) {
+    return addressof(globalGif.header.gct.colors[index]);
+};
+
+struct plaintext {
+    u8 blockSize [[hidden]];
+    u16 gridLeftPos;
+    u16 gridTopPos;
+    u16 gridWidth;
+    u16 gridHeight;
+    u8 cellWidth;
+    u8 cellHeight;
+    u8 textForegroundColorIndex [[hidden]];
+    u8 textBackgroundColorIndex [[hidden]];
+    color textForegroundColor @ addressof(GCT_ACCESS[textForegroundColorIndex]);
+    color textBackgroundColor @ addressof(GCT_ACCESS[textBackgroundColorIndex]);
+    block data [[hidden]];
+    char text[] @ addressof(data.blocks) + 1;
+    //char text[data.blocks[std::core::array_index()].size] @ addressof(data.blocks[std::core::array_index()].data);
+};
+
+struct graphical_control {
+    u8 blockSize [[hidden]];
+    GC_Flags flags;
+    u16 delay [[format("format::delay")]];
+    u8 transparentColorIndex;
+    block b [[hidden]];
+};
+
+struct extension {
+   u8 label [[format("format::extension_name")]];
+   if(label == LABEL_GC) graphical_control gc [[inline]];
+   if(label == LABEL_COMMENT) comment c [[inline]];
+   if(label == LABEL_APPLICATION) application a [[inline]];
+   if(label == LABEL_PLAINTEXT) plaintext [[inline]];
+};
+
+struct content {
+    u8 code [[format("format::content_name")]];
+    if(code == CODE_FRAME) frame f [[inline]];
+    if(code == CODE_EXTENSION) extension e [[inline]];
+    if(code == CODE_TRAILER) break;
+};
+
+struct Data {
+   content contents[while(!std::mem::eof())] [[inline]];
+};
+
+struct Gif {
+    Header header;
+    Data data;
+};
+
+Gif gif @ 0x00;
