@@ -2,6 +2,8 @@
 #include <std/io.pat>
 #include <std/string.pat>
 
+#pragma MIME application/x-gameboy-rom
+
 namespace format {
     
     fn rom_type(u8 romType) {
