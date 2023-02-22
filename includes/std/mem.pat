@@ -97,4 +97,16 @@ namespace std::mem {
         padding[Alignment - ((($ - 1) % Alignment) + 1)];
     } [[hidden, sealed]];
 
+    struct Bytes<auto Size> {
+        u8 bytes[Size];
+    } [[sealed, format("std::mem::impl::format_bytes")]];
+
+    namespace impl {
+      
+        fn format_bytes(auto bytes) {
+            return "";
+        };
+      
+    }
+
 }
