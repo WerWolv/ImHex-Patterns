@@ -29,6 +29,35 @@ struct StoreBlockEntriesList {
   StoreBlockEntry entries[count];
 };
 
+struct BuddyRootBlockOffsets {
+  u32 count;
+  u8 reserved[4];
+  u32 addresses[count];
+  padding[(1024 - (count * 4))];
+};
+
+struct BuddyTableOfContentEntry {
+  u8 count;
+  char name[count];
+  u32 value;
+};
+
+struct BuddyTableOfContents {
+  u32 count;
+  BuddyTableOfContentEntry toc[count];
+};
+
+struct BuddyFreeList {
+  u32 count;
+  u32 offsets[count];
+};
+
+struct BuddyRootBlock {
+  BuddyRootBlockOffsets offsets;
+  BuddyTableOfContents toc;
+  BuddyFreeList freelists[32];
+};
+
 struct BuddyAllocator {
   char header[4];
   u32 offsetBookkeeping;
@@ -37,6 +66,7 @@ struct BuddyAllocator {
   u32 offsetData;
   u8 reserved[12];
   
+  BuddyRootBlock root @ offsetBookkeeping + 4;  
   StoreBlockEntriesList entries @ offsetData-2;
 };
 
