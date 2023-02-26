@@ -4,6 +4,7 @@
 #pragma MIME application/x-object
 #pragma MIME application/x-sharedlib
 
+#include <std/io.pat>
 #include <std/core.pat>
 #include <std/mem.pat>
 
@@ -742,3 +743,86 @@ struct ELF {
 };
 
 ELF elf @ 0x00;
+
+fn member_count(ref auto pattern) {
+    return std::core::member_count(pattern);
+};
+
+fn has_member(ref auto pattern, str name) {
+    return std::core::has_member(pattern, name);
+};
+
+fn gen_shdr_disp_name(ref auto pattern,
+                    str member_name,
+                    u8 member_index) {
+    return std::format(
+        "{}@shdr[{}]({})",
+        member_name,
+        member_index,
+        format_section_header(pattern)
+    );
+};
+
+fn gen_shdr_sub_disp_name(ref auto pattern,
+                    str member_name,
+                    u8 member_index,
+                    u64 submember_index) {
+    return std::format(
+        "{}[{}]@shdr[{}]({})",
+        member_name,
+        submember_index,
+        member_index,
+        format_section_header(pattern)
+    );
+};
+
+fn gen_phdr_disp_name(ref auto pattern,
+                    str member_name,
+                    u8 member_index) {
+    return std::format(
+        "{}@phdr[{}]({})",
+        member_name,
+        member_index,
+        pattern.p_type
+    );
+};
+
+fn main() {
+    for (u8 i = 0, i < member_count(elf.shdr), i = i + 1) {
+        if (has_member(elf.shdr[i], "stringTable")) {
+            builtin::std::core::set_dislpay_name(
+                elf.shdr[i].stringTable,
+                gen_shdr_disp_name(elf.shdr[i], "stringTable", i)
+            );
+            for (u64 j = 0, j < member_count(elf.shdr[i].stringTable), j = j + 1) {
+                builtin::std::core::set_dislpay_name(
+                    elf.shdr[i].stringTable[j],
+                    gen_shdr_sub_disp_name(elf.shdr[i], "String", i, j)
+                );
+            }
+        } else if (has_member(elf.shdr[i], "symbolTable")) {
+            builtin::std::core::set_dislpay_name(
+                elf.shdr[i].symbolTable,
+                gen_shdr_disp_name(elf.shdr[i], "symbolTable", i)
+            );
+        } else if (has_member(elf.shdr[i], "pointer")) {
+            builtin::std::core::set_dislpay_name(
+                elf.shdr[i].pointer,
+                gen_shdr_disp_name(elf.shdr[i], "pointer", i)
+            );
+        } else if (has_member(elf.shdr[i], "data")) {
+            builtin::std::core::set_dislpay_name(
+                elf.shdr[i].data,
+                gen_shdr_disp_name(elf.shdr[i], "data", i)
+            );
+        }
+    }
+    for (u8 i = 0, i < std::core::member_count(elf.phdr), i = i + 1) {
+        if (has_member(elf.phdr[i], "p_data")) {
+            builtin::std::core::set_dislpay_name(
+                elf.phdr[i].p_data,
+                gen_phdr_disp_name(elf.phdr[i], "p_data", i)
+            );
+        }
+    }
+};
