@@ -561,7 +561,7 @@ struct Elf32_Phdr {
     Elf32_Word p_align;
     
     if (p_offset > 0 && p_filesz > 0 && (p_offset + p_filesz) < std::mem::size() && p_filesz < std::mem::size())
-    	u8 p_data[p_filesz] @ p_offset;
+        u8 p_data[p_filesz] @ p_offset [[sealed]];
 };
 
 struct Elf64_Phdr {
@@ -575,7 +575,7 @@ struct Elf64_Phdr {
     Elf64_Xword p_align;
     
     if (p_offset > 0 && p_filesz > 0 && (p_offset + p_filesz) < std::mem::size() && p_filesz < std::mem::size())
-    	u8 p_data[p_filesz] @ p_offset;
+        u8 p_data[p_filesz] @ p_offset [[sealed]];
 };
 
 struct Elf32_Chdr {
@@ -642,7 +642,7 @@ struct Elf32_Shdr {
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
 		} else {
-			u8 data[sh_size] @ sh_offset;
+			u8 data[sh_size] @ sh_offset [[sealed]];
 		}
     }
 } [[format("format_section_header")]];;
@@ -702,7 +702,7 @@ struct Elf64_Shdr {
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
 		} else {
-			u8 data[sh_size] @ sh_offset;
+			u8 data[sh_size] @ sh_offset [[sealed]];
 		}
     }
 } [[format("format_section_header")]];
