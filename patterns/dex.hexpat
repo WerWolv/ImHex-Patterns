@@ -26,6 +26,18 @@ struct header_item {
     u32 data_off;
 };
 
+struct map_item {
+    u16 type;
+    u16 unused;
+    u32 size;
+    u32 offset;
+};
+
+struct map_list {
+    u32 size;
+    map_item list[size];
+};
+
 struct string_id_item {
     u32 string_data_off;
 };
@@ -127,6 +139,7 @@ struct try_item {
 };
 
 
+
 struct Dex {
     header_item header;
     string_id_item string_ids[header.string_ids_size];
@@ -135,8 +148,6 @@ struct Dex {
     field_id_item field_ids[header.file_ids_size];
     method_id_item method_ids[header.method_ids_size];
     class_def_item class_defs[header.class_defs_size];
-    
-
 };
 Dex dex @ 0x00;
 string_data_item string_data_item_at_0x1AA @ 0x1AA;
