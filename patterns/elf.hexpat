@@ -637,7 +637,7 @@ struct Elf32_Shdr {
 		} else if (sh_type == SHT::STRTAB) {
 			String stringTable[while($ < (sh_offset + sh_size))] @ sh_offset;
 			stringTableIndex = std::core::array_index();	
-		} else if (sh_type == SHT::DYNSYM) {
+		} else if (sh_type == SHT::SYMTAB || sh_type == SHT::DYNSYM) {
 			Elf32_Sym symbolTable[sh_size / sh_entsize] @ sh_offset;
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
@@ -697,7 +697,7 @@ struct Elf64_Shdr {
 		} else if (sh_type == SHT::STRTAB) {
 			String stringTable[while($ < (sh_offset + sh_size))] @ sh_offset;
 			stringTableIndex = std::core::array_index();	
-		} else if (sh_type == SHT::DYNSYM) {
+		} else if (sh_type == SHT::SYMTAB || sh_type == SHT::DYNSYM) {
 			Elf64_Sym symbolTable[sh_size / sh_entsize] @ sh_offset;
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
