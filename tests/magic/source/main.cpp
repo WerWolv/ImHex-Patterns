@@ -1,5 +1,5 @@
-#include <pl/helpers/file.hpp>
-#include <pl/helpers/guards.hpp>
+#include <wolv/io/file.hpp>
+#include <wolv/utils/guards.hpp>
 
 #include <fmt/format.h>
 #include <cstdlib>
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     fmt::print("Running test {} on test file {}\n", magicName, magicFilePath.filename().string());
 
     magic_t ctx = magic_open(MAGIC_NONE);
-    PL_ON_SCOPE_EXIT { magic_close(ctx); };
+    ON_SCOPE_EXIT { magic_close(ctx); };
 
     if (ctx == nullptr)
         return EXIT_FAILURE;

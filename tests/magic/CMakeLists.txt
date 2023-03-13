@@ -17,7 +17,7 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(MAGIC libmagic>=5.39)
 
 target_include_directories(magic_test PRIVATE include)
-target_link_libraries(magic_test PRIVATE libpl magic fmt)
+target_link_libraries(magic_test PRIVATE libpl magic fmt::fmt-header-only)
 
 set_target_properties(magic_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 

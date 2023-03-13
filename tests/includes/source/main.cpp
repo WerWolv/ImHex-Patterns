@@ -1,8 +1,9 @@
 #include <pl.hpp>
-#include <pl/helpers/file.hpp>
 
 #include <pl/core/errors/preprocessor_errors.hpp>
 #include <pl/core/errors/evaluator_errors.hpp>
+
+#include <wolv/io/file.hpp>
 
 #include <fmt/format.h>
 #include <cstdlib>
@@ -22,7 +23,7 @@ int main(int argc, char **argv) {
     fmt::print("Running test {} on test file {}\n", includeName, includeFilePath.filename().string());
 
     // Open pattern file
-    pl::hlp::fs::File patternFile(includeFilePath, pl::hlp::fs::File::Mode::Read);
+    wolv::io::File patternFile(includeFilePath, wolv::io::File::Mode::Read);
     if (!patternFile.isValid())
         return EXIT_FAILURE;
 
