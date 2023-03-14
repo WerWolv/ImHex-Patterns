@@ -1,5 +1,7 @@
 #pragma once
 
+#include <std/mem.pat>
+
 namespace std::math {
 
 	fn min(auto a, auto b) {
@@ -105,5 +107,17 @@ namespace std::math {
 	fn asinh(auto value) { return builtin::std::math::asinh(value); };
 	fn acosh(auto value) { return builtin::std::math::acosh(value); };
 	fn atanh(auto value) { return builtin::std::math::atanh(value); };
+
+	enum AccumulateOperation : u8 {
+		Add 		= 0,
+		Multiply 	= 1,
+		Modulo 		= 2,
+		Min 		= 3,
+		Max 		= 4
+	};
+
+	fn accumulate(u128 start, u128 end, u128 valueSize, std::mem::Section section = 0, AccumulateOperation operation = AccumulateOperation::Add, std::mem::Endian endian = std::mem::Endian::Native) {
+		return builtin::std::math::accumulate(start, end, valueSize, section, u128(operation), u128(endian));
+	};
 	
 }
