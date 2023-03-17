@@ -1,15 +1,24 @@
-// pbzx compression stream
-// Used by Apple on .xip files and OTA updates.
+// Apple pbz compressed file
+// Used by Apple on .xip files and OTA updates,
+// and can be created with macOS compression_tool.
 //
-// Copyright (c) 2022 Nicolás Alvarez <nicolas.alvarez@gmail.com>
+// Copyright (c) 2023 Nicolás Alvarez <nicolas.alvarez@gmail.com>
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <std/mem.pat>
+#include <type/magic.pat>
 
 #pragma endian big
 
 #define SHOW_DATA 0
+
+enum CompressionType: char {
+    ZLIB  = 'z',
+    LZMA  = 'x',
+    LZ4   = '4',
+    LZFSE = 'e'
+};
 
 struct Chunk {
     u64 uncompressed_size;
@@ -21,10 +30,11 @@ struct Chunk {
     }
 };
 
-struct PBZX {
-    char magic[4];
+struct PBZ {
+    type::Magic<"pbz"> magic;
+    CompressionType compression;
     u64 chunk_size;
     Chunk chunks[while(!std::mem::eof())];
 };
 
-PBZX pbzx @ 0;
+PBZ pbz @ 0;
