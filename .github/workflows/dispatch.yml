@@ -1,4 +1,4 @@
-name: "Unit Tests"
+name: "Dispatch"
 
 on:
   push:
@@ -16,7 +16,7 @@ on:
 
 jobs:
   tests:
-    name: 🧪 Unit Tests
+    name: 🎯 Dispatch changes
     runs-on: ubuntu-22.04
     permissions:
       actions: read
