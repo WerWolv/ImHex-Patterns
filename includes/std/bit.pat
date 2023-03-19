@@ -43,7 +43,7 @@ namespace std::bit {
 			i = i + 1;
 		
 		return 1 << i;
-	};¨
+	};
 
 	/**
 		Rounds the given number down to the next bigger power of two
