@@ -8,11 +8,7 @@ on:
   repository_dispatch:
     types: [run_tests]
   workflow_dispatch:
-    inputs: 
-      generate_docs:
-        description: "Regenerate docs"
-        required: false
-        type: boolean
+
 
 jobs:
   tests:
@@ -29,14 +25,8 @@ jobs:
       with:
         submodules: recursive
 
-    - name: 📄 Check changed include files
-      id: changed-includes
-      uses: tj-actions/changed-files@v35
-      with:
-        files: includes/**/*.pat
-
     - name: ✉️ Run Documentation generator
-      if: ${{ env.DISPATCH_TOKEN != '' && (steps.changed-includes.outputs.any_changed == 'true' || inputs.generate_docs) }}
+      if: ${{ env.DISPATCH_TOKEN != '' }}
       uses: mvasigh/dispatch-action@main
       with:
         token: ${{ secrets.DISPATCH_TOKEN }}
