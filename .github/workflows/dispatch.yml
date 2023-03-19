@@ -1,0 +1,45 @@
+name: "Unit Tests"
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+  repository_dispatch:
+    types: [run_tests]
+  workflow_dispatch:
+    inputs: 
+      generate_docs:
+        description: "Regenerate docs"
+        required: false
+        type: boolean
+
+jobs:
+  tests:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-22.04
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+    - name: 🧰 Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: 📄 Check changed include files
+      id: changed-includes
+      uses: tj-actions/changed-files@v35
+      with:
+        files: includes/**/*.pat
+
+    - name: ✉️ Run Documentation generator
+      if: ${{ env.DISPATCH_TOKEN != '' && (steps.changed-includes.outputs.any_changed == 'true' || inputs.generate_docs) }}
+      uses: mvasigh/dispatch-action@main
+      with:
+        token: ${{ secrets.DISPATCH_TOKEN }}
+        repo: Documentation
+        owner: WerWolv
+        event_type: update_pl_docs
