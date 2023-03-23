@@ -141,6 +141,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | JIS 0213 | [`encodings/jis_x_0213.tbl`](encodings/jis_x_0213.tbl) | JIS X 0213 encoding in UTF-8 |
 | Macintosh | [`encodings/macintosh.tbl`](encodings/macintosh.tbl) | Macintosh character encoding used by the Kermit protocol |
 | Pokémon (English, Generation 1) | [`encodings/pokegen1_en.tbl`](encodings/pokegen1_en.tbl) | Character encoding used by the English generation 1 Pokémon games  |
+| Pokémon (English, Generation 3) | [`encodings/pokegen3_en.tbl`](encodings/pokegen3_en.tbl) | Character encoding used by the English generation 3 Pokémon games  |
 | Shift-JIS UTF-8 | [`encodings/shiftjis.tbl`](encodings/shiftjis.tbl) | Shift-JIS encoding in UTF-8 |
 | Thai | [`encodings/thai.tbl`](encodings/thai.tbl) | Thai character encoding |
 | Turkish ISO | [`encodings/turkish_iso.tbl`](encodings/turkish_iso.tbl) | Turkish ISO encoding |
