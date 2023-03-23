@@ -1,0 +1,50 @@
+{
+    "name": "CRC32 Constants",
+    "values": [
+        {
+            "type": "int16be",
+            "value": "04C11DB7",
+            "name": "CRC-32 Polynomial"
+        },
+        {
+            "type": "int16be",
+            "value": "04C11DB7",
+            "name": "CRC-32/BZIP2 Polynomial"
+        },
+        {
+            "type": "int16be",
+            "value": "1EDC6F41",
+            "name": "CRC-32C Polynomial"
+        },
+        {
+            "type": "int16be",
+            "value": "A833982B",
+            "name": "CRC-32D Polynomial"
+        },
+        {
+            "type": "int16be",
+            "value": "04C11DB7",
+            "name": "CRC-32/MPEG-2 Polynomial"
+        },
+        {
+            "type": "int16be",
+            "value": "04C11DB7",
+            "name": "CRC-32/POSIX Polynomial"
+        },
+        {
+            "type": "int16be",
+            "value": "814141AB",
+            "name": "CRC-32Q Polynomial"
+        },
+        {
+            "type": "int16be",
+            "value": "04C11DB7",
+            "name": "CRC-32/JAMCRC Polynomial"
+        },
+        {
+            "type": "int16be",
+            "value": "000000AF",
+            "name": "CRC-32/XFER Polynomial"
+        }
+    ]
+}

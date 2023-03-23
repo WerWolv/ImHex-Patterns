@@ -1,0 +1,4 @@
+[submodule "rules"]
+	path = yara/official_rules
+	url = https://github.com/Yara-Rules/rules
+	branch = master

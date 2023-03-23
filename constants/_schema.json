@@ -1,0 +1,73 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1655988398.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "name",
+    "values"
+  ],
+  "properties": {
+    "name": {
+      "$id": "#root/name",
+      "title": "Name",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "Group description"
+      ],
+      "pattern": "^.*$"
+    },
+    "values": {
+      "$id": "#root/values",
+      "title": "Values",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/values/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "type",
+          "value",
+          "name"
+        ],
+        "properties": {
+          "type": {
+            "$id": "#root/values/items/type",
+            "title": "Type",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "int16be",
+              "int16le",
+              "int10"
+            ],
+            "pattern": "^(int10|int16le|int16be)$"
+          },
+          "value": {
+            "$id": "#root/values/items/value",
+            "title": "Value",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "ACDC"
+            ],
+            "pattern": "^([0-9a-fA-F]+)$"
+          },
+          "name": {
+            "$id": "#root/values/items/name",
+            "title": "Name",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Constant description"
+            ],
+            "pattern": "^.*$"
+          }
+        }
+      }
+    }
+  }
+}

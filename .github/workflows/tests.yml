@@ -1,0 +1,81 @@
+name: "Unit Tests"
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+  repository_dispatch:
+    types: [run_tests]
+
+jobs:
+  tests:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-22.04
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+    - name: 🧰 Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: ⬇️ Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y       \
+            build-essential       \
+            gcc-12                \
+            g++-12                \
+            lld                   \
+            ${PKGCONF:-}          \
+            cmake                 \
+            make                  \
+            python3               \
+            python3-pip           \
+            libmagic-dev          \
+            lcov
+        
+        sudo pip install jsonschema
+
+    - name: 🛠️ Build
+      run: |
+        cd tests
+        mkdir -p build
+        cd build
+        CC=gcc-12 CXX=g++-12 cmake                        \
+          -DCMAKE_C_FLAGS="-fuse-ld=lld --coverage"       \
+          -DCMAKE_CXX_FLAGS="-fuse-ld=lld --coverage"     \
+          -DLIBPL_ENABLE_TESTS=OFF                        \
+          -DLIBPL_ENABLE_CLI=OFF                          \
+          ..
+        make -j4
+
+    - name: 🧪 Perform Unit Tests
+      run: |
+        cd tests/build
+        ctest --output-on-failure
+
+    - name: ⚗️ Generate Coverage Report
+      run: |
+        cd tests/build
+        lcov -d ./_deps/pattern_language-build/lib --gcov-tool /usr/bin/gcov-12 -c -o coverage.info
+
+    - name: ⬆️ Upload Coverage Report
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: tests/build/coverage.info
+
+    - name: 📎 Validate JSON Files
+      run: |
+        cd constants
+        for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
+        cd ..
+        
+        cd tips
+        for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
+        cd ..

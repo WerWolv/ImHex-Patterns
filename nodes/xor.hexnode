@@ -1,0 +1,223 @@
+{
+    "attrs": [
+        36,
+        37,
+        38
+    ],
+    "data": {
+        "nodes": {
+            "links": {
+                "11": {
+                    "from": 20,
+                    "id": 11,
+                    "to": 22
+                },
+                "13": {
+                    "from": 23,
+                    "id": 13,
+                    "to": 32
+                },
+                "14": {
+                    "from": 17,
+                    "id": 14,
+                    "to": 19
+                },
+                "15": {
+                    "from": 14,
+                    "id": 15,
+                    "to": 15
+                },
+                "16": {
+                    "from": 12,
+                    "id": 16,
+                    "to": 16
+                },
+                "17": {
+                    "from": 9,
+                    "id": 17,
+                    "to": 11
+                },
+                "18": {
+                    "from": 7,
+                    "id": 18,
+                    "to": 10
+                },
+                "19": {
+                    "from": 31,
+                    "id": 19,
+                    "to": 8
+                },
+                "20": {
+                    "from": 30,
+                    "id": 20,
+                    "to": 6
+                },
+                "22": {
+                    "from": 31,
+                    "id": 22,
+                    "to": 18
+                },
+                "23": {
+                    "from": 30,
+                    "id": 23,
+                    "to": 21
+                }
+            },
+            "nodes": {
+                "10": {
+                    "attrs": [
+                        14
+                    ],
+                    "data": {
+                        "data": 1
+                    },
+                    "id": 10,
+                    "name": "hex.builtin.nodes.constants.int.header",
+                    "pos": {
+                        "x": 430.0,
+                        "y": 364.0
+                    },
+                    "type": "hex.builtin.nodes.constants.int"
+                },
+                "11": {
+                    "attrs": [
+                        15,
+                        16,
+                        17
+                    ],
+                    "data": null,
+                    "id": 11,
+                    "name": "hex.builtin.nodes.arithmetic.add.header",
+                    "pos": {
+                        "x": 579.0,
+                        "y": 421.0
+                    },
+                    "type": "hex.builtin.nodes.arithmetic.add"
+                },
+                "12": {
+                    "attrs": [
+                        18,
+                        19,
+                        20
+                    ],
+                    "data": null,
+                    "id": 12,
+                    "name": "hex.builtin.nodes.buffer.repeat.header",
+                    "pos": {
+                        "x": 661.0,
+                        "y": 241.0
+                    },
+                    "type": "hex.builtin.nodes.buffer.repeat"
+                },
+                "13": {
+                    "attrs": [
+                        21,
+                        22,
+                        23
+                    ],
+                    "data": null,
+                    "id": 13,
+                    "name": "hex.builtin.nodes.bitwise.xor.header",
+                    "pos": {
+                        "x": 818.0,
+                        "y": 163.0
+                    },
+                    "type": "hex.builtin.nodes.bitwise.xor"
+                },
+                "14": {
+                    "attrs": [
+                        32
+                    ],
+                    "data": {
+                        "name": "Output",
+                        "type": 2
+                    },
+                    "id": 14,
+                    "name": "Output",
+                    "pos": {
+                        "x": 1000.0,
+                        "y": 432.0
+                    },
+                    "type": "hex.builtin.nodes.custom.output"
+                },
+                "4": {
+                    "attrs": [
+                        30
+                    ],
+                    "data": {
+                        "name": "Input",
+                        "type": 2
+                    },
+                    "id": 4,
+                    "name": "Input",
+                    "pos": {
+                        "x": 82.0,
+                        "y": 139.0
+                    },
+                    "type": "hex.builtin.nodes.custom.input"
+                },
+                "5": {
+                    "attrs": [
+                        31
+                    ],
+                    "data": {
+                        "name": "XOR Pad",
+                        "type": 2
+                    },
+                    "id": 5,
+                    "name": "XOR Pad",
+                    "pos": {
+                        "x": 89.0,
+                        "y": 328.0
+                    },
+                    "type": "hex.builtin.nodes.custom.input"
+                },
+                "6": {
+                    "attrs": [
+                        6,
+                        7
+                    ],
+                    "data": null,
+                    "id": 6,
+                    "name": "hex.builtin.nodes.buffer.size.header",
+                    "pos": {
+                        "x": 269.0,
+                        "y": 403.0
+                    },
+                    "type": "hex.builtin.nodes.buffer.size"
+                },
+                "7": {
+                    "attrs": [
+                        8,
+                        9
+                    ],
+                    "data": null,
+                    "id": 7,
+                    "name": "hex.builtin.nodes.buffer.size.header",
+                    "pos": {
+                        "x": 267.0,
+                        "y": 486.0
+                    },
+                    "type": "hex.builtin.nodes.buffer.size"
+                },
+                "8": {
+                    "attrs": [
+                        10,
+                        11,
+                        12
+                    ],
+                    "data": null,
+                    "id": 8,
+                    "name": "hex.builtin.nodes.arithmetic.div.header",
+                    "pos": {
+                        "x": 409.0,
+                        "y": 465.0
+                    },
+                    "type": "hex.builtin.nodes.arithmetic.div"
+                }
+            }
+        }
+    },
+    "name": "XOR Pad",
+    "type": "hex.builtin.nodes.custom.custom"
+}

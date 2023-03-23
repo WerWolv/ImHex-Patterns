@@ -1,0 +1,2 @@
+*.pat               linguist-language=Rust
+*.hexpat            linguist-language=Rust
