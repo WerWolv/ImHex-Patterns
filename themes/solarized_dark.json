@@ -1,0 +1,312 @@
+{
+    "base": "Dark",
+    "colors": {
+        "imgui": {
+            "border": "#6D6D7F7F",
+            "border-shadow": "#00000000",
+            "button": "#28625EFF",
+            "button-active": "#36827DFF",
+            "button-hovered": "#36827DFF",
+            "check-mark": "#FFFFFFFF",
+            "child-background": "#00000000",
+            "docking-empty-background": "#0B2A36FF",
+            "docking-preview": "#2D6F6BFF",
+            "drag-drop-target": "#FFFF00E5",
+            "frame-background": "#144457FF",
+            "frame-background-active": "#124153FF",
+            "frame-background-hovered": "#18576FFF",
+            "header": "#1F333CFF",
+            "header-active": "#2F434CFF",
+            "header-hovered": "#435760FF",
+            "menu-bar-background": "#0C2B39FF",
+            "modal-window-dim-background": "#CCCCCC59",
+            "nav-highlight": "#2D6F6BFF",
+            "nav-windowing-background": "#CCCCCC33",
+            "nav-windowing-highlight": "#FFFFFFB2",
+            "plot-histogram": "#E5B200FF",
+            "plot-histogram-hovered": "#FF9900FF",
+            "plot-lines": "#9B9B9BFF",
+            "plot-lines-hovered": "#FF6D59FF",
+            "popup-background": "#113746FF",
+            "resize-grip": "#4296F933",
+            "resize-grip-active": "#4296F9F2",
+            "resize-grip-hovered": "#4296F9AA",
+            "scrollbar-background": "#05050587",
+            "scrollbar-grab": "#484848FF",
+            "scrollbar-grab-active": "#636E71FF",
+            "scrollbar-grab-hovered": "#495356FF",
+            "separator": "#6D6D7F7F",
+            "separator-active": "#114D67FF",
+            "separator-hovered": "#156080FF",
+            "slider-grab": "#28625EFF",
+            "slider-grab-active": "#1F7D77FF",
+            "tab": "#3C5965FF",
+            "tab-active": "#2C4652FF",
+            "tab-hovered": "#396375FF",
+            "tab-unfocused": "#111A25F7",
+            "tab-unfocused-active": "#1D3B48FF",
+            "table-border-light": "#3A3A3FFF",
+            "table-border-strong": "#4F4F59FF",
+            "table-header-background": "#1F333CFF",
+            "table-row-background": "#00000000",
+            "table-row-background-alt": "#FFFFFF0F",
+            "text": "#FFFFFFFF",
+            "text-disabled": "#7F7F7FFF",
+            "text-selected-background": "#4296F959",
+            "title-background": "#0C2B39FF",
+            "title-background-active": "#153F51FF",
+            "title-background-collapse": "#142831FF",
+            "window-background": "#0B2A36FF"
+        },
+        "imhex": {
+            "desc-button": "#071F29FF",
+            "desc-button-active": "#10394BFF",
+            "desc-button-hovered": "#0B3546FF",
+            "highlight": "#4DC69BFF",
+            "toolbar-blue": "#06539BFF",
+            "toolbar-brown": "#DBB377FF",
+            "toolbar-gray": "#E6E6E6FF",
+            "toolbar-green": "#388B42FF",
+            "toolbar-purple": "#672A78FF",
+            "toolbar-red": "#E74C3CFF",
+            "toolbar-yellow": "#F1C40FFF"
+        },
+        "imnodes": {
+            "box-selector": "#3D85E01E",
+            "box-selector-outline": "#3D85E096",
+            "grid-background": "#1A353FFF",
+            "grid-line": "#C8C8C828",
+            "grid-line-primary": "#F0F0F03C",
+            "link": "#36827DFF",
+            "link-hovered": "#4296FAFF",
+            "link-selected": "#4296FAFF",
+            "mini-map-background": "#0B2A3691",
+            "mini-map-background-hovered": "#191919C8",
+            "mini-map-canvas": "#C8C8C819",
+            "mini-map-canvas-outline": "#C8C8C8C8",
+            "mini-map-link": "#3D85E0C8",
+            "mini-map-link-selected": "#4296FAFF",
+            "mini-map-node-background": "#C8C8C864",
+            "mini-map-node-background-hovered": "#C8C8C8FF",
+            "mini-map-node-background-selected": "#C8C8C8FF",
+            "mini-map-node-outline": "#C8C8C864",
+            "mini-map-outline": "#96969664",
+            "mini-map-outline-hovered": "#969696C8",
+            "node-background": "#153F51FF",
+            "node-background-hovered": "#1A4D63FF",
+            "node-background-selected": "#205B75FF",
+            "node-outline": "#36827DFF",
+            "pin": "#3596FAB4",
+            "pin-hovered": "#3596FAFF",
+            "title-bar": "#11303DFF",
+            "title-bar-hovered": "#103646FF",
+            "title-bar-selected": "#164C64FF"
+        },
+        "implot": {
+            "axis-bg": "#00000000",
+            "axis-bg-active": "#00000000",
+            "axis-bg-hovered": "#00000000",
+            "axis-grid": "#FFFFFF3F",
+            "axis-text": "#FFFFFFFF",
+            "axis-tick": "#00000000",
+            "crosshairs": "#FFFFFF7F",
+            "error-bar": "#00000000",
+            "fill": "#00000000",
+            "frame-bg": "#FFFFFF11",
+            "inlay-text": "#FFFFFFFF",
+            "legend-bg": "#141414EF",
+            "legend-border": "#6D6D7F7F",
+            "legend-text": "#FFFFFFFF",
+            "line": "#00000000",
+            "marker-fill": "#00000000",
+            "marker-outline": "#00000000",
+            "plot-bg": "#0000007F",
+            "plot-border": "#6D6D7F7F",
+            "selection": "#FF9900FF",
+            "title-text": "#FFFFFFFF"
+        },
+        "text-editor": {
+            "background": "#0B2A36FF",
+            "breakpoint": "#0080F040",
+            "char-literal": "#E0A070FF",
+            "comment": "#206020FF",
+            "current-line-edge": "#A0A0A040",
+            "current-line-fill": "#21506172",
+            "current-line-fill-inactive": "#21506172",
+            "cursor": "#E0E0E0FF",
+            "default": "#7F7F7FFF",
+            "error-marker": "#FF200080",
+            "identifier": "#AAAAAAFF",
+            "keyword": "#569CD6FF",
+            "known-identifier": "#4DC69BFF",
+            "line-number": "#007070FF",
+            "multi-line-comment": "#206040FF",
+            "number": "#00FF00FF",
+            "preproc-identifier": "#A040C0FF",
+            "preprocessor": "#808040FF",
+            "punctuation": "#FFFFFFFF",
+            "selection": "#2060A080",
+            "string": "#E07070FF"
+        }
+    },
+    "image_postfix": "_dark",
+    "name": "Solarized Dark",
+    "styles": {
+        "imgui": {
+            "alpha": 1.0,
+            "button-text-align": [
+                0.5,
+                0.5
+            ],
+            "cell-padding": [
+                1.0,
+                1.0
+            ],
+            "child-border-size": 0.0,
+            "child-rounding": 0.0,
+            "disabled-alpha": 0.6000000238418579,
+            "frame-border-size": 0.0,
+            "frame-padding": [
+                4.0,
+                4.0
+            ],
+            "frame-rounding": 0.0,
+            "grab-min-size": 9.0,
+            "grab-rounding": 0.0,
+            "indent-spacing": 10.0,
+            "item-inner-spacing": [
+                4.0,
+                4.0
+            ],
+            "item-spacing": [
+                8.0,
+                2.9000000953674316
+            ],
+            "popup-border-size": 1.0,
+            "popup-rounding": 0.0,
+            "scrollbar-rounding": 3.0,
+            "scrollbar-size": 10.699999809265137,
+            "selectable-text-align": [
+                0.0,
+                0.0
+            ],
+            "tab-rounding": 4.0,
+            "window-border-size": 1.0,
+            "window-min-size": [
+                32.0,
+                32.0
+            ],
+            "window-padding": [
+                8.0,
+                8.0
+            ],
+            "window-rounding": 0.0,
+            "window-title-align": [
+                0.0,
+                0.5
+            ]
+        },
+        "imnodes": {
+            "grid-spacing": 24.0,
+            "link-hover-distance": 10.0,
+            "link-line-segments-per-length": 0.10000000149011612,
+            "link-thickness": 3.0,
+            "mini-map-offset": [
+                4.0,
+                4.0
+            ],
+            "mini-map-padding": [
+                8.0,
+                8.0
+            ],
+            "node-border-thickness": 1.0,
+            "node-corner-rounding": 4.0,
+            "node-padding": [
+                8.0,
+                8.0
+            ],
+            "pin-circle-radius": 4.0,
+            "pin-hover-radius": 10.0,
+            "pin-line-thickness": 1.0,
+            "pin-offset": 0.0,
+            "pin-quad-side-length": 7.0,
+            "pin-triangle-side-length": 9.5
+        },
+        "implot": {
+            "annotation-padding": [
+                2.0,
+                2.0
+            ],
+            "digital-bit-gap": 4.0,
+            "digital-bit-height": 8.0,
+            "error-bar-size": 5.0,
+            "error-bar-weight": 1.5,
+            "fill-alpha": 1.0,
+            "fit-padding": [
+                0.0,
+                0.0
+            ],
+            "label-padding": [
+                5.0,
+                5.0
+            ],
+            "legend-inner-padding": [
+                5.0,
+                5.0
+            ],
+            "legend-padding": [
+                10.0,
+                10.0
+            ],
+            "legend-spacing": [
+                5.0,
+                0.0
+            ],
+            "line-weight": 1.0,
+            "major-grid-size": [
+                1.0,
+                1.0
+            ],
+            "major-tick-len": [
+                10.0,
+                10.0
+            ],
+            "major-tick-size": [
+                1.0,
+                1.0
+            ],
+            "marker-size": 4.0,
+            "marker-weight": 1.0,
+            "minor-alpha": 0.25,
+            "minor-grid-size": [
+                1.0,
+                1.0
+            ],
+            "minor-tick-len": [
+                5.0,
+                5.0
+            ],
+            "minor-tick-size": [
+                1.0,
+                1.0
+            ],
+            "mouse-pos-padding": [
+                10.0,
+                10.0
+            ],
+            "plot-border-size": 1.0,
+            "plot-default-size": [
+                400.0,
+                300.0
+            ],
+            "plot-min-size": [
+                200.0,
+                150.0
+            ],
+            "plot-padding": [
+                10.0,
+                10.0
+            ]
+        }
+    }
+}
