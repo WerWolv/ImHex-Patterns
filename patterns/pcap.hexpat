@@ -1,5 +1,5 @@
+#include <std/mem.pat>
 #pragma MIME application/vnd.tcpdump.pcap
-#pragma endian little
 
 enum network_type : u32 {
     LINKTYPE_NULL = 0,
@@ -118,7 +118,13 @@ enum network_type : u32 {
     LINKTYPE_ETW = 290
 };
 
-struct pcaprec_hdr_t {
+enum magic : u32 {
+	BE = 0xA1B2C3D4,
+	LE = 0xD4C3B2A1
+};
+
+
+struct pcap_record_t {
     u32 ts_sec;         /* timestamp seconds */
     u32 ts_usec;        /* timestamp microseconds */
     u32 incl_len;       /* number of octets of packet saved in file */
@@ -126,15 +132,24 @@ struct pcaprec_hdr_t {
     u8  data[incl_len];
 };
 
-struct pcap_hdr_t {
-    u32 magic_number;     /* magic number */
+struct pcap_header_t {
     u16 version_major;    /* major version number */
     u16 version_minor;    /* minor version number */
     s32 thiszone;         /* GMT to local correction */
     u32 sigfigs;          /* accuracy of timestamps */
     u32 snaplen;          /* max length of captured packets, in octets */
     network_type network; /* data link type */
-    pcaprec_hdr_t packet[1000];
 };
 
-pcap_hdr_t pcap @ 0x00;
+struct pcap {
+    be magic magic_number;
+    if (magic_number == magic::BE) {
+        be pcap_header_t header;
+        be pcap_record_t packet[while(!std::mem::eof())];
+    } else {
+        le pcap_header_t header;
+        le pcap_record_t packet[while(!std::mem::eof())];
+    }
+};
+
+pcap pcap @ 0x00;
