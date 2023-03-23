@@ -143,7 +143,6 @@ struct DeviceDescriptor {
         u8 bDeviceSubClass;
     } else {
         u8 bDeviceSubClass;
-        u8 bDeviceSubClass;
     }
 };
 

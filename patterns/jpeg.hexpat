@@ -60,7 +60,7 @@ struct APP0 {
     DensityUnit densityUnit;
     u16 densityX, densityY;
     u8 thumbnailX, thumbnailY;
-    Pixel thumbnail[thumbnailX * thumbnailY] [[sealed, hex::visualize("bitmap", thumbnailX, thumbnailY)]];
+    Pixel thumbnail[thumbnailX * thumbnailY] [[sealed]];
 };
 
 enum ComponentId : u8 {

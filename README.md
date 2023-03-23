@@ -47,7 +47,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | BSON | `application/bson` | [`patterns/bson.hexpat`](patterns/bson.hexpat) | BSON (Binary JSON) format | 
 | msgpack | `application/x-msgpack` | [`patterns/msgpack.hexpat`](patterns/msgpack.hexpat) | MessagePack binary serialization format | 
 | MiniDump | `application/x-dmp` | [`patterns/minidump.hexpat`](patterns/minidump.hexpat) | Windows MiniDump files | 
-| ID3 | `audio/mpeg` | [`patterns/id3tag.hexpat`](patterns/id3tag.hexpat) | ID3 tags in MP3 files |
+| ID3 | `audio/mpeg` | [`patterns/id3.hexpat`](patterns/id3.hexpat) | ID3 tags in MP3 files |
 | TAR | `application/x-tar` | [`patterns/tar.hexpat`](patterns/tar.hexpat) | Tar file format |
 | CPIO | `application/x-cpio` | [`patterns/cpio.hexpat`](patterns/cpio.hexpat) | Old Binary CPIO Format |
 | FDT | | [`patterns/fdt.hexpat`](patterns/fdt.hexpat) | Flat Linux Device Tree blob |
@@ -72,6 +72,8 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | PIF | `image/pif` | [`patterns/pif.hexpat`](patterns/pif.hexpat) | PIF Image Format |
 | JPEG | `image/jpeg` | [`patterns/jpeg.hexpat`](patterns/jpeg.hexpat) | JPEG Image Format |
 | Lua 5.4 | | [`patterns/lua54.hexpat`](patterns/lua54.hexpat) | Lua 5.4 bytecode |
+| DEX | | [`patterns/dex.hexpat`](patterns/dex.hexpat) | Dalvik EXecutable Format |
+| DS_Store | `application/octet-stream` | [`patterns/dsstore.hexpat`](patterns/dsstore.hexpat) | .DS_Store file format |
 
 ### Scripts
 
@@ -141,12 +143,25 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | JIS 0213 | [`encodings/jis_x_0213.tbl`](encodings/jis_x_0213.tbl) | JIS X 0213 encoding in UTF-8 |
 | Macintosh | [`encodings/macintosh.tbl`](encodings/macintosh.tbl) | Macintosh character encoding used by the Kermit protocol |
 | Pokémon (English, Generation 1) | [`encodings/pokegen1_en.tbl`](encodings/pokegen1_en.tbl) | Character encoding used by the English generation 1 Pokémon games  |
+| Pokémon (English, Generation 3) | [`encodings/pokegen3_en.tbl`](encodings/pokegen3_en.tbl) | Character encoding used by the English generation 3 Pokémon games  |
 | Shift-JIS UTF-8 | [`encodings/shiftjis.tbl`](encodings/shiftjis.tbl) | Shift-JIS encoding in UTF-8 |
 | Thai | [`encodings/thai.tbl`](encodings/thai.tbl) | Thai character encoding |
 | Turkish ISO | [`encodings/turkish_iso.tbl`](encodings/turkish_iso.tbl) | Turkish ISO encoding |
 | Turkish Windows | [`encodings/turkish_windows.tbl`](encodings/turkish_windows.tbl) | Turkish Windows encoding |
 | UTF-8 | [`encodings/utf8.tbl`](encodings/utf8.tbl) | UTF-8 encoding |
 | Vietnamese | [`encodings/vietnamese.tbl`](encodings/vietnamese.tbl) | Vietnamese character encoding |
+
+### Data Processor Nodes
+| Name | Path | Description |
+|------|------|-------------|
+| Caesar Cipher | [`nodes/caesar.hexnode`](nodes/caesar.hexnode) | Simple adjustable per-byte Caecar Cipher (ROT) |
+| XOR Cipher | [`nodes/xor.hexnode`](nodes/xor.hexnode) | XORs a input with a repeating XOR pad |
+
+### Themes
+| Name | Path | Description |
+|------|------|-------------|
+| Visual Studio Dark | [`themes/vs_dark.json`](themes/vs_dark.json) | Theme similar to Visual Studio's Dark theme |
+
 
 ## Contributing
 

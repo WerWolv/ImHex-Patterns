@@ -1,6 +1,7 @@
 #pragma once
 
 #include <std/io.pat>
+#include <std/string.pat>
 
 namespace type {
 
@@ -9,11 +10,11 @@ namespace type {
     } [[sealed, format("type::impl::format_ipv4_address")]];
 
     struct IPv6Address {
-        u16 words[8];
+        be u16 words[8];
     } [[sealed, format("type::impl::format_ipv6_address")]];
-                        
+
     namespace impl {
-                
+
         fn format_ipv4_address(IPv4Address address) {
             return std::format("{}.{}.{}.{}",
                 address.bytes[0],
@@ -24,33 +25,33 @@ namespace type {
 
         fn format_ipv6_address(IPv6Address address) {
             str result;
-            
+
             bool hadZeros = false;
             s8 startIndex = -1;
-            
+
             for (u8 i = 0, i < 8, i += 1) {
                 if (address.words[i] == 0x00 && !hadZeros) {
                     hadZeros = true;
                     startIndex = i;
-                    
+
                     while (i < 7) {
                         if (address.words[i + 1] != 0x00)
                             break;
                         i += 1;
                     }
-                    
+
                     if (startIndex == 0 || i == 7)
                         result += ":";
                 } else {
-                    result += std::format("{:04X}", address.words[i]);
+                    result += std::format("{:X}", address.words[i]);
                 }
-                
+
                 result += ":";
             }
-            
+
             return std::string::substr(result, 0, std::string::length(result) - 1);
         };
-                
+
     }
 
 }

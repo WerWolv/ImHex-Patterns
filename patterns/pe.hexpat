@@ -55,7 +55,7 @@ struct DOSStub {
 
 struct PEHeader {
 	DOSHeader dosHeader;
-	DOSStub dosStub @ dosHeader.headerSizeInParagraphs * 16;
+	DOSStub dosStub;
 };
 
 PEHeader peHeader @ 0x00;

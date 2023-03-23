@@ -1,5 +1,6 @@
 #include <pl.hpp>
-#include <pl/helpers/file.hpp>
+
+#include <wolv/io/file.hpp>
 
 #include <fmt/format.h>
 #include <cstdlib>
@@ -27,12 +28,12 @@ int main(int argc, char **argv) {
     fmt::print("Running test {} on test file {}\n", patternName, testFilePath.stem().string());
 
     // Open pattern file
-    pl::hlp::fs::File patternFile(patternFilePath, pl::hlp::fs::File::Mode::Read);
+    wolv::io::File patternFile(patternFilePath, wolv::io::File::Mode::Read);
     if (!patternFile.isValid())
         return EXIT_FAILURE;
 
     // Open test file
-    pl::hlp::fs::File testFile(testFilePath, pl::hlp::fs::File::Mode::Read);
+    wolv::io::File testFile(testFilePath, wolv::io::File::Mode::Read);
     if (!testFile.isValid())
         return EXIT_FAILURE;
 
