@@ -119,4 +119,13 @@ namespace std::core {
     fn is_valid_enum(ref auto pattern) {
         return builtin::std::core::is_valid_enum(pattern);
     };
+
+
+    fn set_pattern_color(ref auto pattern, u32 color) {
+        builtin::std::core::set_pattern_color(pattern, color);
+    };
+
+    fn set_display_name(ref auto pattern, str name) {
+        builtin::std::core::set_display_name(pattern, name);
+    }; 
 }

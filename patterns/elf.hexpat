@@ -4,6 +4,7 @@
 #pragma MIME application/x-object
 #pragma MIME application/x-sharedlib
 
+#include <std/io.pat>
 #include <std/core.pat>
 #include <std/mem.pat>
 
@@ -561,7 +562,7 @@ struct Elf32_Phdr {
     Elf32_Word p_align;
     
     if (p_offset > 0 && p_filesz > 0 && (p_offset + p_filesz) < std::mem::size() && p_filesz < std::mem::size())
-    	u8 p_data[p_filesz] @ p_offset;
+        u8 p_data[p_filesz] @ p_offset [[sealed]];
 };
 
 struct Elf64_Phdr {
@@ -575,7 +576,7 @@ struct Elf64_Phdr {
     Elf64_Xword p_align;
     
     if (p_offset > 0 && p_filesz > 0 && (p_offset + p_filesz) < std::mem::size() && p_filesz < std::mem::size())
-    	u8 p_data[p_filesz] @ p_offset;
+        u8 p_data[p_filesz] @ p_offset [[sealed]];
 };
 
 struct Elf32_Chdr {
@@ -642,7 +643,7 @@ struct Elf32_Shdr {
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
 		} else {
-			u8 data[sh_size] @ sh_offset;
+			u8 data[sh_size] @ sh_offset [[sealed]];
 		}
     }
 } [[format("format_section_header")]];;
@@ -702,7 +703,7 @@ struct Elf64_Shdr {
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
 		} else {
-			u8 data[sh_size] @ sh_offset;
+			u8 data[sh_size] @ sh_offset [[sealed]];
 		}
     }
 } [[format("format_section_header")]];
@@ -742,3 +743,73 @@ struct ELF {
 };
 
 ELF elf @ 0x00;
+
+
+fn gen_shdr_disp_name(ref auto pattern, str member_name, u8 member_index) {
+    return std::format(
+        "{}@shdr[{}]({})",
+        member_name,
+        member_index,
+        format_section_header(pattern)
+    );
+};
+
+fn gen_shdr_sub_disp_name(ref auto pattern, str member_name, u8 member_index, u64 submember_index) {
+    return std::format(
+        "{}[{}]@shdr[{}]({})",
+        member_name,
+        submember_index,
+        member_index,
+        format_section_header(pattern)
+    );
+};
+
+fn gen_phdr_disp_name(ref auto pattern, str member_name, u8 member_index) {
+    return std::format(
+        "{}@phdr[{}]({})",
+        member_name,
+        member_index,
+        pattern.p_type
+    );
+};
+
+fn main() {
+    for (u32 i = 0, i < std::core::member_count(elf.shdr), i += 1) {
+        if (std::core::has_member(elf.shdr[i], "stringTable")) {
+            std::core::set_display_name(
+                elf.shdr[i].stringTable,
+                gen_shdr_disp_name(elf.shdr[i], "stringTable", i)
+            );
+            for (u64 j = 0, j < std::core::member_count(elf.shdr[i].stringTable), j += 1) {
+                std::core::set_display_name(
+                    elf.shdr[i].stringTable[j],
+                    gen_shdr_sub_disp_name(elf.shdr[i], "String", i, j)
+                );
+            }
+        } else if (std::core::has_member(elf.shdr[i], "symbolTable")) {
+            std::core::set_display_name(
+                elf.shdr[i].symbolTable,
+                gen_shdr_disp_name(elf.shdr[i], "symbolTable", i)
+            );
+        } else if (std::core::has_member(elf.shdr[i], "pointer")) {
+            std::core::set_display_name(
+                elf.shdr[i].pointer,
+                gen_shdr_disp_name(elf.shdr[i], "pointer", i)
+            );
+        } else if (std::core::has_member(elf.shdr[i], "data")) {
+            std::core::set_display_name(
+                elf.shdr[i].data,
+                gen_shdr_disp_name(elf.shdr[i], "data", i)
+            );
+        }
+    }
+
+    for (u32 i = 0, i < std::core::member_count(elf.phdr), i += 1) {
+        if (std::core::has_member(elf.phdr[i], "p_data")) {
+            std::core::set_display_name(
+                elf.phdr[i].p_data,
+                gen_phdr_disp_name(elf.phdr[i], "p_data", i)
+            );
+        }
+    }
+};
