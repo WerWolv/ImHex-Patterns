@@ -74,7 +74,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | Lua 5.4 | | [`patterns/lua54.hexpat`](patterns/lua54.hexpat) | Lua 5.4 bytecode |
 | DEX | | [`patterns/dex.hexpat`](patterns/dex.hexpat) | Dalvik EXecutable Format |
 | DS_Store | `application/octet-stream` | [`patterns/dsstore.hexpat`](patterns/dsstore.hexpat) | .DS_Store file format |
-| UEFI | | `patterns/uefi.hexpat` | UEFI structs for parsing efivars |
+| UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat)` | UEFI structs for parsing efivars |
 
 ### Scripts
 
