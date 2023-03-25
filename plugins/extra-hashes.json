@@ -1,0 +1,13 @@
+{
+    "name": "Extra Hashes",
+    "desc": "Plugin adding many extra hash functions",
+    "author": "WerWolv",
+    "versions": {
+        "v1.27.0": {
+            "windows": {
+                "url": "https://github.com/WerWolv/ImHex-Hashes-Plugin/releases/download/v1.0.0/extra_hashes-windows.hexplug",
+                "hash": "a6113762463d5823b6f3e17d82a00aee2efadc6525c94265b7b8e4deca90e70e"
+            }
+        }
+    }
+}
