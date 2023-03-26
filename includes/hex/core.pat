@@ -2,13 +2,24 @@
 
 #include <hex/impl/imhex_check.pat>
 
+/*!
+    Core intrinsic functions to interact with the ImHex Hex Editor
+*/
+
 namespace hex::core {
 
+    /**
+        A type representing a selection in the hex editor
+    */
     struct Selection {
         bool valid;
         u64 address, size;
     };
 
+    /**
+        Returns the current selection in the hex editor
+        @return The current selection
+    */
     fn get_selection() {
         u128 result = builtin::hex::core::get_selection();
 
