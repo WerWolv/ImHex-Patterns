@@ -32,12 +32,12 @@ struct Event_Record{
 };
 
 struct Chunk{
-   	char signature[0x8];
+    char signature[0x8];
     u64 first_event_record_number;
-   	u64 last_event_record_number;
-   	u64 first_event_record_identifier;
-   	u64 last_event_record_identifier;
-   	u32 header_size;
+    u64 last_event_record_number;
+    u64 first_event_record_identifier;
+    u64 last_event_record_identifier;
+    u32 header_size;
     u32 last_event_record_data_offset;
     u32 free_space_offset;
     u32 event_records_checksum;
