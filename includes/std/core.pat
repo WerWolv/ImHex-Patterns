@@ -66,19 +66,17 @@ namespace std::core {
 
     
     /**
-        Sets the default bitfield order.
-        @param order The new default bitfield order
+        @warning Removed in 1.28.0
     */
     fn set_bitfield_order(BitfieldOrder order) {
-        builtin::std::core::set_bitfield_order(u32(order));
+        builtin::std::error("Runtime default bitfield order is no longer supported.\nConsider using `be` or `le` on your bitfield variables,\nor attach attribute `bitfield_order` to the bitfield.");
     };
 
     /**
-        Gets thee current default bitfield order
-        @return The currently set default bitfield order
+        @warning Removed in 1.28.0
     */
     fn get_bitfield_order() {
-        return builtin::std::core::get_bitfield_order();
+        builtin::std::error("Runtime default bitfield order is no longer supported.\nConsider using `be` or `le` on your bitfield variables,\nor attach attribute `bitfield_order` to the bitfield.");
     };
 
 
