@@ -76,6 +76,7 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | DS_Store | `application/octet-stream` | [`patterns/dsstore.hexpat`](patterns/dsstore.hexpat) | .DS_Store file format |
 | UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat)` | UEFI structs for parsing efivars |
 | EVTX | | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
+| BSP | | [`patterns/bsp_goldsrc.hexpat`](patterns/bsp_goldsrc.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
 
 ### Scripts
 
