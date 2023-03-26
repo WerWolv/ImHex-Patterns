@@ -46,7 +46,7 @@ struct Chunk{
     u32 checksum;
     u8 common_string_offset_array[256];
     u8 templatePtr[128];
-    Event_Rsecord event_record;
+    Event_Record event_record;
 };
 
 struct Evtx {
