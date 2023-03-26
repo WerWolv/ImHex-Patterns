@@ -6,8 +6,15 @@
 #include <hex/impl/imhex_check.pat>
 #include <hex/dec.pat>
 
+/*!
+    Types to automatically decode mangled names
+*/
+
 namespace hex::type {
 	
+    /**
+        A mangled name string that gets demangled when displayed
+    */
     struct MangledName {
         char value[];
     } [[sealed, format("hex::type::impl::format_mangled_name")]];

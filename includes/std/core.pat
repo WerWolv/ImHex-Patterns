@@ -121,10 +121,20 @@ namespace std::core {
     };
 
 
+    /**
+        Changes the color of the given pattern to a new color
+        @param pattern The pattern to modify
+        @param color The RGBA8 color 
+    */
     fn set_pattern_color(ref auto pattern, u32 color) {
         builtin::std::core::set_pattern_color(pattern, color);
     };
 
+    /**
+        Changes the display name of a given pattern
+        @param pattern The pattern to modify
+        @param name The new display name of the pattern
+    */
     fn set_display_name(ref auto pattern, str name) {
         builtin::std::core::set_display_name(pattern, name);
     }; 

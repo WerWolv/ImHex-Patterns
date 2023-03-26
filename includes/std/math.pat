@@ -2,8 +2,18 @@
 
 #include <std/mem.pat>
 
+/*!
+	Library containing more advanced mathematical operations.
+*/
+
 namespace std::math {
 
+	/**
+		Compares the values `a` and `b` with each other and returns the smaller of the two
+		@param a First value
+		@param b Second value
+		@return `a` if `a` is smaller than `b`, otherwise `b`
+	*/
 	fn min(auto a, auto b) {
 		if (a < b)
 			return a;
@@ -11,6 +21,12 @@ namespace std::math {
 			return b;
 	};
 	
+	/**
+		Compares the values `a` and `b` with each other and returns the bigger of the two
+		@param a First value
+		@param b Second value
+		@return `a` if `a` is bigger than `b`, otherwise `b`
+	*/
 	fn max(auto a, auto b) {
 		if (a > b)
 			return a;
@@ -18,6 +34,13 @@ namespace std::math {
 			return b;
 	};
 
+	/**
+		Clamps the value of `x` between `min` and `max`.
+		@param x Value
+		@param min Minimum value
+		@param max Maximum value
+		@return `min` if `x` is smaller than `min`, `max` if `x` is bigger than `max`, `x` otherwise
+	*/
 	fn clamp(auto x, auto min, auto max) {
 		if (x < min)
 			return min;
