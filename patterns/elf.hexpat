@@ -773,7 +773,12 @@ fn gen_phdr_disp_name(ref auto pattern, str member_name, u8 member_index) {
     );
 };
 
+bool displaySectionNames in;
+
 fn main() {
+    if (!displaySectionNames)
+        return;
+
     for (u32 i = 0, i < std::core::member_count(elf.shdr), i += 1) {
         if (std::core::has_member(elf.shdr[i], "stringTable")) {
             std::core::set_display_name(
