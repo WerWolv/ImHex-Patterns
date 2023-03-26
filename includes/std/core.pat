@@ -10,11 +10,21 @@
 namespace std::core {
 
     /**
-        The default ordering of bitfield members
+        The layout order of each field after byte-endianness has been handled.
+
+        `LeftToRight` and `RightToLeft` are deprecated in favor of the clearer `MostToLeastSignificant` and `LeastToMostSignificant` names.
     */
     enum BitfieldOrder : u8 {
+        /**
+            @warning deprecated
+        */
         LeftToRight = 0,
-        RightToLeft = 1
+        /**
+            @warning deprecated
+        */
+        RightToLeft = 1,
+        MostToLeastSignificant = 0,
+        LeastToMostSignificant = 1
     };
 
 
