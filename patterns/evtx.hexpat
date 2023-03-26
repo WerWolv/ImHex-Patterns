@@ -1,16 +1,16 @@
 #pragma endian little
 
 struct Header {
-	char signature[0x8];
+    char signature[0x8];
     u64  first_chunk_number;
     u64  last_chunk_number;
     u64  next_record_identifier;
-	u32  header_size;
-	u16  minor_format_version;
-	u16  major_format_version;
+    u32  header_size;
+    u16  minor_format_version;
+    u16  major_format_version;
     u16  header_block_size;
-	u16  number_of_chunks;
-	u8   unknown[0x4C];
+    u16  number_of_chunks;
+    u8   unknown[0x4C];
     u32  file_Flag;
     u32  checkSum;
     u8   unknown2[3968];
@@ -33,12 +33,12 @@ struct Event_Record{
 
 struct Chunk{
    	char signature[0x8];
-   	u64 first_event_record_number;
+    u64 first_event_record_number;
    	u64 last_event_record_number;
    	u64 first_event_record_identifier;
    	u64 last_event_record_identifier;
    	u32 header_size;
-   	u32 last_event_record_data_offset;
+    u32 last_event_record_data_offset;
     u32 free_space_offset;
     u32 event_records_checksum;
     u8 unknown[64];
