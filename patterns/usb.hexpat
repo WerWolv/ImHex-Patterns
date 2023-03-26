@@ -1,6 +1,9 @@
+#include <std/core.pat>
 #include <std/io.pat>
 #include <std/mem.pat>
 #include <std/string.pat>
+
+using BitfieldOrder = std::core::BitfieldOrder;
 
 enum DescriptorType : u8 {
     DeviceDescriptor                    = 0x01,
@@ -115,7 +118,7 @@ bitfield ConfigAttributes {
     SelfPowered : 1;
     RemoteWakeup : 1;
     padding : 5;
-} [[left_to_right]];
+} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
 
 struct BCD<auto Size> {
     u8 bytes[Size];
@@ -194,16 +197,16 @@ fn format_direction(u8 value) {
 };
 
 bitfield EndpointAddress {
-    Direction      : 1 [[format("format_direction")]];
-    padding        : 3;
     EndpointNumber : 4;
-} [[left_to_right]];
+    padding        : 3;
+    Direction      : 1 [[format("format_direction")]];
+};
 
 bitfield EndpointAttributes {
     TransferType : 2;
     SynchronizationType : 2;
     UsageType : 2;
-} [[right_to_left]];
+};
 
 struct EndpointDescriptor {
     EndpointAddress bEndPointAddress;

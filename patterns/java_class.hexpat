@@ -1,8 +1,11 @@
 #pragma endian big
 #pragma MIME application/x-java-applet
 
+#include <std/core.pat>
 #include <std/io.pat>
 #include <std/sys.pat>
+
+using BitfieldOrder = std::core::BitfieldOrder;
 
 // The Java documentations use the number of bytes instead of the number of bits for its type names
 using u1 = u8;
@@ -206,7 +209,7 @@ bitfield access_flags_method  {
     padding         : 1;    // 0x2000
     padding         : 1;    // 0x4000
     padding         : 1;    // 0x8000
-};
+} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 16)]];
 
 bitfield access_flags_field  {
     ACC_PUBLIC      : 1;    // 0x0001
@@ -225,7 +228,7 @@ bitfield access_flags_field  {
     padding         : 1;    // 0x2000
     ACC_ENUM        : 1;    // 0x4000
     padding         : 1;    // 0x8000
-};
+} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 16)]];
 
 bitfield access_flags_class  {
     ACC_PUBLIC       : 1;    // 0x0001
@@ -244,7 +247,7 @@ bitfield access_flags_class  {
     ACC_ANNOTATION   : 1;    // 0x2000
     ACC_ENUM         : 1;    // 0x4000
     ACC_MODULE       : 1;    // 0x8000
-};
+} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 16)]];
 
 struct attribute_info {
     u2 attribute_name_info;

@@ -1,7 +1,10 @@
 #pragma MIME application/x-ms-shortcut
 
+#include <std/core.pat>
 #include <type/guid.pat>
 #include <type/size.pat>
+
+using BitfieldOrder = std::core::BitfieldOrder;
 
 bitfield LinkFlags {
     HasLinkTargetIDList         : 1;
@@ -32,7 +35,7 @@ bitfield LinkFlags {
     PreferEnvironmentPath       : 1;
     KeepLocalIDListForUNCTarget : 1;
     padding                     : 5;
-} [[right_to_left]];
+};
 
 bitfield FileAttributesFlags {
     FILE_ATTRIBUTE_READONLY             : 1;
@@ -51,14 +54,14 @@ bitfield FileAttributesFlags {
     FILE_ATTRIBUTE_NOT_CONTENT_INDEXED  : 1;
     FILE_ATTRIBUTE_ENCRYPTED            : 1;
     padding                             : 17;
-} [[right_to_left]];
+};
 
 bitfield ModifierKeys {
     HOTKEYF_SHIFT   : 1;
     HOTKEYF_CONTROL : 1;
     HOTKEYF_ALT     : 1;
     padding         : 5;
-} [[right_to_left]];
+};
 
 enum Keys : u8 {
     KEY_NONE    = 0x00,
@@ -177,9 +180,9 @@ struct LinkTargetIDList {
 };
 
 bitfield LinkInfoFlags {
-    VolumeIDAndLocalBasePath                    : 1;
-    CommonNetworkRelativeLinkAndPathSuffix	: 1;
-    padding                                     : 30;
+    VolumeIDAndLocalBasePath               : 1;
+    CommonNetworkRelativeLinkAndPathSuffix : 1;
+    padding                                : 30;
 };
 
 enum DriveType : u32 {
@@ -206,7 +209,7 @@ bitfield CommonNetworkRelativeLinkFlags {
     ValidDevice     : 1;
     ValidNetType    : 1;
     padding         : 30;
-} [[right_to_left]];
+};
 
 enum NetworkProviderType : u32 {
     WNNC_NET_AVID           = 0x001A0000,
@@ -334,7 +337,7 @@ bitfield FillAttributes {
     BACKGROUND_INTENSITY    : 1;
     
     padding                 : 8;
-} [[right_to_left]];
+};
 
 struct ConsoleDataBlock {
     FillAttributes FillAttributes;

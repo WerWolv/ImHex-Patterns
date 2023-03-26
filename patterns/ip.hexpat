@@ -1,5 +1,4 @@
  #pragma endian big
- #pragma bitfield_order left_to_right
 
 #include <std/sys.pat>
 #include <std/io.pat>

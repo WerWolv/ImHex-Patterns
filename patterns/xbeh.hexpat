@@ -22,7 +22,7 @@ bitfield AllowedMedia {
     padding             : 20;
     NonSecureHardDisk   : 1;
     NonSecureMode       : 1;
-} [[right_to_left]];
+};
 
 bitfield GameRegion {
     NorthAmerica    : 1;
@@ -30,7 +30,7 @@ bitfield GameRegion {
     RestOfTheWorld  : 1;
     padding         : 28;
     Manufacturing   : 1;
-} [[right_to_left]];
+};
 
 struct Certificate {
     type::Size<u32> certificateSize;
@@ -52,7 +52,7 @@ bitfield InitializationFlags {
     Limit64Megabytes    : 1;
     DontSetuptHarddisk  : 1;
     padding : 28;
-} [[right_to_left]];
+};
 
 union EntryPoint {
     u32 betaAddress [[format("format_beta_entrypoint")]];
@@ -333,7 +333,7 @@ bitfield LibraryFlags {
     QFEVersion  : 13;
     Approved    : 2;
     DebugBuild  : 1;
-} [[right_to_left]];
+};
 
 struct LibraryVersion {
     char libraryName[8];
@@ -349,7 +349,7 @@ bitfield SectionFlags {
     HeadPageReadOnly    : 1;
     TailPageReadOnly    : 1;
     padding : 26;
-} [[right_to_left]];
+};
 
 struct SectionHeader {
     SectionFlags sectionFlags;

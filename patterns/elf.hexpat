@@ -4,9 +4,11 @@
 #pragma MIME application/x-object
 #pragma MIME application/x-sharedlib
 
-#include <std/io.pat>
 #include <std/core.pat>
+#include <std/io.pat>
 #include <std/mem.pat>
+
+using BitfieldOrder = std::core::BitfieldOrder;
 
 using EI_ABIVERSION     = u8;
 using Elf32_Addr        = u32;
@@ -458,37 +460,37 @@ enum VER_NEED : Elf32_Half {
 };
 
 bitfield SYMINFO_FLG {
-    padding     : 10;
-    NOEXTDIRECT : 1;
-    DIRECTBIND  : 1;
-    LAZYLOAD    : 1;
-    COPY        : 1;
-    RESERVED    : 1;
     DIRECT      : 1;
-} [[left_to_right]];
+    RESERVED    : 1;
+    COPY        : 1;
+    LAZYLOAD    : 1;
+    DIRECTBIND  : 1;
+    NOEXTDIRECT : 1;
+    padding     : 10;
+};
 
 bitfield ST {
     ST_BIND : 4;
     ST_TYPE : 4;
-} [[left_to_right]];
+} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
 
 bitfield SHF {
-    MASKPROC         : 4;
-    MASKOS           : 8;
-    UNKNOWN          : 8;
-    COMPRESSED       : 1;
-    TLS              : 1;
-    GROUP            : 1;
-    OS_NONCONFORMING : 1;
-    LINK_ORDER       : 1;
-    INFO_LINK        : 1;
-    STRINGS          : 1;
-    MERGE            : 1;
-    padding          : 1;
-    EXECINSTR        : 1;
-    ALLOC            : 1;
     WRITE            : 1;
-} [[left_to_right]];
+    ALLOC            : 1;
+    EXECINSTR        : 1;
+    padding          : 1;
+    MERGE            : 1;
+    STRINGS          : 1;
+    INFO_LINK        : 1;
+    LINK_ORDER       : 1;
+    OS_NONCONFORMING : 1;
+    GROUP            : 1;
+    TLS              : 1;
+    COMPRESSED       : 1;
+    UNKNOWN          : 8;
+    MASKOS           : 8;
+    MASKPROC         : 4;
+};
 
 bitfield ELF32_R_INFO {
     SYM  : 8;
@@ -501,13 +503,13 @@ bitfield ELF64_R_INFO {
 } [[left_to_right]];
 
 bitfield PF {
-    MASKPROC : 4;
-    MASKOS   : 4;
-    padding  : 17;
-    R        : 1;
-    W        : 1;
     X        : 1;
-} [[left_to_right]];
+    W        : 1;
+    R        : 1;
+    padding  : 17;
+    MASKOS   : 4;
+    MASKPROC : 4;
+};
 
 struct E_IDENT {
     char EI_MAG[4];

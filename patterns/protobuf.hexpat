@@ -1,3 +1,4 @@
+#include <std/core.pat>
 #include <std/mem.pat>
 
 #include <type/leb128.pat>
@@ -30,7 +31,7 @@ enum WireType : u8 {
 bitfield Key {
 	field_number : 5;
 	wire_type    : 3;
-} [[left_to_right]];
+} [[bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 8)]];
 
 union _64Bit {
 	u64 fixed64;

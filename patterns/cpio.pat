@@ -22,14 +22,14 @@ namespace old_binary {
     using SwappedU32 = u32 [[transform("old_binary::swap_32bit"), format("old_binary::swap_32bit")]];
 
     bitfield Mode {
-        file_type   : 4;
-        suid        : 1;
-        sgid        : 1;
-        sticky      : 1;
-        r           : 3;
-        w           : 3;
         x           : 3;
-    } [[left_to_right]];
+        w           : 3;
+        r           : 3;
+        sticky      : 1;
+        sgid        : 1;
+        suid        : 1;
+        file_type   : 4;
+    };
 
     struct CpioHeader {
         type::Oct<u16> magic;

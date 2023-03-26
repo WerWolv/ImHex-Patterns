@@ -1,6 +1,5 @@
 #pragma MIME application/x-dosexec
 #pragma MIME application/x-msdownload
-#pragma bitfield_order right_to_left
 #pragma pattern_limit 0x400000
 
 #include <std/string.pat>
@@ -378,7 +377,7 @@ fn architecture() {
 bitfield OrdinalFlagByte {
 	flag : 1;
 	padding : 7;
-} [[left_to_right]];
+};
 
 struct NameTableEntry {
 	u16 hint;

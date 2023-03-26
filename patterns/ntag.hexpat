@@ -1,13 +1,17 @@
+#include <std/core.pat>
+
+using BitfieldOrder = std::core::BitfieldOrder;
+
 bitfield AccessCapability {
 	Read : 4;
 	Write : 4;
-} [[left_to_right]];
+} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
 
 struct CapabilityContainer {
 	u8 magic;
 	u8 version;
 	u8 memorySize;
-	AccessCapability accessCapability;
+	be AccessCapability accessCapability;
 };
 
 bitfield NDEFFlags {
@@ -17,7 +21,7 @@ bitfield NDEFFlags {
 	SR	: 1;
 	IL	: 1;
 	TNF	: 3;
-} [[left_to_right]];
+} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
 
 enum TNFType : u8 {
 	Empty 					= 0x00,
@@ -129,7 +133,7 @@ bitfield MIRROR {
 	padding     : 1;
 	STRG_MOD_EN	: 1;
 	padding     : 2;
-} [[left_to_right]];
+} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
 
 bitfield ACCESS {
 	PROT				: 1;

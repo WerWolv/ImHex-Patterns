@@ -50,7 +50,7 @@ bitfield Characteristics {
     dll                     : 1;
     upSystemOnly            : 1;
     bytesReversedHi         : 1;
-} [[right_to_left]];
+};
 
 enum Type : u16 {
     Null    = 0,
@@ -158,7 +158,7 @@ bitfield SectionFlags {
     memExecute          : 1;
     memRead             : 1;
     memWrite            : 1;
-} [[right_to_left]];
+};
 
 fn format_alignment(u8 alignment) {
     return 1 << alignment;
