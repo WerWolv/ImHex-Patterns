@@ -114,6 +114,27 @@ namespace std::mem {
 
 
     /**
+        Gets the current bit offset within the current byte that a bitfield will read.
+    */
+    fn current_bit_offset() {
+        return builtin::std::mem::current_bit_offset();
+    };
+
+    /**
+        Reads a number of bits from the specified bit offset within the specified byte
+        @param byteOffset The byte offset within the data
+        @param bitOffset The bit offset to start the read at within the current byte
+        @param bitSize The total number of bits to read
+        @return A u128 containing the value read
+    */
+    fn read_bits(u128 byteOffset, u128 bitOffset, u64 bitSize) {
+        byteOffset += bitOffset >> 3;
+        bitOffset = bitOffset & 0x7;
+        return builtin::std::mem::read_bits(byteOffset, bitOffset, bitSize);
+    };
+
+
+    /**
         Creates a new custom section with the given name
         @param name The name of the section
         @return The handle to the section
