@@ -64,10 +64,10 @@ struct frame_header_t {
 };
 
 bitfield block_header_t {
-    block_size : 21;
-    block_type : 2;
     last_block : 1;
-} [[left_to_right]];
+    block_type : 2;
+    block_size : 21;
+} [[right_to_left]];
 
 enum block_type : u8 {
     raw_block = 0,
