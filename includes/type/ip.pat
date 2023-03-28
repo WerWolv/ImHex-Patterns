@@ -3,7 +3,7 @@
 #include <std/io.pat>
 #include <std/string.pat>
 
-/**
+/*!
     Types used to decode IP addresses
 */
 
