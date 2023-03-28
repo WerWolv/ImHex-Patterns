@@ -40,11 +40,11 @@ namespace type {
 	
 	namespace impl {
 	
-		fn format_path_segment(PathSegment segment) {
+		fn format_path_segment(ref auto segment) {
 			return segment.string;
 		};
 	
-		fn format_path(Path path) {
+		fn format_path(ref auto path) {
 			return std::mem::read_string($, sizeof(path));
 		};
 	
