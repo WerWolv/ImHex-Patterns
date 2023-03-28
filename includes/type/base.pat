@@ -3,11 +3,35 @@
 #include <std/io.pat>
 #include <std/math.pat>
 
+/*!
+    Types used to change the base of the displayed integer value.
+    Used like `type::Hex<u32> hexNumber;`, `type::Oct<u16> octalNumber;`
+*/
+
 namespace type {
     
+    /**
+        Integer type representing a Hexadecimal value. Displays its value in hexadecimal format.
+        @tparam T Integer type to use
+    */
     using Hex<T> = T [[format("type::impl::format_hex")]];
+
+    /**
+        Integer type representing a Octal value. Displays its value in octal format.
+        @tparam T Integer type to use
+    */
     using Oct<T> = T [[format("type::impl::format_oct")]];
+
+    /**
+        Integer type representing a Decimal value. Displays its value in decimal format.
+        @tparam T Integer type to use
+    */
     using Dec<T> = T [[format("type::impl::format_dec")]];
+
+    /**
+        Integer type representing a Binary value. Displays its value in binary format.
+        @tparam T Integer type to use
+    */
     using Bin<T> = T [[format("type::impl::format_bin")]];
 
 	namespace impl {

@@ -2,8 +2,15 @@
 
 #include <std/io.pat>
 
+/*!
+    Types to display single bytes using various different representations
+*/
+
 namespace type {
     
+    /**
+        Type visualizing the value of each individual bit
+    */
     bitfield Bits {
         bit0 : 1;
         bit1 : 1;
@@ -15,11 +22,17 @@ namespace type {
         bit7 : 1;
     } [[format("type::impl::format_bits"), right_to_left]];
     
+    /**
+        Type visualizing the value of the two nibbles
+    */
     bitfield Nibbles {
         low  : 4;
         high : 4;
     } [[format("type::impl::format_nibbles")]];
     
+    /**
+        Type representing a single Byte. Decodes the byte as it's hexadeicmal value, individual bits and nibbles
+    */
     union Byte {
         u8 value;
         Bits bits;

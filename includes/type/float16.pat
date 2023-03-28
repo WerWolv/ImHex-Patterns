@@ -4,8 +4,15 @@
 #include <std/math.pat>
 #include <std/mem.pat>
 
+/*!
+    Type representing a 16 bit half precision floating point number
+*/
+
 namespace type {
     
+    /**
+        Type representing a 16 bit half precision floating point number
+    */
     using float16 = u16 [[format("type::impl::format_float16")]];
 
     namespace impl {

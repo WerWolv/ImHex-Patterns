@@ -23,12 +23,11 @@ namespace std::random {
         FisherF           = 8,
         StudentT          = 9,
         LogNormal         = 10,
-        Discrete          = 11,
-        Bernoulli         = 12,
-        Binomial          = 13,
-        NegativeBinomial  = 14,
-        Geometric         = 15,
-        Poisson           = 16
+        Bernoulli         = 11,
+        Binomial          = 12,
+        NegativeBinomial  = 13,
+        Geometric         = 14,
+        Poisson           = 15
     };
 
     /**
@@ -42,6 +41,25 @@ namespace std::random {
     /**
         Generates a random number using the given distribution with the given parameters.
         The random number generator used internally is C++'s std::mt19937_64 Mersenne Twister implementation.
+
+        > **Distributions**
+        > - `Uniform(min, max) -> i128`
+        > - `Normal(mean, stddev) -> double`
+        > - `Exponential(lambda) -> double`
+        > - `Gamma(alpha, beta) -> double`
+        > - `Weibull(a, b) -> double`
+        > - `ExtremeValue(a, b) -> double`
+        > - `ChiSquared(n) -> double`
+        > - `Cauchy(a, b) -> double`
+        > - `FisherF(m, n) -> double`
+        > - `StudentT(n) -> double`
+        > - `LogNormal(m, s) -> double`
+        > - `Bernoulli(p) -> bool`
+        > - `Binomial(t, p) -> i128`
+        > - `NegativeBinomial(k, p) -> i128`
+        > - `Geometric(p) -> i128`
+        > - `Poisson(mean) -> i128`
+
         @param distribution Distribution to use
         @param param1 This parameter depends on the type of distribution used.
         @param param2 This parameter depends on the type of distribution used.

@@ -3,15 +3,32 @@
 #include <std/io.pat>
 #include <std/mem.pat>
 
+/*!
+	Types used to decode Little Endian Base 128 numbers used to store large numbers as space efficiently as possible
+*/
+
 namespace type {
 	
-	struct _LEB128 {
+	/**
+		Base LEB128 type. Use `uLEB128` and `sLEB128` instead.
+	*/
+	struct LEB128Base {
 		u8 array[while($ == addressof(this) || std::mem::read_unsigned($-1, 1) & 0x80 != 0)] [[hidden]];
 	} [[sealed]];
 
-	using uLEB128 = _LEB128 [[format("type::impl::format_uleb128"), transform("type::impl::transform_uleb128")]];
-	using sLEB128 = _LEB128 [[format("type::impl::format_sleb128"), transform("type::impl::transform_sleb128")]];
+	/**
+		A unsigned variant of a LEB128 number
+	*/
+	using uLEB128 = LEB128Base [[format("type::impl::format_uleb128"), transform("type::impl::transform_uleb128")]];
 
+	/**
+		A signed variant of a LEB128 number
+	*/
+	using sLEB128 = LEB128Base [[format("type::impl::format_sleb128"), transform("type::impl::transform_sleb128")]];
+
+	/**
+		Legacy alias for uLEB128
+	*/
 	using LEB128 = uLEB128;
 	
 	namespace impl {

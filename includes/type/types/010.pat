@@ -1,5 +1,9 @@
 #pragma once
 
+/*!
+    Alias types to make it easier to move template definitions over from 010 Editor to ImHex
+*/
+
 // Explicitly don't add these types to the `type` namespace for usability
 // namespace type {
 

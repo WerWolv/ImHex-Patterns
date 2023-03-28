@@ -1,5 +1,9 @@
 #pragma once
 
+/*!
+    Various data types used in the Linux Kernel
+*/
+
 // Explicitly don't add these types to the `type` namespace for usability
 // namespace type {
 

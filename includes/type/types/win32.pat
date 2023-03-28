@@ -1,5 +1,9 @@
 #pragma once
 
+/*!
+    Alias definitions for various type names used in Windows applications
+*/
+
 // Explicitly don't add these types to the `type` namespace for usability
 // namespace type {
 

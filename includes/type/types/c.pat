@@ -1,5 +1,9 @@
 #pragma once
 
+/*!
+    Alias definitions for all C stdint and regular data types
+*/
+
 // Explicitly don't add these types to the `type` namespace for usability
 // namespace type {
 

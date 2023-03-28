@@ -2,8 +2,15 @@
 
 #include <std/io.pat>
 
+/*!
+	Types used to decode MAC Addresses
+*/
+
 namespace type {
 
+	/**
+		A MAC Address as used in the Internet Protocol
+	*/
 	struct MACAddress {
 		u8 bytes[6];
 	} [[sealed, format("type::impl::format_mac_address")]];

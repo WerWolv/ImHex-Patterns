@@ -2,8 +2,15 @@
 
 #include <std/io.pat>
 
+/*!
+	Types to deal with UUIDs (Universally Unique Identifiers) / GUIDs (Globally Unique Identifiers) as described in RFC 4122
+*/
+
 namespace type {
 
+	/**
+		Type representing a GUID value
+	*/
 	struct GUID {
         u32 time_low;
         u16 time_mid;
@@ -12,6 +19,11 @@ namespace type {
         u8 clock_seq_low;
         u8 node[6];
     } [[sealed, format("type::impl::format_guid")]];
+
+	/**
+		Alias name for GUID
+	*/
+	using UUID = GUID;
 
 	namespace impl {
 

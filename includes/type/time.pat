@@ -3,12 +3,36 @@
 #include <std/io.pat>
 #include <std/time.pat>
 
+/*!
+    Types used to decode various different time formats
+*/
+
 namespace type {
 
+    /**
+        A 32 bit Unix time value
+    */
     using time32_t = u32 [[format("type::impl::format_time_t")]];
+    
+    /**
+        Alias name for `time32_t` 
+    */
+    using time_t = time32_t;
+
+    /**
+        A 64 bit Unix time value
+    */
     using time64_t = u64 [[format("type::impl::format_time_t")]];
-    using dosdate16_t = u16 [[format("type::impl::format_dosdate16_t")]];
-    using dostime16_t = u16 [[format("type::impl::format_dostime16_t")]];
+
+    /**
+        A DOS Date value
+    */
+    using DOSDate = u16 [[format("type::impl::format_dosdate")]];
+
+    /**
+        A DOS Time value
+    */
+    using DOSTime = u16 [[format("type::impl::format_dostime")]];
 
     namespace impl {
 
@@ -16,11 +40,11 @@ namespace type {
             return std::time::format(std::time::to_utc(value));
         };
 
-        fn format_dosdate16_t(u16 value) {
+        fn format_dosdate(u16 value) {
             return std::time::format_dos_date(std::time::to_dos_date(value));
         };
 
-        fn format_dostime16_t(u16 value) {
+        fn format_dostime(u16 value) {
             return std::time::format_dos_time(std::time::to_dos_time(value));
         };
 

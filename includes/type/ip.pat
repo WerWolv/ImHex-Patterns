@@ -3,12 +3,22 @@
 #include <std/io.pat>
 #include <std/string.pat>
 
+/**
+    Types used to decode IP addresses
+*/
+
 namespace type {
 
+    /**
+        A 4 byte IPv4 Address as described in RFC 791
+    */
     struct IPv4Address {
         u8 bytes[4];
     } [[sealed, format("type::impl::format_ipv4_address")]];
 
+    /**
+        A 16 byte IPv6 Address as described in RFC 8200
+    */
     struct IPv6Address {
         be u16 words[8];
     } [[sealed, format("type::impl::format_ipv6_address")]];

@@ -1,13 +1,36 @@
 #include <std/io.pat>
 
+/*!
+    Types used to pretty print size values
+*/
+
 namespace type {
 
+    /**
+        A generic size type which displays its value in Bytes (or kiB, MiB, GiB, TiB, PiB, EiB if larger)
+        @tparam T Underlying type
+    */
     using Size<T> = T [[format("type::impl::size_formatter")]];
 
+    /**
+        A 8 bit size type
+    */
     using Size8   = Size<u8>;
+    /**
+        A 16 bit size type
+    */
     using Size16  = Size<u16>;
+    /**
+        A 32 bit size type
+    */
     using Size32  = Size<u32>;
+    /**
+        A 64 bit size type
+    */
     using Size64  = Size<u64>;
+    /**
+        A 128 bit size type
+    */
     using Size128 = Size<u128>;
 
     namespace impl {
