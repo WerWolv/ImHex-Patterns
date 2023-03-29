@@ -1,6 +1,20 @@
-# ImHex-Patterns
+# ImHex Database
 
-Hex patterns, include patterns and magic files for the use with the ImHex Hex Editor
+This repository serves as a database for files to use with the [ImHex Hex Editor](https://github.com/WerWolv/ImHex). It currently contains
+- [Patterns](/patterns) - Binary Format definitions for the Pattern Language
+- [Pattern Libraries](/includes) - Libraries that make using the Pattern Language easier
+- [Magic Files](/magic) - Custom magic file definitions for the use with libmagic
+- [Encodings](/encodings) - Custom encodings in the .tbl format
+- [Data Processor Nodes](/nodes) - Custom nodes made for ImHex's Data Processor
+- [Themes](/themes) - Custom themes for ImHex
+- [Constants](/constants) - Constants definition files
+- [Scripts](/scripts) - Various scripts to generate code or automate some tasks
+- [Yara](/yara) - Custom Yara rules
+
+## Submissions
+
+Most files in this repository have been submitted by the community. Please feel free to open a PR on your own and add files to it!
+Everything will immediately show up in ImHex's Content Store and gets bundled with the next release of ImHex.
 
 ## Table of Contents
 
@@ -164,11 +178,4 @@ Hex patterns, include patterns and magic files for the use with the ImHex Hex Ed
 | Name | Path | Description |
 |------|------|-------------|
 | Visual Studio Dark | [`themes/vs_dark.json`](themes/vs_dark.json) | Theme similar to Visual Studio's Dark theme |
-
-
-## Contributing
-
-If you want to contribute a file to the database, please make a PR which adds it to the right folder and adds a new entry to the table in this readme. 
-To take advantage of the automatic pattern testing, please consider adding a test file named `<pattern_name>.hexpat.<extension>` to the `/tests/patterns/test_data` directory. Try to keep this file as small as possible so the repository doesn't become excessively large
-
-Thanks a lot :)
+| Solarized Dark | [`themes/solarized_dark.json`](themes/solarized_dark.json) | Solarized Dark Theme |
