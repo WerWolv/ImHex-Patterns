@@ -13,7 +13,7 @@ bitfield CHS {
 	h : 8;
 	s : 6;
 	c : 10;
-} [[right_to_left, format("chs_formatter")]];
+} [[format("chs_formatter")]];
 
 fn chs_formatter(CHS chs) {
 	return std::format("({:X}, {:X}, {:X}) | 0x{:X}", chs.c, chs.h, chs.s, (chs.c * 16 + chs.h) * 63 + (chs.s - 1));

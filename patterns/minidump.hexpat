@@ -399,7 +399,7 @@ bitfield MINIDUMP_TYPE {
     MiniDumpWithIptTrace                    : 1;
     MiniDumpScanInaccessiblePartialPages    : 1;
     padding                                 : 40;
-} [[right_to_left]];
+};
 
 struct MINIDUMP_HEADER {
     char Signature[4];

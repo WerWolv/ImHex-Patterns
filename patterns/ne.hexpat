@@ -1,7 +1,5 @@
 #include <std/mem.pat>
 
-#pragma bitfield_order right_to_left
-
 struct DOSHeader {
     char signature[2];
     u16 lastPageSize;
@@ -186,7 +184,7 @@ bitfield SegmentTableFlags {
 	containsRelocationInfo : 1;
 	padding : 1;
 	discardPriority : 4;
-} [[right_to_left]];
+};
 
 struct SegmentTable {
 	u16 segmentDataPointer;

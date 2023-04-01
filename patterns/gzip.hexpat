@@ -2,7 +2,10 @@
 
 #include <type/time.pat>
 #include <type/size.pat>
+#include <std/core.pat>
 #include <std/mem.pat>
+
+using BitfieldOrder = std::core::BitfieldOrder;
 
 bitfield Flags {
     FTEXT       : 1;
@@ -10,8 +13,7 @@ bitfield Flags {
     FEXTRA      : 1;
     FNAME       : 1;
     FCOMMENT    : 1;
-    padding     : 3;
-} [[right_to_left]];
+} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 8)]];
 
 bitfield ExtraFlags {
     padding : 1;

@@ -4,6 +4,8 @@
 
 #pragma endian big
 
+using BitfieldOrder = std::core::BitfieldOrder;
+
 u32 sampleSize;
 u32 bitsPerSample;
 
@@ -25,14 +27,14 @@ bitfield METADATA_BLOCK_HEADER {
 	lastMetadataBlock 	: 1;
 	blockType 			: 7;
 	length				: 24;
-} [[left_to_right]];
+};
 
 bitfield STREAMINFO_FLAGS {
 	sampleRate 			: 20;
 	numChannels 		: 3 [[format("format_channels")]];
 	bitsPerSample 		: 5;
 	numSamplesInStream	: 36;
-} [[inline, left_to_right]];
+} [[inline]];
 
 fn format_channels(u8 value) {
 	return value + 1;
@@ -82,8 +84,7 @@ struct METADATA_BLOCK_VORBIS_COMMENT {
 bitfield TRACK_FLAGS {
 	audioTrack 	: 1;
 	preEmphasis : 1;
-	padding 	: 6;
-} [[inline]];
+} [[inline,bitfield_order(BitfieldOrder::LeastToMostSignificant, 8)]];
 
 struct CUESHEET_TRACK_INDEX {
 	u64 sampleOffset;
@@ -160,8 +161,7 @@ bitfield FRAME_HEADER_FLAGS {
 	sampleRate			: 4;
 	channelAssignment	: 4;
 	sampleSize			: 3;
-	padding				: 1;
-} [[inline]];
+} [[inline,bitfield_order(BitfieldOrder::LeastToMostSignificant, 32)]];
 
 struct FRAME_HEADER {
 	FRAME_HEADER_FLAGS flags;
@@ -209,6 +209,8 @@ fn getBitsPerSample() {
 		return 20;
 	else if (sampleSize == 0b110)
 		return 24;
+    else
+		std::error(std::format("Invalid sample size {}.", sampleSize));
 };
 
 bitfield SUBFRAME_CONSTANT {
@@ -229,14 +231,14 @@ bitfield RESIDUAL_CODING_METHOD_PARTITIONED_RICE {
 	riceParameter : 4;
 	if (riceParameter == 0b1111)
 		bitsPerSample : 5;
-} [[right_to_left]];
+};
 
 bitfield RESIDUAL_CODING_METHOD_PARTITIONED_RICE2 {
 	partitionOrder : 4;
 	riceParameter  : 5;
 	if (riceParameter == 0b11111)
 		bitsPerSample : 5;
-} [[right_to_left]];
+};
 
 struct RESIDUAL {
 	if (parent.value.codingMethod == 0b00)

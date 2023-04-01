@@ -169,7 +169,7 @@ enum SubCpuTypeVEO : u24 {
 bitfield Capabilities {
     padding : 7;
     lib64   : 1;
-} [[right_to_left]];
+};
 
 enum FileType : u32 {
     Object = 1,
@@ -214,7 +214,7 @@ bitfield Flags {
     appExtensionSafe : 1;
     nlistOutOfSyncWithDyldinof : 1;
     simSupport : 1;
-} [[right_to_left]];
+};
 
 struct Header {
     Magic magic;

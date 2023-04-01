@@ -1,10 +1,13 @@
 // https://github.com/facebook/zstd/blob/dev/doc/zstd_compression_format.md
 
 #pragma MIME application/zstd
- 
+
+#include <std/core.pat>
 #include <std/io.pat>
 #include <std/mem.pat>
 #include <std/sys.pat>
+
+using BitfieldOrder = std::core::BitfieldOrder;
 
 #define ZSTD_MAGIC_NUMBER 0xFD2FB528
 
@@ -15,12 +18,12 @@ bitfield frame_header_descriptor_t {
     reserved_bit : 1;
     content_checksum_flag : 1;
     dictionary_id_flag : 2;
-} [[left_to_right]];
+} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
 
 bitfield window_descriptor_t {
     exponent : 5;
     mantissa : 3;
-} [[left_to_right]];
+} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
 
 fn window_size(window_descriptor_t window_descriptor) {
     u64 window_log = 10 + window_descriptor.exponent;
@@ -67,7 +70,7 @@ bitfield block_header_t {
     last_block : 1;
     block_type : 2;
     block_size : 21;
-} [[right_to_left]];
+};
 
 enum block_type : u8 {
     raw_block = 0,

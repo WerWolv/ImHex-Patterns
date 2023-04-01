@@ -13,13 +13,13 @@ namespace v5 {
         folder : 1;
         encrypted : 1;
         padding : 5;
-    } [[left_to_right]];
+    };
     
     bitfield Flags2 {
         padding : 7;
         resource_fork : 1;
         padding : 8;
-    } [[left_to_right]];
+    };
     
     using MacOSHFSPlusDate = u32 [[format("v5::format_macos_date")]];
     

@@ -1,3 +1,5 @@
+#include <std/mem.pat>
+
 enum GeneratorID : u16 {
     Khronos = 0,
     LunarG = 1,
@@ -642,4 +644,4 @@ struct Instruction {
 Header header @ 0x00;
 
 // SPIR-V does not have any footer, increase number of instructions manually if you encounter a bigger shader
-Instruction instructions[1024] @ 0x14;
+Instruction instructions[while (!std::mem::eof())] @ 0x14;
