@@ -1,4 +1,5 @@
 #pragma MIME audio/x-wav
+#pragma MIME audio/wav
 
 #include <std/mem.pat>
 
