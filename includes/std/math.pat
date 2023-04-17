@@ -178,7 +178,6 @@ namespace std::math {
 	/**
 		Calculates the natural logarithm of `value`.
 		@param value Value
-		@param base Base
 		@return Logarithm of `value` with base `e`
 	*/
 	fn ln(auto value) { return builtin::std::math::ln(value); };
@@ -197,6 +196,13 @@ namespace std::math {
 		@return `base` raised to the power of `exp`
 	*/
 	fn pow(auto base, auto exp) { return builtin::std::math::pow(base, exp); };
+
+    /**
+		Calculates the value of the natural number `e`	raised to the power of `value`.
+		@param value Exponent
+		@return `e` raised to the power of `value`
+	*/
+    fn exp(auto value) { return builtin::std::math::exp(value); };
 
 	/**
 		Calculates the square root of `value`.
