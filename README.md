@@ -91,6 +91,10 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat)` | UEFI structs for parsing efivars |
 | EVTX | | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
 | BSP | | [`patterns/bsp_goldsrc.hexpat`](patterns/bsp_goldsrc.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
+| CrashLvl | |
+[`patterns/Crashlvl.hexpat`]
+(patterns/Crashlvl.hexpat) |
+Crash Bandicoot - Back in Time (fan game) User created flashback tapes level format |
 
 ### Scripts
 
