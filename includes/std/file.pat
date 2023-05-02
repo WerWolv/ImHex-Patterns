@@ -59,9 +59,9 @@ namespace std::file {
 	/**
         Writes the content of a string into a file
 		@param handle The file handle to write to
-		@param data String to write to the file
+		@param data String or Pattern to write to the file
     */
-	fn write(Handle handle, str data) {
+	fn write(Handle handle, auto data) {
 		builtin::std::file::write(handle, data);
 	};
 
