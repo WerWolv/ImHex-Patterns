@@ -1,10 +1,101 @@
 #pragma MIME application/x-dosexec
 #pragma MIME application/x-msdownload
-#pragma pattern_limit 0x400000
 
 #include <std/string.pat>
 #include <std/mem.pat>
 
+// Rich Header
+bool checkForRichHeader in;
+u16 richHeaderEndPosition;
+fn initializeRichHeader() {
+	if (checkForRichHeader) {
+		for	(u16 richEndCursor = std::mem::read_unsigned(0x08, 2)*16, richEndCursor < std::mem::read_unsigned(0x3C, 2), richEndCursor = richEndCursor + 1) {
+			if (std::mem::read_string(richEndCursor, 4) == "Rich") {
+				richHeaderEndPosition = richEndCursor;
+				break;
+			}
+		}
+	}
+};
+initializeRichHeader();
+
+fn formatHexadecimally(auto value) {
+	return std::string::to_string(value) + " (" + std::format("0x{:X}", value) + ")";
+};
+fn unmaskBuild(u16 value) {
+	return formatHexadecimally(value ^ std::mem::read_unsigned(richHeaderEndPosition+4, 2));
+};
+fn unmask(u32 value) {
+	return formatHexadecimally(value ^ std::mem::read_unsigned(richHeaderEndPosition+4, 4));
+};
+
+enum ProductType : u16 {
+	Unmarked = 0x00 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	Imports = 0x01 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	STDLIBDLL = 0x04 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS6CVTRes = 0x06 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS6CCompiler = 0x0A ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS6CPPCompiler = 0x0B ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	OldNames = 0x0C ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	MASM613 = 0x0E ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2003Assembler = 0x0F ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VC6SP5 = 0x16 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2002Linker = 0x19 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2002CCompiler = 0x1C ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2002CPPCompiler = 0x1D ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2003SDKIMP = 0x5D ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2003CPPCompiler = 0x60 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2005CCompiler = 0x6D ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2005CPPCompiler = 0x6E ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2005Linker = 0x7B ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2008Linker = 0x93 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	Linker12 = 0x9D ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	MASM10 = 0x9E ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2010CCompiler = 0xAA ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2010CPPCompiler = 0xAB ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2015CVTRes = 0xFF ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2015Linker = 0x101 ... 0x102 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2015Assembler = 0x103 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2015CCompiler = 0x104 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2),
+	VS2015CPPCompiler = 0x105 ^ std::mem::read_unsigned(richHeaderEndPosition+6, 2)
+};
+
+struct Product {
+	u16 buildNumber [[format("unmaskBuild")]];
+	ProductType productID;
+	u32 objectCount [[format("unmask")]];
+};
+
+using NullPadding = u32 [[format("unmask")]];
+fn formatSignature(auto value) {
+	return "\"DanS\" ";
+};
+
+struct RichHeader {
+	char maskedSignature[4] [[format("formatSignature")]];
+	NullPadding nullPadding[3];
+	Product products[while($ < richHeaderEndPosition)];
+	char signature[4];
+	u32 mask;
+} [[inline]];
+
+u8 richHeaderCorpusPosition;
+fn setupRichHeader() {
+	if (checkForRichHeader) {
+		//0x20 is the size of a Rich Header with one product
+		for (u16 richCorpusCursor = richHeaderEndPosition - 0x20, richCorpusCursor > std::mem::read_unsigned(0x08, 2)*16, richCorpusCursor = richCorpusCursor - 0x01) {
+			if (str(std::mem::read_unsigned(richCorpusCursor, 4) ^ std::mem::read_unsigned(richHeaderEndPosition+4, 4)) == "DanS") {
+				richHeaderCorpusPosition = richCorpusCursor;
+				break;
+			}
+		}
+	}
+};
+setupRichHeader();
+
+RichHeader richHeader[checkForRichHeader] @ richHeaderCorpusPosition;
+
+// PE headers
 struct DOSHeader {
 	char signature[2];
 	u16 lastPageSize;
@@ -15,7 +106,7 @@ struct DOSHeader {
 	u16 maximumAllocatedParagraphs;
 	u16 initialSSValue;
 	u16 initialRelativeSPValue;
-	u16 checksum;
+	u16 stubChecksum;
 	u16 initialRelativeIPValue;
 	u16 initialCSValue;
 	u16 relocationsTablePointer;
@@ -28,17 +119,22 @@ struct DOSHeader {
 };
 
 u16 dosMessageOffset;
-fn isntdosmessage(char c) {
-	return c == 0x0D || c == '$';
-};
-
+bool foundDOSMessage;
 fn finddosmessage() {
 	for (u8 i = 0, $+i < std::mem::read_unsigned(0x3C, 4), i = i + 1) {
-		if (std::mem::read_unsigned($+i, 1) == 0xBA) {
+		if (foundDOSMessage && std::mem::read_unsigned($+i, 1) == 0xBA) { // Message offset instruction
 			dosMessageOffset = std::mem::read_unsigned($+i+1, 2);
 			break;
 		}
+		else if (std::mem::read_unsigned($+i, 4) == 0x21CD09B4) { // Output message instructions
+			foundDOSMessage = true;
+			i = 0;
+		}
 	}
+};
+
+fn isntdosmessage(char c) {
+	return c == 0x0D || c == 0x0A || c == '$';
 };
 
 struct DOSStub {
@@ -46,27 +142,40 @@ struct DOSStub {
 	if (dosMessageOffset > 0) {
 		u8 code[while($ != addressof(this) + dosMessageOffset)];
 		char message[while(!isntdosmessage(std::mem::read_unsigned($, 1)))];
-		char data[while(std::mem::read_string($-1, 1) != "$")];
+		if (richHeaderEndPosition>0) {
+			char data[while($ < richHeaderCorpusPosition)];
+		}
+		else {
+			char data[while($ < std::mem::read_unsigned(0x3C, 4))];
+		}
 	} else {
-		u8 code[while(std::mem::read_unsigned($, 6) != 0x00)] @ dosHeader.headerSizeInParagraphs * 16;
+		u8 dosStub[while(std::mem::read_unsigned($, 5) > 0x00)] [[inline]];
 	}
 };
 
 struct PEHeader {
-	DOSHeader dosHeader;
-	DOSStub dosStub;
+	if (std::mem::size() > std::mem::read_unsigned(0x08, 2) > 0) {
+		DOSHeader dosHeader;
+		DOSStub dosStub;
+	}
+	else {
+		DOSHeader dosHeader [[inline]];
+	}
 };
 
 PEHeader peHeader @ 0x00;
 
 enum MachineType : u16 {
 	Unknown = 0x00,
+	AlphaAXPOld = 0x183,
+	AlphaAXP = 0x184,
+	AlphaAXP64Bit = 0x284,
 	AM33 = 0x1D3,
 	AMD64 = 0x8664,
 	ARM = 0x1C0,
 	ARM64 = 0xAA64,
 	ARMNT = 0x1C4,
-	DECAlphaAXP = 0x183,
+	CLRPureMSIL = 0xC0EE,
 	EBC = 0xEBC,
 	I386 = 0x14C,
 	I860 = 0x14D,
@@ -77,9 +186,13 @@ enum MachineType : u16 {
 	MIPS16 = 0x266,
 	MIPSFPU = 0x366,
 	MIPSFPU16 = 0x466,
+	MOTOROLA68000 = 0x268,
 	POWERPC = 0x1F0,
 	POWERPCFP = 0x1F1,
+	POWERPC64 = 0x1F2,
+	R3000 = 0x162,
 	R4000 = 0x166,
+	R10000 = 0x168,
 	RISCV32 = 0x5032,
 	RISCV64 = 0x5064,
 	RISCV128 = 0x5128,
@@ -118,7 +231,7 @@ bitfield Characteristics {
 	relocationsStripped : 1;
 	executableImage : 1;
 	lineNumbersStripped : 1;
-	localSymbolsStripped : 1;
+	symbolsStripped : 1;
 	aggressivelyTrimWorkingSet : 1;
 	largeAddressAware : 1;
 	padding : 1;
@@ -134,7 +247,11 @@ bitfield Characteristics {
 };
 
 bitfield DLLCharacteristics {
-	padding : 5;
+	callWhenLoaded : 1;
+	callWhenThreadTerminates : 1;
+	callWhenThreadStarts : 1;
+	callWhenExiting : 1;
+	padding : 1;
 	highEntropyVA : 1;
 	dynamicBase : 1;
 	forceIntegrity : 1;
@@ -143,13 +260,13 @@ bitfield DLLCharacteristics {
 	noSEH : 1;
 	doNotBind : 1;
 	appContainer : 1;
-	wdmDriver : 1;
-	cfGuard : 1;
+	isWDMDriver : 1;
+	supportsControlFlowGuard : 1;
 	terminalServerAware : 1;
 };
 
 struct DataDirectory {
-	u32 virtualAddress;
+	u32 rva;
 	u32 size;
 };
 
@@ -169,14 +286,14 @@ struct OptionalHeader {
 	else if (magic == PEFormat::PE32Plus) {
 		u64 imageBase;
 	}
-	u32 sectionAlignment;
-	u32 fileAlignment;
+	u32 virtualSectionAlignment;
+	u32 rawSectionAlignment;
 	u16 majorOperatingSystemVersion;
 	u16 minorOperatingSystemVersion;
 	u16 majorImageVersion;
 	u16 minorImageVersion;
 	u16 majorSubsystemVersion;
-	u16 minorSubSystemVersion;
+	u16 minorSubsystemVersion;
 	u32 win32VersionValue;
 	u32 sizeOfImage;
 	u32 sizeOfHeaders;
@@ -200,7 +317,7 @@ struct OptionalHeader {
 	DataDirectory directories[numberOfRVAsAndSizes];
 };
 
-struct COFFHeader { 
+struct COFFHeader {
 	char signature[4];
 	MachineType machine;
 	u16 numberOfSections;
@@ -249,29 +366,43 @@ bitfield SectionFlags {
 	containsInitializedData : 1;
 	containsUninitializedData : 1;
 	linkOther : 1;
-	containsComments : 1;
+	linkHasInformation : 1;
 	padding : 1;
-	remove : 1;
-	containsCOMDATData : 1;
-	padding : 2;
-	globalPointerRelocation : 1;
+	linkRemove : 1;
+	linkHasCOMDAT : 1;
+	padding : 1;
+	resetSpeculativeExceptions : 1;
+	globalPointerRelocations : 1;
 	purgeable : 1;
 	is16Bit : 1;
 	locked : 1;
 	preloaded : 1;
-	dataAlignment : 4 [[format("formatAlignmentBits")]];
-	extendedRelocations : 1;
+	dataAlignment : 4;
+	linkExtendedRelocations : 1;
 	discardable : 1;
-	notCacheable : 1;
+	notCached : 1;
 	notPageable : 1;
 	shared : 1;
 	executed : 1;
 	read : 1;
-	writtenTo : 1;
+	writtenOn : 1;
+};
+
+fn formatSectionName(str string) {
+	u8 actualStringLength;
+	for (u8 i = 0, i < 8, i = i + 1) {
+		if (std::mem::read_unsigned($+i, 1) > 0) {
+			actualStringLength = actualStringLength + 1;
+		}
+		else {
+			break;
+		}
+	}
+	return "\"" + std::string::substr(string, 0, actualStringLength) + "\"";
 };
 
 struct SectionHeader {
-	char name[8];
+	char name[8] [[format("formatSectionName")]];
 	if (coffHeader.characteristics.executableImage) {
 		u32 virtualSize;
 	} else {
@@ -289,22 +420,12 @@ struct SectionHeader {
 
 SectionHeader sectionsTable[coffHeader.numberOfSections] @ addressof(coffHeader.characteristics)+2 + coffHeader.sizeOfOptionalHeader;
 
-// Declarations of sections and units used by them
+// Sections
 u16 currentSectionIndex;
-fn updateSectionIndex() {
-	currentSectionIndex = currentSectionIndex + 1;
-};
-
-fn virtualDataDifference() {
-	return sectionsTable[currentSectionIndex].virtualAddress - sectionsTable[currentSectionIndex].ptrRawData;
-};
-
-fn formatNullTerminatedString(str string) {
-	return "\"" + std::string::substr(string, 0, std::string::length(string)-4) + "\"";
-};
 
 // Exception Section
-bitfield ExceptionSectionBits {
+bitfield FunctionBitfield {
+	prologLength : 8;
 	functionLength : 22;
 	instructions32Bit : 1;
 	exceptionHandler : 1;
@@ -319,8 +440,7 @@ struct FunctionTableEntry {
 		u32 prologEndVA;
 	} else if (coffHeader.machine == MachineType::ARM || coffHeader.machine == MachineType::ARM64 || coffHeader.machine == MachineType::ARMNT || coffHeader.machine == MachineType::POWERPC || coffHeader.machine == MachineType::POWERPCFP || coffHeader.machine == MachineType::SH3 || coffHeader.machine == MachineType::SH4) {
 		u32 beginVA;
-		u8 prologLength;
-		ExceptionSectionBits miscellaneousBits;
+		FunctionBitfield miscellaneousBits;
 	} else if (coffHeader.machine == MachineType::AMD64 || coffHeader.machine == MachineType::IA64) {
 		u32 beginRVA;
 		u32 endRVA;
@@ -328,27 +448,27 @@ struct FunctionTableEntry {
 	}
 };
 
-// Exports Section
-struct ExportDirectoryTable {
-	u32 exportFlags;
-	u32 timeDateStamp;
-	u16 majorVersion;
-	u16 minorVersion;
-	u32 nameRVA;
-	u32 ordinalBase;
-	u32 addressTableEntries;
-	u32 numberOfNamePointers;
-	u32 exportAddressTableRVA;
-	u32 namePointerRVA;
-	u32 ordinalTableRVA;
+struct ExceptionTable {
+	FunctionTableEntry functionTableEntries[while($ < (coffHeader.optionalHeader.directories[3].rva - virtualDataDifference()) + coffHeader.optionalHeader.directories[3].size)] [[inline]];
 };
 
-struct ExportName {
-	char name[] [[format("formatNullTerminatedString")]];
+// Exports Table
+struct ExportDirectoryTable {
+	u32 flags [[name("exportFlags")]];
+	u32 timeDateStamp [[name("exportTimeDateStamp")]];
+	u16 majorVersion;
+	u16 minorVersion;
+	u32 imageNameRVA;
+	u32 ordinalBase [[name("exportOrdinalBase")]];
+	u32 addressesAmount [[name("exportAddressesAmount")]];
+	u32 namePointersAmount [[name("exportNamePointersAmount")]];
+	u32 addressTableRVA [[name("exportAddressTableRVA")]];
+	u32 namePointerTableRVA [[name("exportNamePointerTableRVA")]];
+	u32 ordinalTableRVA [[name("exportOrdinalTableRVA")]];
 };
 
 struct ExportAddress {
-	if (std::mem::read_unsigned($, 4) > sectionsTable[currentSectionIndex].sizeOfRawData && std::mem::read_unsigned($, 4) < sectionsTable[currentSectionIndex].ptrRawData) {
+	if (sectionsTable[currentSectionIndex].ptrRawData > std::mem::read_unsigned($, 4) > sectionsTable[currentSectionIndex].sizeOfRawData) {
 		u32 exportRVA;
 	}
 	else {
@@ -356,36 +476,52 @@ struct ExportAddress {
 	}
 };
 
+fn formatNullTerminatedString(str string) {
+	return "\"" + std::string::substr(string, 0, std::string::length(string)-1) + "\"";
+};
+
+struct ExportName {
+	char exportName[] [[format("formatNullTerminatedString")]];
+};
+
+fn virtualDataDifference() {
+	return sectionsTable[currentSectionIndex].virtualAddress - sectionsTable[currentSectionIndex].ptrRawData;
+};
+
 struct ExportNamePointer {
 	u32 exportNameRVA;
-	ExportName exportName @ exportNameRVA - virtualDataDifference();
+	ExportName name @ exportNameRVA - virtualDataDifference();
 };
 
-struct ExportsSection {
+struct ExportsTable {
 	ExportDirectoryTable exportDirectoryTable;
-	ExportAddress exportAddressTable[exportDirectoryTable.addressTableEntries] @ exportDirectoryTable.exportAddressTableRVA - virtualDataDifference();
-	ExportNamePointer exportNamePointerTable[exportDirectoryTable.numberOfNamePointers] @ exportDirectoryTable.namePointerRVA - virtualDataDifference();
-	u16 exportOrdinalTable[exportDirectoryTable.numberOfNamePointers] @ exportDirectoryTable.ordinalTableRVA - virtualDataDifference();
-	char dllName[] @ exportDirectoryTable.nameRVA - virtualDataDifference() [[format("formatNullTerminatedString")]];
+	$ += $ - (exportDirectoryTable.addressTableRVA - virtualDataDifference());
+	ExportAddress exportAddressTable[exportDirectoryTable.addressesAmount];
+	$ += $ - (exportDirectoryTable.namePointerTableRVA - virtualDataDifference());
+	ExportNamePointer exportNamePointerTable[exportDirectoryTable.namePointersAmount];
+	$ += $ - (exportDirectoryTable.ordinalTableRVA - virtualDataDifference());
+	u16 exportOrdinalTable[exportDirectoryTable.namePointersAmount];
+	$ += $ - (exportDirectoryTable.imageNameRVA - virtualDataDifference());
+	char imageName[] [[format("formatNullTerminatedString")]];
 };
 
-// Imports + Readonly Data Section
+// Imports Table
 fn architecture() {
 	return std::mem::read_unsigned(addressof(coffHeader.optionalHeader.magic), 2) / 0x41;
 };
 
 bitfield OrdinalFlagByte {
-	flag : 1;
 	padding : 7;
+	flag : 1;
 };
 
-struct NameTableEntry {
+struct ImportsName {
 	u16 hint;
 	char name[] [[format("formatNullTerminatedString")]];
 	if ($ % 2 == 1) { u8 pad; }
 };
 
-struct AddressTableEntry {
+struct ImportsAddress {
 	OrdinalFlagByte ordinalFlagByte @ $+(architecture()-1);
 	if (ordinalFlagByte.flag) {
 		u16 ordinalNumber;
@@ -398,13 +534,13 @@ struct AddressTableEntry {
 	}
 };
 
-struct LookupTableEntry : AddressTableEntry {
-	if (!ordinalFlagByte.flag && std::mem::read_unsigned($, architecture()) > 0) {
-   		NameTableEntry name @ nameTableRVA - virtualDataDifference();
+struct ImportsLookup : ImportsAddress {
+	if (!ordinalFlagByte.flag && std::mem::read_unsigned($-architecture(), architecture()) > 0) {
+   		ImportsName name @ nameTableRVA - virtualDataDifference();
 	}
 };
 
-struct DirectoryTable {
+struct ImportsDirectory {
 	u32 lookupTableRVA;
 	u32 timeDateStamp;
 	u32 forwarderChain;
@@ -412,47 +548,27 @@ struct DirectoryTable {
 	u32 addressTableRVA;
 } [[static]];
 
-u16 importsIndex;
+struct RedirectingImportsDirectory : ImportsDirectory {
+	ImportsLookup lookupTable[while(std::mem::read_unsigned($, architecture()) != 0)] @ lookupTableRVA - virtualDataDifference();
+	ImportsLookup nullLookup @ addressof(lookupTable) + sizeof(lookupTable);
 
-struct ImportsStructure {
-	LookupTableEntry lookupTable[while(std::mem::read_unsigned($, architecture()) != 0)] @ parent.directoryTables[importsIndex].lookupTableRVA - virtualDataDifference();
-	AddressTableEntry addressTable[while(std::mem::read_unsigned($, architecture()) != 0)] @ parent.directoryTables[importsIndex].addressTableRVA - virtualDataDifference();	
-	char dllName[] @ parent.directoryTables[importsIndex].dllNameRVA - virtualDataDifference() [[format("formatNullTerminatedString")]];
-	importsIndex = importsIndex + 1;
-} [[inline]];
+	char dllName[] @ dllNameRVA - virtualDataDifference() [[format("formatNullTerminatedString")]];
 
-struct ImportsSection {
-	DirectoryTable directoryTables[while(std::mem::read_unsigned($, 16) != 0x00)];
-	DirectoryTable nullDirectoryTable;
-	ImportsStructure importsStructures[sizeof(directoryTables) / sizeof(directoryTables[0])];
+	ImportsAddress addressTable[while(std::mem::read_unsigned($, architecture()) != 0)] @ addressTableRVA - virtualDataDifference();
+	ImportsAddress nullAddress @ addressof(addressTable) + sizeof(addressTable);
 };
 
-struct ReadonlyDataSection {
-	if (coffHeader.optionalHeader.numberOfRVAsAndSizes >= 0xC) {
-		$ += coffHeader.optionalHeader.directories[0xC].size;
-	}
-	u8 readonlyDataStart[while($ < coffHeader.optionalHeader.directories[1].virtualAddress - virtualDataDifference())];
-	ImportsSection importsSection;
+struct ImportsTable {
+	RedirectingImportsDirectory importsDirectoryTable[while(std::mem::read_unsigned($, 16) != 0x00)];
+	ImportsDirectory nullImportsDirectory;
 };
 
-// Resource Section
+// Global Resource Table units
 using ResourceDirectory;
 
 struct ResourceString {
 	u16 length;
 	char16 string[length];
-};
-
-struct NameDirectoryEntry {
-	if (std::mem::read_unsigned($+3, 1) == 0x80) {
-		u32 relativeOffsetToName;
-		ResourceString name @ sectionsTable[currentSectionIndex].ptrRawData + (relativeOffsetToName - 0x80000000);
-	}
-	else {
-		char name[4];
-	}
-	u32 relativeOffsetToData;
-	ResourceDirectory directory @ sectionsTable[currentSectionIndex].ptrRawData + (relativeOffsetToData - 0x80000000);
 };
 
 // * Bitmap Resource
@@ -477,8 +593,37 @@ struct Colors {
 	u8 reserved [[color("828282")]];
 };
 
+bitfield MonoPixel {
+	pixelBits : parent.parent.bmh.bitmapBitCount*8;
+};
+
+bitfield LowerBitcountPixel {
+	leftPixel : parent.parent.bmh.bitmapBitCount;
+	rightPixel : parent.parent.bmh.bitmapBitCount;
+};
+
+bitfield HigherBitcountPixel {
+	pixel : parent.parent.bmh.bitmapBitCount;
+};
+
+struct LineData {
+	if (parent.bmh.bitmapBitCount == 8) {
+		HigherBitcountPixel pixels[parent.bmh.bitmapWidth];
+	}
+	else if (parent.bmh.bitmapBitCount == 4) {
+		LowerBitcountPixel pixels[parent.bmh.bitmapWidth/2];
+	}
+	else if (parent.bmh.bitmapBitCount == 1) {
+		MonoPixel pixels[parent.bmh.bitmapWidth];
+	}
+};
+
+u32 actualBitmapHeight;
+u32 bitMaskSize;
+
 struct Bitmap {
 	BitmapHeader bmh;
+	bitMaskSize = bitMaskSize - sizeof(bmh);
 
 	if ((bmh.bitmapBitCount != 24) && (bmh.bitmapBitCount != 32)) {
 		if (bmh.bitmapClrUsed > 0) {
@@ -487,30 +632,36 @@ struct Bitmap {
 		else {
 			Colors rgbq[1 << bmh.bitmapBitCount];
 		}
+		bitMaskSize = bitMaskSize - sizeof(rgbq);
+	}
+
+	if (bmh.bitmapImageSize > 0) {
+		u8 lineData[bmh.bitmapImageSize];
+	}
+	else {
+		actualBitmapHeight = bmh.bitmapHeight;
+		if (bmh.bitmapBitCount == 4) {
+			actualBitmapHeight = actualBitmapHeight / 2;
+		}
+
+		LineData lineData[actualBitmapHeight];
+	}
+	bitMaskSize = bitMaskSize - sizeof(lineData);
+
+	u8 bitMask[bitMaskSize];
+};
+
+// * Cursor Resource
+struct Cursor {
+	u16 reserved;
+	u16 type;
+	if (type == 0) {
+	   bitMaskSize = parent.size;
+	   Bitmap bitmap [[inline]];
 	}
 };
 
 // * Dialog Resource
-struct DialogTemplate {
-	u32 style;
-	u32 extendedStyles;
-	u16 numberOfItems;
-	u16 x;
-	u16 y;
-	u16 width;
-	u16 height;
-};
-
-struct DialogItemTemplate {
-	u32 style;
-	u32 extendedStyles;
-	u16 x;
-	u16 y;
-	u16 width;
-	u16 height;
-	u16 id;
-};
-
 struct NullTerminatedString16 {
 	char16 string[while(std::mem::read_unsigned($, 2) != 0)];
 	char16 terminatingNull;
@@ -543,32 +694,76 @@ struct VariableLengthStructure {
 	}
 };
 
-struct DialogItem {
-	u16 alignment;
-	DialogItemTemplate template;
-	VariableLengthStructure itemClass;
-	VariableLengthStructure itemTitle;
-	u16 itemCreationData;
-	if (itemCreationData > 0) {
-		u8 itemData[itemCreationData];
+struct DialogTemplate {
+	if (parent.parent.parent.id == 0x409) {
+		u16 version;
+		u16 signature;
+		u32 helpContextIdentifier;
+		u32 extendedStyles;
+		u32 style;
 	}
+	else {
+		u32 style;
+		u32 extendedStyles;
+	}
+	u16 numberOfItems;
+	u16 x;
+	u16 y;
+	u16 width;
+	u16 height;
+	if (parent.parent.parent.id == 0x409) {
+		VariableLengthStructure dialogMenu;
+		VariableLengthStructure dialogClass;
+		NullTerminatedString16 dialogTitle;
+		u16 dialogFontSize;
+		u16 weight;
+	   	bool italic;
+		u8 charset;
+		char16 dialogFontTypeface[while(std::mem::read_unsigned($, 2) != 0)];
+		u16 terminatingNull;
+	}
+};
+
+struct DialogItemTitle {
+	VariableLengthStructure vls;
+	NullTerminatedString16 title;
+};
+
+struct DialogItemTemplate {
+	if (parent.parent.parent.parent.id == 0x409) {
+		u32 helpContextIdentifier;
+		u32 extendedStyles;
+		u32 style;
+	}
+	else {
+		u32 style;
+		u32 extendedStyles;
+	}
+	u16 x;
+	u16 y;
+	u16 width;
+	u16 height;
+	u16 controlID;
+	if (parent.parent.parent.parent.id == 0x409) {
+		VariableLengthStructure windowClass;
+		DialogItemTitle dialogItemTitle;
+		u16 extraCount;
+		u8 itemCreationData[extraCount];
+	}
+};
+
+struct DialogItem {
+	DialogItemTemplate template [[inline]];
 };
 
 struct Dialog {
 	DialogTemplate dialogTemplate;
-	u16 dialogMenu;
-	VariableLengthStructure dialogClass;
-	VariableLengthStructure dialogTitle;
-	u16 dialogFontSize;
-	char16 dialogFontTypeface[while(std::mem::read_unsigned($, 2) != 0)];
-	u16 terminatingNull;
-	DialogItem items[while($ < (parent.dataRVA - virtualDataDifference()) + parent.size)];
+	DialogItem items[dialogTemplate.numberOfItems];
 };
 
 // * String Resource
 struct StringTableResource {
-	ResourceString strings[while(std::mem::read_unsigned($, 2) != 0x00)];
-	u16 nullPadding[while($ < (parent.dataRVA - virtualDataDifference()) + parent.size)];
+	ResourceString strings[while($ < (parent.dataRVA - virtualDataDifference()) + parent.size)];
 };
 
 // * GroupCursor Resource
@@ -612,7 +807,7 @@ struct VersionEntryHeader {
 	char16 key[while(std::mem::read_unsigned($, 2) != 0)];
 	u16 terminatingNull;
 	u8 nullPadding[while(std::mem::read_unsigned($, 1) == 0 && $ < addressof(terminatingNull)+5)];
-} [[inline]];
+};
 
 struct StringInfo {
 	VersionEntryHeader stringInfoHeader;
@@ -623,7 +818,7 @@ struct StringInfo {
 };
 
 struct VersionEntry {
-	VersionEntryHeader header;
+	VersionEntryHeader header [[inline]];
 	if (std::string::starts_with(std::string::to_string(header.key), "VS_VERSION_INFO")) {
 		u32 signature;
 		u16 structVersion[2];
@@ -667,12 +862,12 @@ fn displayTrueChar(u8 value) {
 
 using TrueChar = u8 [[format("displayTrueChar")]];
 
-struct XML {
+struct Manifest {
 	u8 bom[while(std::mem::read_unsigned($, 1) != '<')];
-	TrueChar contents[parent.size - sizeof(bom)] [[inline]];
+	TrueChar xml[parent.size - sizeof(bom)] [[inline]];
 };
 
-// * The rest of the section
+// Resource Table
 enum ResourceID : u32 {
 	Cursor = 0x01,
 	Bitmap,
@@ -680,7 +875,8 @@ enum ResourceID : u32 {
 	Menu,
 	Dialog,
 	String,
-	StringData = 0x0A,
+	Accelerator = 0x09,
+	StringData,
 	GroupCursor = 0x0C,
 	GroupIcon = 0x0E,
 	Version = 0x10,
@@ -695,17 +891,21 @@ struct DataEntry {
 	u32 codepage;
 	u32 reserved;
 
-	if (resourceIDType == ResourceID::Bitmap || (resourceIDType == ResourceID::Icon && std::mem::read_string((dataRVA-virtualDataDifference())+1, 3) != "PNG")) {
+	if (resourceIDType == ResourceID::Cursor) {
+		Cursor cursor @ dataRVA - virtualDataDifference();
+	}
+	else if (resourceIDType == ResourceID::Bitmap || (resourceIDType == ResourceID::Icon && std::mem::read_string((dataRVA - virtualDataDifference())+1, 3) != "PNG")) {
+		bitMaskSize = size;
 		Bitmap bitmap @ dataRVA - virtualDataDifference();
 	}
 	else if (resourceIDType == ResourceID::Dialog) {
 		Dialog dialog @ dataRVA - virtualDataDifference();
 	}
 	else if (resourceIDType == ResourceID::String) {
-		StringTableResource stringTableResource @ dataRVA - virtualDataDifference();	
+		StringTableResource stringTableResource @ dataRVA - virtualDataDifference();
 	}
 	else if (resourceIDType == ResourceID::StringData) {
-		TrueChar stringData[size] @ dataRVA - virtualDataDifference();	
+		TrueChar stringData[size] @ dataRVA - virtualDataDifference();
 	}
 	else if (resourceIDType == ResourceID::GroupCursor) {
 		GroupCursor groupCursor @ dataRVA - virtualDataDifference();
@@ -717,7 +917,7 @@ struct DataEntry {
 		VersionEntry version[while($ < (dataRVA - virtualDataDifference()) + size)] @ dataRVA - virtualDataDifference();
 	}
 	else if (resourceIDType == ResourceID::Manifest) {
-		XML manifest @ dataRVA - virtualDataDifference();
+		Manifest manifest @ dataRVA - virtualDataDifference();
 	}
 	else {
 		u8 resource[size] @ dataRVA - virtualDataDifference();
@@ -725,21 +925,33 @@ struct DataEntry {
 };
 
 struct IdDirectoryEntry {
-	if ($ > (coffHeader.optionalHeader.directories[2].virtualAddress - virtualDataDifference()) + 0x10 + 8*(std::mem::read_unsigned(coffHeader.optionalHeader.directories[2].virtualAddress - virtualDataDifference() + 12, 2) + std::mem::read_unsigned(coffHeader.optionalHeader.directories[2].virtualAddress - virtualDataDifference() + 14, 2))) {
+	if ($ > (coffHeader.optionalHeader.directories[2].rva - virtualDataDifference()) + 0x10 + 8*(std::mem::read_unsigned(coffHeader.optionalHeader.directories[2].rva - virtualDataDifference() + 12, 2) + std::mem::read_unsigned(coffHeader.optionalHeader.directories[2].rva - virtualDataDifference() + 14, 2))) {
 		u32 id;
 	}
 	else {
 		ResourceID id;
-		resourceIDType = id;
+		resourceIDType = std::mem::read_unsigned(addressof(id), 4);
 	}
 	u32 offsetToData;
 
 	if (offsetToData >= 0x80000000) {
-		ResourceDirectory directory @ (coffHeader.optionalHeader.directories[2].virtualAddress - virtualDataDifference()) + (offsetToData - 0x80000000);
+		ResourceDirectory directory @ (coffHeader.optionalHeader.directories[2].rva - virtualDataDifference()) + (offsetToData - 0x80000000);
 	}
 	else {
-		DataEntry dataEntry @ (coffHeader.optionalHeader.directories[2].virtualAddress - virtualDataDifference()) + offsetToData;
+		DataEntry dataEntry @ (coffHeader.optionalHeader.directories[2].rva - virtualDataDifference()) + offsetToData;
 	}
+};
+
+struct NameDirectoryEntry {
+	if (std::mem::read_unsigned($+3, 1) == 0x80) {
+		u32 relativeOffsetToName;
+		ResourceString name @ sectionsTable[currentSectionIndex].ptrRawData + (relativeOffsetToName - 0x80000000);
+	}
+	else {
+		char name[4];
+	}
+	u32 relativeOffsetToData;
+	ResourceDirectory directory @ sectionsTable[currentSectionIndex].ptrRawData + (relativeOffsetToData - 0x80000000);
 };
 
 struct ResourceDirectoryTable {
@@ -757,11 +969,11 @@ struct ResourceDirectory {
 	IdDirectoryEntry idEntries[resourceDirectoryTable.idEntriesAmount];
 };
 
-struct ResourceSection {
+struct ResourceTable {
 	ResourceDirectory rootDirectory;
 };
 
-// Relocations Section
+// Base Relocations Table
 enum BaseRelocationType : u8 {
 	Absolute,
 	High,
@@ -831,94 +1043,49 @@ enum LoongarchBaseRelocationType : u8 {
 	DIR64 = 10
 };
 
-fn formatMIPSType(u8 value) {
-	MIPSBaseRelocationType mipsTypeBits = value;
-	return mipsTypeBits;
+fn formatBaseRelocationType(u8 value) {
+	if (coffHeader.machine == MachineType::MIPS16 || coffHeader.machine == MachineType::MIPSFPU || coffHeader.machine == MachineType::MIPSFPU16 || coffHeader.machine == MachineType::R3000 || coffHeader.machine == MachineType::R4000 || coffHeader.machine == MachineType::R10000) {
+		MIPSBaseRelocationType mipsTypeBits = value;
+		return mipsTypeBits;
+	}
+	else if (coffHeader.machine == MachineType::ARM || coffHeader.machine == MachineType::ARM64 || coffHeader.machine == MachineType::ARMNT) {
+		ARMBaseRelocationType armTypeBits = value;
+		return armTypeBits;
+	}
+	else if (coffHeader.machine == MachineType::RISCV32 || coffHeader.machine == MachineType::RISCV64 || coffHeader.machine == MachineType::RISCV128) {
+		RISCVBaseRelocationType riscvTypeBits = value;
+		return riscvTypeBits;
+	}
+	else if (coffHeader.machine == MachineType::THUMB) {
+		THUMBBaseRelocationType thumbTypeBits = value;
+		return thumbTypeBits;
+	}
+	else if (coffHeader.machine == MachineType::LOONGARCH32 || coffHeader.machine == MachineType::LOONGARCH64) {
+		LoongarchBaseRelocationType loongarchTypeBits = value;
+		return loongarchTypeBits;
+	}
+	else {
+		BaseRelocationType genericTypeBits = value;
+		return genericTypeBits;
+	}
 };
 
-fn formatARMType(u8 value) {
-	ARMBaseRelocationType armTypeBits = value;
-	return armTypeBits;
-};
-
-fn formatRISCVType(u8 value) {
-	RISCVBaseRelocationType riscvTypeBits = value;
-	return riscvTypeBits;
-};
-
-fn formatTHUMBType(u8 value) {
-	THUMBBaseRelocationType thumbTypeBits = value;
-	return thumbTypeBits;
-};
-
-fn formatLoongarchType(u8 value) {
-	LoongarchBaseRelocationType loongarchTypeBits = value;
-	return loongarchTypeBits;
-};
-
-fn formatGenericType(u8 value) {
-	BaseRelocationType genericTypeBits = value;
-	return genericTypeBits;
-};
-
-bitfield MIPSBaseRelocationWord {
-	type : 4 [[format("formatMIPSType")]];
+bitfield BaseRelocationWord {
 	offset : 12;
-};
-
-bitfield ARMBaseRelocationWord {
-	type : 4 [[format("formatARMType")]];
-	offset : 12;
-};
-
-bitfield RISCVBaseRelocationWord {
-	type : 4 [[format("formatRISCVType")]];
-	offset : 12;
-};
-
-bitfield THUMBBaseRelocationWord {
-	type : 4 [[format("formatTHUMBType")]];
-	offset : 12;
-};
-
-bitfield LoongarchBaseRelocationWord {
-	type : 4 [[format("formatLoongarchType")]];
-	offset : 12;
-};
-
-bitfield GenericBaseRelocationWord {
-	type : 4 [[format("formatGenericType")]];
-	offset : 12;
+	type : 4 [[format("formatBaseRelocationType")]];
 };
 
 struct BaseRelocationBlock {
 	u32 pageRVA;
 	u32 blockSize;
-	if (coffHeader.machine == MachineType::MIPS16 || coffHeader.machine == MachineType::MIPSFPU || coffHeader.machine == MachineType::MIPSFPU16) {
-		MIPSBaseRelocationWord word;
-	}
-	else if (coffHeader.machine == MachineType::ARM || coffHeader.machine == MachineType::ARM64 || coffHeader.machine == MachineType::ARMNT) {
-		ARMBaseRelocationWord word;
-	}
-	else if (coffHeader.machine == MachineType::RISCV32 || coffHeader.machine == MachineType::RISCV64 || coffHeader.machine == MachineType::RISCV128) {
-		RISCVBaseRelocationWord word;
-	}
-	else if (coffHeader.machine == MachineType::THUMB) {
-		THUMBBaseRelocationWord word;
-	}
-	else if (coffHeader.machine == MachineType::LOONGARCH32 || coffHeader.machine == MachineType::LOONGARCH64) {
-		LoongarchBaseRelocationWord word;
-	}
-	else {
-		GenericBaseRelocationWord word;
-	}
+	BaseRelocationWord word;
 };
 
 struct BaseRelocationTable {
-	BaseRelocationBlock baseRelocationBlocks[while($ < (coffHeader.optionalHeader.directories[5].virtualAddress - virtualDataDifference()) + coffHeader.optionalHeader.directories[5].size)];
+	BaseRelocationBlock baseRelocationBlocks[while($ < addressof(this) + coffHeader.optionalHeader.directories[5].size)];
 };
 
-// Debug Section
+// Debug Table
 enum DebugType : u32 {
 	Unknown,
 	COFF,
@@ -947,12 +1114,12 @@ struct DebugDirectory {
 	u32 pointerOfRawData;
 };
 
-struct DebugSection {
+struct DebugData {
 	DebugDirectory directory;
 };
 
-// TLS Section
-struct TLSSection {
+// TLS Table
+struct TLSTable {
 	if (coffHeader.optionalHeader.magic == PEFormat::PE32) {
 		u32 rawDataStartVA;
 		u32 rawDataEndVA;
@@ -971,7 +1138,7 @@ struct TLSSection {
 
 // CRT Section
 struct CRTSection {
-	u64 addresses[while($ < sectionsTable[currentSectionIndex].ptrRawData + sectionsTable[currentSectionIndex].sizeOfRawData)];
+	u64 virtualAddresses[while($ < sectionsTable[currentSectionIndex].ptrRawData + sectionsTable[currentSectionIndex].sizeOfRawData)];
 };
 
 // General Section things
@@ -985,64 +1152,69 @@ struct LineNumber {
 	$ += 4;
 };
 
-fn importsPrint(str value) {
-	std::print("Check for .idata section " + value);
-};
+bool doesDataDirectoryExist[coffHeader.optionalHeader.numberOfRVAsAndSizes];
 
-fn separateImportsSection() { 
-	bool returnedValue;
-	if (coffHeader.optionalHeader.directories[1].size > 0) {
-		for (u16 i = 0, i < coffHeader.numberOfSections, i = i + 1) {
-			if (std::string::starts_with(sectionsTable[i].name, ".idata")) {
-				importsPrint("successful. It is section " + std::string::to_string(i) + ", so the read-only data section won't have an imports section in it");
-				returnedValue = true;
-				break;
-			}
+fn checkForDataDirectory() {
+	for (u32 i = 0, i < coffHeader.optionalHeader.numberOfRVAsAndSizes, i = i + 1) {
+		if (coffHeader.optionalHeader.directories[i].rva - virtualDataDifference() < sectionsTable[currentSectionIndex].ptrRawData+sectionsTable[currentSectionIndex].sizeOfRawData && coffHeader.optionalHeader.directories[i].rva - virtualDataDifference() >= $) {
+			doesDataDirectoryExist[i] = true;
 		}
 	}
-	if (!returnedValue) {
-		importsPrint("failed! This means there is no separate imports section");
+};
+
+fn checkForZeroDataDirectories() {
+	for (u32 i = 0, i < coffHeader.optionalHeader.numberOfRVAsAndSizes, i = i + 1) {
+		if (doesDataDirectoryExist[i]) {
+			return false;
+		}
 	}
-	return returnedValue;
+	return true;
+};
+
+fn zerooutBoolArray() {
+	for (u32 i = 0, i < coffHeader.optionalHeader.numberOfRVAsAndSizes, i = i + 1) {
+		doesDataDirectoryExist[i] = false;
+	}
+};
+
+fn updateSectionIndex() {
+	currentSectionIndex = currentSectionIndex + 1;
 };
 
 struct Section {
-	if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".pdata")) {		// Exception section
-		FunctionTableEntry functionTableEntries[while($ < (coffHeader.optionalHeader.directories[3].virtualAddress - virtualDataDifference()) + coffHeader.optionalHeader.directories[3].size)] [[name("exceptionSection")]];
-	}
-	else if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".edata")) {	// Exports section
-		ExportsSection exportsSection;
-	}
-	else if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".idata")) {	// Imports section
-		ImportsSection importsSection;
-	}
-	else if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".rdata")) {	// Read-only data section
-		if (separateImportsSection()) {
-			u8 readonlyDataSection[sectionsTable[currentSectionIndex].sizeOfRawData]; 
+	checkForDataDirectory();
+	if (checkForZeroDataDirectories()) {
+		if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".CRT")) {	// CRT section
+			CRTSection crtSection;
 		}
 		else {
-			ReadonlyDataSection readOnlyDataSection;	
+			u8 freeformSection[sectionsTable[currentSectionIndex].sizeOfRawData];				// Freeform data section
 		}
 	}
-	else if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".rsrc")) {	// Resource section
-		ResourceSection resourceSection;
-	}
-	else if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".reloc")) {	// Base relocations section
-		BaseRelocationTable relocationsSection;
-	}
-	else if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".debug") ||
-			 std::string::starts_with(sectionsTable[currentSectionIndex].name, ".build")) {	// Debug section
-		DebugSection debugSection;
-	}
-	else if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".tls")) {	// Thread-local storage section
-		TLSSection tlsSection;
-	}
-	else if (std::string::starts_with(sectionsTable[currentSectionIndex].name, ".CRT")) {	// CRT section
-		CRTSection crtSection;
-	}
 	else {
-		u8 freeformSection[sectionsTable[currentSectionIndex].sizeOfRawData];				// Freeform data section
+		if (doesDataDirectoryExist[0]) {
+			ExportsTable exportTable @ coffHeader.optionalHeader.directories[0].rva - virtualDataDifference();
+		}
+		if (doesDataDirectoryExist[1]) {
+			ImportsTable importTable @ coffHeader.optionalHeader.directories[1].rva - virtualDataDifference();
+		}
+		if (doesDataDirectoryExist[2]) {
+			ResourceTable resourceTable @ coffHeader.optionalHeader.directories[2].rva - virtualDataDifference();
+		}
+		if (doesDataDirectoryExist[3]) {
+			ExceptionTable exceptionTable @ coffHeader.optionalHeader.directories[3].rva - virtualDataDifference();
+		}
+		if (doesDataDirectoryExist[5]) {
+			BaseRelocationTable baseRelocationTable @ coffHeader.optionalHeader.directories[5].rva - virtualDataDifference();
+		}
+		if (doesDataDirectoryExist[6]) {
+			DebugData debugTable @ coffHeader.optionalHeader.directories[6].rva - virtualDataDifference();
+		}
+		if (doesDataDirectoryExist[9]) {
+			TLSTable tlsTable @ coffHeader.optionalHeader.directories[9].rva - virtualDataDifference();
+		}
 	}
+	zerooutBoolArray();
 
 	// Other things
 	LineNumber lineNumbers[sectionsTable[currentSectionIndex].numberOfLineNumbers] @ sectionsTable[currentSectionIndex].ptrLineNumbers;
@@ -1054,128 +1226,9 @@ struct Section {
 			$ = sectionsTable[currentSectionIndex].ptrRawData;			// Put the current offset at the start of it to account for any bytes left
 		}
 	}
-} [[inline]];
-
-fn btoi(bool value) {
-	if (value) {
-		return 1;
-	}
-	else {
-		return 0;
-	}
 };
 
-bool nonemptySections;
-u16 firstNonemptySection;
-fn findFirstNonemptySection() {
-	for (u16 i = 0, i < coffHeader.numberOfSections, i = i + 1) {
-		if (sectionsTable[i].sizeOfRawData > 0) {
-			nonemptySections = true;
-			firstNonemptySection = i;
-			break;
-		}
-	}
-};
-findFirstNonemptySection();
-Section sections[btoi(nonemptySections) * coffHeader.numberOfSections] @ sectionsTable[firstNonemptySection].ptrRawData;
-
-// Rich Header
-enum ProductType : u16 {
-	Unmarked = 0x00 ^ richHeaderEnd[0].mask.maskArray[1],
-	Imports = 0x01 ^ richHeaderEnd[0].mask.maskArray[1],
-	STDLIBDLL = 0x04 ^ richHeaderEnd[0].mask.maskArray[1],
-	VC6CVTRes = 0x06 ^ richHeaderEnd[0].mask.maskArray[1],
-	VC6CCompiler = 0x0A ^ richHeaderEnd[0].mask.maskArray[1],
-	VC6CPPCompiler = 0x0B ^ richHeaderEnd[0].mask.maskArray[1],
-	OldNames = 0x0C ^ richHeaderEnd[0].mask.maskArray[1],
-	MASM613 = 0x0E ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2003Assembler = 0x0F ^ richHeaderEnd[0].mask.maskArray[1],
-	VC6SP5 = 0x16 ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2002Linker = 0x19 ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2002CCompiler = 0x1C ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2002CPPCompiler = 0x1D ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2003SDKIMP = 0x5D ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2003CPPCompiler = 0x60 ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2008SDKIMP = 0x93 ^ richHeaderEnd[0].mask.maskArray[1],
-	Linker12 = 0x9D ^ richHeaderEnd[0].mask.maskArray[1],
-	MASM10 = 0x9E ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2010CCompiler = 0xAA ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2010CPPCompiler = 0xAB ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2015CVTRES = 0xFF ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2015Linker = 0x101 ... 0x102 ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2015Assembler = 0x103 ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2015CCompiler = 0x104 ^ richHeaderEnd[0].mask.maskArray[1],
-	VC2015CPPCompiler = 0x105 ^ richHeaderEnd[0].mask.maskArray[1]
-};
-
-union RichHeaderMask {
-	u32 maskVariable;
-	u16 maskArray[2];
-};
-
-struct RichHeaderEnd {
-	char signature[4];
-	RichHeaderMask mask;
-} [[inline]];
-
-bool checkForRichHeader in;
-u16 richHeaderEndPosition;
-fn initializeRichHeader() {
-	if (checkForRichHeader) {
-		for (u16 richEndCursor = sizeof(peHeader), richEndCursor < addressof(coffHeader), richEndCursor = richEndCursor + 1) {
-			if (std::mem::read_string(richEndCursor, 4) == "Rich") {
-				richHeaderEndPosition = richEndCursor;
-				break;
-			}
-		}
-	}
-};
-initializeRichHeader();
-
-RichHeaderEnd richHeaderEnd[checkForRichHeader] @ richHeaderEndPosition;
-
-fn formatSignature(auto value) {
-	return "\"DanS\" ";
-};
-fn formatHexadecimally(auto value) {
-	return std::string::to_string(value) + " (" + std::format("0x{:X}", value) + ")";
-};
-fn unmaskBuild(u16 value) {
-	return formatHexadecimally(value ^ richHeaderEnd[0].mask.maskArray[0]);
-};
-fn unmask(u32 value) {
-	return formatHexadecimally(value ^ richHeaderEnd[0].mask.maskVariable);
-};
-
-using NullPadding = u32 [[format("unmask")]];
-
-struct Product {
-	u16 buildNumber [[format("unmaskBuild")]];
-	ProductType productID;
-	u32 objectCount [[format("unmask")]];
-};
-
-struct RichHeaderCorpus {
-	char maskedSignature[4] [[format("formatSignature")]];
-	NullPadding nullPadding[3];
-	Product products[while($ < richHeaderEndPosition)];
-} [[inline]];
-
-u8 richHeaderCorpusPosition;
-fn setupRichHeader() {
-	if (checkForRichHeader) {
-		//0x20 is the size of a Rich Header with one product
-		for (u16 richCorpusCursor = richHeaderEndPosition - 0x20, richCorpusCursor > sizeof(peHeader), richCorpusCursor = richCorpusCursor - 0x01) {
-			if (str(std::mem::read_unsigned(richCorpusCursor, 4) ^ richHeaderEnd[0].mask.maskVariable) == "DanS") {
-				richHeaderCorpusPosition = richCorpusCursor;		
-				break;
-			}
-		}
-	}
-};
-setupRichHeader();
-
-RichHeaderCorpus richHeaderCorpus[checkForRichHeader] @ richHeaderCorpusPosition;
+Section sections[coffHeader.numberOfSections] @ coffHeader.optionalHeader.sizeOfHeaders;
 
 // Symbol & String Tables
 enum SectionNumberType : s16 {
@@ -1264,17 +1317,26 @@ struct Symbol {
 	u8 numberOfAuxSymbols;
 };
 
-bool checkForDebugInformation in;
+bool checkForSymbols in;
 
-Symbol symbolTable[btoi(checkForDebugInformation) * coffHeader.numberOfSymbols] @ coffHeader.pointerToSymbolTable;
+fn btoi(bool value) {
+	if (value) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+};
 
-struct StringTableString {
+Symbol symbolTable[btoi(checkForSymbols) * coffHeader.numberOfSymbols] @ coffHeader.pointerToSymbolTable;
+
+struct SymbolString {
 	char string[] [[format("formatNullTerminatedString")]];
 } [[inline]];
 
 struct StringTable {
 	u32 size;
-	StringTableString strings[while($ < addressof(this) + size)];
+	SymbolString strings[while($ < addressof(this) + size)];
 } [[inline]];
 
-StringTable stringTable[checkForDebugInformation] @ addressof(symbolTable) + sizeof(symbolTable);
+StringTable stringTable[checkForSymbols] @ addressof(symbolTable) + sizeof(symbolTable);
