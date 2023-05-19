@@ -46,6 +46,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | FDT | | [`patterns/fdt.hexpat`](patterns/fdt.hexpat) | Flat Linux Device Tree blob |
 | File System | | [`patterns/fs.hexpat`](patterns/fs.hexpat) | Drive File System | 
 | FLAC | `audio/flac` | [`patterns/flac.hexpat`](patterns/flac.hexpat) | Free Lossless Audio Codec, FLAC Audio Format | 
+| GB | `application/x-gameboy-rom` | [`patterns/gb.hexpat`](patterns/gb.hexpat) | Gameboy ROM |
 | GIF | `image/gif` | [`patterns/gif.hexpat`](patterns/gif.hexpat) | GIF image files |
 | GZIP | `application/gzip` | [`patterns/gzip.hexpat`](patterns/gzip.hexpat) | GZip compressed data format |
 | ICO | | [`patterns/ico.hexpat`](patterns/ico.hexpat) | Icon (.ico) or Cursor (.cur) files | 
