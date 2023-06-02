@@ -381,13 +381,13 @@ struct attribute_exception {
 
 struct inner_class {
     cp_ref inner_class_info_index;
-    u16 __ [[hidden]];
-    if(__ != 0) {
-        cp_ref outer_class_info_index @ addressof(__);
+    u16 potential_outer_class_info_index [[hidden]];
+    if(potential_outer_class_info_index != 0) {
+        cp_ref outer_class_info_index @ addressof(potential_outer_class_info_index);
     }
-    u16 ___ [[hidden]];
-    if(___ != 0) {
-        cp_ref inner_name_index @ addressof(___);
+    u16 potential_inner_name_index [[hidden]];
+    if(potential_inner_name_index != 0) {
+        cp_ref inner_name_index @ addressof(potential_inner_name_index);
     }
     u2 inner_class_access_flags;
 };
@@ -604,9 +604,9 @@ struct attribute_bootstrap_methods {
 };
 
 struct method_parameter {
-    u2 name_index [[hidden]];
-    if (name_index != 0) {
-        cp_ref name_index @ addressof(name_index);
+    u2 potential_name_index [[hidden]];
+    if (potential_name_index != 0) {
+        cp_ref name_index @ addressof(potential_name_index);
     }
     u2 access_flags;
 };
@@ -619,9 +619,9 @@ struct attribute_method_parameters {
 struct require {
     cp_ref require_index;
     access_flags_module require_flags;
-    u2 require_version_index [[hidden]];
-    if (require_version_index != 0) {
-        cp_ref require_version_index @ addressof(require_version_index);
+    u2 potential_require_version_index [[hidden]];
+    if (potential_require_version_index != 0) {
+        cp_ref require_version_index @ addressof(potential_require_version_index);
     }
 };
 
@@ -648,9 +648,9 @@ struct provide {
 struct attribute_module {
     cp_ref module_name_index;
     u2 module_flags;
-    u2 module_version_index [[hidden]];
-    if (module_version_index != 0) {
-        cp_ref module_version_index @ addressof(module_version_index);
+    u2 potential_module_version_index [[hidden]];
+    if (potential_module_version_index != 0) {
+        cp_ref module_version_index @ addressof(potential_module_version_index);
     }
     u2 requires_count;
     require requires[requires_count];
