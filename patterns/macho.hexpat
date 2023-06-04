@@ -8,6 +8,7 @@ enum Magic : u32 {
 };
 
 enum CpuType : u32 {
+    ANY = -1,
     VAX = 1,
     ROMP = 2,
     BS32032 = 4,
@@ -17,14 +18,16 @@ enum CpuType : u32 {
     X86_64 = CpuType::I386 | 0x100'0000,
     MIPS = 8,
     NS32532 = 9,
+    MC98000 = 10,
     HPPA = 11,
     ARM = 12,
+    ARM64 = CpuType::ARM | 0x100'0000,
+    ARM64_32 = CpuType::ARM | 0x200'0000,
     MC88000 = 13,
     SPARC = 14,
     I860 = be u32(15),
     I860_LITTLE = 16,
     RS6000 = 17,
-    MC980000 = 18,
     POWERPC = 18,
     POWERPC64 = CpuType::POWERPC | 0x100'0000,
     VEO = 255
