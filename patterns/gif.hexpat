@@ -173,10 +173,11 @@ namespace format {
 }
 
 struct Gif {
+    u8 data[std::mem::size()] [[no_unique_address, hidden]];
     Header header;
     std::assert_warn(header.version == "89a" || header.version == "87a", "Unsupported format version");
     LogicalScreenDescriptor logicalScreenDescriptor;
     Block blocks[while(!std::mem::eof())];
-};
+} [[hex::visualize("image", this.data)]];
 
 Gif gif @ 0x00;
