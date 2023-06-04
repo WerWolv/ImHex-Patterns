@@ -1,5 +1,6 @@
 #pragma MIME image/png
 #pragma endian big
+#include "std/mem.pat"
 
 struct header_t {
     u8 highBitByte;

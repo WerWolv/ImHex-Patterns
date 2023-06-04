@@ -1,5 +1,6 @@
 #pragma MIME image/bmp
 #pragma endian little
+#include "std/mem.pat"
 
 struct BitmapFileHeader {
 	u8 bfType[2];
