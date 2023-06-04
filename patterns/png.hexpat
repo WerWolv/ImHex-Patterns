@@ -178,6 +178,7 @@ struct chunk_set {
     chunk_t chunks[while(builtin::std::mem::read_string($ + 4, 4) != "IEND")] [[inline]];
 } [[inline]];
 
+u8 visualizer[std::mem::size()] @ 0 [[sealed,hex::visualize("image", this)]];
 header_t header @ 0x00 [[comment("PNG file signature"), name("Signature")]];
 chunk_t ihdr_chunk @ 0x08 [[comment("PNG Header chunk"), name("IHDR")]];
 chunk_set set @ $ [[comment("PNG Chunks"), name("Chunks"), inline]];

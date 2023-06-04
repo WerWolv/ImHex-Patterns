@@ -31,6 +31,7 @@ struct Colors {
 };
 
 struct Bitmap {
+    u8 data[std::mem::size()] [[no_unique_address,hidden]];
 	BitmapFileHeader bmfh;
 	BitmapInfoHeader bmih;
 	
@@ -46,6 +47,6 @@ struct Bitmap {
 		u8 lineData[bmih.biSizeImage];
 	else
 		u8 lineData[bmfh.bfSize - $];
-};
+}[[hex::visualize("image", data)]];
 
 Bitmap bitmap @ 0x00;
