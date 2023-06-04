@@ -75,6 +75,6 @@ struct Footer {
   char zero;
 };
 
-u8 visualizer[std::mem::size()] @ 0 [[sealed,hex::visualize("image", this)]];
+u8 visualizer[std::mem::size()] @ 0x00 [[sealed, hex::visualize("image", this)]];
 Header header @ 0x0;
 Footer footer @ std::mem::size() - 0x1A;

@@ -1,6 +1,6 @@
 #pragma MIME image/bmp
 #pragma endian little
-#include "std/mem.pat"
+#include <std/mem.pat>
 
 struct BitmapFileHeader {
 	u8 bfType[2];
@@ -32,7 +32,7 @@ struct Colors {
 };
 
 struct Bitmap {
-    u8 data[std::mem::size()] [[no_unique_address,hidden]];
+    u8 data[std::mem::size()] [[no_unique_address, hidden]];
 	BitmapFileHeader bmfh;
 	BitmapInfoHeader bmih;
 	
@@ -48,6 +48,6 @@ struct Bitmap {
 		u8 lineData[bmih.biSizeImage];
 	else
 		u8 lineData[bmfh.bfSize - $];
-}[[hex::visualize("image", data)]];
+} [[hex::visualize("image", this.data)]];
 
 Bitmap bitmap @ 0x00;
