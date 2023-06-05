@@ -51,16 +51,8 @@ int main(int argc, char **argv) {
         runtime.addPragma("pattern_limit",  DummyPragmaHandler);
 
         runtime.addDefine("__PL_UNIT_TESTS__");
-    }
 
-    // Execute pattern
-    if (!runtime.executeString(patternFile.readString())) {
-        fmt::print("Error during execution!\n");
-
-        if (const auto &hardError = runtime.getError(); hardError.has_value())
-            fmt::print("Hard error: {}:{} - {}\n\n", hardError->line, hardError->column, hardError->message);
-
-        for (const auto &[level, message] : runtime.getConsoleLog()) {
+        runtime.setLogCallback([](auto level, const std::string &message) {
             switch (level) {
                 using enum pl::core::LogConsole::Level;
                 case Debug:      fmt::print("    [DEBUG] "); break;
@@ -70,7 +62,15 @@ int main(int argc, char **argv) {
             }
 
             fmt::print("{}\n", message);
-        }
+        });
+    }
+
+    // Execute pattern
+    if (!runtime.executeString(patternFile.readString())) {
+        fmt::print("Error during execution!\n");
+
+        if (const auto &hardError = runtime.getError(); hardError.has_value())
+            fmt::print("Hard error: {}:{} - {}\n\n", hardError->line, hardError->column, hardError->message);
 
         return EXIT_FAILURE;
     }
