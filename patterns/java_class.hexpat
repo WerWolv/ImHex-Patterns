@@ -141,6 +141,234 @@ namespace fmt {
             (_): return fmt::const_ref(index);
         }
     };
+
+    fn byte_code_fmt(auto value) {
+        match(value) {
+            (00): return "nop";
+            (01): return "aconst_null";
+            (02): return "iconst_m1";
+            (03): return "iconst_0";
+            (04): return "iconst_1";
+            (05): return "iconst_2";
+            (06): return "iconst_3";
+            (07): return "iconst_4";
+            (08): return "iconst_5";
+            (09): return "lconst_0";
+            (10): return "lconst_1";
+            (11): return "fconst_0";
+            (12): return "fconst_1";
+            (13): return "fconst_2";
+            (14): return "dconst_0";
+            (15): return "dconst_1";
+            (16): return "bipush";
+            (17): return "sipush";
+            (18): return "ldc";
+            (19): return "ldc_w";
+            (20): return "ldc2_w";
+            (21): return "iload";
+            (22): return "lload";
+            (23): return "fload";
+            (24): return "dload";
+            (25): return "aload";
+            (26): return "iload_0";
+            (27): return "iload_1";
+            (28): return "iload_2";
+            (29): return "iload_3";
+            (30): return "lload_0";
+            (31): return "lload_1";
+            (32): return "lload_2";
+            (33): return "lload_3";
+            (34): return "fload_0";
+            (35): return "fload_1";
+            (36): return "fload_2";
+            (37): return "fload_3";
+            (38): return "dload_0";
+            (39): return "dload_1";
+            (40): return "dload_2";
+            (41): return "dload_3";
+            (42): return "aload_0";
+            (43): return "aload_1";
+            (44): return "aload_2";
+            (45): return "aload_3";
+            (46): return "iaload";
+            (47): return "laload";
+            (48): return "faload";
+            (49): return "daload";
+            (50): return "aaload";
+            (51): return "baload";
+            (52): return "caload";
+            (53): return "saload";
+            (54): return "istore";
+            (55): return "lstore";
+            (56): return "fstore";
+            (57): return "dstore";
+            (58): return "astore";
+            (59): return "istore_0";
+            (60): return "istore_1";
+            (61): return "istore_2";
+            (62): return "istore_3";
+            (63): return "lstore_0";
+            (64): return "lstore_1";
+            (65): return "lstore_2";
+            (66): return "lstore_3";
+            (67): return "fstore_0";
+            (68): return "fstore_1";
+            (69): return "fstore_2";
+            (70): return "fstore_3";
+            (71): return "dstore_0";
+            (72): return "dstore_1";
+            (73): return "dstore_2";
+            (74): return "dstore_3";
+            (75): return "astore_0";
+            (76): return "astore_1";
+            (77): return "astore_2";
+            (78): return "astore_3";
+            (79): return "iastore";
+            (80): return "lastore";
+            (81): return "fastore";
+            (82): return "dastore";
+            (83): return "aastore";
+            (84): return "bastore";
+            (85): return "castore";
+            (86): return "sastore";
+            (87): return "pop";
+            (88): return "pop2";
+            (89): return "dup";
+            (90): return "dup_x1";
+            (91): return "dup_x2";
+            (92): return "dup2";
+            (93): return "dup2_x1";
+            (94): return "dup2_x2";
+            (95): return "swap";
+            (96): return "iadd";
+            (97): return "ladd";
+            (98): return "fadd";
+            (99): return "dadd";
+            (100): return "isub";
+            (101): return "lsub";
+            (102): return "fsub";
+            (103): return "dsub";
+            (104): return "imul";
+            (105): return "lmul";
+            (106): return "fmul";
+            (107): return "dmul";
+            (108): return "idiv";
+            (109): return "ldiv";
+            (110): return "fdiv";
+            (111): return "ddiv";
+            (112): return "irem";
+            (113): return "lrem";
+            (114): return "frem";
+            (115): return "drem";
+            (116): return "ineg";
+            (117): return "lneg";
+            (118): return "fneg";
+            (119): return "dneg";
+            (120): return "ishl";
+            (121): return "lshl";
+            (122): return "ishr";
+            (123): return "lshr";
+            (124): return "iushr";
+            (125): return "lushr";
+            (126): return "iand";
+            (127): return "land";
+            (128): return "ior";
+            (129): return "lor";
+            (130): return "ixor";
+            (131): return "lxor";
+            (132): return "iinc";
+            (133): return "i2l";
+            (134): return "i2f";
+            (135): return "i2d";
+            (136): return "l2i";
+            (137): return "l2f";
+            (138): return "l2d";
+            (139): return "f2i";
+            (140): return "f2l";
+            (141): return "f2d";
+            (142): return "d2i";
+            (143): return "d2l";
+            (144): return "d2f";
+            (145): return "i2b";
+            (146): return "i2c";
+            (147): return "i2s";
+            (148): return "lcmp";
+            (149): return "fcmpl";
+            (150): return "fcmpg";
+            (151): return "dcmpl";
+            (152): return "dcmpg";
+            (153): return "ifeq";
+            (154): return "ifne";
+            (155): return "iflt";
+            (156): return "ifge";
+            (157): return "ifgt";
+            (158): return "ifle";
+            (159): return "if_icmpeq";
+            (160): return "if_icmpne";
+            (161): return "if_icmplt";
+            (162): return "if_icmpge";
+            (163): return "if_icmpgt";
+            (164): return "if_icmple";
+            (165): return "if_acmpeq";
+            (166): return "if_acmpne";
+            (167): return "goto";
+            (168): return "jsr";
+            (169): return "ret";
+            (170): return "tableswitch";
+            (171): return "lookupswitch";
+            (172): return "ireturn";
+            (173): return "lreturn";
+            (174): return "freturn";
+            (175): return "dreturn";
+            (176): return "areturn";
+            (177): return "return";
+            (178): return "getstatic";
+            (179): return "putstatic";
+            (180): return "getfield";
+            (181): return "putfield";
+            (182): return "invokevirtual";
+            (183): return "invokespecial";
+            (184): return "invokestatic";
+            (185): return "invokeinterface";
+            (186): return "invokedynamic";
+            (187): return "new";
+            (188): return "newarray";
+            (189): return "anewarray";
+            (190): return "arraylength";
+            (191): return "athrow";
+            (192): return "checkcast";
+            (193): return "instanceof";
+            (194): return "monitorenter";
+            (195): return "monitorexit";
+            (196): return "wide";
+            (197): return "multianewarray";
+            (198): return "ifnull";
+            (199): return "ifnonnull";
+            (200): return "goto_w";
+            (201): return "jsr_w";
+            (202): return "breakpoint";
+            (254): return "impdep1";
+            (255): return "impdep2";
+            (_): return std::format("{:d} [Unknown]", value);
+        }
+    };
+    
+    fn atype_fmt(auto atype) {
+        match(atype) {
+            (4): return "T_BOOLEAN";
+            (5): return "T_CHAR";
+            (6): return "T_FLOAT";
+            (7): return "T_DOUBLE";
+            (8): return "T_BYTE";
+            (9): return "T_SHORT";
+            (10): return "T_INT";
+            (11): return "T_LONG";
+        }
+    };
+    
+    fn instruction_code_fmt(ref auto code) {
+        return fmt::byte_code_fmt(code.mnemonic);
+    };
     
     fn attribute(auto info) {
         return file.constant_pool[info.attribute_name_index-1].bytes;
@@ -748,11 +976,86 @@ struct exception {
     u2 catch_type;
 } [[static]];
 
+struct match_offset {
+    u4 match_case;
+    u4 offset;
+};
+
+struct instruction {
+    u1 mnemonic [[format("fmt::byte_code_fmt")]];
+    match(mnemonic) {
+        (0 ... 15 | 26 ... 53 | 59 ... 131 | 133 ... 152 | 172 ... 177 | 190 | 191 | 194 | 195): {}
+        (16): {
+            u1 byte;
+        }
+        (17): {
+            u2 value;
+        }
+        (18):{
+            u1 index [[format("fmt::const_ref_top")]];
+        }
+        (19|20 | 178 ... 184 | 187 | 189 | 192 | 193): {
+            cp_ref cp_index;
+        }
+        (21 ... 25 | 54 ... 58 | 169): {
+            u1 local_index;
+        }
+        (132): {
+            u1 local_index;
+            u1 const_;
+        }
+        (153 ... 168 | 198 | 199): {
+            u2 branch_offset;
+        }
+        (185): {
+            cp_ref index;
+            u1 count;
+            padding[1];
+        }
+        (186): {
+            cp_ref cp_index;
+            padding[2];
+        }
+        (188): {
+            u1 atype [[format("fmt::atype_fmt")]];
+        }
+        (196): {
+            u1 op_code [[format("fmt::byte_code_fmt")]];
+            u2 local_index;
+            if(op_code == 132){
+                u2 const_byte;
+            }
+        }
+        (197): {
+            cp_ref cp_index;
+            u1 dimensions;
+        }
+        (200 | 201): {
+            u4 branch_offset;
+        }
+        (170): {
+            padding[(4 - ($ - addressof(parent) -8) % 4) % 4];
+            u4 default_offset;
+            u4 low;
+            u4 high;
+            u4 jump_offset[high-low+1];
+        }
+        (171): {
+            padding[(4 - ($ - addressof(parent) -8) % 4) % 4];
+            u4 default_offset;
+            u4 npairs;
+            match_offset match_offsets[npairs];
+        }
+    }
+} [[format("fmt::instruction_code_fmt")]];
+
+
 struct attribute_code {
     u2 max_stack;
     u2 max_locals;
     u4 code_length;
-    u1 code[code_length];
+    u4 target_addr = $ + code_length;
+    instruction code[while($ < target_addr)];
     u2 exception_table_length;
     exception exception_table[exception_table_length];
     u2 attributes_count;
