@@ -215,7 +215,7 @@ struct MessageData {
             // system exclusive message, or as the starting byte in
             // multi-packet messages
             VariableLengthQuantity<"sysex_length"> sysex_length [[inline]];
-            u8 sysex_data[u32(sysex_length)];
+            u8 sysex_data[sysex_length.value];
         }
         (Status::SongPositionPointer): {
             u8 lsb;
@@ -239,7 +239,7 @@ struct MessageData {
                     | MetaType::Lyric
                     | MetaType::Marker
                     | MetaType::CuePoint): {
-                    char text[u32(meta_length)];
+                    char text[meta_length.value];
                 }
                 (MetaType::TimeSignature): {
                     u8 numerator;
@@ -255,7 +255,7 @@ struct MessageData {
                     u24 micro_seconds_per_click; // default 1 million
                 }
                 (_): {
-                    u8 meta_data[u32(meta_length)];
+                    u8 meta_data[meta_length.value];
                 }
             }
         }
