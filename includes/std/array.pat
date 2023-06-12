@@ -1,8 +1,8 @@
 #pragma once
 
 /*!
-    The array library contains various helper functions and types to make
-    it easier to work with Arrays.
+    The array library contains a helper type to make it easier to create multi-dimensional arrays
+    and pass arrays to functions as parameters.
 */
 
 namespace std {
