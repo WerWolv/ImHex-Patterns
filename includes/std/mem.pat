@@ -174,10 +174,9 @@ namespace std::mem {
 
     /**
         Copies a range of bytes from the main section into a custom section
-        @param from_section The section to copy from
-        @param from_address The address to copy from
+        @param value The pattern whose bytes should be copied
+        @param to_section The section to copy to
         @param to_address The address to copy to
-        @param size The size of the range to copy
     */
     fn copy_value_to_section(ref auto value, Section to_section, u64 to_address) {
         builtin::std::mem::copy_value_to_section(value, to_section, to_address);
