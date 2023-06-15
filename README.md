@@ -82,6 +82,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | STL | `model/stl` | [`patterns/stl.hexpat`](patterns/stl.hexpat) | STL 3D Model format | 
 | StuffItV5 | `application/x-stuffit` | [`patterns/sit5.hexpat`](patterns/sit5.hexpat) | StuffIt V5 archive |
 | TAR | `application/x-tar` | [`patterns/tar.hexpat`](patterns/tar.hexpat) | Tar file format |
+| TIFF | `image/tiff` | [`patterns/tiff.hexpat`](patterns/tiff.hexpat) | Tag Image File Format |
 | TGA | `image/tga` | [`patterns/tga.hexpat`](patterns/tga.hexpat) | Truevision TGA/TARGA image |
 | UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat)` | UEFI structs for parsing efivars |
 | UF2 | | [`patterns/uf2.hexpat`](patterns/uf2.hexpat) | [USB Flashing Format](https://github.com/microsoft/uf2) | 
