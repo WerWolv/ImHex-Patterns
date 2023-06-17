@@ -66,6 +66,8 @@ jobs:
 
     - name: ⬆️ Upload Coverage Report
       uses: coverallsapp/github-action@master
+      env:
+        NODE_OPTIONS: --max-old-space-size=8000 
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: tests/build/coverage.info
