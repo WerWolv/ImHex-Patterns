@@ -32,6 +32,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | CCHVA | | [`patterns/cchva.hexpat`](patterns/cchva.hexpat) | Command and Conquer Voxel Animation |
 | CCVXL | | [`patterns/ccvxl.hexpat`](patterns/ccvxl.hexpat) | Command and Conquer Voxel Model |
 | CCPAL | | [`patterns/ccpal.hexpat`](patterns/ccpal.hexpat) | Command and Conquer Voxel Palette |
+| CDA | | [`patterns/cda.hexpat`](patterns/cda.hexpat) | Compact Disc Audio track |
 | CHM | | [`patterns/chm.hexpat`](patterns/chm.hexpat) | Windows HtmlHelp Data (ITSF / CHM) |
 | COFF | `application/x-coff` | [`patterns/coff.hexpat`](patterns/coff.hexpat) | Common Object File Format (COFF) executable |
 | CPIO | `application/x-cpio` | [`patterns/cpio.hexpat`](patterns/cpio.hexpat) | Old Binary CPIO Format |
