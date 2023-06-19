@@ -184,7 +184,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 |------|------|-------------|
 | Visual Studio Dark | [`themes/vs_dark.json`](themes/vs_dark.json) | Theme similar to Visual Studio's Dark theme |
 | Solarized Dark | [`themes/solarized_dark.json`](themes/solarized_dark.json) | Solarized Dark Theme |
-| Catppuccin Latte | [`themes/catppuccin_latte.json`](themes/catppuccin_latte.json) | Catppuccin Latte Flavor (Light Theme) |
-| Catppuccin Frappe | [`themes/catppuccin_frappe.json`](themes/catppuccin_frappe.json) | Catppuccin Frappe Flavor (Dark Theme) |
-| Catppuccin Macchiato | [`themes/catppuccin_macchiato.json`](themes/catppuccin_macchiato.json) | Catppuccin Macchiato Flavor (Dark Theme) |
-| Catppuccin Mocha | [`themes/catppuccin_mocha.json`](themes/catppuccin_mocha.json) | Catppuccin Mocha Flavor (Dark Theme) |
+| Catppuccin Latte | [`themes/catppuccin-latte.json`](themes/catppuccin-latte.json) | Catppuccin Latte Flavor (Light Theme) |
+| Catppuccin Frappe | [`themes/catppuccin-frappe.json`](themes/catppuccin-frappe.json) | Catppuccin Frappe Flavor (Dark Theme) |
+| Catppuccin Macchiato | [`themes/catppuccin-macchiato.json`](themes/catppuccin-macchiato.json) | Catppuccin Macchiato Flavor (Dark Theme) |
+| Catppuccin Mocha | [`themes/catppuccin-mocha.json`](themes/catppuccin-mocha.json) | Catppuccin Mocha Flavor (Dark Theme) |
