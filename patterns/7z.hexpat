@@ -61,38 +61,31 @@ EndHeader endheader @ Type::sizeStartHeader;
 
         
 if(startheader.signature ==  TypeB::sevenZipSignature){
-
-    std::print("It is a 7z File Type"); std::print("\n");
-    
+    std::print("It is a 7z File Type"); 
 } 
 
 std::print("Format Version {} ",startheader.formatVersion); 
 
 if(startheader.formatVersion ==  0x0400){
-
-    std::print("Major Version 0x00 Minor Version 0x04"); std::print("\n");
-    
+    std::print("Major Version 0x00 || 0 -  Minor Version 0x04 || 4");  
 }   
 
-std::print("CRC of the following 20 bytes 0x{:X}",startheader.crcOfTheFollowing20Bytes); std::print("\n");   
+std::print("CRC Start Header 0x{:X}",startheader.crcOfTheFollowing20Bytes);    
 
-std::print("Relative offset of End Header {} ",startheader.relativeOffsetEndHeader); std::print("\n");   
+std::print("CRC End Header 0x{:X} ", startheader.crcOftheEndHeader); 
+ 
+std::print("CompressedData length 0x{:X} || {} bytes ",startheader.relativeOffsetEndHeader, startheader.relativeOffsetEndHeader); 
 
-std::print("The length of End Header {} ",startheader.theLengthOfEndHeader); std::print("\n");   
+std::print("Relative Offset of End Header 0x{:X} || {} bytes",startheader.relativeOffsetEndHeader, startheader.relativeOffsetEndHeader); 
 
-std::print("CRC of the End Header 0x{:X} ", startheader.crcOftheEndHeader); std::print("\n");
+std::print("Offset to start End Header 0x{:X} || {} bytes",startheader.startEndHeader,startheader.startEndHeader); 
 
-std::print("Offset to start End Header {}",startheader.startEndHeader); std::print("\n");
+std::print("End Header length 0x{:X} || {} bytes",startheader.theLengthOfEndHeader,startheader.theLengthOfEndHeader); 
 
-std::print("File size {} bytes",startheader.fileSize); std::print("\n");
-
+std::print("File size 0x{:X} || {} bytes",startheader.fileSize, startheader.fileSize); 
 
 if(compresseddata.startOfCompressedData[0] ==  Type::startPosition){
-
-    std::print("Compressed Method LZMA"); std::print("\n");
-    
+    std::print("Compressed Method LZMA");   
 }else{
-
-    std::print("Compressed Method LZMA2"); std::print("\n");
-    
+    std::print("Compressed Method LZMA2");    
 }
