@@ -170,7 +170,7 @@ struct chunk_t {
     }
 
     u32 crc;
-} [[format("chunkValueName")]];
+} [[name(chunkValueName(this))]];
 
 fn chunkValueName(ref chunk_t chunk) {
     return chunk.name;
@@ -180,8 +180,12 @@ struct chunk_set {
     chunk_t chunks[while(builtin::std::mem::read_string($ + 4, 4) != "IEND")] [[inline]];
 } [[inline]];
 
+struct Chunks {
+    chunk_t ihdr_chunk [[comment("PNG Header chunk")]];
+    chunk_set set [[comment("PNG Chunks"), name("Chunks"), inline]];
+    chunk_t iend_chunk [[comment("Image End Chunk")]];
+};
+
 u8 visualizer[std::mem::size()] @ 0x00 [[sealed, hex::visualize("image", this)]];
 header_t header @ 0x00 [[comment("PNG file signature"), name("Signature")]];
-chunk_t ihdr_chunk @ 0x08 [[comment("PNG Header chunk"), name("IHDR")]];
-chunk_set set @ $ [[comment("PNG Chunks"), name("Chunks"), inline]];
-chunk_t iend_chunk @ $ [[comment("Image End Chunk"), name("IEND")]];
+Chunks chunks @ 0x08 [[name("Chunks")]];
