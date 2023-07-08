@@ -6,6 +6,8 @@
 */
 #pragma endian big
 
+#include <std/mem.pat>
+
 enum FileType: u16 {
 	Data = 0x3030,
 	EOF = 0x3031,
@@ -48,4 +50,4 @@ struct data_packet {
 	u16 null_bytes [[color("005E565A")]];
 };
 
-data_packet data[1418] @ 0x00;
+data_packet data[while(!std::mem::eof())] @ 0x00;
