@@ -47,7 +47,9 @@ struct data_packet {
 	}
 	
 	u16 checksum [[color("0045F0DF")]];
-	u16 null_bytes [[color("005E565A")]];
+	u8 line_ending_1 [[color("005E565A")]];
+	if (line_ending_1 == '\r')
+	   u8 line_ending_2 [[color("005E565A")]];
 };
 
 data_packet data[while(!std::mem::eof())] @ 0x00;
