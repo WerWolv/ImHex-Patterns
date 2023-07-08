@@ -30,8 +30,8 @@ namespace impl {
         return std::format("\"{}\"", string.data);
     };
     
-    fn format_Constant(auto const) {
-       return const.data;
+    fn format_Constant(auto constant) {
+       return constant.data;
     };
     
     fn format_Version(auto ver) {
