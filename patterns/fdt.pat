@@ -52,7 +52,7 @@ struct FDTStructureBlock {
         u32 nameoff;
         char value[len];
         AlignTo<4>;
-        char name[] @ parent.header.off_dt_strings + nameoff;
+        char name[] @ address(parent) + parent.header.off_dt_strings + nameoff;
     } else if (token == FDTToken::FDT_NOP || token == FDTToken::FDT_END_NODE) {
         // Nothing to do
     } else {
