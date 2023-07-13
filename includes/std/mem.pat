@@ -5,7 +5,27 @@
 */
 
 namespace std::mem {
-  
+
+    namespace impl {
+
+        struct MagicSearchImpl<auto Magic, T> {
+            if ($ < (std::mem::size() - std::string::length(Magic) - 1)) {
+                char __potentialMagic__[std::string::length(Magic)] [[hidden, no_unique_address]];
+                
+                if (__potentialMagic__ == Magic) {
+                    T data [[inline]];
+                } else {
+                    padding[1];
+                    continue;
+                }
+            } else {
+                padding[1];
+                continue;
+            }
+        };
+
+    }
+
     /**
         A Handle for a custom Section
      */
@@ -189,19 +209,7 @@ namespace std::mem {
         @tparam T The type to place at the address
     */
     struct MagicSearch<auto Magic, T> {
-        if ($ < (std::mem::size() - std::string::length(Magic) - 1)) {
-            char __potentialMagic__[std::string::length(Magic)] [[hidden, no_unique_address]];
-            
-            if (__potentialMagic__ == Magic) {
-                T data [[inline]];
-            } else {
-                padding[1];
-                continue;
-            }
-        } else {
-            padding[1];
-            continue;
-        }
+        std::mem::impl::MagicSearchImpl<Magic, T> impl[while(!std::mem::eof())] [[inline]];
     };
 
     /**
