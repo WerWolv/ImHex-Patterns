@@ -2,6 +2,7 @@
 
 #include <std/sys.pat>
 #include <std/io.pat>
+#include <std/mem.pat>
 
 #include <type/magic.pat>
 #include <type/size.pat>
@@ -26,7 +27,7 @@ struct AlignTo<auto Alignment> {
 struct FDTReserveEntry {
     u64 address;
     type::Size<u64> size;
-    
+
     if (address == 0x00 && size == 0x00)
         break;
 };
@@ -62,9 +63,9 @@ struct FDTStructureBlock {
 struct FDT {
     FDTHeader header;
     std::assert(header.version == 17, "Unsupported format version");
-    
-    FDTStructureBlock structureBlocks[while(true)] @ header.off_dt_struct;
-    FDTReserveEntry reserveEntries[while(true)] @ header.off_mem_rsvmap;
+
+    FDTStructureBlock structureBlocks[while(true)] @ addressof(this) + header.off_dt_struct;
+    FDTReserveEntry reserveEntries[while(true)] @ addressof(this) + header.off_mem_rsvmap;
 };
 
-FDT fdt @ 0x00;
+std::mem::MagicSearch<"\xD0\x0D\xFE\xED", FDT> fdt @ std::mem::base_address();
