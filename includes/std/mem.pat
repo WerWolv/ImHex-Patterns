@@ -46,7 +46,7 @@ namespace std::mem {
         @return True if the cursor is at the end of the memory
      */
     fn eof() {
-        return $ >= std::mem::size();
+        return $ >= (std::mem::base_address() + std::mem::size());
     };
 
     /**
