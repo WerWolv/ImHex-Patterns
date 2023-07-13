@@ -9,7 +9,7 @@ namespace std::mem {
     namespace impl {
 
         struct MagicSearchImpl<auto Magic, T> {
-            if ($ < (std::mem::size() - std::string::length(Magic) - 1)) {
+            if ($ < (std::mem::base_address() + std::mem::size() - std::string::length(Magic) - 1)) {
                 char __potentialMagic__[std::string::length(Magic)] [[hidden, no_unique_address]];
                 
                 if (__potentialMagic__ == Magic) {
