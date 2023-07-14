@@ -714,14 +714,9 @@ fn format_section_header(auto shdr) {
 	u32 i = 0;
 	
 	u32 nameAddress = addressof(elf.shdr[stringTableIndex].stringTable) + shdr.sh_name;
-	while (i < std::core::member_count(elf.shdr[stringTableIndex].stringTable)) {
-		if (nameAddress >= addressof(elf.shdr[stringTableIndex].stringTable[i]) && nameAddress < (addressof(elf.shdr[stringTableIndex].stringTable[i]) + sizeof(elf.shdr[stringTableIndex].stringTable[i])))
-			break;
-		
-		i += 1;
-	}
+	String string @ nameAddress;
 
-	return elf.shdr[stringTableIndex].stringTable[i].value;
+	return string;
 };
 
 
