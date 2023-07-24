@@ -2,7 +2,7 @@
 
 #include <std/sys.pat>
 #include <std/io.pat>
-#include <std/mem.pat>
+#include <std/core.pat>
 
 #include <type/magic.pat>
 #include <type/size.pat>
@@ -20,14 +20,30 @@ struct FDTHeader {
     u32 size_dt_struct;
 };
 
+struct String<auto Size> {
+    char value[Size];
+} [[sealed, format("format_string")]];
+
+fn format_string(ref auto string) {
+    str result;
+    for (u32 i = 0, i < string.Size, i += 1) {
+        if (string.value[i] >= 0x20 && string.value[i] <= 0x7F)
+            result += string.value[i];
+        else
+            result += std::format("\\x{:02X}", string.value[i]);
+    }
+    
+    return result;
+};
+
 struct AlignTo<auto Alignment> {
     padding[Alignment- ((($ - 1) % Alignment) + 1)];
-};
+} [[hidden]];
 
 struct FDTReserveEntry {
     u64 address;
     type::Size<u64> size;
-
+    
     if (address == 0x00 && size == 0x00)
         break;
 };
@@ -50,22 +66,34 @@ struct FDTStructureBlock {
     } else if (token == FDTToken::FDT_PROP) {
         u32 len;
         u32 nameoff;
-        char value[len];
+        String<len> value;
         AlignTo<4>;
-        char name[] @ addressof(parent) + parent.header.off_dt_strings + nameoff;
+        char name[] @ parent.header.off_dt_strings + nameoff;
     } else if (token == FDTToken::FDT_NOP || token == FDTToken::FDT_END_NODE) {
         // Nothing to do
     } else {
         std::error(std::format("Invalid token at address 0x{:02X}", addressof(token)));
     }
+} [[format("format_structure_block")]];
+
+fn format_structure_block(ref auto block) {
+    match (block.token) {
+        (FDTToken::FDT_BEGIN_NODE) : { return "NODE BEGIN"; }
+        (FDTToken::FDT_END_NODE) : { return "NODE END"; }
+        (FDTToken::FDT_PROP) : { return std::format("{} = \"{}\"", block.name, block.value); }
+        (FDTToken::FDT_NOP) : { return "NOP"; }
+        (FDTToken::FDT_END) : { return "END"; }
+    }
+    
+    return "";
 };
 
 struct FDT {
     FDTHeader header;
     std::assert(header.version == 17, "Unsupported format version");
-
-    FDTStructureBlock structureBlocks[while(true)] @ addressof(this) + header.off_dt_struct;
-    FDTReserveEntry reserveEntries[while(true)] @ addressof(this) + header.off_mem_rsvmap;
+    
+    FDTStructureBlock structureBlocks[while(true)] @ header.off_dt_struct;
+    FDTReserveEntry reserveEntries[while(true)] @ header.off_mem_rsvmap;
 };
 
-std::mem::MagicSearch<"\xD0\x0D\xFE\xED", FDT> fdt @ std::mem::base_address();
+FDT fdt @ 0x00;
