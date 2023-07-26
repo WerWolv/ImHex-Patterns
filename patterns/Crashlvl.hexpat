@@ -14,7 +14,10 @@ struct Header {
     std::string::SizedString<u8> author;
 };
 
-enum Music : u32 {
+Header header @ 0x0;
+
+// Background Music
+enum BGM : u32 {
     None,
     BonusBGM,
     CrashCreatorBGM,
@@ -30,20 +33,89 @@ enum Music : u32 {
     NBrioBGM
 };
 
+enum BGMV2 : u32 {
+    None,
+    N_TropyBGM,
+    CrashCreatorBGM,
+    MainMenuBGM,
+    WarpRoomBGM,
+    Jungle01BGM,
+    SnowBGM,
+    RiverBGM,
+    FutureBGM,
+    LabBGM,
+    SewerBGM,
+    EgyptBGM,
+    NBrioBGM,
+    AdventureBGM,
+    SpyBGM,
+    ChaseBGM,
+    TrialsBGM,
+    SpaceBGM,
+    Jungle02BGM,
+    RipperBGM,
+    TheGreatWallBGM,
+    RoadToSomewhereBGM,
+    LavaKoalaBGM,
+    CortexBGM,
+    CyberCortexBGM,
+    ArabicBGM,
+    N_Tropy2BGM,
+    JazzBGM,
+    Space2BGM,
+    TawnaBonusBGM,
+    CortexPowerBGM,
+    ArabicBonusBGM,
+    EgyptBonusBGM,
+    FutureBonusBGM,
+    LostCityBGM,
+    PolarBGM,
+    RiverBonusBGM,
+    RuinsBonusBGM,
+    SewerBonusBGM,
+    SnowBonusBGM,
+    RoadToRuinBGM,
+    NGinBGM,
+    Arabia01BGM,
+    Arabia02BGM,
+    BashBGM,
+    Cortex02BGM,
+};
+
 enum Type : u32 {
     Unset,
     Flashback,
-    Trial
+    Trial,
 };
 
-enum Time : u32 {
+enum TypeV2 : u32 {
+    Practice,
+    Flashback,
+    Trial,
+    Adventure
+};
+
+enum Skybox : u32 {
     Night,
     Day,
     Storm,
     Dawn
 };
 
-enum Terrain : u32 {
+enum SkyboxV2 : u32 {
+    Default = 1,
+    Briolab,
+    Fort,
+    Moon,
+    Toxic,
+    AboutRight,
+    Crash1Island,
+    Arabia,
+    RoadToRuin,
+    Black
+};
+
+enum Scenery : u32 {
     None,
     Machines,
     Trees,
@@ -52,17 +124,63 @@ enum Terrain : u32 {
     Fortress,
 };
 
+enum Weather : u32 {
+    None
+};
+
 struct Options {
-    Type type;
-    Time time;
-    Terrain terrain;
-    Music music;
+    
+    if (header.version > 1)
+        TypeV2 type;
+    else
+        Type type;
+        
+    if (header.version > 1)
+        SkyboxV2 skybox;
+    else
+        Skybox skybox;
+    
+    Scenery scenery;
+    
+    if (header.version > 2)
+    {
+        Weather weather;
+    }
+    
+    if (header.version > 1)
+        BGMV2 bgm;
+    else
+        BGM bgm;
+    
+    
+    if (type == Type::Trial)
+    {
+        u32 timeTrialTicksBronze;
+        u32 timeTrialTicksSilver;
+        u32 timeTrialTicksGold;
+    }
 };
 
 struct Object {
+
     std::string::SizedString<u8> objName;
-    u32 x;
-    u32 y;
+    
+    if (header.version > 1)
+    {
+        u16 x;
+        u16 y;
+        bool hasMetafields;
+        if (hasMetafields)
+        {
+            u16 numOfMetafields;
+            u8 metafields[numOfMetafields];
+        }   
+    }
+    else
+    {
+        u32 x;
+        u32 y;
+    }
 };
 
 struct Objects{
@@ -70,6 +188,6 @@ struct Objects{
     std::Array<Object, objCount> objArray;
 };
 
-Header header @ 0x0;
+
 Options options @ $;
 Objects objects @ $;
