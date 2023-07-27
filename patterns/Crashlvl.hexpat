@@ -117,15 +117,36 @@ enum SkyboxV2 : u32 {
 
 enum Scenery : u32 {
     None,
-    Machines,
-    Trees,
+    FutureTense,
+    Forest,
     Waterfall,
     Snow,
     Fortress,
 };
 
+enum SceneryV2 : u32 {
+    None,
+    FutureTense,
+    Forest,
+    Waterfall,
+    None2,
+    Fortress,
+    None3,
+    Lava,
+    TheGreatGate,
+    Mountain,
+    KoalaKong,
+    SunsetVista,
+    HangemHigh,
+    Sphynxinator,
+    Tunnel,
+    Pipes
+};
+
 enum Weather : u32 {
-    None
+    Default,
+    Snow,
+    Rain
 };
 
 struct Options {
@@ -139,8 +160,11 @@ struct Options {
         SkyboxV2 skybox;
     else
         Skybox skybox;
-    
-    Scenery scenery;
+        
+    if (header.version > 1)
+        SceneryV2 scenery;
+    else
+        Scenery scenery;
     
     if (header.version > 2)
     {
@@ -191,3 +215,4 @@ struct Objects{
 
 Options options @ $;
 Objects objects @ $;
+
