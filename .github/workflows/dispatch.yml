@@ -45,3 +45,12 @@ jobs:
         repo: Documentation
         owner: WerWolv
         event_type: update_pl_docs
+        
+    - name: ✉️ Update PatternLanguage Website
+      if: ${{ env.DISPATCH_TOKEN != '' }}
+      uses: mvasigh/dispatch-action@main
+      with:
+        token: ${{ secrets.DISPATCH_TOKEN }}
+        repo: PatternLanguageWeb
+        owner: WerWolv
+        event_type: rebuild_wasm
