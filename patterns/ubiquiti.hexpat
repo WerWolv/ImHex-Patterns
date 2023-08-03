@@ -32,7 +32,8 @@ namespace ubnt {
         u32 baseAddress;
         u32 unknown; // always zero
         s32 dataSize;
-        u8 data[this.dataSize + 8];
+        u8 data[this.dataSize + 4];
+        u32 crc32;
     };
 
     struct EXEC {
@@ -74,7 +75,7 @@ struct Block {
     }
 
     // REVISIT: change the type to u32
-    u8 pad[4];
+    padding[4];
 };
 
 // Greedy parsing of Block structs
