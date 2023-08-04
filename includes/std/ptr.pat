@@ -1,5 +1,7 @@
 #pragma once
 
+#include <std/mem.pat>
+
 /*!
     The Pointer library contains helper functions to deal with pointer types.
     The `relative_to` functions are meant to be used with the `[[pointer_base]]` attribute
