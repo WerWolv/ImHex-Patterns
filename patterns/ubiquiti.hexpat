@@ -4,6 +4,7 @@
 #include <std/sys.pat>
 
 // Ubiquiti Firmware related structs
+// More information here: https://dl.ubnt.com/firmwares/XN-fw/v5.6.3/GPL.UBNT.v5.6.3.tar.bz2
 
 /*
  * Block types of a default firmware file file:
@@ -27,12 +28,14 @@ namespace ubnt {
 
     struct PART {
         char name[16];
-        u8 reserved[16];
-        u32 id; // maybe, not documented but incrementing
-        u32 baseAddress;
-        u32 unknown; // always zero
-        s32 dataSize;
-        u8 data[this.dataSize + 4];
+        padding[12];
+        u32 memaddr;
+        u32 index;
+        u32 baseaddr;
+        u32 entryaddr;
+        u32 data_size;
+        u32 part_size;
+        u8 data[this.data_size];
         u32 crc32;
     };
 
