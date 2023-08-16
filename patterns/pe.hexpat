@@ -1106,8 +1106,8 @@ enum DebugType : u32 {
 struct DebugDirectory {
 	u32 characteristics;
 	u32 timeDateStamp;
-	u32 majorVersion;
-	u32 minorVersion;
+	u16 majorVersion;
+	u16 minorVersion;
 	DebugType type;
 	u32 sizeOfData;
 	u32 virtualAddressOfRawData;
