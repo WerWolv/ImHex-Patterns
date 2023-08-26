@@ -28,7 +28,7 @@ namespace std::fxpt {
 		@return The fixed point representation of flt
 	*/
 	fn to_fixed(double flt, u32 precision) {
-		return fixed((flt * (1 << precision)));
+		return s128((flt * (1 << precision)));
 	};
 
 	/**

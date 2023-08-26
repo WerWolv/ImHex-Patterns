@@ -33,7 +33,7 @@ namespace type {
 	
 	namespace impl {
 	
-		fn transform_uleb128_array(auto array) {
+		fn transform_uleb128_array(ref auto array) {
 			u128 res = array[0] & 0x7f;
 			for(u8 i = 1, array[i-1] & 0x80 != 0, i+=1) {
 				res |= u128(array[i] & 0x7f) << 7 * i;
@@ -41,7 +41,7 @@ namespace type {
 			return res;
 		};
 
-		fn transform_sleb128_array(auto array) {			
+		fn transform_sleb128_array(ref auto array) {			
 			s128 res = type::impl::transform_uleb128_array(array);
 			if (res & 0x40 != 0) {
 				res |= ~0 << (sizeof(array) / sizeof(u8)) * 7;
@@ -49,21 +49,21 @@ namespace type {
 			return res;
 		};
 		
-		fn format_uleb128(auto leb128) {
+		fn format_uleb128(ref auto leb128) {
 			u128 res = type::impl::transform_uleb128_array(leb128.array);
 			return std::format("{} ({:#x})", res, res);
 		};
 	
-		fn transform_uleb128(auto leb128) {
+		fn transform_uleb128(ref auto leb128) {
 			return type::impl::transform_uleb128_array(leb128.array);
 		};
 
-		fn format_sleb128(auto leb128) {
+		fn format_sleb128(ref auto leb128) {
 			s128 res = type::impl::transform_sleb128_array(leb128.array);
 			return std::format("{} ({:#x})", res, res);
 		};
 	
-		fn transform_sleb128(auto leb128) {
+		fn transform_sleb128(ref auto leb128) {
 			return type::impl::transform_sleb128_array(leb128.array);
 		};
 

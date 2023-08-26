@@ -1,20 +1,23 @@
+#pragma MIME image/gif
+
+// Extension Labels
 #define LABEL_GC 0xF9
 #define LABEL_COMMENT 0xFE
 #define LABEL_APPLICATION 0xFF
 #define LABEL_PLAINTEXT 0x01
-#define LABEL_APPLICATION_NETSCAPE "NETSCAPE"
-#define CODE_FRAME 0x2C
-#define CODE_EXTENSION 0x21
-#define CODE_TRAILER 0x3B
-#define MAX_BLOCKS 4096
-#define GCT_ACCESS parent.parent.parent.parent.header.gct
+
+// Indentifier Magics
+#define IMAGE_SEPERATOR_MAGIC 0x2C
+#define EXTENSION_INTRODUCER_MAGIC 0x21
+#define GIF_TRAILER_MAGIC 0x3B
 
 #include <std/io.pat>
 #include <std/core.pat>
 #include <std/mem.pat>
 #include <std/string.pat>
+#include <std/math.pat>
 
-#pragma MIME image/gif
+#include <type/magic.pat>
 
 bitfield GCT_Flags {
     size : 3 [[comment("physical size = 2^(flags.size + 1)")]];
@@ -23,105 +26,113 @@ bitfield GCT_Flags {
     enabled : 1;
 };
     
-bitfield LCT_Flags {
-    size : 3 [[comment("physical size = 2^(flags.size + 1)")]];
-    padding : 2;
-    sort : 1 [[comment("Indicates if the table is sorted by importance")]];
-    interlace : 1;
-    enable : 1;
+bitfield ImageDescriptorFlags {
+    lctSize: 3;
+    reserved: 2;
+    lctSort: 1;
+    interlaceFlag: 1;
+    lctEnable: 1;
 };
     
-bitfield GC_Flags {
+bitfield GCE_Flags {
     transparent : 1;
     userInput : 1;
     disposalMode : 3 [[format("format::dispose_enum")]];
     reserved : 3;
 };
 
-struct color {
-  u8 r, g, b;
-} [[color(std::format("{:02X}{:02X}{:02X}", r, g, b))]];
+struct Color {
+  u8 red;
+  u8 green;
+  u8 blue;
+} [[color(std::format("{:02X}{:02X}{:02X}", red, green, blue))]];
 
-struct subblock {
-    u8 size;
-    if(size == 0) break;
-    u8 data[size];
+struct _SubBlocks {
+    u8 data_size;
+    u8 data[data_size];
 };
 
-struct block {
-   subblock blocks[MAX_BLOCKS];
-};
-
-fn exp2(auto n) {
-    return 1 << n;
+struct DataSubBlocks {
+    _SubBlocks subBlocks[while(std::mem::read_unsigned($, 1) != 0)];
 };
 
 struct Header {
-    char magic[3];
+    type::Magic<"GIF"> magic;
     char version[3];
+};
+
+struct LogicalScreenDescriptor {
     u16 width;
     u16 height;
     GCT_Flags gctFlags;
     u8 bgColorIndex;
     u8 pixelAscpet;
     if (gctFlags.enabled) {
-        color gct[(exp2(gctFlags.size + 1))];
-        color bgColor = gct[bgColorIndex];
+        Color gct[std::math::pow(2, gctFlags.size + 1)];
     }
-};    
+};
 
-struct frame {
-    u16 x;
-    u16 y;
-    u16 width;
-    u16 height;
-    LCT_Flags lctFlags;
-    if(lctFlags.enable) {
-        color lct[(exp2(lctFlags.size + 1))];
+struct ImageDescriptor {
+    u16 imageLeftPosition;
+    u16 imageTopPosition;
+    u16 imageWidth;
+    u16 imageHeight;
+    ImageDescriptorFlags flags;
+    if(flags.lctEnable) {
+        Color lct[std::math::pow(2, flags.lctSize + 1)];
     }
     u8 lzwMinCode [[comment("This byte determines the initial number of bits used for LZW codes in the image data")]];
-    block lzwCompressedData [[comment("Data is pallet indecies either into current LDC or GCT and is compressed using LZW")]]; 
+    DataSubBlocks lzwCompressedData [[comment("Data is pallet indecies either into current LDC or GCT and is compressed using LZW")]];
 };
 
-struct comment {
-    block data [[hidden]];
-    char comment[] @ addressof(data.blocks) + 1; // TODO : need to find a better way of doing this
+struct CommentExtension {
+    DataSubBlocks commentData;
 };
 
-struct application {
-    u8 blockSize [[hidden]];
-    char identifier[8] [[comment("Only known are: NETSCAPE")]];
-    char version[3] [[comment("Only known for NETSCAPE: '2.0'")]];
-    block b [[hidden]];
-    if(identifier == LABEL_APPLICATION_NETSCAPE) {
-        u16 loopcount @ addressof(b.blocks[0].data) + 1 [[comment("0, = Forever")]];
-    }
+struct ApplicationExtension {
+    u8 blockSize;
+    char identifier[8];
+    char authenticationCode[3];
+    DataSubBlocks applicationData;
 };
 
-struct plaintext {
-    u8 blockSize [[hidden]];
-    u16 gridLeftPos;
-    u16 gridTopPos;
-    u16 gridWidth;
-    u16 gridHeight;
-    u8 cellWidth;
-    u8 cellHeight;
-    u8 textForegroundColorIndex [[hidden]];
-    u8 textBackgroundColorIndex [[hidden]];
-    color textForegroundColor @ addressof(GCT_ACCESS[textForegroundColorIndex]);
-    color textBackgroundColor @ addressof(GCT_ACCESS[textBackgroundColorIndex]);
-    block data [[hidden]];
-    char text[] @ addressof(data.blocks) + 1;
-    //char text[data.blocks[std::core::array_index()].size] @ addressof(data.blocks[std::core::array_index()].data);
+struct PlainTextExtension {
+    u8 blockSize;
+    u16 textGridLeftPos;
+    u16 textGridTopPos;
+    u16 textGridWidth;
+    u16 textGridHeight;
+    u8 charCellWidth;
+    u8 charCellHeight;
+    u8 textForegroundColorIndex;
+    u8 textBackgroundColorIndex;
+    DataSubBlocks plainTextData;
+    
 };
 
-struct graphical_control {
-    u8 blockSize [[hidden]];
-    GC_Flags flags;
+struct GraphicControlExtension {
+    u8 blockSize;
+    std::assert_warn(blockSize == 4, "Unexpected GCE block size");
+    GCE_Flags flags;
     u16 delay [[format("format::delay")]];
     u8 transparentColorIndex;
-    block b [[hidden]];
 };
+
+struct Extension {
+    u8 label [[format("format::extension_name")]];
+    if(label == LABEL_GC) GraphicControlExtension gce [[inline]];
+    if(label == LABEL_COMMENT) CommentExtension c [[inline]];
+    if(label == LABEL_APPLICATION) ApplicationExtension a [[inline]];
+    if(label == LABEL_PLAINTEXT) PlainTextExtension p [[inline]];
+};
+
+struct Block {
+    u8 identifier [[format("format::identifier_name")]];
+    if(identifier == IMAGE_SEPERATOR_MAGIC) ImageDescriptor i [[inline]];
+    if(identifier == EXTENSION_INTRODUCER_MAGIC) Extension e [[inline]];
+    if(identifier == GIF_TRAILER_MAGIC) break;
+    u8 blockTerminator;
+} [[format("format::block_name")]];
 
 namespace format {
     fn dispose_enum(u8 value) {
@@ -139,11 +150,18 @@ namespace format {
         return "Unknown Extension";
     };
 
-    fn content_name(ref frame f) {
-        if(f.code == CODE_FRAME) return "Frame";
-        if(f.code == CODE_EXTENSION) return "Extension";
-        if(f.code == CODE_TRAILER) return "End";
-        return "Unknown Content";
+    fn block_name(ref Block b) {
+        if(b.identifier == IMAGE_SEPERATOR_MAGIC) return "Image Descriptor";
+        if(b.identifier == EXTENSION_INTRODUCER_MAGIC) return "Extension";
+        if(b.identifier == GIF_TRAILER_MAGIC) return "Trailer";
+        return "Unknown Block Type";
+    };
+
+    fn identifier_name(u8 identifier) {
+        if(identifier == IMAGE_SEPERATOR_MAGIC) return "Image Separator";
+        if(identifier == EXTENSION_INTRODUCER_MAGIC) return "Extension Introducer";
+        if(identifier == GIF_TRAILER_MAGIC) return "GIF Trailer";
+        return "Unknown Identifier";
     };
 
     fn delay(u16 delay) {
@@ -154,28 +172,12 @@ namespace format {
     };
 }
 
-struct extension {
-   u8 label [[format("format::extension_name")]];
-   if(label == LABEL_GC) graphical_control gc [[inline]];
-   if(label == LABEL_COMMENT) comment c [[inline]];
-   if(label == LABEL_APPLICATION) application a [[inline]];
-   if(label == LABEL_PLAINTEXT) plaintext [[inline]];
-};
-
-struct content {
-    u8 code [[hidden]];
-    if(code == CODE_FRAME) frame f [[inline]];
-    if(code == CODE_EXTENSION) extension e [[inline]];
-    if(code == CODE_TRAILER) break;
-} [[format("format::content_name")]];
-
-struct Data {
-   content contents[while(!std::mem::eof())] [[inline]];
-};
-
 struct Gif {
+    u8 data[std::mem::size()] [[no_unique_address, hidden]];
     Header header;
-    Data data;
-};
+    std::assert_warn(header.version == "89a" || header.version == "87a", "Unsupported format version");
+    LogicalScreenDescriptor logicalScreenDescriptor;
+    Block blocks[while(!std::mem::eof())];
+} [[hex::visualize("image", this.data)]];
 
 Gif gif @ 0x00;

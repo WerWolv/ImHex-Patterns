@@ -170,5 +170,8 @@ struct Dex {
     field_id_item field_ids[header.field_ids_size] @ header.field_ids_off;
     method_id_item method_ids[header.method_ids_size] @ header.method_ids_off;
     class_def_item class_defs[header.class_defs_size] @ header.class_defs_off;
+    u8 data[header.data_size] @header.data_off;
+    map_list map_list @ header.map_off;
+    u8 link_data[header.link_size] @ header.link_off;
 };
 Dex dex @ 0x00;

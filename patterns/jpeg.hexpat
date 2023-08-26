@@ -119,4 +119,4 @@ struct Segment {
     }
 };
 
-Segment segments[while(!std::mem::eof())] @ 0x00;
+Segment segments[while(!std::mem::eof())] @ 0x00 [[hex::visualize("image", this)]];

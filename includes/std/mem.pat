@@ -5,7 +5,27 @@
 */
 
 namespace std::mem {
-  
+
+    namespace impl {
+
+        struct MagicSearchImpl<auto Magic, T> {
+            if ($ < (std::mem::base_address() + std::mem::size() - std::string::length(Magic) - 1)) {
+                char __potentialMagic__[std::string::length(Magic)] [[hidden, no_unique_address]];
+                
+                if (__potentialMagic__ == Magic) {
+                    T data [[inline]];
+                } else {
+                    padding[1];
+                    continue;
+                }
+            } else {
+                padding[1];
+                continue;
+            }
+        };
+
+    }
+
     /**
         A Handle for a custom Section
      */
@@ -26,7 +46,7 @@ namespace std::mem {
         @return True if the cursor is at the end of the memory
      */
     fn eof() {
-        return $ >= std::mem::size();
+        return $ >= (std::mem::base_address() + std::mem::size());
     };
 
     /**
@@ -174,10 +194,9 @@ namespace std::mem {
 
     /**
         Copies a range of bytes from the main section into a custom section
-        @param from_section The section to copy from
-        @param from_address The address to copy from
+        @param value The pattern whose bytes should be copied
+        @param to_section The section to copy to
         @param to_address The address to copy to
-        @param size The size of the range to copy
     */
     fn copy_value_to_section(ref auto value, Section to_section, u64 to_address) {
         builtin::std::mem::copy_value_to_section(value, to_section, to_address);
@@ -190,19 +209,7 @@ namespace std::mem {
         @tparam T The type to place at the address
     */
     struct MagicSearch<auto Magic, T> {
-        if ($ < (std::mem::size() - std::string::length(Magic) - 1)) {
-            char __potentialMagic__[std::string::length(Magic)] [[hidden, no_unique_address]];
-            
-            if (__potentialMagic__ == Magic) {
-                T data [[inline]];
-            } else {
-                padding[1];
-                continue;
-            }
-        } else {
-            padding[1];
-            continue;
-        }
+        std::mem::impl::MagicSearchImpl<Magic, T> impl[while(!std::mem::eof())] [[inline]];
     };
 
     /**

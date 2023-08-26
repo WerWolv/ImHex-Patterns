@@ -77,7 +77,7 @@ struct Length {
 		u8 length;
 } [[sealed, transform("transform_length"), format("transform_length")]];
 
-fn transform_length(Length length) {
+fn transform_length(ref auto length) {
 	return length.length;
 };
 

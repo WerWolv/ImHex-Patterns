@@ -563,7 +563,7 @@ struct Elf32_Phdr {
     PF p_flags;
     Elf32_Word p_align;
     
-    if (p_offset > 0 && p_filesz > 0 && (p_offset + p_filesz) < std::mem::size() && p_filesz < std::mem::size())
+    if (p_offset >= 0 && p_filesz > 0 && (p_offset + p_filesz) <= std::mem::size() && p_filesz <= std::mem::size())
         u8 p_data[p_filesz] @ p_offset [[sealed]];
 };
 
@@ -577,7 +577,7 @@ struct Elf64_Phdr {
     Elf64_Xword p_memsz;
     Elf64_Xword p_align;
     
-    if (p_offset > 0 && p_filesz > 0 && (p_offset + p_filesz) < std::mem::size() && p_filesz < std::mem::size())
+    if (p_offset >= 0 && p_filesz > 0 && (p_offset + p_filesz) <= std::mem::size() && p_filesz <= std::mem::size())
         u8 p_data[p_filesz] @ p_offset [[sealed]];
 };
 
@@ -714,14 +714,9 @@ fn format_section_header(auto shdr) {
 	u32 i = 0;
 	
 	u32 nameAddress = addressof(elf.shdr[stringTableIndex].stringTable) + shdr.sh_name;
-	while (i < std::core::member_count(elf.shdr[stringTableIndex].stringTable)) {
-		if (nameAddress >= addressof(elf.shdr[stringTableIndex].stringTable[i]) && nameAddress < (addressof(elf.shdr[stringTableIndex].stringTable[i]) + sizeof(elf.shdr[stringTableIndex].stringTable[i])))
-			break;
-		
-		i += 1;
-	}
+	String string @ nameAddress;
 
-	return elf.shdr[stringTableIndex].stringTable[i].value;
+	return string;
 };
 
 

@@ -138,7 +138,7 @@ enum PICTURE_TYPE : u32 {
 struct METADATA_BLOCK_PICTURE {
 	PICTURE_TYPE pictureType;
 	u32 mimeTypeLength;
-	char mimeType[mineTypeLength];
+	char mimeType[mimeTypeLength];
 	u32 descriptionLength;
 	char description[descriptionLength];
 	u32 width, height;

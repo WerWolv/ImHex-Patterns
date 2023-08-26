@@ -1,0 +1,312 @@
+{
+  "base": "Dark",
+  "colors": {
+      "imgui": {
+          "border": "#A5ADCEFF",
+          "border-shadow": "#B5BFE2FF",
+          "button": "#8CAAEE7F",
+          "button-active": "#BABBF1FF",
+          "button-hovered": "#99D1DB7F",
+          "check-mark": "#8CAAEEFF",
+          "child-background": "#292C3CFF",
+          "docking-empty-background": "#303446FF",
+          "docking-preview": "#99D1DBFF",
+          "drag-drop-target": "#85C1DCFF",
+          "frame-background": "#303446FF",
+          "frame-background-active": "#BABBF1FF",
+          "frame-background-hovered": "#99D1DB7F",
+          "header": "#85C1DC7F",
+          "header-active": "#BABBF17F",
+          "header-hovered": "#99D1DB7F",
+          "menu-bar-background": "#303446FF",
+          "modal-window-dim-background": "#B5BFE27F",
+          "nav-highlight": "#BABBF1FF",
+          "nav-windowing-background": "#C6D0F5FF",
+          "nav-windowing-highlight": "#737994FF",
+          "plot-histogram": "#E5C890FF",
+          "plot-histogram-hovered": "#EF9F767F",
+          "plot-lines": "#A5ADCEFF",
+          "plot-lines-hovered": "#F4B8E47F",
+          "popup-background": "#303446FF",
+          "resize-grip": "#838BA7FF",
+          "resize-grip-active": "#BABBF1FF",
+          "resize-grip-hovered": "#99D1DB7F",
+          "scrollbar-background": "#303446FF",
+          "scrollbar-grab": "#838BA7FF",
+          "scrollbar-grab-active": "#BABBF1FF",
+          "scrollbar-grab-hovered": "#99D1DB7F",
+          "separator": "#838BA7FF",
+          "separator-active": "#BABBF1FF",
+          "separator-hovered": "#99D1DB7F",
+          "slider-grab": "#737994FF",
+          "slider-grab-active": "#BABBF1FF",
+          "tab": "#737994FF",
+          "tab-active": "#BABBF17F",
+          "tab-hovered": "#99D1DB7F",
+          "tab-unfocused": "#838BA77F",
+          "tab-unfocused-active": "#7379947F",
+          "table-border-light": "#838BA7FF",
+          "table-border-strong": "#949CBBFF",
+          "table-header-background": "#737994FF",
+          "table-row-background": "#292C3CFF",
+          "table-row-background-alt": "#232634FF",
+          "text": "#C6D0F5FF",
+          "text-disabled": "#838BA7FF",
+          "text-selected-background": "#6268807F",
+          "title-background": "#292C3CFF",
+          "title-background-active": "#292C3CFF",
+          "title-background-collapse": "#292C3CFF",
+          "window-background": "#303446FF"
+      },
+      "imhex": {
+          "desc-button": "#51576DFF",
+          "desc-button-active": "#BABBF1FF",
+          "desc-button-hovered": "#99D1DB7F",
+          "highlight": "#A6D189FF",
+          "toolbar-blue": "#8CAAEEFF",
+          "toolbar-brown": "#F2D5CFFF",
+          "toolbar-gray": "#838BA7FF",
+          "toolbar-green": "#A6D189FF",
+          "toolbar-purple": "#CA9EE6FF",
+          "toolbar-red": "#E78284FF",
+          "toolbar-yellow": "#E5C890FF"
+      },
+      "imnodes": {
+          "box-selector": "#8CAAEEFF",
+          "box-selector-outline": "#8CAAEE7F",
+          "grid-background": "#292C3CFF",
+          "grid-line": "#949CBBFF",
+          "grid-line-primary": "#838BA7FF",
+          "link": "#8CAAEEFF",
+          "link-hovered": "#99D1DBFF",
+          "link-selected": "#BABBF1FF",
+          "mini-map-background": "#C6D0F57F",
+          "mini-map-background-hovered": "#B5BFE27F",
+          "mini-map-canvas": "#51576D7F",
+          "mini-map-canvas-outline": "#4145597F",
+          "mini-map-link": "#8CAAEEFF",
+          "mini-map-link-selected": "#BABBF1FF",
+          "mini-map-node-background": "#6268807F",
+          "mini-map-node-background-hovered": "#4145597F",
+          "mini-map-node-background-selected": "#BABBF1FF",
+          "mini-map-node-outline": "#838BA7FF",
+          "mini-map-outline": "#838BA77F",
+          "mini-map-outline-hovered": "#B5BFE27F",
+          "node-background": "#737994FF",
+          "node-background-hovered": "#99D1DB7F",
+          "node-background-selected": "#BABBF1FF",
+          "node-outline": "#737994FF",
+          "pin": "#8CAAEE7F",
+          "pin-hovered": "#99D1DB7F",
+          "title-bar": "#414559FF",
+          "title-bar-hovered": "#99D1DB7F",
+          "title-bar-selected": "#BABBF1FF"
+      },
+      "implot": {
+          "axis-bg": "#C6D0F521",
+          "axis-bg-active": "#B5BFE27F",
+          "axis-bg-hovered": "#A5ADCE7F",
+          "axis-grid": "#303446FF",
+          "axis-text": "#00000000",
+          "axis-tick": "#B5BFE27F",
+          "crosshairs": "#C6D0F57F",
+          "error-bar": "#00000000",
+          "fill": "#00000000",
+          "frame-bg": "#303446FF",
+          "inlay-text": "#C6D0F5FF",
+          "legend-bg": "#737994FF",
+          "legend-border": "#838BA7FF",
+          "legend-text": "#C6D0F5FF",
+          "line": "#00000000",
+          "marker-fill": "#00000000",
+          "marker-outline": "#00000000",
+          "plot-bg": "#8CAAEE21",
+          "plot-border": "#00000000",
+          "selection": "#6268807F",
+          "title-text": "#C6D0F5FF"
+      },
+      "text-editor": {
+          "background": "#303446FF",
+          "breakpoint": "#E78284FF",
+          "char-literal": "#A6D189FF",
+          "comment": "#737994FF",
+          "current-line-edge": "#838BA77F",
+          "current-line-fill": "#838BA77F",
+          "current-line-fill-inactive": "#7379947F",
+          "cursor": "#F2D5CFFF",
+          "default": "#838BA7FF",
+          "error-marker": "#E782847F",
+          "identifier": "#949CBBFF",
+          "keyword": "#CA9EE6FF",
+          "known-identifier": "#E78284FF",
+          "line-number": "#838BA7FF",
+          "multi-line-comment": "#737994FF",
+          "number": "#EF9F76FF",
+          "preproc-identifier": "#BABBF1FF",
+          "preprocessor": "#A5ADCEFF",
+          "punctuation": "#C6D0F5FF",
+          "selection": "#6268807F",
+          "string": "#A6D189FF"
+      }
+  },
+  "image_postfix": "_dark",
+  "name": "Catppuccin Frappe",
+  "styles": {
+      "imgui": {
+          "alpha": 1.0,
+          "button-text-align": [
+              0.5,
+              0.5
+          ],
+          "cell-padding": [
+              4.0,
+              2.0
+          ],
+          "child-border-size": 1.0,
+          "child-rounding": 0.0,
+          "disabled-alpha": 0.6000000238418579,
+          "frame-border-size": 0.0,
+          "frame-padding": [
+              4.0,
+              3.0
+          ],
+          "frame-rounding": 0.0,
+          "grab-min-size": 12.0,
+          "grab-rounding": 0.0,
+          "indent-spacing": 10.0,
+          "item-inner-spacing": [
+              4.0,
+              4.0
+          ],
+          "item-spacing": [
+              8.0,
+              4.0
+          ],
+          "popup-border-size": 1.0,
+          "popup-rounding": 0.0,
+          "scrollbar-rounding": 9.0,
+          "scrollbar-size": 14.0,
+          "selectable-text-align": [
+              0.0,
+              0.0
+          ],
+          "tab-rounding": 4.0,
+          "window-border-size": 1.0,
+          "window-min-size": [
+              32.0,
+              32.0
+          ],
+          "window-padding": [
+              8.0,
+              8.0
+          ],
+          "window-rounding": 0.0,
+          "window-title-align": [
+              0.0,
+              0.5
+          ]
+      },
+      "imnodes": {
+          "grid-spacing": 24.0,
+          "link-hover-distance": 10.0,
+          "link-line-segments-per-length": 0.10000000149011612,
+          "link-thickness": 3.0,
+          "mini-map-offset": [
+              4.0,
+              4.0
+          ],
+          "mini-map-padding": [
+              8.0,
+              8.0
+          ],
+          "node-border-thickness": 1.0,
+          "node-corner-rounding": 4.0,
+          "node-padding": [
+              8.0,
+              8.0
+          ],
+          "pin-circle-radius": 4.0,
+          "pin-hover-radius": 10.0,
+          "pin-line-thickness": 1.0,
+          "pin-offset": 0.0,
+          "pin-quad-side-length": 7.0,
+          "pin-triangle-side-length": 9.5
+      },
+      "implot": {
+          "annotation-padding": [
+              2.0,
+              2.0
+          ],
+          "digital-bit-gap": 4.0,
+          "digital-bit-height": 8.0,
+          "error-bar-size": 5.0,
+          "error-bar-weight": 1.5,
+          "fill-alpha": 1.0,
+          "fit-padding": [
+              0.0,
+              0.0
+          ],
+          "label-padding": [
+              5.0,
+              5.0
+          ],
+          "legend-inner-padding": [
+              5.0,
+              5.0
+          ],
+          "legend-padding": [
+              10.0,
+              10.0
+          ],
+          "legend-spacing": [
+              5.0,
+              0.0
+          ],
+          "line-weight": 1.0,
+          "major-grid-size": [
+              1.0,
+              1.0
+          ],
+          "major-tick-len": [
+              10.0,
+              10.0
+          ],
+          "major-tick-size": [
+              1.0,
+              1.0
+          ],
+          "marker-size": 4.0,
+          "marker-weight": 1.0,
+          "minor-alpha": 0.25,
+          "minor-grid-size": [
+              1.0,
+              1.0
+          ],
+          "minor-tick-len": [
+              5.0,
+              5.0
+          ],
+          "minor-tick-size": [
+              1.0,
+              1.0
+          ],
+          "mouse-pos-padding": [
+              10.0,
+              10.0
+          ],
+          "plot-border-size": 1.0,
+          "plot-default-size": [
+              400.0,
+              300.0
+          ],
+          "plot-min-size": [
+              200.0,
+              150.0
+          ],
+          "plot-padding": [
+              10.0,
+              10.0
+          ]
+      }
+  }
+}
