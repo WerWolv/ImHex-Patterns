@@ -1,3 +1,5 @@
+#pragma description Static library archive files
+
 #pragma MIME application/x-archive
 
 #include <std/string.pat>

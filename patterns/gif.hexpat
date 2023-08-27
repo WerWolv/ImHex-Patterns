@@ -1,3 +1,5 @@
+#pragma description GIF image files
+
 #pragma MIME image/gif
 
 // Extension Labels

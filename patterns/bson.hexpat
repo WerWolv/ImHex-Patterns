@@ -1,3 +1,5 @@
+#pragma description BSON (Binary JSON) format
+
 #pragma MIME application/bson
 
 #include <type/time.pat>

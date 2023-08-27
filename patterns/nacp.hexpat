@@ -1,3 +1,5 @@
+#pragma description Nintendo Switch NACP files
+
 #pragma endian little
 
 #include <std/sys.pat>

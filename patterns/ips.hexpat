@@ -1,3 +1,5 @@
+#pragma description IPS (International Patching System) files
+
 #include <std/mem.pat>
 #include <std/string.pat>
 

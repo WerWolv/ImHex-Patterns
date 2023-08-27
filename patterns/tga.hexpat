@@ -1,3 +1,5 @@
+#pragma description Truevision TGA/TARGA image
+
 #pragma MIME image/tga
 #pragma endian little
 

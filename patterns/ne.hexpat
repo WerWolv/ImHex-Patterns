@@ -1,3 +1,5 @@
+#pragma description NE header and Standard NE fields
+
 #include <std/mem.pat>
 
 struct DOSHeader {

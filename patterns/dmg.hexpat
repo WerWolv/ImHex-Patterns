@@ -1,3 +1,5 @@
+#pragma description Apple Disk Image Trailer (DMG)
+
 #pragma endian big
 
 #include <type/magic.pat>

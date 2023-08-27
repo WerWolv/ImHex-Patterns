@@ -1,3 +1,5 @@
+#pragma description SE Linux package
+
 // SE Linux Policy Package
 // Extension: PP
 // https://github.com/SELinuxProject/selinux/blob/master/libsepol/src/module.c

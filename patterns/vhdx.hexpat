@@ -1,3 +1,5 @@
+#pragma description Microsoft Hyper-V Virtual Hard Disk format
+
 #include <std/io.pat>
 #include <std/ptr.pat>
 #include <std/core.pat>

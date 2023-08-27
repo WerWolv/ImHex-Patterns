@@ -1,3 +1,5 @@
+#pragma description Java Class files
+
 #pragma endian big
 #pragma pattern_limit 100000000
 #pragma MIME application/x-java-applet

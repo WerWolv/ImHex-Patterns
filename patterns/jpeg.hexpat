@@ -1,3 +1,5 @@
+#pragma description JPEG Image Format
+
 #include <std/mem.pat>
 #pragma endian big
 

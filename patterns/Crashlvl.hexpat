@@ -1,3 +1,5 @@
+#pragma description Crash Bandicoot - Back in Time (fan game) User created flashback tapes level format
+
 #include <type/magic.pat>
 #include <std/string.pat>
 #include <std/array.pat>

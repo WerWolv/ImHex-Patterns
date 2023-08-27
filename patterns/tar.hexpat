@@ -1,3 +1,5 @@
+#pragma description Tar file format
+
 #pragma MIME application/tar
 #pragma MIME application/x-tar
 

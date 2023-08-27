@@ -1,3 +1,5 @@
+#pragma description [Intel hexadecimal object file format definition]("https://en.wikipedia.org/wiki/Intel_HEX")
+
 /* If you have no delimiters between data records then remove 
  * the null_bytes field in the data_packet struct.
  * Set the array at the bottom to the highest index + 1 in the Pattern Data view

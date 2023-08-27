@@ -1,3 +1,5 @@
+#pragma description Google Protobuf encoding 
+
 #include <std/core.pat>
 #include <std/mem.pat>
 

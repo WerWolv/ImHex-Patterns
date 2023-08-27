@@ -1,3 +1,5 @@
+#pragma description DirectDraw Surface
+
 #pragma MIME image/vnd-ms.dds
 #pragma endian little
 

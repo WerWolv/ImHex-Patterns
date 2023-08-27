@@ -1,3 +1,5 @@
+#pragma description Windows HtmlHelp Data (ITSF / CHM)
+
 #include <type/magic.pat>
 #include <type/size.pat>
 #include <type/guid.pat>

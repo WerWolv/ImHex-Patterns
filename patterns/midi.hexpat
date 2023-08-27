@@ -1,3 +1,5 @@
+#pragma description MIDI header, event fields provided
+
 #include <std/core.pat>
 
 #pragma MIME audio/midi

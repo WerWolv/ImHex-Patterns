@@ -1,3 +1,5 @@
+#pragma description End of Central Directory Header, Central Directory File Headers
+
 #pragma MIME application/zip
 
 #include <std/mem.pat>

@@ -1,3 +1,5 @@
+#pragma description Nintendo Switch Atmosphère CFW Fatal Error log
+
 #pragma endian little
 
 #include <std/io.pat>

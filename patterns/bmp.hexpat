@@ -1,3 +1,5 @@
+#pragma description OS2/Windows Bitmap files
+
 #pragma MIME image/bmp
 #pragma endian little
 #include <std/mem.pat>

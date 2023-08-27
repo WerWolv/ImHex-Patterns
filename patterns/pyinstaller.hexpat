@@ -1,3 +1,5 @@
+#pragma description PyInstaller binray files 
+
 #pragma endian big
 
 #include <std/mem.pat>

@@ -1,3 +1,5 @@
+#pragma description OGG Audio format
+
 #pragma MIME audio/ogg
 
 #include <std/core.pat>

@@ -1,3 +1,5 @@
+#pragma description GZip compressed data format
+
 #pragma MIME application/gzip
 
 #include <type/time.pat>

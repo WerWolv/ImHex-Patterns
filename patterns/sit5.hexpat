@@ -1,3 +1,5 @@
+#pragma description StuffIt V5 archive
+
 // Based on https://github.com/mietek/theunarchiver/wiki/StuffIt5Format and https://github.com/ParksProjets/Maconv/blob/master/docs/stuffit/Stuffit_v5.md
 
 #pragma endian big

@@ -1,3 +1,5 @@
+#pragma description Compact Disc Audio track
+
 struct Header {
 u32 RIFF;
 s32 size;

@@ -1,3 +1,5 @@
+#pragma description MessagePack binary serialization format
+
 #pragma MIME application/x-msgpack
 
 enum Type : u8 {

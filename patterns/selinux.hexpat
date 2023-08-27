@@ -1,3 +1,5 @@
+#pragma description SE Linux modules
+
 #include <std/sys.pat>
 #pragma pattern_limit 13107200
 #pragma endian little

@@ -1,3 +1,5 @@
+#pragma description QOI image files
+
 #pragma MIME image/qoi
 #pragma endian big
 

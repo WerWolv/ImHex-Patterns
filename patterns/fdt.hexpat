@@ -1,3 +1,5 @@
+#pragma description Flat Linux Device Tree blob
+
 #pragma endian big
 
 #include <std/sys.pat>

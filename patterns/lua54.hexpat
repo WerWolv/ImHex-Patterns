@@ -1,3 +1,5 @@
+#pragma description Lua 5.4 bytecode
+
 #include <std/io.pat>
 #include <std/mem.pat>
 

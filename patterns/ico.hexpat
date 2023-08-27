@@ -1,3 +1,5 @@
+#pragma description Icon (.ico) or Cursor (.cur) files
+
 #pragma endian little
 
 #include <std/sys.pat>

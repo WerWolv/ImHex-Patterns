@@ -1,3 +1,5 @@
+#pragma description Nintendo Switch PRODINFO 
+
 enum Model : u16 {
 	NX = 1
 };

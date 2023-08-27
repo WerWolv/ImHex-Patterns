@@ -1,3 +1,5 @@
+#pragma description DOOM WAD Archive
+
 #include <type/magic.pat>
 #include <type/size.pat>
 

@@ -1,3 +1,5 @@
+#pragma description Mechanized Assault and Exploration v1.04 (strategy game) save file format
+
 #include <std/sys.pat>
 #include <std/mem.pat>
 

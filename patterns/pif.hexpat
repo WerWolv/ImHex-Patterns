@@ -1,3 +1,5 @@
+#pragma description PIF Image Format
+
 /* PIF - Portable Image Format
  *
  * Basic decoder for the PIF file structure

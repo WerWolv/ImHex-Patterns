@@ -1,3 +1,5 @@
+#pragma description Mach-O executable
+
 #pragma MIME application/x-mach-binary
 
 #include <type/size.pat>
