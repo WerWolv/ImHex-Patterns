@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Windows HtmlHelp Data (ITSF / CHM)
 
 #include <type/magic.pat>

@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Binary Value Data Format (.vdf) files
 
 #pragma eval_depth 0x10000

@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Nintendo Switch NACP files
 
 #pragma endian little

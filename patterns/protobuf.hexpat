@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Google Protobuf encoding 
 
 #include <std/core.pat>

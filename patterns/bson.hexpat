@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description BSON (Binary JSON) format
 
 #pragma MIME application/bson

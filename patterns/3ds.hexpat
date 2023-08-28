@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Autodesk 3DS Max Model file
 
 #include <std/io.pat>

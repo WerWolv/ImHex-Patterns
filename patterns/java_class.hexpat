@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Java Class files
 
 #pragma endian big

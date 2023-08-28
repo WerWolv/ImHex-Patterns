@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Nintendo Switch PFS0 archive (NSP files)
 
 #include <type/magic.pat>

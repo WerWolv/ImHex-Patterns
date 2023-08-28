@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description OGG Audio format
 
 #pragma MIME audio/ogg

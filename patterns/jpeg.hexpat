@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description JPEG Image Format
 
 #include <std/mem.pat>

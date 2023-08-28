@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Gameboy ROM
 
 #include <type/size.pat>

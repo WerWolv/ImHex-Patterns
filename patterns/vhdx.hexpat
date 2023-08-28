@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Microsoft Hyper-V Virtual Hard Disk format
 
 #include <std/io.pat>

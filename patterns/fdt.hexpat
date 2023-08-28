@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Flat Linux Device Tree blob
 
 #pragma endian big

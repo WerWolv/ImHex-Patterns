@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description Nintendo Switch XCI cardridge ROM
 
 #include <std/core.pat>

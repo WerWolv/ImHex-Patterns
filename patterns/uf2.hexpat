@@ -1,3 +1,4 @@
+#pragma author WerWolv
 #pragma description [USB Flashing Format](https://github.com/microsoft/uf2)
 
 #include <std/sys.pat>
