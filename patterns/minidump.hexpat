@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Windows MiniDump files
+
 #pragma MIME application/x-dmp
 
 #include <type/time.pat>

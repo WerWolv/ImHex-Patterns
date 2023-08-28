@@ -1,3 +1,5 @@
+#pragma description Zstandard compressed data format
+
 // https://github.com/facebook/zstd/blob/dev/doc/zstd_compression_format.md
 
 #pragma MIME application/zstd

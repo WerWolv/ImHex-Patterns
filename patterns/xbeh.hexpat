@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Xbox executable
+
 #pragma MIME audio/x-xbox-executable
 
 #include <type/magic.pat>

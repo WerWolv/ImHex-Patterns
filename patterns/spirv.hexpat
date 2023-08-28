@@ -1,3 +1,5 @@
+#pragma description SPIR-V header and instructions
+
 #include <std/mem.pat>
 
 enum GeneratorID : u16 {

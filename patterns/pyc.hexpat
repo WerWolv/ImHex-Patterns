@@ -1,3 +1,5 @@
+#pragma description Python bytecode files
+
 #include <type/time.pat>
 #include <std/mem.pat>
 

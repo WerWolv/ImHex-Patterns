@@ -1,3 +1,5 @@
+#pragma description Command and Conquer Voxel Animation
+
 // Command and conquer voxel animation format
 
 struct vec4_s {

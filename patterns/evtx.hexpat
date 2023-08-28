@@ -1,3 +1,5 @@
+#pragma description MS Windows Vista Event Log
+
 #pragma endian little
 
 struct Header {

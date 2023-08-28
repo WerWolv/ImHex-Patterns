@@ -1,3 +1,5 @@
+#pragma description UEFI structs for parsing efivars
+
 #pragma MIME data
 
 #define WIN_CERT_TYPE_PKCS_SIGNED_DATA 0x0002

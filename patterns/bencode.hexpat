@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Bencode encoding, used by Torrent files
+
 #pragma MIME application/x-bittorrent
 
 #include <std/ctype.pat>

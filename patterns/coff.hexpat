@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Common Object File Format (COFF) executable
+
 #pragma MIME application/x-coff
 
 #include <type/time.pat>

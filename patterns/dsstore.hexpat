@@ -1,3 +1,5 @@
+#pragma description .DS_Store file format
+
 // Apple macOS .DS_Store format
 #pragma endian big
 #include <std/io.pat>

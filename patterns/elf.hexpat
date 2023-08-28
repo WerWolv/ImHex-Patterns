@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description ELF header in elf binaries
+
 #pragma MIME application/x-executable
 #pragma MIME application/x-elf
 #pragma MIME application/x-coredump

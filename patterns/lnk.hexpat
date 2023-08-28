@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Windows Shell Link file format
+
 #pragma MIME application/x-ms-shortcut
 
 #include <std/core.pat>

@@ -1,3 +1,5 @@
+#pragma description ISO 9660 file system
+
 #pragma endian little
 
 #include <std/io.pat>

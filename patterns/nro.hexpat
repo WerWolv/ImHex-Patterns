@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Nintendo Switch NRO files
+
 #include <std/io.pat>
 #include <std/sys.pat>
 

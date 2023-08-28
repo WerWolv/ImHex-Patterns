@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Minecraft NBT format
+
 #include <std/sys.pat>
 
 #pragma endian big

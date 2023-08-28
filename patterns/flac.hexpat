@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Free Lossless Audio Codec, FLAC Audio Format
+
 #include <std/sys.pat>
 #include <std/core.pat>
 #include <std/io.pat>

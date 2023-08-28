@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description PCX Image format
+
 #pragma MIME application/x-pcx
 
 #include <std/io.pat>

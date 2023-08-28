@@ -1,3 +1,5 @@
+#pragma description RIFF header, WAVE header, PCM header
+
 #pragma MIME audio/x-wav
 #pragma MIME audio/wav
 

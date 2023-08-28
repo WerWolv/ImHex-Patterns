@@ -1,3 +1,5 @@
+#pragma description Command and Conquer Voxel Model
+
 // Command and Conquer voxel model format
 
 struct vec4_s {

@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Ethernet II Frames (IP Packets)
+
  #pragma endian big
 
 #include <std/sys.pat>

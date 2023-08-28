@@ -1,3 +1,5 @@
+#pragma description Dalvik EXecutable Format
+
 #include <type/leb128.pat>
 
 struct header_item {

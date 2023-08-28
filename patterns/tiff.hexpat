@@ -1,3 +1,5 @@
+#pragma description Tag Image File Format
+
 #pragma MIME image/tiff
 
 #pragma eval_depth 100

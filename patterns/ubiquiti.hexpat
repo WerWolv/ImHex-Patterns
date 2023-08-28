@@ -1,3 +1,5 @@
+#pragma description Ubiquiti Firmware (update) image
+
 #pragma endian big
 
 #include <std/mem.pat>

@@ -1,3 +1,5 @@
+#pragma description ID3 tags in MP3 files
+
 #pragma MIME audio/mpeg
 
 #include <std/mem.pat>

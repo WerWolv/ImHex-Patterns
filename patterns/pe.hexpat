@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description PE header, COFF header, Standard COFF fields and Windows Specific fields
+
 #pragma MIME application/x-dosexec
 #pragma MIME application/x-msdownload
 

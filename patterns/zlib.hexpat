@@ -1,3 +1,5 @@
+#pragma description ZLIB compressed data format
+
 #pragma MIME application/zlib
 
 #include <std/core.pat>

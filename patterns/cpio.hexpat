@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description Old Binary CPIO Format
+
 #include <type/base.pat>
 
 #include <std/time.pat>

@@ -1,3 +1,5 @@
+#pragma description Command and Conquer Voxel Palette
+
 // Command and conquer palette format
 
 struct Color {

@@ -1,3 +1,6 @@
+#pragma author WerWolv
+#pragma description ARM Cortex M Vector Table Layout
+
 #pragma endian little
 
 #include <std/io.pat>
