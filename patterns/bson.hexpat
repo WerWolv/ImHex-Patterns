@@ -1,8 +1,6 @@
-#pragma author WerWolv
-#pragma description BSON (Binary JSON) format
-
 #pragma MIME application/bson
 
+#include <std/mem.pat>
 #include <type/time.pat>
 
 enum Type : u8 {
@@ -128,4 +126,4 @@ struct Document {
     padding[1];
 };
 
-Document document @ 0x00;
+Document documents[while(!std::mem::eof())] @ 0x00 [[inline]];
