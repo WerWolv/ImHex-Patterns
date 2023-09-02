@@ -205,24 +205,16 @@ struct IFDEntry {
 
     match (Type) {
         (TIFFFieldType::BYTE): {
-             if (std::core::get_endian() == BIG){
-                u8 Value;
-                padding[3];
-            } else {
-                u32 Value;
-            }
+            u8 Value;
+            padding[3];
         }
         (TIFFFieldType::ASCII): { 
             u32 value_offset[[hidden]];
             char Value[Count] @ value_offset;
         }
         (TIFFFieldType::SHORT): {
-            if (std::core::get_endian() == BIG){
-                u16 Value;
-                padding[2];
-            } else {
-                u32 Value;
-            }
+            u16 Value;
+            padding[2];
         }
         (TIFFFieldType::LONG): u32 Value;
         (TIFFFieldType::RATIONAL): {
@@ -230,24 +222,16 @@ struct IFDEntry {
             TIFFRational<u32> Value @ value_offset;
         }
         (TIFFFieldType::SBYTE): {
-             if (std::core::get_endian() == BIG){
-                s8 Value;
-                padding[3];
-            } else {
-                s32 Value;
-            }
+            s8 Value;
+            padding[3];
         }
         (TIFFFieldType::UNDEFINED): {
             u32 value_offset[[hidden]];
             u8 Value[Count] @ value_offset;
         }
         (TIFFFieldType::SSHORT): {
-             if (std::core::get_endian() == BIG){
-                s16 Value;
-                padding[2];
-            } else {
-                s32 Value;
-            }
+            s16 Value;
+            padding[2];
         }
         (TIFFFieldType::SLONG): s32 Value;
         (TIFFFieldType::SRATIONAL): {
