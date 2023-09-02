@@ -135,7 +135,7 @@ struct ValueArray<T, auto Count> {
 } [[inline]];
 
 struct ValueOffset<T, auto Count> {
-    u32 Size = sizeof(T) * Count;
+    u64 Size = sizeof(T) * Count;
     if (Size <= 4) {
         ValueArray<T, Count> ValueArray;
         padding[4 - Size];
@@ -171,7 +171,7 @@ struct IFDEntry {
 } [[name(std::string::replace(std::core::formatted_value(Tag), "TIFFTag::", ""))]];
 
 fn get_field(ref auto entries, TIFFTag tag) {
-    for (u16 i = 0, i < std::core::member_count(entries), i = i + 1) {
+    for (u64 i = 0, i < std::core::member_count(entries), i = i + 1) {
         if (entries[i].Tag == tag) {
             return i;
         }
@@ -180,30 +180,30 @@ fn get_field(ref auto entries, TIFFTag tag) {
 };
 
 struct ImageData<auto Desc> {
-    u32 Index = std::core::array_index();
-    u32 Offset = parent.DirectoryEntry[parent.OffsetField].ValueOffset.ValueArray.Values[Index];
-    u32 ByteCount = parent.DirectoryEntry[parent.ByteCountField].ValueOffset.ValueArray.Values[Index];
+    u64 Index = std::core::array_index();
+    u64 Offset = parent.DirectoryEntry[parent.OffsetField].ValueOffset.ValueArray.Values[Index];
+    u64 ByteCount = parent.DirectoryEntry[parent.ByteCountField].ValueOffset.ValueArray.Values[Index];
     std::mem::Bytes<ByteCount> ImageData @ Offset [[name(std::format("{} {}", Desc, Index))]];
 } [[inline]];
 
-u32 currentIFD = 0;
+u64 currentIFD = 0;
 struct IFD {
-    u32 Number = currentIFD;
+    u64 Number = currentIFD;
     u16 NumberDirectoryEntries;
     IFDEntry DirectoryEntry[NumberDirectoryEntries];
     u32 NextIFD;
 
     try {
-        u16 OffsetField = get_field(DirectoryEntry, TIFFTag::StripOffsets);
-        u16 ByteCountField = get_field(DirectoryEntry, TIFFTag::StripByteCounts);
-        u32 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
+        u64 OffsetField = get_field(DirectoryEntry, TIFFTag::StripOffsets);
+        u64 ByteCountField = get_field(DirectoryEntry, TIFFTag::StripByteCounts);
+        u64 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
         ImageData<"Strip"> Strips[Count];
     } catch {}
 
     try {
-        u16 OffsetField = get_field(DirectoryEntry, TIFFTag::TileOffsets);
-        u16 ByteCountField = get_field(DirectoryEntry, TIFFTag::TileByteCounts);
-        u32 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
+        u64 OffsetField = get_field(DirectoryEntry, TIFFTag::TileOffsets);
+        u64 ByteCountField = get_field(DirectoryEntry, TIFFTag::TileByteCounts);
+        u64 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
         ImageData<"Tile"> Tiles[Count];
     } catch {}
 } [[name(std::format("IFD {}", Number))]];
