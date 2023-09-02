@@ -243,10 +243,6 @@ struct IFD {
     u32 NextIFD;
     u32 ImageLength = get_entry_value(addressof(this), TIFFTag::ImageLength);
     u32 RowsPerStrip = get_entry_value(addressof(this), TIFFTag::RowsPerStrip);
-    u32 StripByteCounts = get_entry_value(addressof(this), TIFFTag::StripByteCounts);
-    u32 StripOffsets = get_entry_value(addressof(this), TIFFTag::StripOffsets);
-    u32 StripOffsetsArray[ImageLength/RowsPerStrip] @ StripOffsets;
-    u32 StripByteCountsArray[ImageLength/RowsPerStrip] @ StripByteCounts;
     start_counter_strip(ImageLength/RowsPerStrip);
     StripList ImageData[] @ addressof(this);
 } [[name(std::format("IFD {}", Number))]];
