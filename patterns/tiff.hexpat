@@ -170,6 +170,7 @@ enum TIFFTag : u16 {
     SMinSampleValue = 0x0154,
     SMaxSampleValue = 0x0155,
     TransferRange = 0x0156,
+    JPEGTables = 0x015B,
     JPEGProc = 0x0200,
     JPEGInterchangeFormat = 0x0201,
     JPEGInterchangeFormatLngth = 0x0202,
@@ -184,7 +185,7 @@ enum TIFFTag : u16 {
     YCbCrPositioning = 0x0213,
     ReferenceBlackWhite = 0x0214,
     Copyright = 0x8298,
-    InterColorProfile = 0x8773
+    ICCProfile = 0x8773
 };
 
 
