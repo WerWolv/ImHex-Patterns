@@ -286,7 +286,9 @@ struct StripList {
 }[[inline]];
 
 
+u32 currentIFD = 0;
 struct IFD {
+    u32 Number = currentIFD;
     u16 NumberDirectoryEntries;
     IFDEntry DirectoryEntry[NumberDirectoryEntries];
     u32 NextIFD;
@@ -298,13 +300,14 @@ struct IFD {
     u32 StripByteCountsArray[ImageLength/RowsPerStrip] @ StripByteCounts;
     start_counter_strip(ImageLength/RowsPerStrip);
     StripList ImageData[] @ addressof(this);
-};
+} [[name(std::format("IFD {}", Number))]];
 
 struct IFDS {
     IFD IFD;
     if (IFD.NextIFD > 0) {
+        currentIFD += 1;
         IFDS IFD_tmp  @ IFD.NextIFD;
-    }else {
+    } else {
         break;
     }
 }[[inline]];
