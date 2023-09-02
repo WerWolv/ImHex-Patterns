@@ -198,56 +198,48 @@ enum TIFFTag : u16 {
 };
 
 
+struct ValueArray<T, auto Count> {
+    if (Count > 1) {
+        T Values[Count];
+    } else {
+        T Values[Count] [[hidden, no_unique_address]];
+        T Value;
+    }
+} [[inline]];
+
+struct ValueOffset<T, auto Count> {
+    u32 Size = sizeof(T) * Count;
+    if (Size <= 4) {
+        ValueArray<T, Count> ValueArray;
+        padding[4 - Size];
+    } else {
+        u32 Offset;
+        ValueArray<T, Count> ValueArray @ Offset;
+    }
+} [[inline]];
+
 struct IFDEntry {
     TIFFTag Tag;
     TIFFFieldType Type;
     u32 Count;
 
     match (Type) {
-        (TIFFFieldType::BYTE): {
-            u8 Value;
-            padding[3];
-        }
-        (TIFFFieldType::ASCII): { 
-            u32 value_offset[[hidden]];
-            char Value[Count] @ value_offset;
-        }
-        (TIFFFieldType::SHORT): {
-            u16 Value;
-            padding[2];
-        }
-        (TIFFFieldType::LONG): u32 Value;
-        (TIFFFieldType::RATIONAL): {
-            u32 value_offset[[hidden]];
-            TIFFRational<u32> Value @ value_offset;
-        }
-        (TIFFFieldType::SBYTE): {
-            s8 Value;
-            padding[3];
-        }
-        (TIFFFieldType::UNDEFINED): {
-            u32 value_offset[[hidden]];
-            u8 Value[Count] @ value_offset;
-        }
-        (TIFFFieldType::SSHORT): {
-            s16 Value;
-            padding[2];
-        }
-        (TIFFFieldType::SLONG): s32 Value;
-        (TIFFFieldType::SRATIONAL): {
-            u32 value_offset[[hidden]];
-            TIFFRational<s32> Value @ value_offset;
-        }
-        (TIFFFieldType::FLOAT): float Value;
-        (TIFFFieldType::DOUBLE): {
-            u32 value_offset[[hidden]];
-            double Value @ value_offset;
-        }
+        (TIFFFieldType::BYTE): ValueOffset<u8, Count> ValueOffset;
+        (TIFFFieldType::ASCII): ValueOffset<char, Count> ValueOffset;
+        (TIFFFieldType::SHORT): ValueOffset<u16, Count> ValueOffset;
+        (TIFFFieldType::LONG): ValueOffset<u32, Count> ValueOffset;
+        (TIFFFieldType::RATIONAL): ValueOffset<TIFFRational<u32>, Count> ValueOffset;
+        (TIFFFieldType::SBYTE): ValueOffset<s8, Count> ValueOffset;
+        (TIFFFieldType::UNDEFINED): ValueOffset<u8, Count> ValueOffset;
+        (TIFFFieldType::SSHORT): ValueOffset<s16, Count> ValueOffset;
+        (TIFFFieldType::SLONG): ValueOffset<s32, Count> ValueOffset;
+        (TIFFFieldType::SRATIONAL): ValueOffset<TIFFRational<s32>, Count> ValueOffset;
+        (TIFFFieldType::FLOAT): ValueOffset<float, Count> ValueOffset;
+        (TIFFFieldType::DOUBLE): ValueOffset<double, Count> ValueOffset;
         (_): {
             padding[4];
             std::print("TIFFFieldType not supported");
         }
-   
     }
 } [[name(std::string::replace(std::core::formatted_value(Tag), "TIFFTag::", ""))]];
 
