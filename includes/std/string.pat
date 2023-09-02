@@ -230,6 +230,7 @@ namespace std::string {
 				i = i + 1;
 			}
 		}
+		result = result + std::string::substr(string,string_len-pattern_len-1,pattern_len);
 		
 		return result;
 	};
