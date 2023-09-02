@@ -9,10 +9,6 @@
 #include <std/string.pat>
 #include <std/core.pat>
 
-#define BIG 1
-#define LITTLE 2
-
-
 u32 stripCount = 0;
 s32 current_strip = 0;
 
@@ -43,30 +39,6 @@ fn set_endian(str magic) {
     } 
 };
 
-fn get_total_IFDs(u32 first_offset){
-    u32 ifd_count = 0;
-    u32 current_offset = first_offset;
-    while (current_offset != 0) {
-        u16 ifd_entries_count = std::mem::read_unsigned(current_offset, 2, std::core::get_endian());
-        current_offset = std::mem::read_unsigned(current_offset + 2 + ifd_entries_count * 12, 4, std::core::get_endian());
-        ifd_count = ifd_count + 1;
-    }
-    return ifd_count;
-};
-
-fn get_ifds_offsets(u32 first_offset) {
-    u32 total_ifds = get_total_IFDs(first_offset);
-    u32 index = 0;
-    u32 current_offset = first_offset;
-    u32 ifd_offsets[total_ifds];
-    while (current_offset != 0) {
-        ifd_offsets[index] = current_offset;
-        u16 ifd_entries_count = std::mem::read_unsigned(current_offset, 2, std::core::get_endian());
-        current_offset = std::mem::read_unsigned(current_offset + 2 + ifd_entries_count * 12, 4, std::core::get_endian());
-        index = index + 1;
-    }
-    return ifd_offsets;
-};
 using TIFFFieldType;
 using TIFFTag;
 fn get_entry_value(u32 offset, TIFFTag Tag){
@@ -291,16 +263,13 @@ struct IFDS {
     if (IFD.NextIFD > 0) {
         currentIFD += 1;
         IFDS IFD_tmp  @ IFD.NextIFD;
-    } else {
-        break;
     }
 }[[inline]];
 
 struct TIFFFile {
     TIFFHeader Header;
     set_endian(Header.Magic);
-    u32 total_ifds = get_total_IFDs(Header.Offset);
-    IFDS IFDs[total_ifds] @ Header.Offset;
+    IFDS @ Header.Offset;
 };
 
 
