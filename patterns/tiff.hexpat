@@ -166,7 +166,6 @@ enum TIFFTag : u16 {
     ICCProfile = 0x8773
 };
 
-
 struct ValueArray<T, auto Count> {
     if (Count > 1) {
         T Values[Count];
@@ -207,11 +206,10 @@ struct IFDEntry {
         (TIFFFieldType::DOUBLE): ValueOffset<double, Count> ValueOffset;
         (_): {
             padding[4];
-            std::print("TIFFFieldType not supported");
+            std::print(std::format("TIFFFieldType {} not supported", u16(Type)));
         }
     }
 } [[name(std::string::replace(std::core::formatted_value(Tag), "TIFFTag::", ""))]];
-
 
 struct StripList {
     u16 entry_count [[hidden]];
@@ -235,9 +233,7 @@ struct StripList {
         reset_counter_strip();
         break;
     }
-
-}[[inline]];
-
+} [[inline]];
 
 u32 currentIFD = 0;
 struct IFD {
@@ -259,14 +255,13 @@ struct IFDS {
     IFD IFD;
     if (IFD.NextIFD > 0) {
         currentIFD += 1;
-        IFDS IFD_tmp  @ IFD.NextIFD;
+        IFDS IFD_tmp @ IFD.NextIFD;
     }
-}[[inline]];
+} [[inline]];
 
 struct TIFFFile {
     TIFFHeader Header;
     IFDS @ Header.Offset;
 };
-
 
 TIFFFile File @ 0x00;
