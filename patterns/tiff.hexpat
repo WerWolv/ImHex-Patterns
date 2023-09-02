@@ -31,14 +31,6 @@ fn start_counter_strip(u32 total){
     stripCount = total;
 };
 
-fn set_endian(str magic) {
-    if (std::string::starts_with(magic, "II")) {
-        std::core::set_endian(std::mem::Endian::Little);
-    } else if (std::string::starts_with(magic, "MM")) {
-        std::core::set_endian(std::mem::Endian::Big);
-    } 
-};
-
 using TIFFFieldType;
 using TIFFTag;
 fn get_entry_value(u32 offset, TIFFTag Tag){
@@ -58,10 +50,15 @@ fn get_entry_value(u32 offset, TIFFTag Tag){
     }
 };
 
+char Magic[2] @ 0 [[hidden]];
+match (Magic) {
+    ("II"): std::core::set_endian(std::mem::Endian::Little);
+    ("MM"): std::core::set_endian(std::mem::Endian::Big);
+    (_): std::error(std::format("Unrecognized magic number: {}", Magic));
+}
 
 struct TIFFHeader {
     char Magic[2];
-    set_endian(Magic);
     u16 Version;
     u32 Offset;
 };
@@ -268,7 +265,6 @@ struct IFDS {
 
 struct TIFFFile {
     TIFFHeader Header;
-    set_endian(Header.Magic);
     IFDS @ Header.Offset;
 };
 
