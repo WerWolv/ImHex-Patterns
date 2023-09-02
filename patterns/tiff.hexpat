@@ -257,7 +257,7 @@ struct IFDEntry {
         }
    
     }
-};
+} [[name(std::string::replace(std::core::formatted_value(Tag), "TIFFTag::", ""))]];
 
 
 struct StripList {
