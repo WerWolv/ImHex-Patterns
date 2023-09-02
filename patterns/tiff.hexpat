@@ -109,6 +109,15 @@ enum TIFFFieldType : u16 {
     DOUBLE = 12
 };
 
+struct TIFFRational<T> {
+    T Numerator;
+    T Denominator;
+} [[format_read("format_read_rational")]];
+
+fn format_read_rational(auto r) {
+    return std::format("{}/{}", r.Numerator, r.Denominator);
+};
+
 enum TIFFTag : u16 {
     NewSubfileType = 0x00FE,
     SubfileType = 0x00FF,
@@ -218,8 +227,7 @@ struct IFDEntry {
         (TIFFFieldType::LONG): u32 Value;
         (TIFFFieldType::RATIONAL): {
             u32 value_offset[[hidden]];
-            u32 Numerator @ value_offset;
-            u32 Denominator @ value_offset + 4;
+            TIFFRational<u32> Value @ value_offset;
         }
         (TIFFFieldType::SBYTE): {
              if (std::core::get_endian() == BIG){
@@ -244,8 +252,7 @@ struct IFDEntry {
         (TIFFFieldType::SLONG): s32 Value;
         (TIFFFieldType::SRATIONAL): {
             u32 value_offset[[hidden]];
-            s32 Numerator @ value_offset;
-            s32 Denominator @ value_offset + 4;
+            TIFFRational<s32> Value @ value_offset;
         }
         (TIFFFieldType::FLOAT): float Value;
         (TIFFFieldType::DOUBLE): {
