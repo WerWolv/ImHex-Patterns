@@ -9,47 +9,6 @@
 #include <std/string.pat>
 #include <std/core.pat>
 
-u32 stripCount = 0;
-s32 current_strip = 0;
-
-fn get_next_strip_index(){
-     if (current_strip <= stripCount) {
-        current_strip = current_strip + 1;
-        return current_strip - 1;
-    } else {
-        return stripCount+1;
-    }
-};
-
-fn reset_counter_strip(){
-    current_strip = 0;
-    stripCount = 0;
-};
-
-fn start_counter_strip(u32 total){
-    current_strip = 0;
-    stripCount = total;
-};
-
-using TIFFFieldType;
-using TIFFTag;
-fn get_entry_value(u32 offset, TIFFTag Tag){
-    u16 count = std::mem::read_unsigned(offset, 2, std::core::get_endian());
-    u8 step = 12;
-    offset = offset + 2;
-    while (count != 0) {
-        if (std::mem::read_unsigned(offset, 2, std::core::get_endian()) == Tag) {
-            if (std::mem::read_unsigned(offset + 2, 2, std::core::get_endian()) == TIFFFieldType::SHORT) {
-                return std::mem::read_unsigned(offset + 8, 2, std::core::get_endian());
-            } else if (std::mem::read_unsigned(offset + 2, 2, std::core::get_endian()) == TIFFFieldType::LONG) {
-                return std::mem::read_unsigned(offset + 8, 4, std::core::get_endian());
-            }
-        }
-        count = count - 1;
-        offset = offset + step;
-    }
-};
-
 char Magic[2] @ 0 [[hidden]];
 match (Magic) {
     ("II"): std::core::set_endian(std::mem::Endian::Little);
@@ -211,28 +170,20 @@ struct IFDEntry {
     }
 } [[name(std::string::replace(std::core::formatted_value(Tag), "TIFFTag::", ""))]];
 
-struct StripList {
-    u16 entry_count [[hidden]];
-    u32 ImageLength = get_entry_value(addressof(this), TIFFTag::ImageLength);
-    u32 RowsPerStrip = get_entry_value(addressof(this), TIFFTag::RowsPerStrip);
-    u32 StripByteCounts = get_entry_value(addressof(this), TIFFTag::StripByteCounts);
-    u32 StripOffsets = get_entry_value(addressof(this), TIFFTag::StripOffsets);
-    
-    s32 next_strip_index = get_next_strip_index();  
-    if ((ImageLength/RowsPerStrip) > 1) {
-        u32 StripOffsetsArray[ImageLength/RowsPerStrip] @ StripOffsets [[hidden]];
-        u32 StripByteCountsArray[ImageLength/RowsPerStrip] @ StripByteCounts [[hidden]];
-        u8 Strip[StripByteCountsArray[next_strip_index]] @ StripOffsetsArray[next_strip_index];
-    } else {
-        u8 Strip[StripByteCounts] @ StripOffsets;
+fn get_field(ref auto entries, TIFFTag tag) {
+    for (u16 i = 0, i < std::core::member_count(entries), i = i + 1) {
+        if (entries[i].Tag == tag) {
+            return i;
+        }
     }
+    std::error(std::format("Tag {} not found in directory", tag));
+};
 
-    if (current_strip < stripCount)  {
-        StripList strips @ addressof(this);
-    } else {
-        reset_counter_strip();
-        break;
-    }
+struct ImageData<auto Desc> {
+    u32 Index = std::core::array_index();
+    u32 Offset = parent.DirectoryEntry[parent.OffsetField].ValueOffset.ValueArray.Values[Index];
+    u32 ByteCount = parent.DirectoryEntry[parent.ByteCountField].ValueOffset.ValueArray.Values[Index];
+    std::mem::Bytes<ByteCount> ImageData @ Offset [[name(std::format("{} {}", Desc, Index))]];
 } [[inline]];
 
 u32 currentIFD = 0;
@@ -241,10 +192,13 @@ struct IFD {
     u16 NumberDirectoryEntries;
     IFDEntry DirectoryEntry[NumberDirectoryEntries];
     u32 NextIFD;
-    u32 ImageLength = get_entry_value(addressof(this), TIFFTag::ImageLength);
-    u32 RowsPerStrip = get_entry_value(addressof(this), TIFFTag::RowsPerStrip);
-    start_counter_strip(ImageLength/RowsPerStrip);
-    StripList ImageData[] @ addressof(this);
+
+    try {
+        u16 OffsetField = get_field(DirectoryEntry, TIFFTag::StripOffsets);
+        u16 ByteCountField = get_field(DirectoryEntry, TIFFTag::StripByteCounts);
+        u32 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
+        ImageData<"Strip"> Strips[Count];
+    } catch {}
 } [[name(std::format("IFD {}", Number))]];
 
 struct IFDS {
