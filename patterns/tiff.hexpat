@@ -199,6 +199,13 @@ struct IFD {
         u32 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
         ImageData<"Strip"> Strips[Count];
     } catch {}
+
+    try {
+        u16 OffsetField = get_field(DirectoryEntry, TIFFTag::TileOffsets);
+        u16 ByteCountField = get_field(DirectoryEntry, TIFFTag::TileByteCounts);
+        u32 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
+        ImageData<"Tile"> Tiles[Count];
+    } catch {}
 } [[name(std::format("IFD {}", Number))]];
 
 struct IFDS {
