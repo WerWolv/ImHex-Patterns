@@ -16,10 +16,38 @@ match (Magic) {
     (_): std::error(std::format("Unrecognized magic number: {}", Magic));
 }
 
+u16 Version @ 2 [[hidden]];
+u32 ValueOffsetSize;
+match (Version) {
+    (42): ValueOffsetSize = 4;
+    (43): ValueOffsetSize = 8;
+    (_): std::error(std::format("Unrecognized version: {}", Version));
+}
+struct Big<T> {
+    match (Version) {
+        (42): T V;
+        (43): u64 V;
+        (_): std::error(std::format("Unrecognized version: {}", Version));
+    }
+} [[sealed, format_read("format_read_big"), format_write("format_write_big"), transform("transform_big")]];
+fn format_read_big(Big<u32> v) {
+    return std::format("{} (0x{:X})", v, v);
+};
+fn format_write_big(str v) {
+    return std::string::parse_int(v, 0);
+};
+fn transform_big(Big<u32> v) {
+    return v.V;
+};
+
 struct TIFFHeader {
     char Magic[2];
     u16 Version;
-    u32 Offset;
+    if (Version > 42) {
+        u16 OffsetSize;
+        padding[2];
+    }
+    Big<u32> Offset;
 };
 
 enum TIFFFieldType : u16 {
@@ -34,7 +62,9 @@ enum TIFFFieldType : u16 {
     SLONG = 9,
     SRATIONAL = 10,
     FLOAT = 11,
-    DOUBLE = 12
+    DOUBLE = 12,
+    LONG8 = 16,
+    SLONG8 = 17,
 };
 
 struct TIFFRational<T> {
@@ -136,11 +166,11 @@ struct ValueArray<T, auto Count> {
 
 struct ValueOffset<T, auto Count> {
     u64 Size = sizeof(T) * Count;
-    if (Size <= 4) {
+    if (Size <= ValueOffsetSize) {
         ValueArray<T, Count> ValueArray;
-        padding[4 - Size];
+        padding[ValueOffsetSize - Size];
     } else {
-        u32 Offset;
+        Big<u32> Offset;
         ValueArray<T, Count> ValueArray @ Offset;
     }
 } [[inline]];
@@ -148,7 +178,7 @@ struct ValueOffset<T, auto Count> {
 struct IFDEntry {
     TIFFTag Tag;
     TIFFFieldType Type;
-    u32 Count;
+    Big<u32> Count;
 
     match (Type) {
         (TIFFFieldType::BYTE): ValueOffset<u8, Count> ValueOffset;
@@ -163,8 +193,10 @@ struct IFDEntry {
         (TIFFFieldType::SRATIONAL): ValueOffset<TIFFRational<s32>, Count> ValueOffset;
         (TIFFFieldType::FLOAT): ValueOffset<float, Count> ValueOffset;
         (TIFFFieldType::DOUBLE): ValueOffset<double, Count> ValueOffset;
+        (TIFFFieldType::LONG8): ValueOffset<u64, Count> ValueOffset;
+        (TIFFFieldType::SLONG8): ValueOffset<s64, Count> ValueOffset;
         (_): {
-            padding[4];
+            padding[ValueOffsetSize];
             std::print(std::format("TIFFFieldType {} not supported", u16(Type)));
         }
     }
@@ -189,9 +221,9 @@ struct ImageData<auto Desc> {
 u64 currentIFD = 0;
 struct IFD {
     u64 Number = currentIFD;
-    u16 NumberDirectoryEntries;
+    Big<u16> NumberDirectoryEntries;
     IFDEntry DirectoryEntry[NumberDirectoryEntries];
-    u32 NextIFD;
+    Big<u32> NextIFD;
 
     try {
         u64 OffsetField = get_field(DirectoryEntry, TIFFTag::StripOffsets);
