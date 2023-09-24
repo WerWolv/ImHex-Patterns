@@ -26,10 +26,10 @@ namespace v2 {
         u8 bytes[4];
     } [[sealed, static, format("v2::ssi_value"), transform("v2::ssi_value")]];
 
-    fn ssi_value(ref SyncSafeInt n) {
+    fn ssi_value(ref SyncSafeInt size) {
         u32 result = 0;
         for (u8 i = 0, i < 4, i = i + 1) {
-            u8 byteval = n.bytes[i] & 0x7F;
+            u8 byteval = size.bytes[i] & 0x7F;
             u8 shift = 7 * (4 - i - 1);
             result = result | (byteval << shift);
         }
