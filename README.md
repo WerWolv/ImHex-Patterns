@@ -120,9 +120,9 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 
 | Name | Path | Description |
 |------|------|-------------|
-| libstd | [`includes/std/*`](includes/std) | Pattern Language Standard Libaray |
-| libtype | [`includes/type/*`](includes/type) | Various custom types with special formatters |
 | libhex | [`includes/hex/*`](includes/hex) | Functions to interact with ImHex |
+| libstd | [`includes/std/*`](includes/std) | Pattern Language Standard Library |
+| libtype | [`includes/type/*`](includes/type) | Various custom types with special formatters |
 
 ### Yara rules
 
