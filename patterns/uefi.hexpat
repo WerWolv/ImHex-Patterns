@@ -1,7 +1,5 @@
 #pragma description UEFI structs for parsing efivars
 
-#pragma MIME data
-
 #define WIN_CERT_TYPE_PKCS_SIGNED_DATA 0x0002
 #define WIN_CERT_TYPE_EFI_PKCS115   0x0EF0
 #define WIN_CERT_TYPE_EFI_GUID     0x0EF1 
