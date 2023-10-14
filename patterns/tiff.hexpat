@@ -9,89 +9,45 @@
 #include <std/string.pat>
 #include <std/core.pat>
 
-#define BIG 1
-#define LITTLE 2
+char Magic[2] @ 0 [[hidden]];
+match (Magic) {
+    ("II"): std::core::set_endian(std::mem::Endian::Little);
+    ("MM"): std::core::set_endian(std::mem::Endian::Big);
+    (_): std::error(std::format("Unrecognized magic number: {}", Magic));
+}
 
-
-u32 stripCount = 0;
-s32 current_strip = 0;
-
-fn get_next_strip_index(){
-     if (current_strip <= stripCount) {
-        current_strip = current_strip + 1;
-        return current_strip - 1;
-    } else {
-        return stripCount+1;
+u16 Version @ 2 [[hidden]];
+u32 ValueOffsetSize;
+match (Version) {
+    (42): ValueOffsetSize = 4;
+    (43): ValueOffsetSize = 8;
+    (_): std::error(std::format("Unrecognized version: {}", Version));
+}
+struct Big<T> {
+    match (Version) {
+        (42): T V;
+        (43): u64 V;
+        (_): std::error(std::format("Unrecognized version: {}", Version));
     }
+} [[sealed, format_read("format_read_big"), format_write("format_write_big"), transform("transform_big")]];
+fn format_read_big(Big<u32> v) {
+    return std::format("{} (0x{:X})", v, v);
 };
-
-fn reset_counter_strip(){
-    current_strip = 0;
-    stripCount = 0;
+fn format_write_big(str v) {
+    return std::string::parse_int(v, 0);
 };
-
-fn start_counter_strip(u32 total){
-    current_strip = 0;
-    stripCount = total;
+fn transform_big(Big<u32> v) {
+    return v.V;
 };
-
-fn set_endian(str magic) {
-    if (std::string::starts_with(magic, "II")) {
-        std::core::set_endian(std::mem::Endian::Little);
-    } else if (std::string::starts_with(magic, "MM")) {
-        std::core::set_endian(std::mem::Endian::Big);
-    } 
-};
-
-fn get_total_IFDs(u32 first_offset){
-    u32 ifd_count = 0;
-    u32 current_offset = first_offset;
-    while (current_offset != 0) {
-        u16 ifd_entries_count = std::mem::read_unsigned(current_offset, 2, std::core::get_endian());
-        current_offset = std::mem::read_unsigned(current_offset + 2 + ifd_entries_count * 12, 4, std::core::get_endian());
-        ifd_count = ifd_count + 1;
-    }
-    return ifd_count;
-};
-
-fn get_ifds_offsets(u32 first_offset) {
-    u32 total_ifds = get_total_IFDs(first_offset);
-    u32 index = 0;
-    u32 current_offset = first_offset;
-    u32 ifd_offsets[total_ifds];
-    while (current_offset != 0) {
-        ifd_offsets[index] = current_offset;
-        u16 ifd_entries_count = std::mem::read_unsigned(current_offset, 2, std::core::get_endian());
-        current_offset = std::mem::read_unsigned(current_offset + 2 + ifd_entries_count * 12, 4, std::core::get_endian());
-        index = index + 1;
-    }
-    return ifd_offsets;
-};
-using TIFFFieldType;
-using TIFFTag;
-fn get_entry_value(u32 offset, TIFFTag Tag){
-    u16 count = std::mem::read_unsigned(offset, 2, std::core::get_endian());
-    u8 step = 12;
-    offset = offset + 2;
-    while (count != 0) {
-        if (std::mem::read_unsigned(offset, 2, std::core::get_endian()) == Tag) {
-            if (std::mem::read_unsigned(offset + 2, 2, std::core::get_endian()) == TIFFFieldType::SHORT) {
-                return std::mem::read_unsigned(offset + 8, 2, std::core::get_endian());
-            } else if (std::mem::read_unsigned(offset + 2, 2, std::core::get_endian()) == TIFFFieldType::LONG) {
-                return std::mem::read_unsigned(offset + 8, 4, std::core::get_endian());
-            }
-        }
-        count = count - 1;
-        offset = offset + step;
-    }
-};
-
 
 struct TIFFHeader {
     char Magic[2];
-    set_endian(Magic);
     u16 Version;
-    u32 Offset;
+    if (Version > 42) {
+        u16 OffsetSize;
+        padding[2];
+    }
+    Big<u32> Offset;
 };
 
 enum TIFFFieldType : u16 {
@@ -106,7 +62,18 @@ enum TIFFFieldType : u16 {
     SLONG = 9,
     SRATIONAL = 10,
     FLOAT = 11,
-    DOUBLE = 12
+    DOUBLE = 12,
+    LONG8 = 16,
+    SLONG8 = 17,
+};
+
+struct TIFFRational<T> {
+    T Numerator;
+    T Denominator;
+} [[format_read("format_read_rational")]];
+
+fn format_read_rational(auto r) {
+    return std::format("{}/{}", r.Numerator, r.Denominator);
 };
 
 enum TIFFTag : u16 {
@@ -170,6 +137,7 @@ enum TIFFTag : u16 {
     SMinSampleValue = 0x0154,
     SMaxSampleValue = 0x0155,
     TransferRange = 0x0156,
+    JPEGTables = 0x015B,
     JPEGProc = 0x0200,
     JPEGInterchangeFormat = 0x0201,
     JPEGInterchangeFormatLngth = 0x0202,
@@ -184,137 +152,105 @@ enum TIFFTag : u16 {
     YCbCrPositioning = 0x0213,
     ReferenceBlackWhite = 0x0214,
     Copyright = 0x8298,
-    InterColorProfile = 0x8773
+    ICCProfile = 0x8773
 };
 
+struct ValueArray<T, auto Count> {
+    if (Count > 1) {
+        T Values[Count];
+    } else {
+        T Values[Count] [[hidden, no_unique_address]];
+        T Value;
+    }
+} [[inline]];
+
+struct ValueOffset<T, auto Count> {
+    u64 Size = sizeof(T) * Count;
+    if (Size <= ValueOffsetSize) {
+        ValueArray<T, Count> ValueArray;
+        padding[ValueOffsetSize - Size];
+    } else {
+        Big<u32> Offset;
+        ValueArray<T, Count> ValueArray @ Offset;
+    }
+} [[inline]];
 
 struct IFDEntry {
     TIFFTag Tag;
     TIFFFieldType Type;
-    u32 Count;
+    Big<u32> Count;
 
     match (Type) {
-        (TIFFFieldType::BYTE): {
-             if (std::core::get_endian() == BIG){
-                u8 Value;
-                padding[3];
-            } else {
-                u32 Value;
-            }
-        }
-        (TIFFFieldType::ASCII): { 
-            u32 value_offset[[hidden]];
-            char Value[Count] @ value_offset;
-        }
-        (TIFFFieldType::SHORT): {
-            if (std::core::get_endian() == BIG){
-                u16 Value;
-                padding[2];
-            } else {
-                u32 Value;
-            }
-        }
-        (TIFFFieldType::LONG): u32 Value;
-        (TIFFFieldType::RATIONAL): {
-            u32 value_offset[[hidden]];
-            u32 Numerator @ value_offset;
-            u32 Denominator @ value_offset + 4;
-        }
-        (TIFFFieldType::SBYTE): {
-             if (std::core::get_endian() == BIG){
-                s8 Value;
-                padding[3];
-            } else {
-                s32 Value;
-            }
-        }
-        (TIFFFieldType::UNDEFINED): {
-            u32 value_offset[[hidden]];
-            u8 Value[Count] @ value_offset;
-        }
-        (TIFFFieldType::SSHORT): {
-             if (std::core::get_endian() == BIG){
-                s16 Value;
-                padding[2];
-            } else {
-                s32 Value;
-            }
-        }
-        (TIFFFieldType::SLONG): s32 Value;
-        (TIFFFieldType::SRATIONAL): {
-            u32 value_offset[[hidden]];
-            s32 Numerator @ value_offset;
-            s32 Denominator @ value_offset + 4;
-        }
-        (TIFFFieldType::FLOAT): float Value;
-        (TIFFFieldType::DOUBLE): {
-            u32 value_offset[[hidden]];
-            double Value @ value_offset;
-        }
+        (TIFFFieldType::BYTE): ValueOffset<u8, Count> ValueOffset;
+        (TIFFFieldType::ASCII): ValueOffset<char, Count> ValueOffset;
+        (TIFFFieldType::SHORT): ValueOffset<u16, Count> ValueOffset;
+        (TIFFFieldType::LONG): ValueOffset<u32, Count> ValueOffset;
+        (TIFFFieldType::RATIONAL): ValueOffset<TIFFRational<u32>, Count> ValueOffset;
+        (TIFFFieldType::SBYTE): ValueOffset<s8, Count> ValueOffset;
+        (TIFFFieldType::UNDEFINED): ValueOffset<u8, Count> ValueOffset;
+        (TIFFFieldType::SSHORT): ValueOffset<s16, Count> ValueOffset;
+        (TIFFFieldType::SLONG): ValueOffset<s32, Count> ValueOffset;
+        (TIFFFieldType::SRATIONAL): ValueOffset<TIFFRational<s32>, Count> ValueOffset;
+        (TIFFFieldType::FLOAT): ValueOffset<float, Count> ValueOffset;
+        (TIFFFieldType::DOUBLE): ValueOffset<double, Count> ValueOffset;
+        (TIFFFieldType::LONG8): ValueOffset<u64, Count> ValueOffset;
+        (TIFFFieldType::SLONG8): ValueOffset<s64, Count> ValueOffset;
         (_): {
-            padding[4];
-            std::print("TIFFFieldType not supported");
+            padding[ValueOffsetSize];
+            std::print(std::format("TIFFFieldType {} not supported", u16(Type)));
         }
-   
     }
+} [[name(std::string::replace(std::core::formatted_value(Tag), "TIFFTag::", ""))]];
+
+fn get_field(ref auto entries, TIFFTag tag) {
+    for (u64 i = 0, i < std::core::member_count(entries), i = i + 1) {
+        if (entries[i].Tag == tag) {
+            return i;
+        }
+    }
+    std::error(std::format("Tag {} not found in directory", tag));
 };
 
+struct ImageData<auto Desc> {
+    u64 Index = std::core::array_index();
+    u64 Offset = parent.DirectoryEntry[parent.OffsetField].ValueOffset.ValueArray.Values[Index];
+    u64 ByteCount = parent.DirectoryEntry[parent.ByteCountField].ValueOffset.ValueArray.Values[Index];
+    std::mem::Bytes<ByteCount> ImageData @ Offset [[name(std::format("{} {}", Desc, Index))]];
+} [[inline]];
 
-struct StripList {
-    u16 entry_count [[hidden]];
-    u32 ImageLength = get_entry_value(addressof(this), TIFFTag::ImageLength);
-    u32 RowsPerStrip = get_entry_value(addressof(this), TIFFTag::RowsPerStrip);
-    u32 StripByteCounts = get_entry_value(addressof(this), TIFFTag::StripByteCounts);
-    u32 StripOffsets = get_entry_value(addressof(this), TIFFTag::StripOffsets);
-    
-    s32 next_strip_index = get_next_strip_index();  
-    if ((ImageLength/RowsPerStrip) > 1) {
-        u32 StripOffsetsArray[ImageLength/RowsPerStrip] @ StripOffsets [[hidden]];
-        u32 StripByteCountsArray[ImageLength/RowsPerStrip] @ StripByteCounts [[hidden]];
-        u8 Strip[StripByteCountsArray[next_strip_index]] @ StripOffsetsArray[next_strip_index];
-    } else {
-        u8 Strip[StripByteCounts] @ StripOffsets;
-    }
-
-    if (current_strip < stripCount)  {
-        StripList strips @ addressof(this);
-    } else {
-        reset_counter_strip();
-        break;
-    }
-
-}[[inline]];
-
-
+u64 currentIFD = 0;
 struct IFD {
-    u16 NumberDirectoryEntries;
+    u64 Number = currentIFD;
+    Big<u16> NumberDirectoryEntries;
     IFDEntry DirectoryEntry[NumberDirectoryEntries];
-    u32 NextIFD;
-    u32 ImageLength = get_entry_value(addressof(this), TIFFTag::ImageLength);
-    u32 RowsPerStrip = get_entry_value(addressof(this), TIFFTag::RowsPerStrip);
-    u32 StripByteCounts = get_entry_value(addressof(this), TIFFTag::StripByteCounts);
-    u32 StripOffsets = get_entry_value(addressof(this), TIFFTag::StripOffsets);
-    u32 StripOffsetsArray[ImageLength/RowsPerStrip] @ StripOffsets;
-    u32 StripByteCountsArray[ImageLength/RowsPerStrip] @ StripByteCounts;
-    start_counter_strip(ImageLength/RowsPerStrip);
-    StripList ImageData[] @ addressof(this);
-};
+    Big<u32> NextIFD;
+
+    try {
+        u64 OffsetField = get_field(DirectoryEntry, TIFFTag::StripOffsets);
+        u64 ByteCountField = get_field(DirectoryEntry, TIFFTag::StripByteCounts);
+        u64 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
+        ImageData<"Strip"> Strips[Count];
+    } catch {}
+
+    try {
+        u64 OffsetField = get_field(DirectoryEntry, TIFFTag::TileOffsets);
+        u64 ByteCountField = get_field(DirectoryEntry, TIFFTag::TileByteCounts);
+        u64 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
+        ImageData<"Tile"> Tiles[Count];
+    } catch {}
+} [[name(std::format("IFD {}", Number))]];
 
 struct IFDS {
     IFD IFD;
     if (IFD.NextIFD > 0) {
-        IFDS IFD_tmp  @ IFD.NextIFD;
-    }else {
-        break;
+        currentIFD += 1;
+        IFDS IFD_tmp @ IFD.NextIFD;
     }
-}[[inline]];
+} [[inline]];
 
 struct TIFFFile {
     TIFFHeader Header;
-    set_endian(Header.Magic);
-    u32 total_ifds = get_total_IFDs(Header.Offset);
-    IFDS IFDs[total_ifds] @ Header.Offset;
+    IFDS @ Header.Offset;
 };
-
 
 TIFFFile File @ 0x00;

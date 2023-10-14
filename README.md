@@ -43,7 +43,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DDS | `image/vnd-ms.dds` | [`patterns/dds.hexpat`](patterns/dds.hexpat) | DirectDraw Surface |
 | DEX | | [`patterns/dex.hexpat`](patterns/dex.hexpat) | Dalvik EXecutable Format |
 | DMG | | [`patterns/dmg.hexpat`](patterns/dmg.hexpat) | Apple Disk Image Trailer (DMG) |
-| DS_Store | `application/octet-stream` | [`patterns/dsstore.hexpat`](patterns/dsstore.hexpat) | .DS_Store file format |
+| DS_Store | | [`patterns/dsstore.hexpat`](patterns/dsstore.hexpat) | .DS_Store file format |
 | DTA | | [`patterns/max_v104.hexpat`](patterns/max_v104.hexpat) | Mechanized Assault and Exploration v1.04 (strategy game) save file format |
 | ELF  | `application/x-executable` | [`patterns/elf.hexpat`](patterns/elf.hexpat) | ELF header in elf binaries |
 | EVTX | | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
@@ -88,6 +88,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | QBCL | | [`patterns/qbcl.hexpat`](patterns/qbcl.hexpat) | Qubicle voxel scene project file |
 | QOI  | `image/qoi` | [`patterns/qoi.hexpat`](patterns/qoi.hexpat) | QOI image files |
 | Shell Link | `application/x-ms-shortcut` | [`patterns/lnk.hexpat`](patterns/lnk.hexpat) | Windows Shell Link file format |
+| shp | | [`patterns/shp.hexpat`](patterns/shp.hexpat) | ESRI shape file |
+| shx | | [`patterns/shx.hexpat`](patterns/shx.hexpat) | ESRI index file |
 | SPIRV | | [`patterns/spirv.hexpat`](patterns/spirv.hexpat) | SPIR-V header and instructions |
 | STL | `model/stl` | [`patterns/stl.hexpat`](patterns/stl.hexpat) | STL 3D Model format |
 | StuffItV5 | `application/x-stuffit` | [`patterns/sit5.hexpat`](patterns/sit5.hexpat) | StuffIt V5 archive |
@@ -97,6 +99,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Ubiquiti | | [`patterns/ubiquiti.hexpat`](patterns/ubiquiti.hexpat) | Ubiquiti Firmware (update) image |
 | UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat)` | UEFI structs for parsing efivars |
 | UF2 | | [`patterns/uf2.hexpat`](patterns/uf2.hexpat) | [USB Flashing Format](https://github.com/microsoft/uf2) |
+| VBMeta | | [`patterns/vbmeta.hexpat`](patterns/vbmeta.hexpat) | Android VBMeta image |
 | VDF | | [`patterns/vdf.hexpat`](patterns/vdf.hexpat) | Binary Value Data Format (.vdf) files |
 | VHDX | | [`patterns/vhdx.hexpat`](patterns/vhdx.hexpat) | Microsoft Hyper-V Virtual Hard Disk format |
 | WAV  | `audio/x-wav`  | [`patterns/wav.hexpat`](patterns/wav.hexpat)  | RIFF header, WAVE header, PCM header |
@@ -119,9 +122,9 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 
 | Name | Path | Description |
 |------|------|-------------|
-| libstd | [`includes/std/*`](includes/std) | Pattern Language Standard Libaray |
-| libtype | [`includes/type/*`](includes/type) | Various custom types with special formatters |
 | libhex | [`includes/hex/*`](includes/hex) | Functions to interact with ImHex |
+| libstd | [`includes/std/*`](includes/std) | Pattern Language Standard Library |
+| libtype | [`includes/type/*`](includes/type) | Various custom types with special formatters |
 
 ### Yara rules
 

@@ -21,17 +21,17 @@ namespace hex::core {
         @return The current selection
     */
     fn get_selection() {
-        u128 result = builtin::hex::core::get_selection();
+        u128 selection = builtin::hex::core::get_selection();
 
         Selection result;
-        if (result == u128(-1)) {
+        if (selection == u128(-1)) {
             result.valid    = false;
             result.address  = 0x00;
             result.size     = 0x00;
         } else {
             result.valid    = true;
-            result.address  = result >> 64;
-            result.size     = result & u64(-1);
+            result.address  = selection >> 64;
+            result.size     = selection & u64(-1);
         }
 
         return result;
