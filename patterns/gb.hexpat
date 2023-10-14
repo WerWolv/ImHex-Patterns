@@ -10,6 +10,14 @@
 bool uppercaseROMFeatures in;
 bool brandedROMFeatures in;
 
+bitfield CGB {
+	padding : 2;
+	PGB_MODE : 2;
+	padding : 2;
+	CGB_ONLY : 1 [[comment("gbcOnly")]];
+	CGB_SUPPORT : 1 [[comment("supportsGBC")]];
+} [[comment("GBCFlags")]];
+
 namespace format {
 	fn cart_size(u8 cartSizeType) {
 		u32 romSize = 32768 * (1 << cartSizeType);
@@ -298,18 +306,10 @@ enum SGBFlagType : u8 {
 	SGBFunctionality = 0x03
 };
 
-bitfield CGB {
-	padding : 2;
-	PGB_MODE : 2;
-	padding : 2;
-	CGB_ONLY : 1 [[comment("gbcOnly")]];
-	CGB_SUPPORT : 1 [[comment("supportsGBC")]];
-} [[comment("GBCFlags")]];
-
 struct Header {
 	char title[16-(std::mem::read_unsigned(addressof(this)+15, 1) >= 0x80)];
 	if (std::mem::read_unsigned(addressof(this)+15, 1) == 0)
-		CGB gbcFlags [[format("format::null_cgb_flags")]] @ $-1;
+		CGB gbcFlags @ $-1 [[format("format::null_cgb_flags")]];
 	else if (std::mem::read_unsigned(addressof(this)+15, 1) >= 0x80)
 		CGB gbcFlags;
 	char newLicenseeCode[2] [[format("format::new_licensee_code")]];
