@@ -307,6 +307,8 @@ struct METADATA_BLOCK {
 		METADATA_BLOCK_PADDING data;
 	else if (header.blockType == BLOCK_TYPE::APPLICATION)
 		METADATA_BLOCK_APPLICATION data;
+	else if (header.blockType == BLOCK_TYPE::SEEKTABLE)
+	     METADATA_BLOCK_SEEKTABLE data;
 	else if (header.blockType == BLOCK_TYPE::VORBIS_COMMENT)
 		METADATA_BLOCK_VORBIS_COMMENT data;
 	else if (header.blockType == BLOCK_TYPE::CUESHEET)
