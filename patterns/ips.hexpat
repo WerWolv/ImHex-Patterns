@@ -1,16 +1,15 @@
+#pragma author gmestanley
 #pragma description IPS (International Patching System) files
+
+#pragma endian big
 
 #include <std/mem.pat>
 #include <std/string.pat>
 
-#pragma endian big
-
-u8 eofOffset = 3;
-
 struct Hunk {
 	u24 offset;
 	u16 length;
-	if (length == 0) {
+	if (!length) {
 		u16 runCount;
 		u8 payload;
 	}
@@ -21,12 +20,9 @@ struct Hunk {
 
 struct IPS {
 	char signature[5];
-	if (std::mem::read_string(std::mem::size()-3, 3) != "EOF") {
-		eofOffset += 3;
-	}
-	Hunk hunks[while($ < std::mem::size()-eofOffset)];
+	Hunk hunks[while($ < std::mem::size() - (3 + 3 * (std::mem::read_string(std::mem::size()-3, 3) != "EOF")))];
 	char eof[3];
-	u24 truncatedSize[eofOffset>3];
+	u24 truncatedSize[3+(std::mem::read_string(std::mem::size()-3, 3) != "EOF")>3];
 };
 
 IPS ips @ 0x00;

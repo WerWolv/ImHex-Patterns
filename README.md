@@ -76,8 +76,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | OGG | `audio/ogg` | [`patterns/ogg.hexpat`](patterns/ogg.hexpat) | OGG Audio format |
 | PCAP | `application/vnd.tcpdump.pcap` | [`patterns/pcap.hexpat`](patterns/pcap.hexpat) | pcap header and packets |
 | PCX | `application/x-pcx` | [`patterns/pcx.hexpat`](patterns/pcx.hexpat) | PCX Image format |
-| PE   | `application/x-dosexec` | [`patterns/pe.hexpat`](patterns/pe.hexpat) | PE header, COFF header, Standard COFF fields and Windows Specific fields |
-| PP   | [`patterns/selinuxpp.hexpat`](patterns/selinuxpp.pat) | SE Linux package |
+| PE   | `application/x-dosexec` `application/x-msdownload` | [`patterns/pe.hexpat`](patterns/pe.hexpat) | PE header, COFF header, Standard COFF fields and Windows Specific fields |
+| PP   | | [`patterns/selinuxpp.hexpat`](patterns/selinuxpp.pat) | SE Linux package |
 | PFS0 | | [`patterns/pfs0.hexpat`](patterns/pfs0.hexpat) | Nintendo Switch PFS0 archive (NSP files) |
 | PIF | `image/pif` | [`patterns/pif.hexpat`](patterns/pif.hexpat) | PIF Image Format |
 | PNG  | `image/png` | [`patterns/png.hexpat`](patterns/png.hexpat) | PNG image files | 
