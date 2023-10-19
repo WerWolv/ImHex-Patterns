@@ -1,5 +1,5 @@
 #pragma author DmitriLeon2000
-#pragma description Oska Software DeskMates WAS (WAVE Set) File
+#pragma description Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set) File
 #pragma endian little
 
 struct Sound {
