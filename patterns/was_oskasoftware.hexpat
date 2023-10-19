@@ -5,7 +5,7 @@
 struct Sound {
     char name[];
     u32 length;
-    s16 data[length / 2];
+    u8 data[length];
 };
 
 struct Header {
