@@ -1,5 +1,5 @@
 #pragma author DmitriLeon2000
-#pragma description Oska Software DeskMates FAS (Frames and Sequences) file (Oska DeskMate 1.04 version)
+#pragma description Oska Software DeskMates FAS (Frames and Sequences) file (Oska DeskMate versions 1.3 and 2.06)
 #pragma endian little
 
 enum Compression : u32 {
