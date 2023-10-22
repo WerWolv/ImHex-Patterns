@@ -262,7 +262,8 @@ namespace std::math {
 
 	/**
 		Calculates the arc tangent of `value`.
-		@param value Value
+		@param y Value representing the proportion of the y-coordinate
+		@param x Value representing the proportion of the x-coordinate.
 		@return Arc tangent of `value` in radians between `-pi` and `pi`
 	*/
 	fn atan2(auto y, auto x) { return builtin::std::math::atan2(y, x); };
