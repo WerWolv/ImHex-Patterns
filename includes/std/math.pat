@@ -265,7 +265,7 @@ namespace std::math {
 		@param value Value
 		@return Arc tangent of `value` in radians between `-pi` and `pi`
 	*/
-	fn atan2(auto value) { return builtin::std::math::atan2(value); };
+	fn atan2(auto y, auto x) { return builtin::std::math::atan2(y, x); };
 
 	/**
 		Calculates the hyperbolic sine of `value`.
