@@ -2,6 +2,8 @@
 #pragma description Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set) file
 #pragma endian little
 
+#include <type/size.pat>
+
 struct Sound {
     char name[];
     u32 length;
@@ -9,7 +11,7 @@ struct Sound {
 };
 
 struct Header {
-    u32 size;
+    type::Size<u32> size;
     u32 count;
     u32 pointers[count * 2];
 };
