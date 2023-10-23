@@ -132,7 +132,7 @@ namespace ip {
 			if (flags.data_offset > 5)
 				u8 options[(flags.data_offset - 5) * sizeof(u32)];
 				
-			u8 data[parent.parent.header.total_length - 40];
+			u8 data[parent.parent.header.total_length - parent.parent.header.ihl * 4 - flags.data_offset * 4];
 		};
 	
 	}
