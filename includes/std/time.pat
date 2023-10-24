@@ -156,6 +156,15 @@ namespace std::time {
 	};
 
 	/**
+		Converts a FILETIME to unix time.
+		@param value The value to convert.
+		@return Timestamp formatted as unix time.
+	*/
+	fn filetime_to_unix(u64 value) {
+		return value / 10000000 - 11644473600;
+	};
+
+	/**
 		Formats a time according to the specified format string.
 		@param time The time to format.
 		@param format_string The format string to use.
