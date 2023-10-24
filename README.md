@@ -26,6 +26,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | 7Z | | [`patterns/7z.hexpat`](patterns/7z.hexpat) | 7z File Format |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
 | AR | `application/x-archive` | [`patterns/ar.hexpat`](patterns/ar.hexpat) | Static library archive files |
+| ARIA2 | | [`patterns/aria2.hexpat`](patterns/aria2.hexpat) | ARIA2 Download Manager Control files |
 | ARM VTOR | | [`patterns/arm_cm_vtor.hexpat`](patterns/arm_cm_vtor.hexpat) | ARM Cortex M Vector Table Layout |
 | Bencode | `application/x-bittorrent` | [`patterns/bencode.hexpat`](patterns/bencode.hexpat) | Bencode encoding, used by Torrent files |
 | BMP  | `image/bmp` | [`patterns/bmp.hexpat`](patterns/bmp.hexpat) | OS2/Windows Bitmap files |
@@ -47,6 +48,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DTA | | [`patterns/max_v104.hexpat`](patterns/max_v104.hexpat) | Mechanized Assault and Exploration v1.04 (strategy game) save file format |
 | ELF  | `application/x-executable` | [`patterns/elf.hexpat`](patterns/elf.hexpat) | ELF header in elf binaries |
 | EVTX | | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
+| FAS | | [`patterns/fas_oskasoftware.hexpat`](patterns/fas_oskasoftware.hexpat) [`patterns/fas_oskasoftware_old.hexpat`](patterns/fas_oskasoftware_old.hexpat) (Old versions of Oska DeskMate) | Oska Software DeskMates FAS (Frames and Sequences) file |
 | FDT | | [`patterns/fdt.hexpat`](patterns/fdt.hexpat) | Flat Linux Device Tree blob |
 | File System | | [`patterns/fs.hexpat`](patterns/fs.hexpat) | Drive File System |
 | FLAC | `audio/flac` | [`patterns/flac.hexpat`](patterns/flac.hexpat) | Free Lossless Audio Codec, FLAC Audio Format |
@@ -103,6 +105,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | VDF | | [`patterns/vdf.hexpat`](patterns/vdf.hexpat) | Binary Value Data Format (.vdf) files |
 | VHDX | | [`patterns/vhdx.hexpat`](patterns/vhdx.hexpat) | Microsoft Hyper-V Virtual Hard Disk format |
 | WAV  | `audio/x-wav`  | [`patterns/wav.hexpat`](patterns/wav.hexpat)  | RIFF header, WAVE header, PCM header |
+| WAS | | [`patterns\was_oskasoftware.hexpat`](patterns\was_oskasoftware.hexpat) | Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set) file
 | WAD | | [`patterns/wad.hexpat`](patterns/wad.hexpat) | DOOM WAD Archive |
 | XBEH | `audio/x-xbox-executable` | [`patterns/xbeh.hexpat`](patterns/xbeh.hexpat) | Xbox executable |
 | XCI | | [`patterns/xci.hexpat`](patterns/xci.hexpat) | Nintendo Switch XCI cardridge ROM |
