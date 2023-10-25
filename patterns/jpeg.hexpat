@@ -72,7 +72,10 @@ enum ComponentId : u8 {
     CB  = 2,
     CR  = 3,
     I   = 4,
-    Q   = 5
+    Q   = 5,
+    B   = 66,
+    G   = 71,
+    R   = 82
 };
 
 struct SOF0Component {
