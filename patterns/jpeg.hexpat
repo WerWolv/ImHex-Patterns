@@ -132,6 +132,8 @@ struct Segment {
             APP0 data;
         } else if (marker == Marker::APP14) {
             APP14 data;
+        } else if (marker == Marker::COM) {
+            char data[length - sizeof(length)];
         } else if (marker == Marker::SOF0) {
             SOF0 data;
         } else if (marker == Marker::SOS) {
