@@ -99,7 +99,7 @@ struct SOS {
     u8 endSpectral;
     u8 apprBitPos;
     
-    u8 image_data[while(!std::mem::eof())] [[sealed]];
+    u8 image_data[std::mem::size() - $ - 2] [[sealed]];
 };
 
 struct Segment {
