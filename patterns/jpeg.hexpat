@@ -1,6 +1,7 @@
 #pragma author WerWolv
 #pragma description JPEG Image Format
 
+#include <std/io.pat>
 #include <std/mem.pat>
 #include <type/magic.pat>
 #pragma endian big
@@ -96,6 +97,10 @@ struct SOF0Component {
     ComponentId componentId;
     u8 samplingFactors;
     u8 quantizationTableId;
+} [[format_read("sof0_component_read")]];
+
+fn sof0_component_read(SOF0Component c) {
+    return std::format("({}, {}, {})", c.componentId, c.samplingFactors, c.quantizationTableId);
 };
 
 struct SOF0 {
@@ -142,6 +147,10 @@ struct Segment {
             u8 data[length - sizeof(length)] [[sealed]];
         }
     }
+} [[format_read("segment_read")]];
+
+fn segment_read(Segment s) {
+    return std::format("{}", s.marker);
 };
 
 Segment segments[while(!std::mem::eof())] @ 0x00 [[hex::visualize("image", this)]];
