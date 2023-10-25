@@ -2,6 +2,7 @@
 #pragma description JPEG Image Format
 
 #include <std/mem.pat>
+#include <type/magic.pat>
 #pragma endian big
 
 #pragma MIME image/jpeg
@@ -58,7 +59,7 @@ fn transform_pixel(Pixel pixel) {
 
 
 struct APP0 {
-    char magic[5];
+    type::Magic<"JFIF\x00"> magic;
     u8 versionMajor, versionMinor;
     DensityUnit densityUnit;
     u16 densityX, densityY;
@@ -103,7 +104,7 @@ struct SOS {
 };
 
 struct Segment {
-    u8 magic;
+    type::Magic<"\xff"> magic;
     Marker marker;
     
     if (marker == Marker::SOI || marker == Marker::EOI) {
