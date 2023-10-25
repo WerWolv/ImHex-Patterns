@@ -26,6 +26,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | 7Z | | [`patterns/7z.hexpat`](patterns/7z.hexpat) | 7z File Format |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
 | AR | `application/x-archive` | [`patterns/ar.hexpat`](patterns/ar.hexpat) | Static library archive files |
+| ARIA2 | | [`patterns/aria2.hexpat`](patterns/aria2.hexpat) | ARIA2 Download Manager Control files |
 | ARM VTOR | | [`patterns/arm_cm_vtor.hexpat`](patterns/arm_cm_vtor.hexpat) | ARM Cortex M Vector Table Layout |
 | Bencode | `application/x-bittorrent` | [`patterns/bencode.hexpat`](patterns/bencode.hexpat) | Bencode encoding, used by Torrent files |
 | BMP  | `image/bmp` | [`patterns/bmp.hexpat`](patterns/bmp.hexpat) | OS2/Windows Bitmap files |

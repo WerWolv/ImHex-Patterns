@@ -25,12 +25,28 @@ fn find_eocd() {
         return std::mem::size()-22;
     } else {
         // If it's not there, then there's probably a zip comment;
-        // search the last 64KB of the file for the signature.
-        // This is not entirely reliable, since the signature could
-        // randomly appear in compressed data before the actual EOCD,
-        // but it should be good enough...
-        u128 last64k = std::math::max(0, std::mem::size()-65536-22);
-        return std::mem::find_sequence_in_range(0, last64k, std::mem::size(), 0x50,0x4B,0x05,0x06);
+        // search the last 64KB of the file for the signature.        
+        u128 offset_search_from = std::math::max(0, std::mem::size()-65536-22);
+        u128 prev_address;
+        while(1){
+            u128 current_address = std::mem::find_sequence_in_range(0, offset_search_from, std::mem::size(), 0x50,0x4B,0x05,0x06); 
+            
+            //Reached EOF and did not find valid eocd.
+            if (current_address == 340282366920938463463374607431768211455){
+                std::error("Could not find EOCD.");
+            }
+            
+            //Potential eocd found. Create a eocd struct
+            EndOfCentralDirectory EOCD @ current_address;
+            
+            //If central directory file header is valid, then we know the eocd offset is valid.
+            if (std::mem::read_unsigned(EOCD.CDOffset, 4, std::mem::Endian::Little) == 0x2014B50){
+                return current_address;
+            }
+            
+            offset_search_from = current_address + 1;
+            prev_address = current_address;
+        }
     }
 };
 
