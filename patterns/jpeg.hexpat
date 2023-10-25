@@ -49,6 +49,12 @@ enum DensityUnit : u8 {
     PixelsPerCm = 0x02
 };
 
+enum ColorTransform : u8 {
+    Unknown = 0x00,
+    YCbCr = 0x01,
+    YCCK = 0x02
+};
+
 struct Pixel {
     u8 r, g, b;
 } [[sealed, transform("transform_pixel")]];
@@ -65,6 +71,14 @@ struct APP0 {
     u16 densityX, densityY;
     u8 thumbnailX, thumbnailY;
     Pixel thumbnail[thumbnailX * thumbnailY] [[sealed]];
+};
+
+struct APP14 {
+    type::Magic<"Adobe"> magic;
+    u16 version;
+    u16 flags0;
+    u16 flags1;
+    ColorTransform transform;
 };
 
 enum ComponentId : u8 {
@@ -116,6 +130,8 @@ struct Segment {
         u16 length;
         if (marker == Marker::APP0) {
             APP0 data;
+        } else if (marker == Marker::APP14) {
+            APP14 data;
         } else if (marker == Marker::SOF0) {
             SOF0 data;
         } else if (marker == Marker::SOS) {
