@@ -4,12 +4,16 @@
 #include <std/string.pat>
 #include <std/array.pat>
 
-// Crash Bandicoot - Back in Time (fan game) user created tapes
+// Crash Bandicoot - Back in Time (fan game) user created levels
+// Supports all versions till 0.94c, newer versions might be compatible!
 // author AdventureT
 
 struct Header {
     type::Magic<"CRASHLVL"> magic;
     u8 version;
+    if (version >= 4) {
+        std::string::SizedString<u8> gameVersion;
+    }
     std::string::SizedString<u8> levelName;
     std::string::SizedString<u8> author;
 };
@@ -143,6 +147,25 @@ enum SceneryV2 : u32 {
     Pipes
 };
 
+enum SceneryV4 : u32 {
+    None,
+    FutureTense,
+    Forest,
+    Waterfall,
+    Snow,
+    Fortress,
+    None3,
+    Lava,
+    TheGreatGate,
+    Mountain,
+    KoalaKong,
+    SunsetVista,
+    HangemHigh,
+    Sphynxinator,
+    Tunnel,
+    Pipes
+};
+
 enum Weather : u32 {
     Default,
     Snow,
@@ -160,11 +183,13 @@ struct Options {
         SkyboxV2 skybox;
     else
         Skybox skybox;
-        
-    if (header.version > 1)
+    
+    if (header.version == 1)
+        Scenery scenery;
+    else if (header.version > 1 && header.version < 4)
         SceneryV2 scenery;
     else
-        Scenery scenery;
+        SceneryV4 scenery;
     
     if (header.version > 2)
     {
@@ -198,7 +223,7 @@ struct Object {
         {
             u16 numOfMetafields;
             u8 metafields[numOfMetafields];
-        }   
+        }
     }
     else
     {
@@ -215,4 +240,6 @@ struct Objects{
 
 Options options @ $;
 Objects objects @ $;
+
+
 
