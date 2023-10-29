@@ -165,11 +165,14 @@ struct SubMediaInformationBox {
         ("hdlr"): HandlerBox box [[inline]];
         ("dinf"): DataInformationBox box [[inline]];
         (_): UnknownBox box [[inline]];
-        // TODO: Add stbl
     }
 } [[name(std::format("MediaInformationBox({})", box.type))]];
 
 struct MediaInformationBox : BaseBox {
+    SubMediaInformationBox box[while($ < endOffset)] [[inline]];
+};
+
+struct SampleBoxTable : FullBox {
     SubMediaInformationBox box[while($ < endOffset)] [[inline]];
 };
 
@@ -196,6 +199,7 @@ struct SubMediaBox {
         ("mdhd"): MediaHeaderBox box [[inline]];
         ("hdlr"): HandlerBox box [[inline]];
         ("minf"): MediaInformationBox box [[inline]];
+        ("sbtl"): SampleBoxTable box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("MediaBox({})", box.type))]];
