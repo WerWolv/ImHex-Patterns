@@ -1,12 +1,11 @@
-#pragma description Crash Bandicoot - Back in Time (fan game) User created flashback tapes level format
+#pragma author AdventureT
+#pragma description Crash Bandicoot - Back in Time (fan game) User created level format
+// Supports all versions till 0.94c, newer versions might be compatible!
 
 #include <type/magic.pat>
 #include <std/string.pat>
 #include <std/array.pat>
 
-// Crash Bandicoot - Back in Time (fan game) user created levels
-// Supports all versions till 0.94c, newer versions might be compatible!
-// author AdventureT
 
 struct Header {
     type::Magic<"CRASHLVL"> magic;
@@ -154,7 +153,7 @@ enum SceneryV4 : u32 {
     Waterfall,
     Snow,
     Fortress,
-    None3,
+    None2,
     Lava,
     TheGreatGate,
     Mountain,
