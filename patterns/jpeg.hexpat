@@ -1,7 +1,9 @@
 #pragma author WerWolv
 #pragma description JPEG Image Format
 
+#include <std/io.pat>
 #include <std/mem.pat>
+#include <type/magic.pat>
 #pragma endian big
 
 #pragma MIME image/jpeg
@@ -48,6 +50,12 @@ enum DensityUnit : u8 {
     PixelsPerCm = 0x02
 };
 
+enum ColorTransform : u8 {
+    Unknown = 0x00,
+    YCbCr = 0x01,
+    YCCK = 0x02
+};
+
 struct Pixel {
     u8 r, g, b;
 } [[sealed, transform("transform_pixel")]];
@@ -58,7 +66,7 @@ fn transform_pixel(Pixel pixel) {
 
 
 struct APP0 {
-    char magic[5];
+    type::Magic<"JFIF\x00"> magic;
     u8 versionMajor, versionMinor;
     DensityUnit densityUnit;
     u16 densityX, densityY;
@@ -66,18 +74,33 @@ struct APP0 {
     Pixel thumbnail[thumbnailX * thumbnailY] [[sealed]];
 };
 
+struct APP14 {
+    type::Magic<"Adobe"> magic;
+    u16 version;
+    u16 flags0;
+    u16 flags1;
+    ColorTransform transform;
+};
+
 enum ComponentId : u8 {
     Y   = 1,
     CB  = 2,
     CR  = 3,
     I   = 4,
-    Q   = 5
+    Q   = 5,
+    B   = 66,
+    G   = 71,
+    R   = 82
 };
 
 struct SOF0Component {
     ComponentId componentId;
     u8 samplingFactors;
     u8 quantizationTableId;
+} [[format_read("sof0_component_read")]];
+
+fn sof0_component_read(SOF0Component c) {
+    return std::format("({}, {}, {})", c.componentId, c.samplingFactors, c.quantizationTableId);
 };
 
 struct SOF0 {
@@ -99,11 +122,11 @@ struct SOS {
     u8 endSpectral;
     u8 apprBitPos;
     
-    u8 image_data[while(!std::mem::eof())] [[sealed]];
+    u8 image_data[std::mem::size() - $ - 2] [[sealed]];
 };
 
 struct Segment {
-    u8 magic;
+    type::Magic<"\xff"> magic;
     Marker marker;
     
     if (marker == Marker::SOI || marker == Marker::EOI) {
@@ -112,6 +135,10 @@ struct Segment {
         u16 length;
         if (marker == Marker::APP0) {
             APP0 data;
+        } else if (marker == Marker::APP14) {
+            APP14 data;
+        } else if (marker == Marker::COM) {
+            char data[length - sizeof(length)];
         } else if (marker == Marker::SOF0) {
             SOF0 data;
         } else if (marker == Marker::SOS) {
@@ -120,6 +147,10 @@ struct Segment {
             u8 data[length - sizeof(length)] [[sealed]];
         }
     }
+} [[format_read("segment_read")]];
+
+fn segment_read(Segment s) {
+    return std::format("{}", s.marker);
 };
 
 Segment segments[while(!std::mem::eof())] @ 0x00 [[hex::visualize("image", this)]];
