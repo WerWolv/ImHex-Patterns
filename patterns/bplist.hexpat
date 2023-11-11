@@ -77,15 +77,6 @@ fn coredata_to_date (double val){
     return type::impl::format_time_t(978307200 + val);
 };
 
-struct CFBinaryPlistOffset{
-    match (trailer.offsetIntSize){
-        (1): be u8 offset;
-        (2): be u16 offset;
-        (4): be u32 offset;
-        (8): be u64 offset;
-    }
-};
-
 struct DictElement {  
     CFBinaryPlistObject key @ offsetTable[parent.objReference.key_refs[std::core::array_index()]].offset;
     CFBinaryPlistObject value @ offsetTable[parent.objReference.value_refs[std::core::array_index()]].offset;
@@ -98,39 +89,48 @@ struct ArrayElement {
 struct ObjectReference{
     match(trailer.objectRefSize){
         (1): {
-            be u8 key_refs[parent.markerLength.size];
-            be u8 value_refs[parent.markerLength.size];
+            be u8 key_refs[parent.ObjectLen.size];
+            be u8 value_refs[parent.ObjectLen.size];
         }
         (2): {
-            be u16 key_refs[parent.markerLength.size];
-            be u16 value_refs[parent.markerLength.size];
+            be u16 key_refs[parent.ObjectLen.size];
+            be u16 value_refs[parent.ObjectLen.size];
         }
         (4): {
-            be u32 key_refs[parent.markerLength.size];
-            be u32 value_refs[parent.markerLength.size];
+            be u32 key_refs[parent.ObjectLen.size];
+            be u32 value_refs[parent.ObjectLen.size];
         }
         (8): {
-            be u64 key_refs[parent.markerLength.size];
-            be u64 value_refs[parent.markerLength.size];
+            be u64 key_refs[parent.ObjectLen.size];
+            be u64 value_refs[parent.ObjectLen.size];
         }
     }
 };
 
 struct ObjectReferenceArray{
     match(trailer.objectRefSize){
-        (1): be u8 value_refs[parent.markerLength.size];
-        (2): be u16 value_refs[parent.markerLength.size];
-        (4): be u32 value_refs[parent.markerLength.size];
-        (8): be u64 value_refs[parent.markerLength.size];
+        (1): be u8 value_refs[parent.ObjectLen.size];
+        (2): be u16 value_refs[parent.ObjectLen.size];
+        (4): be u32 value_refs[parent.ObjectLen.size];
+        (8): be u64 value_refs[parent.ObjectLen.size];
     }
 };
 
-struct MarkerLength{
+struct ObjectLen{
     if (parent.marker_lsb != 0x0F){
         u8 size = parent.marker_lsb [[export]];
     }else{
         CFBinaryPlistObject obj;
         u128 size = obj.value [[export]];
+    }
+};
+
+struct CFBinaryPlistOffset{
+    match (trailer.offsetIntSize){
+        (1): be u8 offset;
+        (2): be u16 offset;
+        (4): be u32 offset;
+        (8): be u64 offset;
     }
 };
 
@@ -156,7 +156,7 @@ struct CFBinaryPlistObject{
                         //I think the correct implementation is to do nothing here. The marker will be used as padding (Fill) ???
                     }
                     (_): {
-                        std::error("Detected unknown marker {}", marker_msb);
+                        std::error("Detected unknown marker {}.", marker_msb);
                     }
                 }
         }
@@ -174,7 +174,7 @@ struct CFBinaryPlistObject{
                 (4): be u32 value;
                 (8): be s64 value;
                 (16): be s128 value;
-                (_): std::error("Invalid size detected!");
+                (_): std::error(std::format("Invalid size detected for 'Int' marker. Got size: {}.", size));
             }                    
         }
         (Marker::Real): {
@@ -182,23 +182,23 @@ struct CFBinaryPlistObject{
             match (size){
                 (4): be float value;
                 (8): be double value;
-                (_): std::error(std::format("Invalid size detected for real. Got {}", size));
+                (_): std::error(std::format("Invalid size detected for 'Real' marker. Got size: {}.", size));
             }
         }
         (Marker::Date): {
             be double value [[format("coredata_to_date")]];
         }
         (Marker::Data): {
-            MarkerLength markerLength;
-            u8 value[markerLength.size];      
+            ObjectLen ObjectLen;
+            u8 value[ObjectLen.size];      
         }
         (Marker::ASCIIString): {
-            MarkerLength markerLength;
-            char value[markerLength.size];
+            ObjectLen ObjectLen;
+            char value[ObjectLen.size];
         }
         (Marker::Unicode16String): {
-           MarkerLength markerLength;
-           be char16 value[markerLength.size];
+           ObjectLen ObjectLen;
+           be char16 value[ObjectLen.size];
         }
         (Marker::UID): {
             //Not 100% sure if this is correct for UID. Need more testing
@@ -209,26 +209,26 @@ struct CFBinaryPlistObject{
                 (4): be u32 value;
                 (8): be u64 value;
                 (16): be u128 value;
-                (_): std::error("Invalid size detected for uid!");
+                (_): std::error(std::format("Invalid size detected for 'UID' marker. Got size: {}.", size));
             }      
         }
         (Marker::Set | Marker::Array): {
-            MarkerLength markerLength;
+            ObjectLen ObjectLen;
 
             ObjectReferenceArray objReference;
-            ArrayElement value[markerLength.size];
+            ArrayElement value[ObjectLen.size];
         }
         (Marker::Dict): {
-            MarkerLength markerLength;
+            ObjectLen ObjectLen;
             
             ObjectReference objReference;
-            DictElement value[markerLength.size];
+            DictElement value[ObjectLen.size];
         }
         (Marker::UNK_0x70 | Marker::UNK_0x90 | Marker::UNK_0xB0 | Marker::UNK_0xE0 | Marker::UNK_0xF0): {
             std::error(std::format("Got unused marker 0x{:x}", marker));
         }
         (_): {
-            std::error("Got unknown marker");
+            std::error(std::format("Got unknown marker 0x{:x}", marker));
         }    
     }
 };
@@ -237,7 +237,7 @@ struct CFBinaryPlistHeader{
     type::Magic<"bplist"> magic;
     u16 version;
     if (version != 0x3030){
-        std::error("Unsupported version detected.");
+        std::error("Unsupported version detected. Only version 00 is supported (bplist00).");
     }
 };
 
