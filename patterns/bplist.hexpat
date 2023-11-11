@@ -121,6 +121,10 @@ struct ObjectLen{
         u8 size = parent.marker_lsb [[export]];
     }else{
         CFBinaryPlistObject obj;
+        if (obj.marker & 0xF0 != Marker::Int){
+            std::error(std::format("Expects a 'Int' marker. Got 0x{:x} marker, with value {}", obj.marker, obj.value));
+        }
+
         u128 size = obj.value [[export]];
     }
 };
@@ -161,7 +165,7 @@ struct CFBinaryPlistObject{
                 }
         }
         (Marker::Int): {
-            be u8 size = std::math::pow(2,marker_lsb);     
+            be u8 size = std::math::pow(2, marker_lsb);     
             // in format version '00', 1, 2, and 4-byte integers have to be interpreted as unsigned,
             // whereas 8-byte integers are signed (and 16-byte when available)
             // negative 1, 2, 4-byte integers are always emitted as 8 bytes in format '00'
@@ -178,7 +182,7 @@ struct CFBinaryPlistObject{
             }                    
         }
         (Marker::Real): {
-            be u8 size = std::math::pow(2,marker_lsb); 
+            be u8 size = std::math::pow(2, marker_lsb); 
             match (size){
                 (4): be float value;
                 (8): be double value;
