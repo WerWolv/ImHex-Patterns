@@ -34,7 +34,7 @@ namespace std::time {
 	/**
 		A type to represent a time in seconds since the epoch.
 	*/
-	using EpochTime = u128;
+	using EpochTime = u32;
 
 	/**
 		A type to represent a time zone.
@@ -91,7 +91,7 @@ namespace std::time {
 		@return The local time.
 	*/
 	fn to_local(EpochTime epoch_time) {
-		TimeConverter converter;
+		le TimeConverter converter;
 
 		converter.value = builtin::std::time::to_local(epoch_time);
 
@@ -104,7 +104,7 @@ namespace std::time {
 		@return The UTC time.
 	*/
 	fn to_utc(EpochTime epoch_time) {
-		TimeConverter converter;
+		le TimeConverter converter;
 
 		converter.value = builtin::std::time::to_utc(epoch_time);
 
@@ -117,7 +117,7 @@ namespace std::time {
 		@return The current time in the specified time zone.
 	*/
 	fn now(TimeZone time_zone = TimeZone::Local) {
-		TimeConverter converter;
+		le TimeConverter converter;
 
 		if (time_zone == TimeZone::Local)
 			converter.value = builtin::std::time::to_local(std::time::epoch());
@@ -135,7 +135,7 @@ namespace std::time {
 		@return The DOS date.
 	*/
 	fn to_dos_date(u16 value) {
-		impl::DOSDateConverter converter;
+		le impl::DOSDateConverter converter;
 
 		converter.value = value;
 
@@ -148,7 +148,7 @@ namespace std::time {
 		@return The DOS time.
 	*/
 	fn to_dos_time(u16 value) {
-		impl::DOSTimeConverter converter;
+		le impl::DOSTimeConverter converter;
 
 		converter.value = value;
 
@@ -171,7 +171,7 @@ namespace std::time {
 		@return The formatted time.
 	*/
 	fn format(Time time, str format_string = "%c") {
-		TimeConverter converter;
+		le TimeConverter converter;
 		converter.time = time;
 
 		return builtin::std::time::format(format_string, converter.value);
