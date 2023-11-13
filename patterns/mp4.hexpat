@@ -157,10 +157,24 @@ struct VideoMediaHeaderBox : FullBox {
     u16 opcolor[3];
 };
 
+struct SubSampleDescriptionBox {
+    u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
+
+    match (str(type)) {
+        (_): UnknownBox box [[inline]];
+    }
+} [[name(std::format("SubSampleDescriptionBox({})", box.type))]];
+
+struct SampleDescriptionBox : FullBox {
+        u32 entry_count;
+        SubSampleDescriptionBox box[while($ < endOffset)] [[inline]];
+};
+
 struct SubSampleBoxTable {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
     match (str(type)) {
+        ("stsd"): SampleDescriptionBox box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("SubSampleBoxTable({})", box.type))]];
