@@ -147,7 +147,7 @@ struct DataInformationBox : BaseBox {
 
 struct HandlerBox : FullBox {
     u32 component_type;
-    u32 handler_type;
+    char handler_type[4];
     u32 reserved[3];
     char name[endOffset - $];
 };
