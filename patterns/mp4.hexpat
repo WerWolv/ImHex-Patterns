@@ -157,6 +157,32 @@ struct VideoMediaHeaderBox : FullBox {
     u16 opcolor[3];
 };
 
+struct SubSampleDescriptionBox {
+    u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
+
+    match (str(type)) {
+        (_): UnknownBox box [[inline]];
+    }
+} [[name(std::format("SubSampleDescriptionBox({})", box.type))]];
+
+struct SampleDescriptionBox : FullBox {
+        u32 entry_count;
+        SubSampleDescriptionBox box[while($ < endOffset)] [[inline]];
+};
+
+struct SubSampleBoxTable {
+    u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
+
+    match (str(type)) {
+        ("stsd"): SampleDescriptionBox box [[inline]];
+        (_): UnknownBox box [[inline]];
+    }
+} [[name(std::format("SubSampleBoxTable({})", box.type))]];
+
+struct SampleBoxTable : BaseBox {
+    SubSampleBoxTable box[while($ < endOffset)] [[inline]];
+};
+
 struct SubMediaInformationBox {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
@@ -164,15 +190,12 @@ struct SubMediaInformationBox {
         ("vmhd"): VideoMediaHeaderBox box [[inline]];
         ("hdlr"): HandlerBox box [[inline]];
         ("dinf"): DataInformationBox box [[inline]];
+        ("stbl"): SampleBoxTable box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("MediaInformationBox({})", box.type))]];
 
 struct MediaInformationBox : BaseBox {
-    SubMediaInformationBox box[while($ < endOffset)] [[inline]];
-};
-
-struct SampleBoxTable : FullBox {
     SubMediaInformationBox box[while($ < endOffset)] [[inline]];
 };
 
@@ -199,7 +222,6 @@ struct SubMediaBox {
         ("mdhd"): MediaHeaderBox box [[inline]];
         ("hdlr"): HandlerBox box [[inline]];
         ("minf"): MediaInformationBox box [[inline]];
-        ("sbtl"): SampleBoxTable box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("MediaBox({})", box.type))]];
