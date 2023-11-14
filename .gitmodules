@@ -4,4 +4,4 @@
 	branch = master
 [submodule "patterns/ffx"]
 	path = patterns/ffx
-	url = git@gitlab.com:EvelynTSMG/imhex-ffx-pats.git
+	url = https://gitlab.com/EvelynTSMG/imhex-ffx-pats.git
