@@ -219,8 +219,8 @@ namespace std::string {
 		str result;
 		s32 string_index;
 		s32 remaining_len = string_len;
-		while ( pattern_len <= remaining_len ) {
-			if ( std::string::substr(string, string_index, pattern_len) == pattern ) {
+		while (pattern_len <= remaining_len) {
+			if (std::string::substr(string, string_index, pattern_len) == pattern) {
  				result += replace;
 				string_index += pattern_len;
  			} else {
