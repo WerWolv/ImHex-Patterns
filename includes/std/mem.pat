@@ -181,6 +181,15 @@ namespace std::mem {
     };
 
     /**
+        Changes the size of a custom section
+        @param section The handle to the section
+        @param size The new size of the section
+    */
+    fn set_section_size(Section section, u128 size) {
+        builtin::std::mem::set_section_size(section, size);
+    };
+
+    /**
         Copies a range of bytes from one section into another
         @param from_section The section to copy from
         @param from_address The address to copy from
