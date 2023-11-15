@@ -16,7 +16,17 @@ fn to_string(auto var) {
 
 fn format_string(auto string) {
     return string.value;
-}; 
+};
+
+struct FixedPoint16 {
+    u8 integer;
+    u8 fraction;
+};
+
+struct FixedPoint32 {
+    u16 integer;
+    u16 fraction;
+};
 
 struct string {
     char value[std::mem::find_sequence_in_range(0, $, std::mem::size(), 0x00) - $];
@@ -79,8 +89,8 @@ struct MovieHeaderBox : FullBox {
         u32 timescale;
         u32 duration;
     }
-    u32 rate [[comment("Fixed point number 16.16")]];
-    u16 volume [[comment("Fixed point number 8.8")]];
+    FixedPoint32 rate;
+    FixedPoint16 volume;
     u8 reserved[10] [[sealed]];
     u32 matrix[9];
     u32 preview_time;
@@ -157,10 +167,50 @@ struct VideoMediaHeaderBox : FullBox {
     u16 opcolor[3];
 };
 
+struct Avc1Box : BaseBox {
+    u48 reserved;
+    u16 data_reference_index;
+    u16 version;
+    u16 revision_level;
+    u32 max_packet_size;
+    if (this.version == 0 || this.version == 1) {
+        u32 temporal_quality;
+        u32 spatial_quality;
+        u16 width;
+        u16 height;
+        FixedPoint32 horizontal_resolution;
+        FixedPoint32 vertical_resolution;
+        u32 data_size;
+        u16 frame_count;
+        char compressor_name[32];
+        u16 depth;
+        s16 color_table_id;
+    }
+    u8 unk[while($ != endOffset)];
+};
+
+struct Mp4aBox : BaseBox {
+    u48 reserved;
+    u16 data_reference_index;
+    u16 version;
+    u16 revision_level;
+    u32 max_packet_size;
+    if (this.version == 0) {
+        u16 num_audio_channels;
+        u16 sample_size;
+        u16 compression_id;
+        u16 packet_size;
+        FixedPoint32 sample_rate;
+    }
+    u8 unk[while($ != endOffset)];
+};
+
 struct SubSampleDescriptionBox {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
     match (str(type)) {
+        ("mp4a"): Mp4aBox box [[inline]];
+        ("avc1"): Avc1Box box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("SubSampleDescriptionBox({})", box.type))]];
@@ -170,11 +220,23 @@ struct SampleDescriptionBox : FullBox {
         SubSampleDescriptionBox box[while($ < endOffset)] [[inline]];
 };
 
+struct SampleTimeToSampleEntry {
+    u32 sample_count;
+    u32 sample_delta;
+};
+
+struct SampleTimeToSampleBox: FullBox {
+    u32 entry_count;
+    SampleTimeToSampleEntry entry_list[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
 struct SubSampleBoxTable {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
     match (str(type)) {
         ("stsd"): SampleDescriptionBox box [[inline]];
+        ("stts"): SampleTimeToSampleBox box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("SubSampleBoxTable({})", box.type))]];
