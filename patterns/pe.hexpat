@@ -1,6 +1,6 @@
 #pragma author WerWolv
 #pragma description PE header, COFF header, Standard COFF fields and Windows Specific fields
-
+#pragma pattern_limit 0x80000
 #pragma MIME application/x-dosexec
 #pragma MIME application/x-msdownload
 
@@ -316,7 +316,7 @@ SectionHeader sectionsTable[coffHeader.numberOfSections] @ addressof(coffHeader.
 // General Section things
 u16 currentSectionIndex;
 
-fn virtualDifference() {
+fn relativeVirtualDifference() {
 	return sectionsTable[currentSectionIndex].rva - sectionsTable[currentSectionIndex].ptrRawData;
 };
 
@@ -356,7 +356,7 @@ struct FunctionTableEntry {
 };
 
 struct ExceptionTable {
-	FunctionTableEntry functionTableEntries[while($ < (coffHeader.optionalHeader.directories[3].rva - virtualDifference()) + coffHeader.optionalHeader.directories[3].size)] [[inline]];
+	FunctionTableEntry functionTableEntries[while($ < (coffHeader.optionalHeader.directories[3].rva - relativeVirtualDifference()) + coffHeader.optionalHeader.directories[3].size)] [[inline]];
 };
 
 // Exports Table
@@ -385,15 +385,15 @@ struct ExportAddress {
 
 struct ExportNamePointer {
 	u32 exportNameRVA;
-	char exportName[] @ exportNameRVA - virtualDifference() [[format("formatNullTerminatedString")]];
+	char exportName[] @ exportNameRVA - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
 };
 
 struct ExportsTable {
 	ExportDirectoryTable directoryTable;
-	ExportAddress exportAddressTable[directoryTable.addressesAmount] @ directoryTable.addressTableRVA - virtualDifference();
-	ExportNamePointer exportNamePointerTable[directoryTable.namePointersAmount] @ directoryTable.namePointerTableRVA - virtualDifference();
-	u16 exportOrdinalTable[directoryTable.namePointersAmount] @ directoryTable.ordinalTableRVA - virtualDifference();
-	char imageName[] @ directoryTable.imageNameRVA - virtualDifference() [[format("formatNullTerminatedString")]];
+	ExportAddress exportAddressTable[directoryTable.addressesAmount] @ directoryTable.addressTableRVA - relativeVirtualDifference();
+	ExportNamePointer exportNamePointerTable[directoryTable.namePointersAmount] @ directoryTable.namePointerTableRVA - relativeVirtualDifference();
+	u16 exportOrdinalTable[directoryTable.namePointersAmount] @ directoryTable.ordinalTableRVA - relativeVirtualDifference();
+	char imageName[] @ directoryTable.imageNameRVA - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
 	$ = addressof(this)+coffHeader.optionalHeader.directories[0].size;
 };
 
@@ -424,7 +424,7 @@ struct ImportsAddress {
 
 struct ImportsLookup : ImportsAddress {
 	if (!ordinalFlagByte.flag && std::mem::read_unsigned($-wordsize(), wordsize()) > 0) {
-		ImportsName name @ nameTableRVA - virtualDifference();
+		ImportsName name @ nameTableRVA - relativeVirtualDifference();
 	}
 };
 
@@ -438,13 +438,13 @@ struct ImportsDirectory {
 
 struct ImportsStructure {
 	if (parent.importsDirectoryTable[std::core::array_index()].lookupTableRVA > 0) {
-		ImportsLookup lookupTable[while(std::mem::read_unsigned($, wordsize()) != 0)] @ parent.importsDirectoryTable[std::core::array_index()].lookupTableRVA - virtualDifference();
+		ImportsLookup lookupTable[while(std::mem::read_unsigned($, wordsize()) != 0)] @ parent.importsDirectoryTable[std::core::array_index()].lookupTableRVA - relativeVirtualDifference();
 	}
 	if (parent.importsDirectoryTable[std::core::array_index()].addressTableRVA > 0) {
-		ImportsAddress addressTable[while(std::mem::read_unsigned($, wordsize()) != 0)] @ parent.importsDirectoryTable[std::core::array_index()].addressTableRVA - virtualDifference();
+		ImportsAddress addressTable[while(std::mem::read_unsigned($, wordsize()) != 0)] @ parent.importsDirectoryTable[std::core::array_index()].addressTableRVA - relativeVirtualDifference();
 	}
 	if (parent.importsDirectoryTable[std::core::array_index()].dllNameRVA > 0) {
-		char dllName[] @ parent.importsDirectoryTable[std::core::array_index()].dllNameRVA - virtualDifference() [[format("formatNullTerminatedString")]];
+		char dllName[] @ parent.importsDirectoryTable[std::core::array_index()].dllNameRVA - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
 	}
 } [[inline]];
 
@@ -605,7 +605,7 @@ struct Dialog {
 
 // * String Resource
 struct StringTableResource {
-	std::string::SizedString16<u16> strings[while($ < (parent.dataRVA - virtualDifference()) + parent.size)];
+	std::string::SizedString16<u16> strings[while($ < (parent.dataRVA - relativeVirtualDifference()) + parent.size)];
 };
 
 // * GroupCursor Resource
@@ -686,7 +686,7 @@ struct Version {
 	u32 fileType;
 	u32 fileSubType;
 	u32 fileTimestamp;
-	VersionEntry children[while($ < (parent.dataRVA - virtualDifference()) + parent.size)];
+	VersionEntry children[while($ < (parent.dataRVA - relativeVirtualDifference()) + parent.size)];
 };
 
 // * Resources Using TrueChar
@@ -726,35 +726,35 @@ struct DataEntry {
 	u32 reserved;
 
 	if (resourceIDType == ResourceID::Cursor) {
-		Cursor cursor @ dataRVA - virtualDifference();
+		Cursor cursor @ dataRVA - relativeVirtualDifference();
 	}
-	else if (resourceIDType == ResourceID::Bitmap || (resourceIDType == ResourceID::Icon && std::mem::read_string((dataRVA - virtualDifference())+1, 3) != "PNG")) {
+	else if (resourceIDType == ResourceID::Bitmap || (resourceIDType == ResourceID::Icon && std::mem::read_string((dataRVA - relativeVirtualDifference())+1, 3) != "PNG")) {
 		imageDataSize = size;
-		Bitmap bitmap @ dataRVA - virtualDifference();
+		Bitmap bitmap @ dataRVA - relativeVirtualDifference();
 	}
 	else if (resourceIDType == ResourceID::Dialog) {
-		Dialog dialog @ dataRVA - virtualDifference();
+		Dialog dialog @ dataRVA - relativeVirtualDifference();
 	}
 	else if (resourceIDType == ResourceID::String) {
-		StringTableResource stringTableResource @ dataRVA - virtualDifference();
+		StringTableResource stringTableResource @ dataRVA - relativeVirtualDifference();
 	}
 	else if (resourceIDType == ResourceID::StringData) {
-		TrueChar stringData[size] @ dataRVA - virtualDifference();
+		TrueChar stringData[size] @ dataRVA - relativeVirtualDifference();
 	}
 	else if (resourceIDType == ResourceID::GroupCursor) {
-		GroupCursor groupCursor @ dataRVA - virtualDifference();
+		GroupCursor groupCursor @ dataRVA - relativeVirtualDifference();
 	}
 	else if (resourceIDType == ResourceID::GroupIcon) {
-		GroupIcon groupIcon @ dataRVA - virtualDifference();
+		GroupIcon groupIcon @ dataRVA - relativeVirtualDifference();
 	}
 	else if (resourceIDType == ResourceID::Version) {
-		Version version @ dataRVA - virtualDifference();
+		Version version @ dataRVA - relativeVirtualDifference();
 	}
 	else if (resourceIDType == ResourceID::Manifest) {
-		TrueChar manifest[size] @ dataRVA - virtualDifference();
+		TrueChar manifest[size] @ dataRVA - relativeVirtualDifference();
 	}
 	else {
-		u8 resource[size] @ dataRVA - virtualDifference();
+		u8 resource[size] @ dataRVA - relativeVirtualDifference();
 	}
 };
 
@@ -768,16 +768,16 @@ bitfield OffsetField {
 struct DataField {
 	if (std::mem::read_unsigned($+3, 1) >= 0x80) {
 		OffsetField offsetToData;
-		ResourceDirectory directory @ coffHeader.optionalHeader.directories[2].rva - virtualDifference() + offsetToData.offset;
+		ResourceDirectory directory @ coffHeader.optionalHeader.directories[2].rva - relativeVirtualDifference() + offsetToData.offset;
 	}
 	else {
 		u32 offsetToData;
-		DataEntry dataEntry @ coffHeader.optionalHeader.directories[2].rva - virtualDifference() + offsetToData;
+		DataEntry dataEntry @ coffHeader.optionalHeader.directories[2].rva - relativeVirtualDifference() + offsetToData;
 	}
 } [[inline]];
 
 struct IdDirectoryEntry {
-	if ($ > coffHeader.optionalHeader.directories[2].rva - virtualDifference() + 0x10 + 8*(parent.directoryTable.nameEntriesAmount + parent.directoryTable.idEntriesAmount)) {
+	if ($ > coffHeader.optionalHeader.directories[2].rva - relativeVirtualDifference() + 0x10 + 8*(parent.directoryTable.nameEntriesAmount + parent.directoryTable.idEntriesAmount)) {
 		u32 id;
 	}
 	else {
@@ -790,7 +790,7 @@ struct IdDirectoryEntry {
 
 struct NameDirectoryEntry {
 	OffsetField offsetToName;
-	std::string::SizedString16<u16> name @ coffHeader.optionalHeader.directories[2].rva - virtualDifference() + offsetToName.offset;
+	std::string::SizedString16<u16> name @ coffHeader.optionalHeader.directories[2].rva - relativeVirtualDifference() + offsetToName.offset;
 
 	DataField datafield;
 };
@@ -1013,8 +1013,8 @@ bool dataDirectoryInSection[coffHeader.optionalHeader.numberOfRVAsAndSizes];
 
 fn checkForDataDirectory() { 
 	for (u32 i = 0, i < coffHeader.optionalHeader.numberOfRVAsAndSizes, i += 1)
-		if (coffHeader.optionalHeader.directories[i].rva - virtualDifference() < sectionsTable[currentSectionIndex].ptrRawData+sectionsTable[currentSectionIndex].sizeOfRawData
-		 && coffHeader.optionalHeader.directories[i].rva - virtualDifference() >= $)
+		if (coffHeader.optionalHeader.directories[i].rva - relativeVirtualDifference() < sectionsTable[currentSectionIndex].ptrRawData+sectionsTable[currentSectionIndex].sizeOfRawData
+		 && coffHeader.optionalHeader.directories[i].rva - relativeVirtualDifference() >= $)
 			dataDirectoryInSection[i] = true;
 };
 
@@ -1039,28 +1039,28 @@ struct Section {
 	}
 	else {
 		if (dataDirectoryInSection[0]) {
-			ExportsTable exportTable @ coffHeader.optionalHeader.directories[0].rva - virtualDifference();
+			ExportsTable exportTable @ coffHeader.optionalHeader.directories[0].rva - relativeVirtualDifference();
 		}
 		if (dataDirectoryInSection[1]) {
-			ImportsTable importTable @ coffHeader.optionalHeader.directories[1].rva - virtualDifference();
+			ImportsTable importTable @ coffHeader.optionalHeader.directories[1].rva - relativeVirtualDifference();
 		}
 		if (dataDirectoryInSection[2]) {
-			ResourceTable resourceTable @ coffHeader.optionalHeader.directories[2].rva - virtualDifference();
+			ResourceTable resourceTable @ coffHeader.optionalHeader.directories[2].rva - relativeVirtualDifference();
 		}
 		if (dataDirectoryInSection[3]) {
-			ExceptionTable exceptionTable @ coffHeader.optionalHeader.directories[3].rva - virtualDifference();
+			ExceptionTable exceptionTable @ coffHeader.optionalHeader.directories[3].rva - relativeVirtualDifference();
 		}
 		if (dataDirectoryInSection[5]) {
-			BaseRelocationTable baseRelocationTable @ coffHeader.optionalHeader.directories[5].rva - virtualDifference();
+			BaseRelocationTable baseRelocationTable @ coffHeader.optionalHeader.directories[5].rva - relativeVirtualDifference();
 		}
 		if (dataDirectoryInSection[6]) {
-			DebugData debugData @ coffHeader.optionalHeader.directories[6].rva - virtualDifference();
+			DebugData debugData @ coffHeader.optionalHeader.directories[6].rva - relativeVirtualDifference();
 		}
 		if (dataDirectoryInSection[7]) {
-			char copyright[] @ coffHeader.optionalHeader.directories[7].rva - virtualDifference() [[format("formatNullTerminatedString")]];
+			char copyright[] @ coffHeader.optionalHeader.directories[7].rva - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
 		}
 		if (dataDirectoryInSection[9]) {
-			TLSTable tlsTable @ coffHeader.optionalHeader.directories[9].rva - virtualDifference();
+			TLSTable tlsTable @ coffHeader.optionalHeader.directories[9].rva - relativeVirtualDifference();
 		}
 	}
 	clearBoolArray();
