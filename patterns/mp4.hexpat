@@ -231,12 +231,25 @@ struct SampleTimeToSampleBox: FullBox {
     u8 unk[while($ != endOffset)];
 };
 
+struct SampleToChunkEntry {
+    u32 first_chunk;
+    u32 samples_per_chunk;
+    u32 sample_description_index;
+};
+
+struct SampleToChunkBox: FullBox {
+    u32 entry_count;
+    SampleToChunkEntry entry_list[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
 struct SubSampleBoxTable {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
     match (str(type)) {
         ("stsd"): SampleDescriptionBox box [[inline]];
         ("stts"): SampleTimeToSampleBox box [[inline]];
+        ("stsc"): SampleToChunkBox box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("SubSampleBoxTable({})", box.type))]];
@@ -358,9 +371,15 @@ struct MovieBox : BaseBox {
     SubMovieBox box[while($ < endOffset)] [[inline]];
 };
 
+/*
 struct MediaDataBox : BaseBox {
     u8 data[while($ < endOffset)] [[sealed]];
 };
+*/
+
+struct MediaDataBox : BaseBox {
+    $ = endOffset;
+} [[sealed]];
 
 struct Box {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
