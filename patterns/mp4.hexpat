@@ -406,15 +406,9 @@ struct MovieBox : BaseBox {
     SubMovieBox box[while($ < endOffset)] [[inline]];
 };
 
-/*
 struct MediaDataBox : BaseBox {
     u8 data[while($ < endOffset)] [[sealed]];
 };
-*/
-
-struct MediaDataBox : BaseBox {
-    $ = endOffset;
-} [[sealed]];
 
 struct Box {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
