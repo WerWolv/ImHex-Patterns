@@ -255,6 +255,26 @@ struct SyncSampleBox: FullBox {
     u8 unk[while($ != endOffset)];
 };
 
+struct CompositionOffsetEntryV0 {
+    u32 sample_count;
+    u32 sample_offset;
+};
+
+struct CompositionOffsetEntryV1 {
+    u32 sample_count;
+    s32 sample_offset;
+};
+
+struct CompositionOffsetBox: FullBox {
+    u32 entry_count;
+    if(this.version == 0) {
+        CompositionOffsetEntryV0 entry_list[this.entry_count];
+    }
+    else if (this.version == 1) {
+        CompositionOffsetEntryV1 entry_list[this.entry_count];
+    }
+};
+
 struct SubSampleBoxTable {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
@@ -264,6 +284,7 @@ struct SubSampleBoxTable {
         ("stsc"): SampleToChunkBox box [[inline]];
         ("stco"): ChunkOffsetBox box [[inline]];
         ("stss"): SyncSampleBox box [[inline]];
+        ("ctts"): CompositionOffsetBox box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("SubSampleBoxTable({})", box.type))]];
