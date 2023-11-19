@@ -231,12 +231,60 @@ struct SampleTimeToSampleBox: FullBox {
     u8 unk[while($ != endOffset)];
 };
 
+struct SampleToChunkEntry {
+    u32 first_chunk;
+    u32 samples_per_chunk;
+    u32 sample_description_index;
+};
+
+struct SampleToChunkBox: FullBox {
+    u32 entry_count;
+    SampleToChunkEntry entry_list[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
+struct ChunkOffsetBox: FullBox {
+    u32 entry_count;
+    u32 chunk_offset[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
+struct SyncSampleBox: FullBox {
+    u32 entry_count;
+    u32 sample_number[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
+struct CompositionOffsetEntryV0 {
+    u32 sample_count;
+    u32 sample_offset;
+};
+
+struct CompositionOffsetEntryV1 {
+    u32 sample_count;
+    s32 sample_offset;
+};
+
+struct CompositionOffsetBox: FullBox {
+    u32 entry_count;
+    if(this.version == 0) {
+        CompositionOffsetEntryV0 entry_list[this.entry_count];
+    }
+    else if (this.version == 1) {
+        CompositionOffsetEntryV1 entry_list[this.entry_count];
+    }
+};
+
 struct SubSampleBoxTable {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
     match (str(type)) {
         ("stsd"): SampleDescriptionBox box [[inline]];
         ("stts"): SampleTimeToSampleBox box [[inline]];
+        ("stsc"): SampleToChunkBox box [[inline]];
+        ("stco"): ChunkOffsetBox box [[inline]];
+        ("stss"): SyncSampleBox box [[inline]];
+        ("ctts"): CompositionOffsetBox box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("SubSampleBoxTable({})", box.type))]];
