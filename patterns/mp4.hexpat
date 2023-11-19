@@ -243,6 +243,12 @@ struct SampleToChunkBox: FullBox {
     u8 unk[while($ != endOffset)];
 };
 
+struct ChunkOffsetBox: FullBox {
+    u32 entry_count;
+    u32 chunk_offset[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
 struct SubSampleBoxTable {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
@@ -250,6 +256,7 @@ struct SubSampleBoxTable {
         ("stsd"): SampleDescriptionBox box [[inline]];
         ("stts"): SampleTimeToSampleBox box [[inline]];
         ("stsc"): SampleToChunkBox box [[inline]];
+        ("stco"): ChunkOffsetBox box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("SubSampleBoxTable({})", box.type))]];
