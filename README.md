@@ -58,7 +58,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | GIF | `image/gif` | [`patterns/gif.hexpat`](patterns/gif.hexpat) | GIF image files |
 | GZIP | `application/gzip` | [`patterns/gzip.hexpat`](patterns/gzip.hexpat) | GZip compressed data format |
 | Halo Bitmap || [`patterns/hinf_bitmap.hexpat`](patterns/hinf_bitmap.hexpat) | Halo Infinite Bitmap tag files |
-| Halo HavokScript || [`patterns/hinf_luas.hexpat`](patterns/hinf_bitmap.hexpat) | Halo Infinite HavokScript 5.1 Bytecode |
+| Halo HavokScript || [`patterns/hinf_luas.hexpat`](patterns/hinf_luas.hexpat) | Halo Infinite HavokScript 5.1 Bytecode |
 | ICO | | [`patterns/ico.hexpat`](patterns/ico.hexpat) | Icon (.ico) or Cursor (.cur) files |
 | ID3 | `audio/mpeg` | [`patterns/id3.hexpat`](patterns/id3.hexpat) | ID3 tags in MP3 files |
 | Intel HEX  | | [`patterns/intel_hex.hexpat`](patterns/intel_hex.hexpat) | [Intel hexadecimal object file format definition]("https://en.wikipedia.org/wiki/Intel_HEX") |
