@@ -4,7 +4,7 @@
 	branch = master
 [submodule "patterns/ffx"]
 	path = patterns/ffx
-	url = git@gitlab.com:EvelynTSMG/imhex-ffx-pats.git
+	url = https://gitlab.com/EvelynTSMG/imhex-ffx-pats.git
 [submodule "patterns/bastion"]
 	path = patterns/bastion
-	url = git@gitlab.com:EvelynTSMG/imhex-bastion-pats.git
+	url = https://gitlab.com/EvelynTSMG/imhex-bastion-pats.git
