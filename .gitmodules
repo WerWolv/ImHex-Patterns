@@ -5,3 +5,6 @@
 [submodule "patterns/ffx"]
 	path = patterns/ffx
 	url = https://gitlab.com/EvelynTSMG/imhex-ffx-pats.git
+[submodule "patterns/bastion"]
+	path = patterns/bastion
+	url = https://gitlab.com/EvelynTSMG/imhex-bastion-pats.git
