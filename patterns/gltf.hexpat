@@ -35,7 +35,7 @@ struct gltf_magic_t {
 };
 
 /**
- * @brief Enumeartion of well defined glTF chunks.
+ * @brief Enumeration of well defined glTF chunks.
  */
 enum gltf_chunk_type_t : u32 {
     JSON = 1313821514 /* "JSON"  */,  /**< JSON chunk. */
