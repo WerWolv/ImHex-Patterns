@@ -1078,7 +1078,7 @@ bitfield BaseRelocationWord {
 struct BaseRelocationBlock {
 	u32 pageRVA;
 	u32 blockSize;
-	BaseRelocationWord word;
+	BaseRelocationWord word[while($ < addressof(this) + this.blockSize)] [[inline]];
 };
 
 struct BaseRelocationTable {
