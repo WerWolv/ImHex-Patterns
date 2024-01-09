@@ -11,7 +11,7 @@
 struct RAS{
 
   //Magic Bytes
-  type::Magic<"Y¦j"> signature;
+  type::Magic<"\x59\xa6\x6a\x95"> signature;
  
   //BE -> px -> mm
   u32 width [[name("Width")]];
@@ -25,7 +25,7 @@ struct RAS{
   u32 colorMapLenght;
   
   //Data Viewer
-  u8 image_data[leght]; 
+  u8 image_data[length]; 
 };
 
 RAS header @0x00;
