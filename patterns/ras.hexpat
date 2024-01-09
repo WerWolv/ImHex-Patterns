@@ -1,5 +1,5 @@
 #pragma author Fl3ch4
-#pragma MIME image/webp
+#pragma MIME image/x-sun-raster
 #pragma endian big
 
 #include <std/mem.pat>
