@@ -20,7 +20,7 @@ struct RAS{
   //BE
   u32 depth;
   u32 length;
-  u32 type2;
+  u32 type;
   u32 colorMapType;
   u32 colorMapLenght;
   
