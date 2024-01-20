@@ -48,10 +48,6 @@ fn below(u8 major, u8 minor) {
     return _major <=major && _minor < minor;
 };
 
-fn is(u8 major, u8 minor) {
-    return _major == major && _minor == minor;
-};
-
 fn between(u8 major, u8 minor, u8 otherMajor, u8 otherMinor) {
     return above(major, minor) && below(otherMajor, otherMinor);
 };
