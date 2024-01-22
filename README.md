@@ -169,6 +169,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ASCII+OEM | [`encodings/ascii_oem.tbl`](encodings/ascii_oem.tbl) | ASCII encoding with Windows OEM characters |
 | Baltic ISO | [`encodings/baltic_iso.tbl`](encodings/baltic_iso.tbl) | Baltic ISO encoding |
 | Baltic Windows | [`encodings/baltic_windows.tbl`](encodings/baltic_windows.tbl) | Baltic Windows encoding |
+| Big5 (Traditional Chinese) | [`encodings/big5.tbl`](encodings/big5.tbl) | Big5 encoding for Traditional Chinese |
 | Cyrillic ISO | [`encodings/cyrillic_iso.tbl`](encodings/cyrillic_iso.tbl) | Cyrillic ISO encoding |
 | Cyrillic Windows | [`encodings/cyrillic_windows.tbl`](encodings/cyrillic_windows.tbl) | Cyrillic Windows encoding |
 | Cyrillic KOI8-R | [`encodings/cyrillic_koi8_r.tbl`](encodings/cyrillic_koi8_r.tbl) | Cyrillic KOI8-R encoding (Russian Characters) |
@@ -196,6 +197,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Turkish Windows | [`encodings/turkish_windows.tbl`](encodings/turkish_windows.tbl) | Turkish Windows encoding |
 | UTF-8 | [`encodings/utf8.tbl`](encodings/utf8.tbl) | UTF-8 encoding |
 | Vietnamese | [`encodings/vietnamese.tbl`](encodings/vietnamese.tbl) | Vietnamese character encoding |
+> import custom encoding from File -> Import... -> Custome Encoding File
 
 ### Data Processor Nodes
 | Name | Path | Description |
