@@ -3,6 +3,7 @@
 
 #pragma MIME application/x-dosexec
 #pragma MIME application/x-msdownload
+#pragma MIME application/vnd.microsoft.portable-executable
 
 #include <std/core.pat>
 #include <std/string.pat>
