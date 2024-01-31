@@ -128,7 +128,7 @@ namespace std::mem {
         @param size The size of the value to read
         @return The value read
     */
-    fn read_string(u128 address, u8 size) {
+    fn read_string(u128 address, u128 size) {
         return builtin::std::mem::read_string(address, size);
     };
 
