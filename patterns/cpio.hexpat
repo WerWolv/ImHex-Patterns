@@ -1,12 +1,12 @@
 #pragma author WerWolv
 #pragma description Old Binary CPIO Format
 
-#include <type/base.pat>
+import type.base;
 
-#include <std/time.pat>
-#include <std/core.pat>
-#include <std/sys.pat>
-#include <std/mem.pat>
+import std.time;
+import std.core;
+import std.sys;
+import std.mem;
 
 #pragma MIME application/x-cpio
 

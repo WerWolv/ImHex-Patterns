@@ -5,11 +5,11 @@
 #pragma pattern_limit 100000000
 #pragma MIME application/x-java-applet
 
-#include <std/string.pat>
-#include <std/math.pat>
-#include <std/core.pat>
-#include <std/io.pat>
-#include <std/sys.pat>
+import std.string;
+import std.math;
+import std.core;
+import std.io;
+import std.sys;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 

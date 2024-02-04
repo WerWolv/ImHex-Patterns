@@ -1,7 +1,7 @@
 #pragma description Mechanized Assault and Exploration v1.04 (strategy game) save file format
 
-#include <std/sys.pat>
-#include <std/mem.pat>
+import std.sys;
+import std.mem;
 
 #pragma array_limit 12544
 #pragma pattern_limit 2000000

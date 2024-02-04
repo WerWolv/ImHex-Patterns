@@ -3,7 +3,7 @@
 
 #pragma MIME application/x-mach-binary
 
-#include <type/size.pat>
+import type.size;
 
 enum Magic : u32 {
     _32BitMagic = 0xFEEDFACE,

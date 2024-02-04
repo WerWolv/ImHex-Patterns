@@ -1,6 +1,6 @@
-#include <std/mem.pat>
-#include <std/io.pat>
-#include <std/string.pat>
+import std.mem;
+import std.io;
+import std.string;
 
 struct Header {
     u32 magic;                     

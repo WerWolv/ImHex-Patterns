@@ -6,9 +6,9 @@
 #pragma MIME video/mp4
 #pragma MIME application/mp4
 
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
+import std.io;
+import std.mem;
+import std.string;
 
 fn to_string(auto var) {
     return str(var);

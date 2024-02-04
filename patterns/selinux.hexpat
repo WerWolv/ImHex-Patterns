@@ -1,7 +1,7 @@
 #pragma description SE Linux modules
 #pragma author Ange Albertini
 
-#include <std/sys.pat>
+import std.sys;
 #pragma pattern_limit 13107200
 #pragma array_limit 13107200
 #pragma endian little

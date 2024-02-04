@@ -2,9 +2,9 @@
 #pragma description Crash Bandicoot - Back in Time (fan game) User created level format
 // Supports all versions till 0.94c, newer versions might be compatible!
 
-#include <type/magic.pat>
-#include <std/string.pat>
-#include <std/array.pat>
+import type.magic;
+import std.string;
+import std.array;
 
 
 struct Header {

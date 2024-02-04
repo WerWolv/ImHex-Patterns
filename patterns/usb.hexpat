@@ -1,7 +1,7 @@
-#include <std/core.pat>
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
+import std.core;
+import std.io;
+import std.mem;
+import std.string;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 

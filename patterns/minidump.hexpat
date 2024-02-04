@@ -3,9 +3,9 @@
 
 #pragma MIME application/x-dmp
 
-#include <type/time.pat>
-#include <type/types/win32.pat>
-#include <type/size.pat>
+import type.time;
+import type/types.win32;
+import type.size;
 
 using RVA = ULONG32;
 using RVA64 = ULONG64;

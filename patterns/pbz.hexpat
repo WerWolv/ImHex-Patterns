@@ -6,8 +6,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <std/mem.pat>
-#include <type/magic.pat>
+import std.mem;
+import type.magic;
 
 #pragma endian big
 

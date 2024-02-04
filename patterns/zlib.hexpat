@@ -2,8 +2,8 @@
 
 #pragma MIME application/zlib
 
-#include <std/core.pat>
-#include <std/sys.pat>
+import std.core;
+import std.sys;
 
 #define HEADER_SIZE 2
 #define CSUM_SIZE 4

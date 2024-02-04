@@ -1,11 +1,11 @@
 #pragma author WerWolv
 #pragma description Windows HtmlHelp Data (ITSF / CHM)
 
-#include <type/magic.pat>
-#include <type/size.pat>
-#include <type/guid.pat>
-#include <type/leb128.pat>
-#include <std/sys.pat>
+import type.magic;
+import type.size;
+import type.guid;
+import type.leb128;
+import std.sys;
 
 enum WindowsLanguageId : u32 {
     Arabic_SaudiArabia                          = 0x401,

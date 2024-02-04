@@ -3,7 +3,7 @@
 #pragma MIME image/tga
 #pragma endian little
 
-#include <std/mem.pat>
+import std.mem;
 
 struct ColorMapSpec {
   u16 entryIndex;

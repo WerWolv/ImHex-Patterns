@@ -174,7 +174,7 @@ def handle_seq(seq):
 def generate_imhex_pattern(data):
     global top_level_struct
 
-    add_line("#include <type/magic.pat>\n")
+    add_line("import type.magic;\n")
 
     if "meta" in data:
        handle_meta(data["meta"])

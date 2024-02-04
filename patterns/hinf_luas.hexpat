@@ -1,10 +1,10 @@
 #pragma author Surasia
 #pragma description Halo Infinite HavokScript 5.1 "luas" file
 
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/core.pat>
-#include <std/string.pat>
+import std.io;
+import std.mem;
+import std.core;
+import std.string;
 
 struct String32 {
     s32 length;

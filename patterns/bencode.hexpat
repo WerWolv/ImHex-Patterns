@@ -3,9 +3,9 @@
 
 #pragma MIME application/x-bittorrent
 
-#include <std/ctype.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
+import std.ctype;
+import std.mem;
+import std.string;
 
 namespace bencode {
 	

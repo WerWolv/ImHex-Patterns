@@ -1,7 +1,7 @@
 #pragma description Android VBMeta image
 
 #pragma endian big
-#include <std/core.pat>
+import std.core;
 
 using uint8_t = u8;
 using uint32_t = u32;

@@ -3,8 +3,8 @@
 
 #pragma MIME application/bson
 
-#include <std/mem.pat>
-#include <type/time.pat>
+import std.mem;
+import type.time;
 
 enum Type : u8 {
     Double              = 0x01,

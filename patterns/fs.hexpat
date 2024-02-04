@@ -1,7 +1,7 @@
 #pragma author WerWolv
 #pragma description Drive File System
 
-#include <std/io.pat>
+import std.io;
 
 struct DiskTimeStamp {
 	u8 seconds, minutes, hours;

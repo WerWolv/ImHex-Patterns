@@ -1,8 +1,8 @@
 #pragma description GoldSrc engine maps format (used in Half-Life 1)
 
-#include <std/ptr.pat>
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.ptr;
+import std.mem;
+import std.sys;
 
 #pragma endian little
 

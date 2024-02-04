@@ -1,8 +1,8 @@
 #pragma author gmestanley
 #pragma description .nes file format
 
-#include <std/mem.pat>
-#include <std/string.pat>
+import std.mem;
+import std.string;
 
 bitfield iNES07Flags {
 	mirroringIsVertical : 1;

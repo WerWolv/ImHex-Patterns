@@ -2,10 +2,10 @@
 
 #pragma endian big
 
-#include <type/magic.pat>
-#include <type/size.pat>
-#include <type/guid.pat>
-#include <std/mem.pat>
+import type.magic;
+import type.size;
+import type.guid;
+import std.mem;
 
 // Parse DMG Structure per http://newosxbook.com/DMG.html
 //

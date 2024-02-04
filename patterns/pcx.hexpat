@@ -3,7 +3,7 @@
 
 #pragma MIME application/x-pcx
 
-#include <std/io.pat>
+import std.io;
 
 enum Encoding : u8 {
     NoEncoding = 0x00,

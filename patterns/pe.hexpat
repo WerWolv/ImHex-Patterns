@@ -5,10 +5,10 @@
 #pragma MIME application/x-msdownload
 #pragma MIME application/vnd.microsoft.portable-executable
 
-#include <std/core.pat>
-#include <std/string.pat>
-#include <type/guid.pat>
-#include <type/time.pat>
+import std.core;
+import std.string;
+import type.guid;
+import type.time;
 
 struct DOSHeader {
 	char signature[2] [[hex::spec_name("e_magic")]];
