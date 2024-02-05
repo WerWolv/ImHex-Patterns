@@ -1,28 +1,30 @@
 #pragma once
 
-import hex.impl.imhex_check;
-
 import std.io;
 import std.mem;
 
+import hex.impl.imhex_check;
 import hex.dec;
 
 /*!
     Types to automatically decode mangled names
 */
 
-namespace hex::type;
+namespace auto hex::type {
 	
-/**
-    A mangled name string that gets demangled when displayed
-*/
-struct MangledName {
-    char value[];
-} [[sealed, format("hex::type::impl::format_mangled_name")]];
+    /**
+        A mangled name string that gets demangled when displayed
+    */
+    struct MangledName {
+        char value[];
+    } [[sealed, format("hex::type::impl::format_mangled_name")]];
+	
+    namespace impl {
 
-namespace impl {
-
-    fn format_mangled_name(ref MangledName name) {
-        return hex::dec::demangle(name.value);
-    };
+        fn format_mangled_name(ref MangledName name) {
+            return hex::dec::demangle(name.value);
+        };
+    }
+	
 }
+

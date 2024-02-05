@@ -1,12 +1,12 @@
 #pragma once
 
-#include <hex/impl/imhex_check.pat>
+import hex.impl.imhex_check;
 
 /*!
     Library to interact with the currently loaded provider.
 */
 
-namespace hex::prv {
+namespace auto hex::prv {
     
     
     /**

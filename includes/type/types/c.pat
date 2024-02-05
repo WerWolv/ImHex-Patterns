@@ -5,7 +5,7 @@
 */
 
 // Explicitly don't add these types to the `type` namespace for usability
-// namespace type {
+// namespace auto type {
 
     using uint8_t       = u8;
     using uint16_t      = u16;
