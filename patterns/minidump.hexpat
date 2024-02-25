@@ -4,7 +4,7 @@
 #pragma MIME application/x-dmp
 
 import type.time;
-import type/types.win32;
+import type.types.win32;
 import type.size;
 
 using RVA = ULONG32;
