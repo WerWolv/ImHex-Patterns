@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 
 
     // Execute pattern
-    if (!runtime.executeString(patternFile.readString())) {
+    if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
         fmt::print("Error during execution!\n");
 
         if (const auto &hardError = runtime.getError(); hardError.has_value())

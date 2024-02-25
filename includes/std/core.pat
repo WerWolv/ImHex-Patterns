@@ -146,4 +146,14 @@ namespace auto std::core {
     fn set_display_name(ref auto pattern, str name) {
         builtin::std::core::set_display_name(pattern, name);
     }; 
+
+
+    /**
+        Changes the comment attached to a pattern
+        @param pattern The pattern to modify
+        @param name The new comment of the pattern
+    */
+    fn set_pattern_comment(ref auto pattern, str comment) {
+        builtin::std::core::set_pattern_comment(pattern, name);
+    }; 
 }
