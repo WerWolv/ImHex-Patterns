@@ -2,9 +2,9 @@
 
 #pragma MIME application/zip
 
-#include <std/mem.pat>
-#include <std/math.pat>
-#include <type/time.pat>
+import std.mem;
+import std.math;
+import type.time;
 
 struct EndOfCentralDirectory {
     u32 headerSignature [[comment("EoCD magic"), name("EoCD PK\\5\\6")]];

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
 
 /*!
 	Libray to interact with strings.
 */
 
-namespace std::string {
+namespace auto std::string {
 
 	/**
 	    Base type for sized strings. Represents a string with its size preceeding it.

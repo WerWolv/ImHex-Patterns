@@ -3,7 +3,7 @@
 
 #pragma endian little
 
-#include <std/sys.pat>
+import std.sys;
 
 #pragma MIME image/vnd.microsoft.icon
 #pragma MIME image/x-icon

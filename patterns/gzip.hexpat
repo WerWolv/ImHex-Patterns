@@ -3,10 +3,10 @@
 
 #pragma MIME application/gzip
 
-#include <type/time.pat>
-#include <type/size.pat>
-#include <std/core.pat>
-#include <std/mem.pat>
+import type.time;
+import type.size;
+import std.core;
+import std.mem;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 

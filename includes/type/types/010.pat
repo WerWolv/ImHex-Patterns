@@ -5,7 +5,7 @@
 */
 
 // Explicitly don't add these types to the `type` namespace for usability
-// namespace type {
+// namespace auto type {
 
     // using char   = s8;
     using byte      = s8;

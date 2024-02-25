@@ -4,7 +4,7 @@
     Library for doing raw memory accesses and other low-level operations.
 */
 
-namespace std::mem {
+namespace auto std::mem {
 
     namespace impl {
 

@@ -1,8 +1,8 @@
 #pragma description 7z File Format
 
-#include <std/io.pat> 
-#include <std/mem.pat> 
-#include <std/math.pat> 
+import std.io; 
+import std.mem; 
+import std.math; 
 
 
 enum Type:u8{ 

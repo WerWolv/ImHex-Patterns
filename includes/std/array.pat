@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/sys.pat>
+import std.sys;
 
 /*!
     The array library contains a helper type to make it easier to create multi-dimensional arrays
     and pass arrays to functions as parameters.
 */
 
-namespace std {
+namespace auto std {
 
     /**
         Simple one dimensional array wrapper

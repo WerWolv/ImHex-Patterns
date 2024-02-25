@@ -1,12 +1,12 @@
 #pragma once
 
-#include <hex/impl/imhex_check.pat>
+import hex.impl.imhex_check;
 
 /*!
     Core intrinsic functions to interact with the ImHex Hex Editor
 */
 
-namespace hex::core {
+namespace auto hex::core {
 
     /**
         A type representing a selection in the hex editor

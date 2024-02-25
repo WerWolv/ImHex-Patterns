@@ -3,8 +3,8 @@
 
 #pragma eval_depth 0x10000
 
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.mem;
+import std.sys;
 
 enum Type : u8 {
 	Set = 0x00,

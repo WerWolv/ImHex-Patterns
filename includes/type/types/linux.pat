@@ -5,7 +5,7 @@
 */
 
 // Explicitly don't add these types to the `type` namespace for usability
-// namespace type {
+// namespace auto type {
 
     using le16  = le u16;
     using be16  = be u16;

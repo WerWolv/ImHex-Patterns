@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include <std/mem.pat>
-#include <std/io.pat>
+import std.mem;
+import std.io;
 
 /**
  * @brief The glTF magic section.

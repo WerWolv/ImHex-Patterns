@@ -3,9 +3,9 @@
 
 #pragma MIME application/x-archive
 
-#include <std/string.pat>
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.string;
+import std.mem;
+import std.sys;
 
 struct ARFile {
 	char file_name[16];

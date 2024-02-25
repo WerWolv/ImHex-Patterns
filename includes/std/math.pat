@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/mem.pat>
+import std.mem;
 
 /*!
 	Library containing more advanced mathematical operations.
 */
 
-namespace std::math {
+namespace auto std::math {
 
 	/**
 		Compares the values `a` and `b` with each other and returns the smaller of the two

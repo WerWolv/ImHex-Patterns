@@ -4,10 +4,10 @@
 
 #pragma MIME application/zstd
 
-#include <std/core.pat>
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.core;
+import std.io;
+import std.mem;
+import std.sys;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 

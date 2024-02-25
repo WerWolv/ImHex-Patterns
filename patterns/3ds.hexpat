@@ -1,8 +1,8 @@
 #pragma author WerWolv
 #pragma description Autodesk 3DS Max Model file
 
-#include <std/io.pat>
-#include <type/base.pat>
+import std.io;
+import type.base;
 
 #pragma MIME image/x-3ds
 

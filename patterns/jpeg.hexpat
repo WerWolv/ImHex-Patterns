@@ -1,9 +1,9 @@
 #pragma author WerWolv
 #pragma description JPEG Image Format
 
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <type/magic.pat>
+import std.io;
+import std.mem;
+import type.magic;
 #pragma endian big
 
 #pragma MIME image/jpeg

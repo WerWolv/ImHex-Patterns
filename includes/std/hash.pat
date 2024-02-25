@@ -4,7 +4,7 @@
     The hash library contains various data hash functions
 */
 
-namespace std::hash {
+namespace auto std::hash {
 
     /**
         Calculates the CRC32 hash of the bytes inside of a given pattern

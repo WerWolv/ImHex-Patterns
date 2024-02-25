@@ -1,14 +1,14 @@
 #pragma once
 
-#include <hex/impl/imhex_check.pat>
+import hex.impl.imhex_check;
 
-#include <std/mem.pat>
+import std.mem;
 
 /*!
     Library to allow decoding of more complex values
 */
 
-namespace hex::dec {
+namespace auto hex::dec {
 
     /**
         Demangles a mangled name into a human readable name

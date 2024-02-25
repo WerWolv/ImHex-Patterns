@@ -1,7 +1,7 @@
 #pragma description Python bytecode files
 
-#include <type/time.pat>
-#include <std/mem.pat>
+import type.time;
+import std.mem;
 
 #define FLAG_REF 0x80
 #define TYPE_NULL               '0'

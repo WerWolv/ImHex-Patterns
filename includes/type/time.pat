@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/io.pat>
-#include <std/time.pat>
+import std.io;
+import std.time;
 
 /*!
     Types used to decode various different time formats
 */
 
-namespace type {
+namespace auto type {
 
     /**
         A 32 bit Unix time value

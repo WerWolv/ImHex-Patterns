@@ -2,7 +2,7 @@
 
 #pragma MIME audio/mpeg
 
-#include <std/mem.pat>
+import std.mem;
 
 namespace v1 {
 

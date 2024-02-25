@@ -3,8 +3,8 @@
 
  #pragma endian big
 
-#include <std/sys.pat>
-#include <std/io.pat>
+import std.sys;
+import std.io;
 
 struct MAC {
 	u8 octets[6];

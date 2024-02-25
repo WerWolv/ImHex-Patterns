@@ -5,7 +5,7 @@
     of ASCII characters.
 */
 
-namespace std::ctype {
+namespace auto std::ctype {
 
     /**
         Checks if the given character `c` is a digit between '0' and '9'

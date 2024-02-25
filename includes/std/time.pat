@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
 
 /*!
 	Library to handle time and date related operations.
 */
 
-namespace std::time {
+namespace auto std::time {
 
 	/**
 		A structured representation of a time and date.

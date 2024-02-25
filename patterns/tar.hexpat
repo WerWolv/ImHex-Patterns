@@ -5,10 +5,10 @@
 
 #pragma endian little
 
-#include <std/string.pat>
-#include <std/time.pat>
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.string;
+import std.time;
+import std.mem;
+import std.sys;
 
 
 #define GNU_HEADER "ustar "

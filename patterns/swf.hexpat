@@ -1,7 +1,7 @@
 #pragma author saturnaliam
 #pragma description SWF file header
 #pragma endian little
-#include <type/magic.pat>
+import type.magic;
 
 
 // RECTs are more complicated, but for the header,

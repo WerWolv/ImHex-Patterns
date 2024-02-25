@@ -2,7 +2,7 @@
 
 #pragma endian little
 
-#include <std/io.pat>
+import std.io;
 
 enum VolumeDescriptorTypes : u8 {
   BootRecord,

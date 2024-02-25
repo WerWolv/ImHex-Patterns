@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/io.pat>
-#include <std/string.pat>
+import std.io;
+import std.string;
 
 /*!
     Types used to decode IP addresses
 */
 
-namespace type {
+namespace auto type {
 
     /**
         A 4 byte IPv4 Address as described in RFC 791

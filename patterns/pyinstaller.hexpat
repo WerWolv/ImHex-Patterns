@@ -2,7 +2,7 @@
 
 #pragma endian big
 
-#include <std/mem.pat>
+import std.mem;
 
 // Reference: 
 //     https://pyinstaller.org/en/stable/advanced-topics.html

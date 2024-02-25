@@ -3,8 +3,8 @@
 
 #pragma endian little
 
-#include <std/sys.pat>
-#include <std/io.pat>
+import std.sys;
+import std.io;
 
 struct ApplicationTitle {
 	char name[0x200];

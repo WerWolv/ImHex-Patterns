@@ -1,14 +1,14 @@
 #pragma once
 
-#include <std/io.pat>
-#include <std/math.pat>
-#include <std/mem.pat>
+import std.io;
+import std.math;
+import std.mem;
 
 /*!
     Type representing a 16 bit half precision floating point number
 */
 
-namespace type {
+namespace auto type {
     
     /**
         Type representing a 16 bit half precision floating point number

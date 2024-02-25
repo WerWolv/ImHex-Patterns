@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
 
 /*!
     Type to decode a BCD (Binary Coded Decimal) number
 */
 
-namespace type {
+namespace auto type {
 
     /**
         Decodes a BCD value where one byte represents a single digit

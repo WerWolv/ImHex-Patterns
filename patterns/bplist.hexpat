@@ -1,7 +1,7 @@
-#include <std/math.pat>
-#include <std/core.pat>
-#include <type/magic.pat>
-#include <type/time.pat>
+import std.math;
+import std.core;
+import type.magic;
+import type.time;
 
 using CFBinaryPlistObject;
 

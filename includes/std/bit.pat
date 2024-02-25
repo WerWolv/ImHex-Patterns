@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/limits.pat>
+import std.limits;
 
 /*!
 	This library contains various helper functions for common bit operations.
 */
 
-namespace std::bit {
+namespace auto std::bit {
 
 	/**
 		Calculates the number of 1 bits in a given number

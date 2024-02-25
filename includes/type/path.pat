@@ -1,10 +1,10 @@
-#include <std/mem.pat>
+import std.mem;
 
 /*!
 	Types dealing with various kinds of resource paths
 */
 
-namespace type {
+namespace auto type {
 
 	/**
 		Type representing a single path segment. Use the `Path` type instead of using this on its own

@@ -4,10 +4,10 @@
 
 #pragma eval_depth 100
 
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
-#include <std/core.pat>
+import std.io;
+import std.mem;
+import std.string;
+import std.core;
 
 char Magic[2] @ 0 [[hidden]];
 match (Magic) {

@@ -1,6 +1,6 @@
 #pragma description SPIR-V header and instructions
 
-#include <std/mem.pat>
+import std.mem;
 
 enum GeneratorID : u16 {
     Khronos = 0,

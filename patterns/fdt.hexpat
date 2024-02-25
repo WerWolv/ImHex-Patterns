@@ -3,12 +3,12 @@
 
 #pragma endian big
 
-#include <std/sys.pat>
-#include <std/io.pat>
-#include <std/core.pat>
+import std.sys;
+import std.io;
+import std.core;
 
-#include <type/magic.pat>
-#include <type/size.pat>
+import type.magic;
+import type.size;
 
 // These are used in order for the children to be able to find strings
 u64 fdt_addr;

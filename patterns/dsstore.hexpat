@@ -2,7 +2,7 @@
 
 // Apple macOS .DS_Store format
 #pragma endian big
-#include <std/io.pat>
+import std.io;
 
 struct RecordEntry {
   u32 length;

@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/mem.pat>
+import std.mem;
 
 /*!
     The core library contains intrinsics and "compiler magic" functions that
     get extra help from the runtime to fulfill their purpose.
 */
 
-namespace std::core {
+namespace auto std::core {
 
     /**
         The layout order of each field after byte-endianness has been handled.

@@ -1,13 +1,13 @@
-#include <std/string.pat>
-#include <std/sys.pat>
-#include <std/io.pat>
-#include <std/ctype.pat>
+import std.string;
+import std.sys;
+import std.io;
+import std.ctype;
 
 /*!
     Types used to parse and enforce specific magic numbers
 */
 
-namespace type
+namespace auto type
 {
     fn fm(ref auto value)
     {

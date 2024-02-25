@@ -4,8 +4,8 @@
 #pragma endian big
 
 
-#include <std/mem.pat>
-#include <type/magic.pat>
+import std.mem;
+import type.magic;
 
 
 struct RAS{

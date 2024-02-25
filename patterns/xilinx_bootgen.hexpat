@@ -4,11 +4,11 @@
 
 // Spec: Xilinx UG1283 https://docs.xilinx.com/r/en-US/ug1283-bootgen-user-guide/Zynq-UltraScale-MPSoC-Boot-and-Configuration
 
-#include <type/magic.pat>
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/array.pat>
-#include <std/ptr.pat>
+import type.magic;
+import std.io;
+import std.mem;
+import std.array;
+import std.ptr;
 
 fn format_u32_string(auto arr) {
     str result = "";

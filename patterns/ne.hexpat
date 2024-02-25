@@ -1,6 +1,6 @@
 #pragma description NE header and Standard NE fields
 
-#include <std/mem.pat>
+import std.mem;
 
 struct DOSHeader {
     char signature[2];

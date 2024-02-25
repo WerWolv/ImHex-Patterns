@@ -3,12 +3,12 @@
 #pragma MIME application/dicom
 #pragma endian little
 
-#include <std/core.pat>
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
-#include <std/sys.pat>
-#include <type/magic.pat>
+import std.core;
+import std.io;
+import std.mem;
+import std.string;
+import std.sys;
+import type.magic;
 
 u32 UNDEFINED_LENGTH = 0xffffffff;
 

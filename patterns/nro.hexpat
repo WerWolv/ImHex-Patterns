@@ -1,8 +1,8 @@
 #pragma author WerWolv
 #pragma description Nintendo Switch NRO files
 
-#include <std/io.pat>
-#include <std/sys.pat>
+import std.io;
+import std.sys;
 
 struct MOD0 {
 	char magic[4];

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
 
 /*!
 	Types to deal with UUIDs (Universally Unique Identifiers) / GUIDs (Globally Unique Identifiers) as described in RFC 4122
 */
 
-namespace type {
+namespace auto type {
 
 	/**
 		Type representing a GUID value

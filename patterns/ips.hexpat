@@ -3,8 +3,8 @@
 
 #pragma endian big
 
-#include <std/mem.pat>
-#include <std/string.pat>
+import std.mem;
+import std.string;
 
 struct Hunk {
 	u24 offset;

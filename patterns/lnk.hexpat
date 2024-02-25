@@ -3,9 +3,9 @@
 
 #pragma MIME application/x-ms-shortcut
 
-#include <std/core.pat>
-#include <type/guid.pat>
-#include <type/size.pat>
+import std.core;
+import type.guid;
+import type.size;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 

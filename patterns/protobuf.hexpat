@@ -1,10 +1,10 @@
 #pragma author WerWolv
 #pragma description Google Protobuf encoding 
 
-#include <std/core.pat>
-#include <std/mem.pat>
+import std.core;
+import std.mem;
 
-#include <type/leb128.pat>
+import type.leb128;
 
 struct ZigZag32 {
 	u32 value;

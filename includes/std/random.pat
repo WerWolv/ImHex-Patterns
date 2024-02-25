@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/limits.pat>
+import std.limits;
 
 /*!
   Library to generate random numbers. Supports various different distribution types.
 */
 
-namespace std::random {
+namespace auto std::random {
   
     /**
         Represents the type of distribution to use to generate a random number

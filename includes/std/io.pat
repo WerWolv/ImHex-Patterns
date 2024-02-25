@@ -4,7 +4,7 @@
     The IO library allows formatting strings and outputting text to the console
 */
 
-namespace std {
+namespace auto std {
 
     /**
         Formats the given arguments using the format string and prints the result to the console

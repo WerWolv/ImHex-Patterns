@@ -7,7 +7,7 @@
 	**These functions are considered dangerous and require the user to manually permit them**
 */
 
-namespace std::file {
+namespace auto std::file {
 
 	/**
         A handle representing a file that has been opened

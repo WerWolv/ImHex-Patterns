@@ -4,7 +4,7 @@
 	Library for doing arithmetic with fixed point numbers and converting them from/to floating point numbers.
 */
 
-namespace std::fxpt {
+namespace auto std::fxpt {
 
 	/**
 		A fixed point value
