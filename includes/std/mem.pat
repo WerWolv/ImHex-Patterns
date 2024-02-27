@@ -1,3 +1,5 @@
+#pragma once
+
 /*!
     Library for doing raw memory accesses and other low-level operations.
 */
