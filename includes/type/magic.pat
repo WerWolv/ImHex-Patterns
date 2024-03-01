@@ -37,7 +37,7 @@ namespace auto type
     {
         fn format_magic(ref auto magic)
         {
-            return fm(magic.value);
+            return type::fm(magic.value);
         };
     }
 }
