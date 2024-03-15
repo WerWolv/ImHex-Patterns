@@ -1,8 +1,6 @@
 #pragma author ogmini https://github.com/ogmini
 #pragma description Windows 11 Notepad Window State file %localappdata%\Packages\Microsoft.WindowsNotepad_8wekyb3d8bbwe\LocalState\WindowState
 
-#pragma MIME application/octet-stream
-
 #include <std/string.pat>
 #include <type/leb128.pat>
 #include <std/time.pat>
@@ -39,7 +37,9 @@ struct WindowState
     
     u8 Delim2[1];
     
-    int crc32;
+    int CRC32;
+
+    u8 SlackSpace[while(!std::mem::eof())];
 };
 
 
