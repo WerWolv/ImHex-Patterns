@@ -41,7 +41,7 @@ struct posix_header {
   char name[100] [[name("file name")]];
   char mode[8] [[name("file mode")]];
   char uid[8] [[name("user id of the file")]];
-  char gid[8] [[name("group if of the file")]];
+  char gid[8] [[name("group id of the file")]];
   char size[12] [[name("size of the file in octal")]];
   char mtime[12] [[name("modified time of file in epoch time")]];
   char chksum[8] [[name("checksum")]];
