@@ -3,6 +3,7 @@
 
 import type.types.win32;
 import type.guid;
+import std.mem;
 
 enum FILESYSTEM : u64 {
 	ReFS = 0x53466552
@@ -25,27 +26,27 @@ enum BLOCK : u32 {
 };
 
 struct META_HEADERS {
-	BLOCK Signature;
-	u32 unk;
+	BLOCK Signature[[comment("Block Signature"), name("BlockSignature")]];
+	u32 unk[[comment("Fixed Value 0x02"), name("Unknown")]];
 	$ = $ + (0x8 + 0x10);
-	u64 LCN1;
-	u64 LCN2;
-	u64 LCN3;
-	u64 LCN4;
+	u64 LCN1[[comment("MetaPage 1st LogicalClusterNumber"), name("FirstLCN")]];
+	u64 LCN2[[comment("MetaPage 2nd LogicalClusterNumber"), name("SecondLCN")]];
+	u64 LCN3[[comment("MetaPage 3rd LogicalClusterNumber"), name("ThirdLCN")]];
+	u64 LCN4[[comment("MetaPage 4th LogicalClusterNumber"), name("FourthLCN")]];
 	u64 _Objid;
 	u64 ObjId;
 
 };
 
 struct ATTRIBUTE {
-	u64 LCN1;
-	u64 LCN2;
-	u64 LCN3;
-	u64 LCN4;
-	u32 Unk1;
-	u32 Unk2;
-	u64 checksum;
-	BYTE ZeroPadding[56];
+	u64 LCN1[[name("FirstLCN")]];
+	u64 LCN2[[name("SecondLCN")]];
+	u64 LCN3[[name("ThirdLCN")]];
+	u64 LCN4[[name("FourthLCN")]];
+	u32 Unk1[[comment("UnknownField"), name("Unknown1")]];
+	u32 Unk2[[comment("UnknownField"), name("Unknown2")]];
+	u64 checksum[[name("CheckSum")]];
+	BYTE ZeroPadding[56][[name("Padding")]];
 };
 
 u32 keeptrack = 0;
@@ -99,58 +100,63 @@ struct EntryArray {
 };
 
 struct CHECKPOINT {
-	META_HEADERS CheckPointMetaHeader;
+	META_HEADERS CheckPointMetaHeader[[name("FSPageMetaHeader")]];
 	$ += (0x04);
 	CheckPoint_REFS_Version ReFSVersion;
 	u32 EntryOffset;
-	u32 EntrySz;
-	u64 blockno;
+	u32 EntrySz[[name("EntrySize")]];
+	u64 blockno[[name("BlockNumber")]];
 	$ += (0x28);
 	u32 NumOfEntries;
 	EntryArray AttributeEntries[NumOfEntries];
 	$ += (0x08);
-	u64 LCN1dup;
-	u64 LCN2dup;
-	u64 LCN3dup;
-	u64 LCN4dup;
+	u64 LCN1dup[[comment("Duplicate LCN of MetaPage of this block"), name("DupFirstLCN")]];
+	u64 LCN2dup[[comment("Duplicate LCN of MetaPage of this block"), name("DupSecondLCN")]];
+	u64 LCN3dup[[comment("Duplicate LCN of MetaPage of this block"), name("DupThirdLCN")]];
+	u64 LCN4dup[[comment("Duplicate LCN of MetaPage of this block"), name("DupFourthLCN")]];;
 };
-
 
 struct SUPERBLOCK {
-	META_HEADERS SuperBlockMetaHeader;
+	META_HEADERS SuperBlockMetaHeader[[name("FSPageMetaHeader")]];
 	type::GUID GUID;
 	$ = $ + (0x10 * 0x06);
-	u64 primarychekpoint;
-	u64 secondaychekpoint;
-	u64 LCN1dup;
-	u64 LCN2dup;
-	u64 LCN3dup;
-	u64 LCN4dup;
+	u64 primarychekpoint[[name("PrimaryCheckPoint")]];
+	u64 secondaychekpoint[[name("SecondaryCheckPoint")]];
+	u64 LCN1dup[[name("DupFirstLCN")]];
+	u64 LCN2dup[[name("DupSecondtLCN")]];
+	u64 LCN3dup[[name("DupThirdLCN")]];
+	u64 LCN4dup[[name("DupFourthLCN")]];
 };
 
-struct REFS_HEADER {
-	BYTE jmpInstruction[3];
-	FILESYSTEM FileSystem;
+struct VOLUME_BOOT_RECORD {
+	BYTE jmpInstruction[3] [[comment("Jump Instruction"), name("JumpInstruction")]];;
+	FILESYSTEM FileSystem[[comment("FileSystemName"), name("FileSystem")]];
 	BYTE UnKnown[5];
-	char Identifier[4];
-	u16 Length;
-	u16 Cheksum;
+	char Identifier[4][[comment("File System Recognition Structure, allows OS to recognise the structure"), name("FSRSIdentifier")]];
+	u16 Length[[comment("Size of VBR"), name("Length") ]];
+	u16 Checksum[[comment("Computed FileSystem Information Checksum"), name("CheckSum")]];
 	u64 TotalNoOfSectors;
-	u32 BytesPerSec;
-	u32 SectorPerCluster;
+	u32 BytesPerSec[[comment("Bytes Per Sector"), name("BytesPerSector")]];
+	u32 SectorPerCluster[[comment("Sector Per Cluster"), name("SectorPerCluster")]];
 	ReFS_Version ReFSVersion;
-	BYTE UnknownBuff[0x0e];
-	u64 SerialNo;
+	BYTE UnknownBuff[0x0e][[name("Unknown")]];
+	u64 SerialNo[[name("SerialNumber")]];
 
 };
 struct REFS_FILE_SYSTEM {
-	REFS_HEADER ReFSHeader @ 0x00;
+	u64 checkVal = std::mem::read_unsigned($+3, 8);
+	$ = 0;
+	if(checkVal == FILESYSTEM::ReFS){
+		VOLUME_BOOT_RECORD vbr @ 0x00[[name("VolumeBootRecord")]];
+		SUPERBLOCK SuperBlock @ (0x1e * 0x1000);
 
-	SUPERBLOCK SuperBlock @ (0x1e * 0x1000);
-
-	CHECKPOINT PrimaryCheckPoint @(SuperBlock.primarychekpoint * 0x1000);
-	keeptrack = 0;
-	CHECKPOINT SecondaryCheckPoint @(SuperBlock.secondaychekpoint * 0x1000);
+		CHECKPOINT PrimaryCheckPoint @(SuperBlock.primarychekpoint * 0x1000);
+		keeptrack = 0;
+		CHECKPOINT SecondaryCheckPoint @(SuperBlock.secondaychekpoint * 0x1000);
+	}
+	else{
+		break;
+	}
 };
 
 REFS_FILE_SYSTEM ReFSFileSystem @0x00;
