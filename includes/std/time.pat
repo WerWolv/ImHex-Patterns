@@ -113,7 +113,7 @@ namespace auto std::time {
 
 	/**
 		Queries the current time in the specified time zone.
-		@param time_zone The time zone to query.
+		@param [time_zone] The time zone to query. Defaults to local.
 		@return The current time in the specified time zone.
 	*/
 	fn now(TimeZone time_zone = TimeZone::Local) {
@@ -167,7 +167,7 @@ namespace auto std::time {
 	/**
 		Formats a time according to the specified format string.
 		@param time The time to format.
-		@param format_string The format string to use.
+		@param [format_string] The format string to use. Defaults to "%c".
 		@return The formatted time.
 	*/
 	fn format(Time time, str format_string = "%c") {
@@ -180,7 +180,7 @@ namespace auto std::time {
 	/**
 		Formats a DOS date according to the specified format string.
 		@param date The DOS date to format.
-		@param format_string The format string to use.
+		@param [format_string] The format string to use. Defaults to "{}/{}/{}".
 		@return The formatted DOS date.
 	*/
 	fn format_dos_date(DOSDate date, str format_string = "{}/{}/{}") {
@@ -190,7 +190,7 @@ namespace auto std::time {
 	/**
 		Formats a DOS time according to the specified format string.
 		@param time The DOS time to format.
-		@param format_string The format string to use.
+		@param [format_string] The format string to use. Defaults to "{:02}:{:02}:{:02}".
 		@return The formatted DOS time.
 	*/
 	fn format_dos_time(DOSTime time, str format_string = "{:02}:{:02}:{:02}") {
