@@ -328,9 +328,9 @@ namespace auto std::math {
 		@param start Start address
 		@param end End address
 		@param valueSize Size of each value in bytes
-		@param section Section to use
-		@param operation Operation to use
-		@param endian Endianness to use
+		@param [section] Section to use
+		@param [operation] Operation to use. Defaults to addition
+		@param [endian] Endianness to use. Defaults to native
 		@return Sum of all values in the specified memory range
 	*/
 	fn accumulate(u128 start, u128 end, u128 valueSize, std::mem::Section section = 0, AccumulateOperation operation = AccumulateOperation::Add, std::mem::Endian endian = std::mem::Endian::Native) {

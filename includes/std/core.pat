@@ -38,12 +38,20 @@ namespace auto std::core {
     };
 
     /**
-        Returns the first parameter of the attribute of a pattern if it has one
+        Returns the nth parameter of the attribute of a pattern if it has one
         @param pattern The pattern to check
         @param attribute The attribute's name to query
+        @param [index] The parameter index of the attribute to return. Defaults to 0
+    */
+    fn get_attribute_argument(ref auto pattern, str attribute, u32 index = 0) {
+        return builtin::std::core::get_attribute_argument(pattern, attribute, index);
+    };
+
+    /**
+        @warning Removed in 1.27.0
     */
     fn get_attribute_value(ref auto pattern, str attribute) {
-        return builtin::std::core::get_attribute_value(pattern, attribute);
+        builtin::std::error("`std::core::get_attribute_value(pattern, attribute)` has been removed.\nUse `std::core::get_attribute_argument(pattern, attribute, [index])` instead.");
     };
 
 

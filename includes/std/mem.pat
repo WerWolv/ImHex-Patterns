@@ -104,7 +104,7 @@ namespace auto std::mem {
         Reads a unsigned value from the memory
         @param address The address to read from
         @param size The size of the value to read
-        @param endian The endianess of the value to read
+        @param [endian] The endianess of the value to read. Defaults to native
         @return The value read
     */
     fn read_unsigned(u128 address, u8 size, Endian endian = Endian::Native) {
@@ -115,7 +115,7 @@ namespace auto std::mem {
         Reads a signed value from the memory
         @param address The address to read from
         @param size The size of the value to read
-        @param endian The endianess of the value to read
+        @param [endian] The endianess of the value to read. Defaults to native
         @return The value read
     */
     fn read_signed(u128 address, u8 size, Endian endian = Endian::Native) {

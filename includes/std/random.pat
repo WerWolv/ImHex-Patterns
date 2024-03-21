@@ -61,8 +61,8 @@ namespace auto std::random {
         > - `Poisson(mean) -> i128`
 
         @param distribution Distribution to use
-        @param param1 This parameter depends on the type of distribution used.
-        @param param2 This parameter depends on the type of distribution used.
+        @param [param1] This parameter depends on the type of distribution used. Defaults to 0
+        @param [param2] This parameter depends on the type of distribution used. Defaults to 0
     */
     fn generate_using(Distribution distribution, auto param1 = 0, auto param2 = 0) {
         return builtin::std::random::generate(u32(distribution), param1, param2);
@@ -71,8 +71,8 @@ namespace auto std::random {
     
     /**
         Generates a uniformly distributed random number between `min` and `max`
-        @param min Minimum number
-        @param max Maximum number
+        @param [min] Minimum number. Defaults to 0
+        @param [max] Maximum number. Defaults to `u64_max`
     */
     fn generate(u64 min = std::limits::u64_min(), u64 max = std::limits::u64_max()) {
         return std::random::generate_using(Distribution::Uniform, min, max);
