@@ -172,9 +172,6 @@ struct gguf_tensor_info_t {
     u64 offset;
 };
 
-struct gguf_tensor_data_t {
-};
-
 struct gguf_file_t {
     // The header of the file.
     gguf_header_t header;
