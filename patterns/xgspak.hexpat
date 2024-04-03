@@ -142,7 +142,7 @@ struct XGSPakContentMeta
 };
 
 
-XGSPakHeader Head @ 0x0;
+XGSPakHeader Head @ $;
 //u32 offToStringTable_old = ((0x20*Head.folders)+(0x20*Head.files))+sizeof (Head); //Finicky but it works
 
 fn offToStringTable(u128 offset) {
