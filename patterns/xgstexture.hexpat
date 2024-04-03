@@ -108,5 +108,5 @@ struct XGSTextureHeader
     u32 dataSize;
 };
 
-XGSTextureHeader Head @ 0x0;
-u8 Texture[Head.dataSize] @ Head.headerSize+4;
+XGSTextureHeader Head @ $;
+u8 Texture[Head.dataSize] @ $;
