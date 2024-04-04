@@ -1,3 +1,4 @@
+import type.magic;
 //By LolHacksRule
 
 enum XGSPlatform : u8
@@ -88,7 +89,7 @@ bitfield XGSTextureFlags
 
 struct XGSTextureHeader
 {
-    char magic[4]; //XGST
+    type::Magic"XGST"> magic;
     u8 dataOffset;
     XGSPlatform compilationPlatform; //Definitely platform, this has no harm when modifying (except in Edge of Perception) but does help with knowing platform specific compressions, usually
     u16 headerSize; //?
