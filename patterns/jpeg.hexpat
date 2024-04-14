@@ -41,7 +41,8 @@ enum Marker : u8 {
     APP13   = 0xED,
     APP14   = 0xEE,
     APP15   = 0xEF,
-    COM     = 0xFE
+    COM     = 0xFE,
+    UNKNOWN = 0X00
 };
 
 enum DensityUnit : u8 {
@@ -122,29 +123,34 @@ struct SOS {
     u8 endSpectral;
     u8 apprBitPos;
     
-    u8 image_data[std::mem::size() - $ - 2] [[sealed]];
+    u8 image_data[std::mem::find_sequence(0, 0xFF, 0xD9) - $] [[sealed]];
 };
 
 struct Segment {
-    type::Magic<"\xff"> magic;
-    Marker marker;
-    
-    if (marker == Marker::SOI || marker == Marker::EOI) {
-        
+    if (std::mem::read_unsigned($, 1) != 0xFF) {
+        Marker marker = Marker::UNKNOWN;
+        u8 data[std::mem::size() - $ - 2];
     } else {
-        u16 length;
-        if (marker == Marker::APP0) {
-            APP0 data;
-        } else if (marker == Marker::APP14) {
-            APP14 data;
-        } else if (marker == Marker::COM) {
-            char data[length - sizeof(length)];
-        } else if (marker == Marker::SOF0) {
-            SOF0 data;
-        } else if (marker == Marker::SOS) {
-            SOS data;
+        u8 magic;
+        Marker marker;
+        
+        if (marker == Marker::SOI || marker == Marker::EOI) {
+            
         } else {
-            u8 data[length - sizeof(length)] [[sealed]];
+            u16 length;
+            if (marker == Marker::APP0) {
+                APP0 data;
+            } else if (marker == Marker::APP14) {
+                APP14 data;
+            } else if (marker == Marker::COM) {
+                char data[length - sizeof(length)];
+            } else if (marker == Marker::SOF0) {
+                SOF0 data;
+            } else if (marker == Marker::SOS) {
+                SOS data;
+            } else {
+                u8 data[length - sizeof(length)] [[sealed]];
+            }
         }
     }
 } [[format_read("segment_read")]];
