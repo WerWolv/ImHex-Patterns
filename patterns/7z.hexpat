@@ -1,4 +1,5 @@
 #pragma description 7z File Format
+#pragma MIME application/x-7z-compressed
 
 import std.io; 
 import std.mem; 
