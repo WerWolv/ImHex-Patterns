@@ -6,8 +6,8 @@
 #pragma endian big
 #pragma MIME application/x-stuffit
 
-#include <std/io.pat>
-#include <std/time.pat>
+import std.io;
+import std.time;
 
 namespace v5 {
 

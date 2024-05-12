@@ -1,10 +1,10 @@
 #pragma author WerWolv
-#pragma description Nintendo Switch XCI cardridge ROM
+#pragma description Nintendo Switch XCI cartridge ROM
 
-#include <std/core.pat>
+import std.core;
 
-#include <type/magic.pat>
-#include <type/size.pat>
+import type.magic;
+import type.size;
 
 #define PAGE_SIZE 0x200
 

@@ -13,13 +13,13 @@
 #define EXTENSION_INTRODUCER_MAGIC 0x21
 #define GIF_TRAILER_MAGIC 0x3B
 
-#include <std/io.pat>
-#include <std/core.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
-#include <std/math.pat>
+import std.io;
+import std.core;
+import std.mem;
+import std.string;
+import std.math;
 
-#include <type/magic.pat>
+import type.magic;
 
 bitfield GCT_Flags {
     size : 3 [[comment("physical size = 2^(flags.size + 1)")]];

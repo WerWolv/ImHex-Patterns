@@ -1,6 +1,6 @@
 #pragma description Dalvik EXecutable Format
 
-#include <type/leb128.pat>
+import type.leb128;
 
 struct header_item {
     u8 magic[8];

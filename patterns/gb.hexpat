@@ -3,9 +3,9 @@
 
 #pragma MIME application/x-gameboy-rom
 
-#include <type/size.pat>
-#include <std/string.pat>
-#include <std/mem.pat>
+import type.size;
+import std.string;
+import std.mem;
 
 bool uppercaseROMFeatures in;
 bool brandedROMFeatures in;

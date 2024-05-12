@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
 
 /*!
     Basic helper functions
 */
 
-namespace std {
+namespace auto std {
 
     /**
         Asserts that a given value is true. If it's not, abort evaluation and print the given message to the console

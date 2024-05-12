@@ -1,12 +1,12 @@
 #pragma once
 
-#include <hex/impl/imhex_check.pat>
+import hex.impl.imhex_check;
 
 /*!
     Library to do HTTP requests
 */
 
-namespace hex::http {
+namespace auto hex::http {
 
     /**
         Performs a HTTP GET request to the given URL and returns the response body

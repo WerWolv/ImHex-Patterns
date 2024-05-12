@@ -8,7 +8,7 @@
 */
 #pragma endian big
 
-#include <std/mem.pat>
+import std.mem;
 
 enum FileType: u16 {
 	Data = 0x3030,

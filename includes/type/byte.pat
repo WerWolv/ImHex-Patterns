@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
 
 /*!
     Types to display single bytes using various different representations
 */
 
-namespace type {
+namespace auto type {
     
     /**
         Type visualizing the value of each individual bit

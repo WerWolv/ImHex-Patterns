@@ -2,8 +2,8 @@
 
 #pragma endian big
 
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.mem;
+import std.sys;
 
 // Ubiquiti Firmware related structs
 // More information here: https://dl.ubnt.com/firmwares/XN-fw/v5.6.3/GPL.UBNT.v5.6.3.tar.bz2

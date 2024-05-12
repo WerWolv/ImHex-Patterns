@@ -1,6 +1,6 @@
 #pragma description MIDI header, event fields provided
 
-#include <std/core.pat>
+import std.core;
 
 #pragma MIME audio/midi
 #pragma endian big

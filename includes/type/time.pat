@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/io.pat>
-#include <std/time.pat>
+import std.io;
+import std.time;
 
 /*!
     Types used to decode various different time formats
 */
 
-namespace type {
+namespace auto type {
 
     /**
         A 32 bit Unix time value
@@ -34,6 +34,11 @@ namespace type {
     */
     using DOSTime = u16 [[format("type::impl::format_dostime")]];
 
+    /**
+        A 64bit FILETIME value
+    */
+    using FILETIME = u64 [[format("type::impl::format_filetime_as_unix")]];
+
     namespace impl {
 
         fn format_time_t(u128 value) {
@@ -46,6 +51,10 @@ namespace type {
 
         fn format_dostime(u16 value) {
             return std::time::format_dos_time(std::time::to_dos_time(value));
+        };
+
+        fn format_filetime_as_unix(u64 value) {
+            return std::time::filetime_to_unix(value);
         };
 
     }

@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/io.pat>
-#include <std/mem.pat>
+import std.io;
+import std.mem;
 
 /*!
 	Types used to decode Little Endian Base 128 numbers used to store large numbers as space efficiently as possible
 */
 
-namespace type {
+namespace auto type {
 	
 	/**
 		Base LEB128 type. Use `uLEB128` and `sLEB128` instead.

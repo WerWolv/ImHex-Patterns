@@ -1,10 +1,10 @@
 #pragma author WerWolv
 #pragma description Nintendo Switch PFS0 archive (NSP files)
 
-#include <type/magic.pat>
-#include <type/size.pat>
+import type.magic;
+import type.size;
 
-#include <std/core.pat>
+import std.core;
 
 struct FileEntry {
     u64 dataOffset;

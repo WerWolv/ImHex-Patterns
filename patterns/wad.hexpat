@@ -1,8 +1,8 @@
 #pragma author WerWolv
 #pragma description DOOM WAD Archive
 
-#include <type/magic.pat>
-#include <type/size.pat>
+import type.magic;
+import type.size;
 
 enum WADType : char {
     Internal = 'I',

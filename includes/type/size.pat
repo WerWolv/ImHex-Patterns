@@ -1,10 +1,10 @@
-#include <std/io.pat>
+import std.io;
 
 /*!
     Types used to pretty print size values
 */
 
-namespace type {
+namespace auto type {
 
     /**
         A generic size type which displays its value in Bytes (or kiB, MiB, GiB, TiB, PiB, EiB if larger)

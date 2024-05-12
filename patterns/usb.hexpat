@@ -1,7 +1,7 @@
-#include <std/core.pat>
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
+import std.core;
+import std.io;
+import std.mem;
+import std.string;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 
@@ -138,12 +138,12 @@ struct DeviceDescriptor {
     if (bDeviceClass == InterfaceClass::Hub) {
         HubInterfaceSubClass bDeviceSubClass;
         if (bDeviceSubClass == HubInterfaceSubClass::Hub)
-            HubInterfaceProtocol bDeviceSubClass;
+            HubInterfaceProtocol bDeviceSubClassProtocol;
         else
-            u8 bDeviceSubClass;
+            u8 bDeviceSubClassProtocol;
     } else if (bDeviceClass == InterfaceClass::AudioVideoDevice) {
         AudioVideoDeviceSubClass bDeviceSubClass;
-        u8 bDeviceSubClass;
+        u8 bDeviceSubClassProtocol;
     } else {
         u8 bDeviceSubClass;
     }

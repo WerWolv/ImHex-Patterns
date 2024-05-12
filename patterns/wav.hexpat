@@ -3,7 +3,7 @@
 #pragma MIME audio/x-wav
 #pragma MIME audio/wav
 
-#include <std/mem.pat>
+import std.mem;
 
 struct RiffHeader {
   char ckID[4] [[comment("Container Signature"), name("RIFF Header Signature")]];

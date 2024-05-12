@@ -1,12 +1,12 @@
-#include <std/io.pat>
-#include <std/string.pat>
-#include <std/mem.pat>
+import std.io;
+import std.string;
+import std.mem;
 
 /*!
     Type representing a Base64 encoded string
 */
 
-namespace type {
+namespace auto type {
 
     /**
         Type representing a Base64 encoded string

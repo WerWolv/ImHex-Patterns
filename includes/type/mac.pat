@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
 
 /*!
 	Types used to decode MAC Addresses
 */
 
-namespace type {
+namespace auto type {
 
 	/**
 		A MAC Address as used in the Internet Protocol

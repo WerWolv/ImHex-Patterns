@@ -6,9 +6,9 @@
 #pragma MIME model/x.stl-ascii
 #pragma MIME application/sla
 
-#include <std/sys.pat>
-#include <std/mem.pat>
-#include <std/core.pat>
+import std.sys;
+import std.mem;
+import std.core;
 
 struct Vector3f {
     float x, y, z;

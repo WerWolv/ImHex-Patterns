@@ -3,12 +3,12 @@
 
 #pragma MIME audio/x-xbox-executable
 
-#include <type/magic.pat>
-#include <type/size.pat>
-#include <type/time.pat>
+import type.magic;
+import type.size;
+import type.time;
 
-#include <std/io.pat>
-#include <std/mem.pat>
+import std.io;
+import std.mem;
 
 
 bitfield AllowedMedia {

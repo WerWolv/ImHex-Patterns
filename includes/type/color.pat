@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/io.pat>
-#include <std/core.pat>
+import std.io;
+import std.core;
 
 /*!
     Types representing RGB or RGBA colors. The decoded color will be displayed in their color field
 */
 
-namespace type {
+namespace auto type {
 
     /**
         Type representing a generic RGBA color with a variable number of bits for each color

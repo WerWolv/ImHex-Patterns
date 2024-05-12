@@ -2,8 +2,9 @@
 
 #pragma MIME application/zip
 
-#include <std/mem.pat>
-#include <std/math.pat>
+import std.mem;
+import std.math;
+import type.time;
 
 struct EndOfCentralDirectory {
     u32 headerSignature [[comment("EoCD magic"), name("EoCD PK\\5\\6")]];
@@ -16,6 +17,78 @@ struct EndOfCentralDirectory {
     u16 commentLength [[color("00000000")]];
     char coment[commentLength] [[name("Comment")]];
 };
+
+
+namespace extra {
+    
+    bitfield Flags {
+          bool modification_time_set : 1;
+          bool access_time_set : 1; 
+          bool creation_time_set : 1;
+          reserved: 5;  //reserved for additional timestamps; not set
+    };
+    
+    struct X5455_ExtendedTimestamp {    
+        Flags Flags;
+        if (Flags.modification_time_set){
+            u32 ModTime;
+        }
+        if (Flags.access_time_set){
+            u32 AcTime;
+        }
+        if (Flags.creation_time_set){
+            u32 CrTime;
+        }
+    };
+    
+    struct X000A_NTFS {
+        u32 reserved;
+        u16 tag;
+        u16 TSize;
+        //Timestamps are in FILETIME format. Converted to Unix for easier handling.
+        type::FILETIME ModTime;
+        type::FILETIME AcTime;
+        type::FILETIME CrTime;
+    };
+    
+    struct X7875_NewUnix {    
+        u16 tag;
+        u16 TSize;
+        u8 version;
+        u8 UIDSize;
+        u8 UID[UIDSize];
+        u8 GIDSize;
+        u8 GID[GIDSize];
+    };
+         
+    struct X5855_InfoZipUnix {
+        u32 AcTime;
+        u32 ModTime;
+        if (parent.TSize > 8){
+            u16 UID;
+        }
+        if (parent.TSize > 10){
+            u16 GID;
+        }
+    };
+    
+    struct ExtraField {
+        u16 tag;
+        u16 TSize;
+        if (tag == 0x5455){
+            extra::X5455_ExtendedTimestamp x5455_ExtendedTimestamp;
+        }else if (tag == 0x000a){
+            extra::X000A_NTFS x000A_NTFS;
+        }else if (tag == 0x7875){
+            extra::X7875_NewUnix x7875_NewUnix;
+        }else if (tag == 0x5855){
+            extra::X5855_InfoZipUnix x5855_InfoZipUnix;
+        }else{    
+            std::print("Unsupported tag 0x{:02X}", tag);
+            padding[TSize];
+        }
+    };
+}
 
 fn find_eocd() {
     // If there is no zip comment, which is the common case,
@@ -96,7 +169,8 @@ struct LocalFileHeader {
     u16 fileNameLength [[ comment("File name length (n)") ]];
     u16 extraFieldLength [[ comment("Extra field length (m)") ]];
     char fileName[fileNameLength] [[ comment("File Name") ]];
-    char extraField[extraFieldLength] [[ comment("Extra Field") ]];
+    u64 extraEnd = $ + extraFieldLength;
+    extra::ExtraField extraFields[while ($ < extraEnd)] [[comment("Extra Fields")]];
     u8 data[compressedSize] [[name("File Data")]];
 };
 
@@ -124,7 +198,8 @@ struct CentralDirectoryFileHeader {
     u32 externalFileAttributes;
     File file;
     char fileName[fileNameLength];
-    u8 extraField[extraFieldLength];
+    u64 extraEnd = $ + extraFieldLength;
+    extra::ExtraField extraFields[while ($ < extraEnd)] [[comment("Extra Fields")]];
     char comment[fileCommentLength];
 };
 

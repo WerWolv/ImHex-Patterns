@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/mem.pat>
+import std.mem;
 
 /*!
     The core library contains intrinsics and "compiler magic" functions that
     get extra help from the runtime to fulfill their purpose.
 */
 
-namespace std::core {
+namespace auto std::core {
 
     /**
         The layout order of each field after byte-endianness has been handled.
@@ -38,12 +38,20 @@ namespace std::core {
     };
 
     /**
-        Returns the first parameter of the attribute of a pattern if it has one
+        Returns the nth parameter of the attribute of a pattern if it has one
         @param pattern The pattern to check
         @param attribute The attribute's name to query
+        @param [index] The parameter index of the attribute to return. Defaults to 0
+    */
+    fn get_attribute_argument(ref auto pattern, str attribute, u32 index = 0) {
+        return builtin::std::core::get_attribute_argument(pattern, attribute, index);
+    };
+
+    /**
+        @warning Removed in 1.27.0
     */
     fn get_attribute_value(ref auto pattern, str attribute) {
-        return builtin::std::core::get_attribute_value(pattern, attribute);
+        builtin::std::error("`std::core::get_attribute_value(pattern, attribute)` has been removed.\nUse `std::core::get_attribute_argument(pattern, attribute, [index])` instead.");
     };
 
 
@@ -145,5 +153,15 @@ namespace std::core {
     */
     fn set_display_name(ref auto pattern, str name) {
         builtin::std::core::set_display_name(pattern, name);
+    }; 
+
+
+    /**
+        Changes the comment attached to a pattern
+        @param pattern The pattern to modify
+        @param name The new comment of the pattern
+    */
+    fn set_pattern_comment(ref auto pattern, str comment) {
+        builtin::std::core::set_pattern_comment(pattern, name);
     }; 
 }

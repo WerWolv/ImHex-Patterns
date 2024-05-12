@@ -7,9 +7,9 @@
 #pragma MIME application/x-object
 #pragma MIME application/x-sharedlib
 
-#include <std/core.pat>
-#include <std/io.pat>
-#include <std/mem.pat>
+import std.core;
+import std.io;
+import std.mem;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 

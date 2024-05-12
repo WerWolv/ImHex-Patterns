@@ -1,8 +1,8 @@
 #pragma author WerWolv
 #pragma description Xilinx FPGA Bitstreams
 
-#include <std/mem.pat>
-#include <std/io.pat>
+import std.mem;
+import std.io;
 
 struct Flags {
 	be u16 length;

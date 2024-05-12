@@ -1,12 +1,12 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
 
 /*!
 	Library to handle time and date related operations.
 */
 
-namespace std::time {
+namespace auto std::time {
 
 	/**
 		A structured representation of a time and date.
@@ -34,7 +34,7 @@ namespace std::time {
 	/**
 		A type to represent a time in seconds since the epoch.
 	*/
-	using EpochTime = u128;
+	using EpochTime = u32;
 
 	/**
 		A type to represent a time zone.
@@ -91,7 +91,7 @@ namespace std::time {
 		@return The local time.
 	*/
 	fn to_local(EpochTime epoch_time) {
-		TimeConverter converter;
+		le TimeConverter converter;
 
 		converter.value = builtin::std::time::to_local(epoch_time);
 
@@ -104,7 +104,7 @@ namespace std::time {
 		@return The UTC time.
 	*/
 	fn to_utc(EpochTime epoch_time) {
-		TimeConverter converter;
+		le TimeConverter converter;
 
 		converter.value = builtin::std::time::to_utc(epoch_time);
 
@@ -113,11 +113,11 @@ namespace std::time {
 
 	/**
 		Queries the current time in the specified time zone.
-		@param time_zone The time zone to query.
+		@param [time_zone] The time zone to query. Defaults to local.
 		@return The current time in the specified time zone.
 	*/
 	fn now(TimeZone time_zone = TimeZone::Local) {
-		TimeConverter converter;
+		le TimeConverter converter;
 
 		if (time_zone == TimeZone::Local)
 			converter.value = builtin::std::time::to_local(std::time::epoch());
@@ -135,7 +135,7 @@ namespace std::time {
 		@return The DOS date.
 	*/
 	fn to_dos_date(u16 value) {
-		impl::DOSDateConverter converter;
+		le impl::DOSDateConverter converter;
 
 		converter.value = value;
 
@@ -148,7 +148,7 @@ namespace std::time {
 		@return The DOS time.
 	*/
 	fn to_dos_time(u16 value) {
-		impl::DOSTimeConverter converter;
+		le impl::DOSTimeConverter converter;
 
 		converter.value = value;
 
@@ -156,13 +156,22 @@ namespace std::time {
 	};
 
 	/**
+		Converts a FILETIME to unix time.
+		@param value The value to convert.
+		@return Timestamp formatted as unix time.
+	*/
+	fn filetime_to_unix(u64 value) {
+		return value / 10000000 - 11644473600;
+	};
+
+	/**
 		Formats a time according to the specified format string.
 		@param time The time to format.
-		@param format_string The format string to use.
+		@param [format_string] The format string to use. Defaults to "%c".
 		@return The formatted time.
 	*/
 	fn format(Time time, str format_string = "%c") {
-		TimeConverter converter;
+		le TimeConverter converter;
 		converter.time = time;
 
 		return builtin::std::time::format(format_string, converter.value);
@@ -171,7 +180,7 @@ namespace std::time {
 	/**
 		Formats a DOS date according to the specified format string.
 		@param date The DOS date to format.
-		@param format_string The format string to use.
+		@param [format_string] The format string to use. Defaults to "{}/{}/{}".
 		@return The formatted DOS date.
 	*/
 	fn format_dos_date(DOSDate date, str format_string = "{}/{}/{}") {
@@ -181,7 +190,7 @@ namespace std::time {
 	/**
 		Formats a DOS time according to the specified format string.
 		@param time The DOS time to format.
-		@param format_string The format string to use.
+		@param [format_string] The format string to use. Defaults to "{:02}:{:02}:{:02}".
 		@return The formatted DOS time.
 	*/
 	fn format_dos_time(DOSTime time, str format_string = "{:02}:{:02}:{:02}") {

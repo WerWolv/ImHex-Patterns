@@ -3,8 +3,8 @@
 
 #pragma MIME application/x-coff
 
-#include <type/time.pat>
-#include <type/size.pat>
+import type.time;
+import type.size;
 
 enum Machine : u16 {
     Unknown     = 0x0000,

@@ -1,8 +1,8 @@
 #pragma author WerWolv
 #pragma description USB Flashing Format
 
-#include <std/sys.pat>
-#include <std/mem.pat>
+import std.sys;
+import std.mem;
 
 #pragma MIME application/microformats+json
 #pragma MIME application/microformats2+json

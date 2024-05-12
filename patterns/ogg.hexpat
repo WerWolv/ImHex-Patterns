@@ -3,8 +3,8 @@
 
 #pragma MIME audio/ogg
 
-#include <std/core.pat>
-#include <std/mem.pat>
+import std.core;
+import std.mem;
 
 bitfield HeaderType {
 	Continuation	: 1;

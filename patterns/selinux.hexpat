@@ -1,7 +1,9 @@
 #pragma description SE Linux modules
+#pragma author Ange Albertini
 
-#include <std/sys.pat>
+import std.sys;
 #pragma pattern_limit 13107200
+#pragma array_limit 13107200
 #pragma endian little
 
 u32 version;
@@ -17,6 +19,13 @@ enum magics: u32 {
     module = 0xf97cff8d,
 };
 
+bitfield CONFIG {
+	DENY_UNKNOWN: 1;
+	MLS: 1;
+	REJECT_UNKNOWN: 1;
+	ALLOW_UNKNOWN: 1;
+	padding: 4 + 3 * 8;
+};
 
 enum policy_types: u32 {
     kernel = 0,
@@ -667,7 +676,7 @@ struct Header {
     version = __policyvers;
     boundary_feature = (type_g == policy_types::kernel && version >= 24) || (type_g != policy_types::kernel && version >= 9);
     std::assert((magic == magics::kernel && 15 <= version && version <= 33) || (magic != magics::kernel && 4 <= version && version <= 21), "Non matching type_g != and type");
-    u32 config;
+    CONFIG config;
     u32 symbols_count_;
     symbols_count = symbols_count_;
     std::assert(0 <= symbols_count && symbols_count <= 9, "Invalid 'symbols_count' value.");

@@ -4,7 +4,7 @@
 	Library to calculate the minimum and maximum values that fit into a given data type
 */
 
-namespace std::limits {
+namespace auto std::limits {
 	
 	/**
 		Returns the minimum value that can be stored in a `u8`.

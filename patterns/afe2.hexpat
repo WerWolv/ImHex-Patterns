@@ -3,8 +3,8 @@
 
 #pragma endian little
 
-#include <std/io.pat>
-#include <std/sys.pat>
+import std.io;
+import std.sys;
 
 #define ATMOSPHERE_REBOOT_TO_FATAL_MAGIC   	"AFE2"
 #define ATMOSPHERE_REBOOT_TO_FATAL_MAGIC_1 	"AFE1"

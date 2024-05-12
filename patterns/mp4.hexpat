@@ -6,9 +6,9 @@
 #pragma MIME video/mp4
 #pragma MIME application/mp4
 
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
+import std.io;
+import std.mem;
+import std.string;
 
 fn to_string(auto var) {
     return str(var);
@@ -16,7 +16,17 @@ fn to_string(auto var) {
 
 fn format_string(auto string) {
     return string.value;
-}; 
+};
+
+struct FixedPoint16 {
+    u8 integer;
+    u8 fraction;
+};
+
+struct FixedPoint32 {
+    u16 integer;
+    u16 fraction;
+};
 
 struct string {
     char value[std::mem::find_sequence_in_range(0, $, std::mem::size(), 0x00) - $];
@@ -79,8 +89,8 @@ struct MovieHeaderBox : FullBox {
         u32 timescale;
         u32 duration;
     }
-    u32 rate [[comment("Fixed point number 16.16")]];
-    u16 volume [[comment("Fixed point number 8.8")]];
+    FixedPoint32 rate;
+    FixedPoint16 volume;
     u8 reserved[10] [[sealed]];
     u32 matrix[9];
     u32 preview_time;
@@ -147,7 +157,7 @@ struct DataInformationBox : BaseBox {
 
 struct HandlerBox : FullBox {
     u32 component_type;
-    u32 handler_type;
+    char handler_type[4];
     u32 reserved[3];
     char name[endOffset - $];
 };
@@ -157,6 +167,132 @@ struct VideoMediaHeaderBox : FullBox {
     u16 opcolor[3];
 };
 
+struct Avc1Box : BaseBox {
+    u48 reserved;
+    u16 data_reference_index;
+    u16 version;
+    u16 revision_level;
+    u32 max_packet_size;
+    if (this.version == 0 || this.version == 1) {
+        u32 temporal_quality;
+        u32 spatial_quality;
+        u16 width;
+        u16 height;
+        FixedPoint32 horizontal_resolution;
+        FixedPoint32 vertical_resolution;
+        u32 data_size;
+        u16 frame_count;
+        char compressor_name[32];
+        u16 depth;
+        s16 color_table_id;
+    }
+    u8 unk[while($ != endOffset)];
+};
+
+struct Mp4aBox : BaseBox {
+    u48 reserved;
+    u16 data_reference_index;
+    u16 version;
+    u16 revision_level;
+    u32 max_packet_size;
+    if (this.version == 0) {
+        u16 num_audio_channels;
+        u16 sample_size;
+        u16 compression_id;
+        u16 packet_size;
+        FixedPoint32 sample_rate;
+    }
+    u8 unk[while($ != endOffset)];
+};
+
+struct SubSampleDescriptionBox {
+    u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
+
+    match (str(type)) {
+        ("mp4a"): Mp4aBox box [[inline]];
+        ("avc1"): Avc1Box box [[inline]];
+        (_): UnknownBox box [[inline]];
+    }
+} [[name(std::format("SubSampleDescriptionBox({})", box.type))]];
+
+struct SampleDescriptionBox : FullBox {
+        u32 entry_count;
+        SubSampleDescriptionBox box[while($ < endOffset)] [[inline]];
+};
+
+struct SampleTimeToSampleEntry {
+    u32 sample_count;
+    u32 sample_delta;
+};
+
+struct SampleTimeToSampleBox: FullBox {
+    u32 entry_count;
+    SampleTimeToSampleEntry entry_list[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
+struct SampleToChunkEntry {
+    u32 first_chunk;
+    u32 samples_per_chunk;
+    u32 sample_description_index;
+};
+
+struct SampleToChunkBox: FullBox {
+    u32 entry_count;
+    SampleToChunkEntry entry_list[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
+struct ChunkOffsetBox: FullBox {
+    u32 entry_count;
+    u32 chunk_offset[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
+struct SyncSampleBox: FullBox {
+    u32 entry_count;
+    u32 sample_number[this.entry_count];
+    u8 unk[while($ != endOffset)];
+};
+
+struct CompositionOffsetEntryV0 {
+    u32 sample_count;
+    u32 sample_offset;
+};
+
+struct CompositionOffsetEntryV1 {
+    u32 sample_count;
+    s32 sample_offset;
+};
+
+struct CompositionOffsetBox: FullBox {
+    u32 entry_count;
+    if(this.version == 0) {
+        CompositionOffsetEntryV0 entry_list[this.entry_count];
+    }
+    else if (this.version == 1) {
+        CompositionOffsetEntryV1 entry_list[this.entry_count];
+    }
+};
+
+struct SubSampleBoxTable {
+    u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
+
+    match (str(type)) {
+        ("stsd"): SampleDescriptionBox box [[inline]];
+        ("stts"): SampleTimeToSampleBox box [[inline]];
+        ("stsc"): SampleToChunkBox box [[inline]];
+        ("stco"): ChunkOffsetBox box [[inline]];
+        ("stss"): SyncSampleBox box [[inline]];
+        ("ctts"): CompositionOffsetBox box [[inline]];
+        (_): UnknownBox box [[inline]];
+    }
+} [[name(std::format("SubSampleBoxTable({})", box.type))]];
+
+struct SampleBoxTable : BaseBox {
+    SubSampleBoxTable box[while($ < endOffset)] [[inline]];
+};
+
 struct SubMediaInformationBox {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
@@ -164,8 +300,8 @@ struct SubMediaInformationBox {
         ("vmhd"): VideoMediaHeaderBox box [[inline]];
         ("hdlr"): HandlerBox box [[inline]];
         ("dinf"): DataInformationBox box [[inline]];
+        ("stbl"): SampleBoxTable box [[inline]];
         (_): UnknownBox box [[inline]];
-        // TODO: Add stbl
     }
 } [[name(std::format("MediaInformationBox({})", box.type))]];
 

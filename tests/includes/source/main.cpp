@@ -1,8 +1,5 @@
 #include <pl.hpp>
 
-#include <pl/core/errors/preprocessor_errors.hpp>
-#include <pl/core/errors/evaluator_errors.hpp>
-
 #include <wolv/io/file.hpp>
 
 #include <fmt/format.h>
@@ -30,8 +27,7 @@ int main(int argc, char **argv) {
     // Setup Pattern Language Runtime
     pl::PatternLanguage runtime;
     {
-        constexpr auto DummyPragmaHandler = [](const auto&, const auto&){
-            pl::core::err::M0006.throwError("Include files should never use this pragma!");
+        constexpr auto DummyPragmaHandler = [](const auto&, const auto&) {
             return false;
         };
 
@@ -66,7 +62,7 @@ int main(int argc, char **argv) {
     }
 
     // Execute pattern
-    if (!runtime.executeString(patternFile.readString())) {
+    if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
         fmt::print("Error during execution!\n");
 
         if (const auto &hardError = runtime.getError(); hardError.has_value())

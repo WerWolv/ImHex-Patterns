@@ -4,7 +4,7 @@
     Library for doing raw memory accesses and other low-level operations.
 */
 
-namespace std::mem {
+namespace auto std::mem {
 
     namespace impl {
 
@@ -104,7 +104,7 @@ namespace std::mem {
         Reads a unsigned value from the memory
         @param address The address to read from
         @param size The size of the value to read
-        @param endian The endianess of the value to read
+        @param [endian] The endianess of the value to read. Defaults to native
         @return The value read
     */
     fn read_unsigned(u128 address, u8 size, Endian endian = Endian::Native) {
@@ -115,7 +115,7 @@ namespace std::mem {
         Reads a signed value from the memory
         @param address The address to read from
         @param size The size of the value to read
-        @param endian The endianess of the value to read
+        @param [endian] The endianess of the value to read. Defaults to native
         @return The value read
     */
     fn read_signed(u128 address, u8 size, Endian endian = Endian::Native) {
@@ -128,7 +128,7 @@ namespace std::mem {
         @param size The size of the value to read
         @return The value read
     */
-    fn read_string(u128 address, u8 size) {
+    fn read_string(u128 address, u128 size) {
         return builtin::std::mem::read_string(address, size);
     };
 

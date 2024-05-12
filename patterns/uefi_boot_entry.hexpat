@@ -4,8 +4,8 @@
 #pragma author iTrooz
 #pragma description UEFI Boot Entry (Load option)
 
-#include <std/io.pat>
-#include <type/guid.pat>
+import std.io;
+import type.guid;
 
 // subsection 10.3.5.1
 struct HARD_DRIVE {

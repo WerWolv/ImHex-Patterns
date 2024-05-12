@@ -1,14 +1,14 @@
 #pragma once
 
-#include <std/io.pat>
-#include <std/math.pat>
+import std.io;
+import std.math;
 
 /*!
     Types used to change the base of the displayed integer value.
     Used like `type::Hex<u32> hexNumber;`, `type::Oct<u16> octalNumber;`
 */
 
-namespace type {
+namespace auto type {
     
     /**
         Integer type representing a Hexadecimal value. Displays its value in hexadecimal format.
