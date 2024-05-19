@@ -57,7 +57,7 @@ jobs:
     - name: 🧪 Perform Unit Tests
       run: |
         cd tests/build
-        ctest --output-on-failure
+        ctest --output-on-failure -j 4
 
     #- name: ⚗️ Generate Coverage Report
     #  run: |
