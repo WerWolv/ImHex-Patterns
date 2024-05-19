@@ -39,8 +39,13 @@ int main(int argc, char **argv) {
 
     // Setup Pattern Language Runtime
     pl::PatternLanguage runtime;
+    bool hasDescription = false;
     {
         constexpr auto DummyPragmaHandler = [](const auto&, const auto&){ return true; };
+        auto DescPragmaHandler = [&hasDescription](const auto&, const auto&){
+            hasDescription = true;
+            return true;
+        };
 
         runtime.setDataSource(0x00, testFile.getSize(), 
             [&](pl::u64 address, pl::u8 *data, size_t size) {
@@ -51,6 +56,7 @@ int main(int argc, char **argv) {
         runtime.setDangerousFunctionCallHandler([]{ return true; });
         runtime.setIncludePaths({ includePath });
         runtime.addPragma("MIME", DummyPragmaHandler);
+        runtime.addPragma("description", DescPragmaHandler);
         runtime.addDefine("__PL_UNIT_TESTS__");
         
         runtime.setLogCallback([](auto level, const std::string &message) {
@@ -77,5 +83,5 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    return EXIT_SUCCESS;
+    return hasDescription ? EXIT_SUCCESS : EXIT_FAILURE;
 }
