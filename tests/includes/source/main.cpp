@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
     if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
         fmt::print("Error during execution!\n");
 
-        if (const auto &hardError = runtime.getError(); hardError.has_value())
+        if (const auto &hardError = runtime.getEvalError(); hardError.has_value())
             fmt::print("Hard error: {}:{} - {}\n\n", hardError->line, hardError->column, hardError->message);
 
         return EXIT_FAILURE;
