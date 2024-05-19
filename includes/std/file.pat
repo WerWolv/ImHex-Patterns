@@ -109,4 +109,12 @@ namespace auto std::file {
 		builtin::std::file::remove(handle);
 	};
 
+	/**
+		Create all directories for the provided path
+		@param path The path for which all directories should be created
+	*/
+	fn create_directories(str path) {
+		builtin::std::file::create_directories(path);
+	};
+
 }
