@@ -45,6 +45,6 @@ namespace auto hex::core {
     fn add_virtual_file(str path, auto pattern)
     {
         builtin::hex::core::add_virtual_file(path, pattern);
-    }
+    };
 
 }
