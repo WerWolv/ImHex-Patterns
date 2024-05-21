@@ -104,6 +104,15 @@ fn sof0_component_read(SOF0Component c) {
     return std::format("({}, {}, {})", c.componentId, c.samplingFactors, c.quantizationTableId);
 };
 
+fn get_eoi_marker_position() {
+    u32 pos = std::mem::find_sequence_in_range(0, $, std::mem::size(), 0xFF);
+    while (std::mem::read_unsigned(pos + 1, 1) != 0xD9) {
+        pos = std::mem::find_sequence_in_range(0, pos + 1, std::mem::size() + 1, 0xFF);
+    }
+    return pos;
+    
+};
+
 struct SOF0 {
     u8 bitsPerSample;
     u16 imageHeight, imageWidth;
@@ -122,16 +131,15 @@ struct SOS {
     u8 startSpectralSelection;
     u8 endSpectral;
     u8 apprBitPos;
-    
-    u8 image_data[std::mem::find_sequence(0, 0xFF, 0xD9) - $] [[sealed]];
+    u8 image_data[get_eoi_marker_position() - $] [[sealed]];
 };
 
 struct Segment {
     if (std::mem::read_unsigned($, 1) != 0xFF) {
         Marker marker = Marker::UNKNOWN;
-        u8 data[std::mem::size() - $ - 2];
+        u8 data[get_eoi_marker_position() - $];
     } else {
-        u8 magic;
+        type::Magic<"\xff"> magic;
         Marker marker;
         
         if (marker == Marker::SOI || marker == Marker::EOI) {
