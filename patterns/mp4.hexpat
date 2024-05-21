@@ -18,15 +18,23 @@ fn format_string(auto string) {
     return string.value;
 };
 
+fn format_fixed32(auto fp32) {
+    return fp32.integer + fp32.fraction / 65536.0;
+};
+
+fn format_fixed16(auto fp16) {
+    return fp16.integer + fp16.fraction / 256.0;
+};
+
 struct FixedPoint16 {
     u8 integer;
     u8 fraction;
-};
+} [[format("format_fixed16")]];
 
 struct FixedPoint32 {
     u16 integer;
     u16 fraction;
-};
+} [[format("format_fixed32")]];
 
 struct string {
     char value[std::mem::find_sequence_in_range(0, $, std::mem::size(), 0x00) - $];
@@ -122,8 +130,8 @@ struct TrackHeaderBox : FullBox {
     s16 volume;
     u16 reserved_3;
     s32 matrix[9];
-    u32 width;
-    u32 height;
+    FixedPoint32 width;
+    FixedPoint32 height;
 };
 
 struct DataEntryBox : FullBox {

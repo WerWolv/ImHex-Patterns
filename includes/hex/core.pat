@@ -37,4 +37,14 @@ namespace auto hex::core {
         return result;
     };
 
+    /**
+        Add a file to the Virtual Filesystem
+        @param path The name of the file
+        @param pattern The pattern associated with the file
+    */
+    fn add_virtual_file(str path, auto pattern)
+    {
+        builtin::hex::core::add_virtual_file(path, pattern);
+    };
+
 }

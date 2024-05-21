@@ -97,7 +97,7 @@ namespace auto std::file {
 		@param handle The handle of the file to flush
 	*/
 	fn flush(Handle handle) {
-		builtin::std::file::remove(handle);
+		builtin::std::file::flush(handle);
 	};
 
 
@@ -107,6 +107,14 @@ namespace auto std::file {
 	*/
 	fn remove(Handle handle) {
 		builtin::std::file::remove(handle);
+	};
+
+	/**
+		Create all directories for the provided path
+		@param path The path for which all directories should be created
+	*/
+	fn create_directories(str path) {
+		builtin::std::file::create_directories(path);
 	};
 
 }

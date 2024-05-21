@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Nintendo Switch XCI cardridge ROM
+#pragma description Nintendo Switch XCI cartridge ROM
 
 import std.core;
 
