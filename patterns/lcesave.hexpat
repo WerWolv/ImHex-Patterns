@@ -1,22 +1,26 @@
 #pragma author DexrnZacAttack
-#pragma description Minecraft LCE Save Format Pattern
-#pragma version 1.0.0
+#pragma description Pattern for Minecraft LCE Save Files (after decompression)
+#pragma version 1.1.0
 #pragma disclaimer This pattern is not affiliated with Mojang Studios nor Microsoft. Minecraft is a trademark of Mojang Studios and Microsoft.
 
 #pragma endian big
-// ^ switch this to little for Switch, PS4, or Xbox One
-
-struct LCESaveHeader {
-    u32 offset; // where the index is located
-    u32 count; // amount of files in the index
-};
+/*
+ * ^ switch this to little for Switch, PS4, or Xbox One
+ * so you'll probs have to switch all of the be to le
+*/
 
 struct LCEIndex {
-    char filename[0x80]; // name of the file.
-    u32 filesize; // how big the file is
-    u32 offset; // where the file is located
-    u64 timestamp; // file last modified date
+    be char16 filename[0x40] [[name("Filename")]]; // name of the file.
+    be u32 filesize [[name("Filesize")]]; // how big the file is
+    be u32 offset [[name("File Offset")]]; // where the file is located
+    be u64 timestamp [[name("File Timestamp (maybe incorrect)")]]; // file last modified date 
+    u8 file[filesize] @ offset [[name(filename),comment(this.filename),attribute_name(this.filename)]]; // files in the index
 };
 
-LCESaveHeader header @ 0x00;
-LCEIndex index[header.count] @ header.offset;
+struct LCESaveHeader {
+    be u32 offset [[name("Index Offset")]]; // where the index is located
+    be u32 count [[name("Index File Count")]]; // amount of files in the index
+    LCEIndex index[count] @ offset [[name("File Index")]]; // the index
+};
+
+LCESaveHeader save @ 0x00;
