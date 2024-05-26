@@ -455,6 +455,33 @@ struct ImportsTable {
 	$ = addressof(this)+coffHeader.optionalHeader.directories[1].size;
 };
 
+struct DelayedImportsDirectory {
+	u32 attributes;
+	u32 name;
+	u32 moduleHandle;
+	u32 delayImportAddressTable;
+	u32 delayImportNameTable;
+	u32 boundDelayImportTable;
+	u32 unloadDelayImportTable;
+	u32 timeStamp;
+};
+
+struct DelayImportsStructure {
+	if (parent.delayImportsDirectoryTable[std::core::array_index()].delayImportNameTable > 0) {
+		ImportsLookup delayedLookupTable[while(std::mem::read_unsigned($, wordsize()) != 0)] @ parent.delayImportsDirectoryTable[std::core::array_index()].delayImportNameTable - relativeVirtualDifference();
+	}
+	if (parent.delayImportsDirectoryTable[std::core::array_index()].name > 0) {
+		char dllName[] @ parent.delayImportsDirectoryTable[std::core::array_index()].name - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
+	}
+} [[inline]];
+
+// https://learn.microsoft.com/en-us/windows/win32/debug/pe-format#delay-load-import-tables-image-only
+struct DelayedImportsTable {
+	DelayedImportsDirectory delayImportsDirectoryTable[while(std::mem::read_unsigned($, 16) != 0)];
+	DelayImportsStructure delayImportsStructures[sizeof(delayImportsDirectoryTable)/sizeof(delayImportsDirectoryTable[0])] [[inline]];
+	$ = addressof(this)+coffHeader.optionalHeader.directories[1].size;
+};
+
 // General Resource Table things
 fn formatNullTerminatedString16(str string) {
 	return "\"" + std::string::substr(string, 0, std::string::length(string)) + "\"";
@@ -1062,6 +1089,9 @@ struct Section {
 		}
 		if (dataDirectoryInSection[9]) {
 			TLSTable tlsTable @ coffHeader.optionalHeader.directories[9].rva - relativeVirtualDifference();
+		}
+		if (dataDirectoryInSection[13]) {
+			DelayedImportsTable delayedImportTable @ coffHeader.optionalHeader.directories[13].rva - relativeVirtualDifference();
 		}
 	}
 	clearBoolArray();
