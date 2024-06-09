@@ -167,16 +167,26 @@ bitfield Caps2Flags {
 };
 
 bitfield PixelFormatFlags {
-  alphaPixels : 1;  // DDPF_ALPHAPIXELS: 0x00000001
-  alpha       : 1;  // DDPF_ALPHA: 0x00000002
-  fourCC      : 1;  // DDPF_FOURCC: 0x00000004
-  padding1    : 3;  // Padding bits to align to bit 6
-  rgb         : 1;  // DDPF_RGB: 0x00000040
-  padding2    : 2;  // Padding bits to align to bit 9
-  yuv         : 1;  // DDPF_YUV: 0x00000200
-  padding3    : 7;  // Padding bits to align to bit 17
-  luminance   : 1;  // DDPF_LUMINANCE: 0x00020000
-  padding4    : 14; // Padding bits to complete 32-bit structure
+  alphaPixels 	    : 1;  // DDPF_ALPHAPIXELS
+  alpha       	    : 1;  // DDPF_ALPHA
+  fourCC      	    : 1;  // DDPF_FOURCC
+  paletteIndexed4   : 1;  // DDPF_PALETTEINDEXED4
+  paletteIndexedTo8 : 1;  // DDPF_PALETTEINDEXEDTO8
+  paletteIndexed8   : 1;  // DDPF_PALETTEINDEXED8
+  rgb               : 1;  // DDPF_RGB
+  compressed        : 1;  // DDPF_COMPRESSED
+  rgbToYuv          : 1;  // DDPF_RGBTOYUV
+  yuv               : 1;  // DDPF_YUV
+  zBuffer           : 1;  // DDPF_ZBUFFER
+  paletteIndexed1   : 1;  // DDPF_PALETTEINDEXED1
+  paletteIndexed2   : 1;  // DDPF_PALETTEINDEXED2
+  zPixels           : 1;  // DDPF_ZPIXELS
+  stencilBuffer     : 1;  // DDPF_STENCILBUFFER
+  alphaResult       : 1;  // DDPF_ALPHARESULT
+  luminance         : 1;  // DDPF_LUMINANCE
+  bumpLuminance     : 1;  // DDPF_BUMPLUMINANCE
+  bumpDudv          : 1;  // DDPF_BUMPDUDV
+  padding           : 13; // Padding bits to complete 32-bit structure
 };
 
 enum DX10ResourceDimension : u32 {
