@@ -167,16 +167,16 @@ bitfield Caps2Flags {
 };
 
 bitfield PixelFormatFlags {
-  alphaPixels : 1;
-  alpha       : 1;
-  fourCC      : 1;
-  padding     : 3;
-  rgb         : 1; // 0x40
-  padding     : 2;
-  yuv         : 1; // 0x200
-  padding     : 3;
-  luminance   : 1; // 0x20000
-  padding     : 17;
+  alphaPixels : 1;  // DDPF_ALPHAPIXELS: 0x00000001
+  alpha       : 1;  // DDPF_ALPHA: 0x00000002
+  fourCC      : 1;  // DDPF_FOURCC: 0x00000004
+  padding1    : 3;  // Padding bits to align to bit 6
+  rgb         : 1;  // DDPF_RGB: 0x00000040
+  padding2    : 2;  // Padding bits to align to bit 9
+  yuv         : 1;  // DDPF_YUV: 0x00000200
+  padding3    : 7;  // Padding bits to align to bit 17
+  luminance   : 1;  // DDPF_LUMINANCE: 0x00020000
+  padding4    : 14; // Padding bits to complete 32-bit structure
 };
 
 enum DX10ResourceDimension : u32 {
