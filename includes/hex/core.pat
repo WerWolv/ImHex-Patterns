@@ -42,8 +42,7 @@ namespace auto hex::core {
         @param path The name of the file
         @param pattern The pattern associated with the file
     */
-    fn add_virtual_file(str path, auto pattern)
-    {
+    fn add_virtual_file(str path, auto pattern) {
         builtin::hex::core::add_virtual_file(path, pattern);
     };
 
