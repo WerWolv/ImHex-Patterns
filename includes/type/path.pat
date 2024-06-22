@@ -34,12 +34,12 @@ namespace auto type {
     using UnixPath = Path<"/">;
 
     /**
-        A type representing a DOS path using a '\' backslash as delimeter
+        A type representing a DOS path using a '\\' backslash as delimeter
     */
     using DOSPath = Path<"\\">;
-    
+
     namespace impl {
-    
+
         fn format_path_segment(ref auto segment) {
             return segment.string;
         };
