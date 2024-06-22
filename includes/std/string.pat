@@ -16,7 +16,7 @@ namespace auto std::string {
     struct SizedStringBase<SizeType, DataType> {
         SizeType size;
         DataType data[size];
-    } [[sealed, format("std::string::impl::format_sized_string"), transform("std::string::impl::format_sized_string")]];
+    } [[sealed, format("std::string::impl::format_string"), transform("std::string::impl::format_string")]];
 
     /**
         A ASCII string with a prefixed size.
@@ -36,7 +36,7 @@ namespace auto std::string {
     */
     struct NullStringBase<DataType> {
         DataType string[while($[$] != 0x00)];
-    } [[format("std::string::impl::format_null_string")]];
+    } [[sealed, format("std::string::impl::format_string"), transform("std::string::impl::format_string")]];
 
     /**
         A null-terminated ASCII string.
@@ -50,12 +50,8 @@ namespace auto std::string {
 
     namespace impl {
 
-        fn format_sized_string(ref auto string) {
+        fn format_string(ref auto string) {
             return string.data;
-        };
-
-        fn format_null_string(ref auto null_string) {
-            return null_string.string;
         };
 
     }
