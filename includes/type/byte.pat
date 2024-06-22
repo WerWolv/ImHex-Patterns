@@ -40,7 +40,7 @@ namespace auto type {
     } [[format("type::impl::format_byte"), single_color]];
 
 
-	namespace impl {
+    namespace impl {
 
         fn format_byte(Byte byte) {
             return std::format("0x{0:02X} (0b{1:08b}) LSB:{2}, MSB:{3}",
@@ -66,6 +66,6 @@ namespace auto type {
             return std::format("{{ {0:0X}, {1:0X} }}", nibbles.high, nibbles.low);
         };
 
-	}
+    }
 
 }

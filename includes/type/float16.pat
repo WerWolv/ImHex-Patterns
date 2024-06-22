@@ -22,7 +22,7 @@ namespace auto type {
             float floatValue;
         };
 
-        fn format_float16(float16 value) {	
+        fn format_float16(float16 value) {
             u32 sign = value >> 15;
             u32 exponent = (value >> 10) & 0x1F;
             u32 mantissa = value & 0x3FF;

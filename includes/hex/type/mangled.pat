@@ -11,20 +11,20 @@ import hex.dec;
 */
 
 namespace auto hex::type {
-	
+    
     /**
         A mangled name string that gets demangled when displayed
     */
     struct MangledName {
         char value[];
     } [[sealed, format("hex::type::impl::format_mangled_name")]];
-	
+    
     namespace impl {
 
         fn format_mangled_name(ref MangledName name) {
             return hex::dec::demangle(name.value);
         };
     }
-	
+    
 }
 
