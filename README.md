@@ -112,6 +112,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | TAR | `application/x-tar` | [`patterns/tar.hexpat`](patterns/tar.hexpat) | Tar file format |
 | TIFF | `image/tiff` | [`patterns/tiff.hexpat`](patterns/tiff.hexpat) | Tag Image File Format |
 | TGA | `image/tga` | [`patterns/tga.hexpat`](patterns/tga.hexpat) | Truevision TGA/TARGA image |
+| TTF | `font/ttf`, `font/otf` | [`patterns/ttf.hexpat`](patterns/ttf.hexpat) | TrueType and OpenType font format |
 | Ubiquiti | | [`patterns/ubiquiti.hexpat`](patterns/ubiquiti.hexpat) | Ubiquiti Firmware (update) image |
 | UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat)` | UEFI structs for parsing efivars |
 | UF2 | | [`patterns/uf2.hexpat`](patterns/uf2.hexpat) | [USB Flashing Format](https://github.com/microsoft/uf2) |
