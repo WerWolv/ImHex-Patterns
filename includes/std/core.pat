@@ -164,4 +164,13 @@ namespace auto std::core {
     fn set_pattern_comment(ref auto pattern, str comment) {
         builtin::std::core::set_pattern_comment(pattern, name);
     }; 
+
+    /**
+        Executes the function with the given name, passing in all given arguments
+        @param function_name The namespace-prefixed name of the function
+        @param args Arguments to pass to the function
+    */
+    fn execute_function(str function_name, auto ... args) {
+        builtin::std::core::execute_function(function_name, args);
+    };
 }
