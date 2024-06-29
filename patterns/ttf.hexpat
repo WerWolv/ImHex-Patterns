@@ -664,6 +664,9 @@ struct HiddenForPreprocessing {
     currentOffset = td.offset;
     currentLength = td.length;
     match (td.tag) {
+        ("CFF "): {
+            hasPostScriptOutlines = true;
+        }
         ("maxp"): MaxpTable table;
         ("head"): {
             HeadTable table;
@@ -685,10 +688,6 @@ struct Table {
     match (td.tag) {
         ("avar"): AvarTable table;
         ("bhed"): HeadTable table;
-        ("CFF "): {
-            hasPostScriptOutlines = true;
-            u8 data[td.length];
-        }
         ("cmap"): CmapTable table;
         ("cvt "): CvtTable table;
         ("gasp"): GaspTable table;
