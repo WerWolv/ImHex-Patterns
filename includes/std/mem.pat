@@ -1,7 +1,5 @@
 #pragma once
 
-import std.string;
-
 /*!
     Library for doing raw memory accesses and other low-level operations.
 */
@@ -11,8 +9,8 @@ namespace auto std::mem {
     namespace impl {
 
         struct MagicSearchImpl<auto Magic, T> {
-            if ($ < (std::mem::base_address() + std::mem::size() - std::string::length(Magic) - 1)) {
-                char __potentialMagic__[std::string::length(Magic)] [[hidden, no_unique_address]];
+            if ($ < (std::mem::base_address() + std::mem::size() - builtin::std::string::length(Magic) - 1)) {
+                char __potentialMagic__[builtin::std::string::length(Magic)] [[hidden, no_unique_address]];
                 
                 if (__potentialMagic__ == Magic) {
                     T data [[inline]];
