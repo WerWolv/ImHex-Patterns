@@ -1,6 +1,7 @@
 #pragma once
 
 import std.io;
+import std.core;
 
 /*!
     Types to display single bytes using various different representations
@@ -20,7 +21,7 @@ namespace auto type {
         bit5 : 1;
         bit6 : 1;
         bit7 : 1;
-    } [[format("type::impl::format_bits"), right_to_left]];
+    } [[format("type::impl::format_bits"), bitfield_order(std::core::BitfieldOrder::LeastToMostSignificant, 8)]];
     
     /**
         Type visualizing the value of the two nibbles

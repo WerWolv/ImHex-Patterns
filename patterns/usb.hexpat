@@ -231,7 +231,7 @@ struct DeviceQualifierDescriptor {
 bitfield OTGAttributes {
     SRPSupport : 1;
     HNPSupport : 1;
-} [[right_to_left]];
+} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 2)]];
 
 struct OTGDescriptor {
     OTGAttributes bmAttributes;
