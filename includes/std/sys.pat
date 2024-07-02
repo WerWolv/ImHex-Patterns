@@ -49,4 +49,11 @@ namespace auto std {
         return builtin::std::sizeof_pack(pack);
     };
 
+    /**
+        Throws an error notifying the developer that the current codepath is not implemented currently.
+    */
+    fn unimplemented() {
+        std::error("Unimplemented code path reached!");
+    };
+
 }
