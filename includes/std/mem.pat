@@ -132,14 +132,6 @@ namespace auto std::mem {
         return builtin::std::mem::read_string(address, size);
     };
 
-
-    /**
-        Gets the current bit offset within the current byte that a bitfield will read.
-    */
-    fn current_bit_offset() {
-        return builtin::std::mem::current_bit_offset();
-    };
-
     /**
         Reads a number of bits from the specified bit offset within the specified byte
         @param byteOffset The byte offset within the data
@@ -209,6 +201,14 @@ namespace auto std::mem {
     */
     fn copy_value_to_section(ref auto value, Section to_section, u64 to_address) {
         builtin::std::mem::copy_value_to_section(value, to_section, to_address);
+    };
+
+    /**
+        Returns the current bit offset when inside of a bitfield.
+        @return The current bit offset between 0 and 7
+    */
+    fn current_bit_offset() {
+        return builtin::std::mem::current_bit_offset();
     };
 
 
