@@ -14,9 +14,13 @@ namespace auto std::bit {
         @return The number of bits set to 1 in `x`
     */
     fn popcount(u128 x) {
-        x = (x & (std::limits::u128_max() /  3)) + ((x >> 1) & (std::limits::u128_max() /  3));
-        x = (x & (std::limits::u128_max() /  5)) + ((x >> 2) & (std::limits::u128_max() /  5));
-        x = (x & (std::limits::u128_max() / 17)) + ((x >> 4) & (std::limits::u128_max() / 17));
+        const u128 a = 0x55555555555555555555555555555555;
+        const u128 b = 0x33333333333333333333333333333333;
+        const u128 c = 0x0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F;
+
+        x = (x & a) + ((x >> 1) & a);
+        x = (x & b) + ((x >> 2) & b);
+        x = (x & c) + ((x >> 4) & c);
         
         return x % 0xFF;
     };
