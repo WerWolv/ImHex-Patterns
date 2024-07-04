@@ -2,6 +2,7 @@
 // Only a small part of the file is unencrypted.
 
 #pragma endian little
+#pragma description Password Safe V3
 
 import std.mem;
 import std.sys;
@@ -29,4 +30,4 @@ std::assert(marker == "PWS3-EOFPWS3-EOF", "Invalid file: bad end marker!");
 Prologue prologue @ 0x04;
 u8 HMAC[32] @ std::mem::size() - 32;
 
-//EOF eof @ std::mem::size() - 48;
+EOF eof @ std::mem::size() - 48;
