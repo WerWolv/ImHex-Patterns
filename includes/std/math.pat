@@ -317,8 +317,8 @@ namespace auto std::math {
     */
     enum AccumulateOperation : u8 {
         Add         = 0,
-        Multiply     = 1,
-        Modulo         = 2,
+        Multiply    = 1,
+        Modulo      = 2,
         Min         = 3,
         Max         = 4
     };
