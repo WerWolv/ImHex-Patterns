@@ -62,8 +62,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | GGUF | | [`patterns/gguf.hexpat`](patterns/gguf.hexpat) | GGML Inference Models |
 | GIF | `image/gif` | [`patterns/gif.hexpat`](patterns/gif.hexpat) | GIF image files |
 | GZIP | `application/gzip` | [`patterns/gzip.hexpat`](patterns/gzip.hexpat) | GZip compressed data format |
-| Halo Tag || [`patterns/hinf_tag.hexpat`](patterns/hinf_bitmap.hexpat) | Halo Infinite Tag Files |
-| Halo Module || [`patterns/hinf_tag.hexpat`](patterns/hinf_bitmap.hexpat) | Halo Infinite Module Archive Files |
+| Halo Tag || [`patterns/hinf_tag.hexpat`](patterns/hinf_tag.hexpat) | Halo Infinite Tag Files |
+| Halo Module || [`patterns/hinf_module.hexpat`](patterns/hinf_module.hexpat) | Halo Infinite Module Archive Files |
 | Halo HavokScript || [`patterns/hinf_luas.hexpat`](patterns/hinf_luas.hexpat) | Halo Infinite HavokScript 5.1 Bytecode |
 | ICO | | [`patterns/ico.hexpat`](patterns/ico.hexpat) | Icon (.ico) or Cursor (.cur) files |
 | ID3 | `audio/mpeg` | [`patterns/id3.hexpat`](patterns/id3.hexpat) | ID3 tags in MP3 files |
