@@ -47,6 +47,15 @@ namespace auto std::mem {
     };
 
     /**
+        Function that returns true if the cursor position is at or beyond the given address
+        @param address The address to compare against
+        @return True if the cursor is at or beyond the given address
+    */
+    fn reached(u128 address) {
+        return $ >= address;
+    };
+
+    /**
         Aligns the given value to the given alignment
         @param alignment The alignment to align to
         @param value The value to align
