@@ -4,13 +4,13 @@ import std.io;
 import std.mem;
 
 /*!
-    Libray to interact with strings.
+    Library to interact with strings.
 */
 
 namespace auto std::string {
 
     /**
-        Base type for sized strings. Represents a string with its size preceeding it.
+        Base type for sized strings. Represents a string with its size preceding it.
         @tparam SizeType The type of the size field.
         @tparam DataType The type of the characters.
     */

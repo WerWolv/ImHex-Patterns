@@ -56,17 +56,17 @@ namespace auto std::core {
 
 
     /**
-        Sets the current default endianess.
-        Any patterns created following this attribute will be created using the set endianess.
-        @param endian The new default endianess
+        Sets the current default endianness.
+        Any patterns created following this attribute will be created using the set endianness.
+        @param endian The new default endianness
     */
     fn set_endian(std::mem::Endian endian) {
         builtin::std::core::set_endian(u32(endian));
     };
 
     /**
-        Gets the current default endianess.
-        @return The currently set default endianess
+        Gets the current default endianness.
+        @return The currently set default endianness
     */
     fn get_endian() {
         return builtin::std::core::get_endian();

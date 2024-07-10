@@ -50,7 +50,7 @@ namespace auto std {
     };
 
     /**
-        Throws an error notifying the developer that the current codepath is not implemented currently.
+        Throws an error notifying the developer that the current code path is not implemented currently.
     */
     fn unimplemented() {
         std::error("Unimplemented code path reached!");

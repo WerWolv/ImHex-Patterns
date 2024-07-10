@@ -32,7 +32,7 @@ namespace auto type {
     } [[format("type::impl::format_nibbles")]];
     
     /**
-        Type representing a single Byte. Decodes the byte as it's hexadeicmal value, individual bits and nibbles
+        Type representing a single Byte. Decodes the byte as it's hexadecimal value, individual bits and nibbles
     */
     union Byte {
         u8 value;
