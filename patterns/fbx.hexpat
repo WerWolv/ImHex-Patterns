@@ -111,7 +111,8 @@ struct Footer{
     std::assert_warn(footerId == "\xFA\xBC\xAB\x09\xD0\xC8\xD4\x66\xB1\x76\xFB\x83\x1C\xF7\x26\x7E", "Invalid footerId!");
     char zeroes[4];
     assertZero(zeroes, 4, "Found non-zero values in footer after footerId!");
-    u8 alignmentPaddingSize = $ % 16;
+    u128 ofs = $;
+    u8 alignmentPaddingSize = ((ofs + 15) & ~15) - ofs;
     
     if (alignmentPaddingSize == 0) {
         alignmentPaddingSize = 16;
