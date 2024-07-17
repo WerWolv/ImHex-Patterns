@@ -4,6 +4,9 @@
 
 #pragma endian little
 
+import hex.dec;
+import std.mem;
+import std.string;
 import std.sys;
 
 struct Array<E> {
@@ -19,6 +22,9 @@ struct Array<E> {
     } else {
         // Compressed (zlib)
         u8 compressedContents[compressedLength];
+        std::mem::Section contentsSection = std::mem::create_section("contentsSection@" + std::string::to_string($));
+        hex::dec::zlib_decompress(compressedContents, contentsSection, 15);
+        E contents[] @ 0x00 in contentsSection;
     }
 };
 
