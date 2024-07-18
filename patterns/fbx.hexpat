@@ -21,8 +21,9 @@ struct Array<E> {
         E contents[arrayLength];
     } else {
         // Compressed (zlib)
+        u128 pos = $;
         u8 compressedContents[compressedLength];
-        std::mem::Section contentsSection = std::mem::create_section("contentsSection@" + std::string::to_string($));
+        std::mem::Section contentsSection = std::mem::create_section(std::format("contentsSection @ {:#x}", pos));
         hex::dec::zlib_decompress(compressedContents, contentsSection, 15);
         E contents[] @ 0x00 in contentsSection;
     }
