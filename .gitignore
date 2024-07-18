@@ -1,5 +1,6 @@
 
-tests/cmake-build-debug/
+tests/cmake*/
+tests/build*/
 
 .idea/
 .DS_Store

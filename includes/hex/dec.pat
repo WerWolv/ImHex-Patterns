@@ -60,5 +60,16 @@ namespace auto hex::dec {
     fn zstd_decompress(ref auto pattern, std::mem::Section section) {
         return builtin::hex::dec::zstd_decompress(pattern, section);
     };
+
+    /**
+        Decompresses the bytes of a pattern into a section using the lz4 algorithm
+        @param pattern The pattern whose bytes should be decompressed
+        @param section The section to decompress the data into
+        @param frame Whether the data is framed or not
+        @return true if successful, false otherwise
+    */
+    fn lz4_decompress(ref auto pattern, std::mem::Section section, bool frame = true) {
+        return builtin::hex::dec::lz4_decompress(pattern, section, frame);
+    };
     
 }

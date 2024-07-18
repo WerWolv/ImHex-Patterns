@@ -47,11 +47,11 @@ bitfield Header {
 fn validate_hdr_checksum(Header hdr) {
     // Reassemble as a 2-byte big endian value
     u16 value = (
-        (hdr.method << 8) +
+        (u8(hdr.method) << 8) +
         (hdr.info << 12) +
         (hdr.fcheck << 0) +
         (hdr.fdict << 5) +
-        (hdr.flevel << 6)
+        (u8(hdr.flevel) << 6)
     );
     
     if (value % 31 == 0) {

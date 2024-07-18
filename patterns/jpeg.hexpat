@@ -41,7 +41,8 @@ enum Marker : u8 {
     APP13   = 0xED,
     APP14   = 0xEE,
     APP15   = 0xEF,
-    COM     = 0xFE
+    COM     = 0xFE,
+    UNKNOWN = 0X00
 };
 
 enum DensityUnit : u8 {
@@ -103,6 +104,15 @@ fn sof0_component_read(SOF0Component c) {
     return std::format("({}, {}, {})", c.componentId, c.samplingFactors, c.quantizationTableId);
 };
 
+fn get_eoi_marker_position() {
+    u32 pos = std::mem::find_sequence_in_range(0, $, std::mem::size(), 0xFF);
+    while (std::mem::read_unsigned(pos + 1, 1) != 0xD9) {
+        pos = std::mem::find_sequence_in_range(0, pos + 1, std::mem::size() + 1, 0xFF);
+    }
+    return pos;
+    
+};
+
 struct SOF0 {
     u8 bitsPerSample;
     u16 imageHeight, imageWidth;
@@ -121,30 +131,34 @@ struct SOS {
     u8 startSpectralSelection;
     u8 endSpectral;
     u8 apprBitPos;
-    
-    u8 image_data[std::mem::size() - $ - 2] [[sealed]];
+    u8 image_data[get_eoi_marker_position() - $] [[sealed]];
 };
 
 struct Segment {
-    type::Magic<"\xff"> magic;
-    Marker marker;
-    
-    if (marker == Marker::SOI || marker == Marker::EOI) {
-        
+    if (std::mem::read_unsigned($, 1) != 0xFF) {
+        Marker marker = Marker::UNKNOWN;
+        u8 data[get_eoi_marker_position() - $];
     } else {
-        u16 length;
-        if (marker == Marker::APP0) {
-            APP0 data;
-        } else if (marker == Marker::APP14) {
-            APP14 data;
-        } else if (marker == Marker::COM) {
-            char data[length - sizeof(length)];
-        } else if (marker == Marker::SOF0) {
-            SOF0 data;
-        } else if (marker == Marker::SOS) {
-            SOS data;
+        type::Magic<"\xff"> magic;
+        Marker marker;
+        
+        if (marker == Marker::SOI || marker == Marker::EOI) {
+            
         } else {
-            u8 data[length - sizeof(length)] [[sealed]];
+            u16 length;
+            if (marker == Marker::APP0) {
+                APP0 data;
+            } else if (marker == Marker::APP14) {
+                APP14 data;
+            } else if (marker == Marker::COM) {
+                char data[length - sizeof(length)];
+            } else if (marker == Marker::SOF0) {
+                SOF0 data;
+            } else if (marker == Marker::SOS) {
+                SOS data;
+            } else {
+                u8 data[length - sizeof(length)] [[sealed]];
+            }
         }
     }
 } [[format_read("segment_read")]];

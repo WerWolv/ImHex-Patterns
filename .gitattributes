@@ -1,4 +1,4 @@
 *.pat               linguist-language=Rust
 *.hexpat            linguist-language=Rust
 
-tests/patterns/test_data/*  binary
+tests/patterns/test_data/**  binary
