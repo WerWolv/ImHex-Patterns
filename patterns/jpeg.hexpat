@@ -105,10 +105,7 @@ fn sof0_component_read(SOF0Component c) {
 };
 
 fn get_eoi_marker_position() {
-    u32 pos = std::mem::find_sequence_in_range(0, $, std::mem::size(), 0xFF);
-    while (std::mem::read_unsigned(pos + 1, 1) != 0xD9) {
-        pos = std::mem::find_sequence_in_range(0, pos + 1, std::mem::size() + 1, 0xFF);
-    }
+    u32 pos = std::mem::find_sequence_in_range(0, $, std::mem::size(), 0xFF, 0xD9);
     return pos;
     
 };
