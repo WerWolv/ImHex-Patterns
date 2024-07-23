@@ -1,8 +1,8 @@
 #pragma author Shadlock0133 (aka Aurora)
 #pragma description Binary G-Code from Prusa
 
-#include <type/magic.pat>
-#include <std/mem.pat>
+import type.magic;
+import std.mem;
 
 enum ChecksumType : u16 {
     None,

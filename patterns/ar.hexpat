@@ -23,6 +23,9 @@ struct ARFile {
 };
 
 char signature[8] @ 0x00;
+if (signature == "!<arch>\r") {
+    std::error("Archive file got corrupted due to CRLF line ending conversion!");
+}
 std::assert(signature == "!<arch>\n", "File is not a valid archive!");
 
 ARFile files[while($ < std::mem::size())] @ $;
