@@ -2,6 +2,7 @@
 #pragma description NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC
 
 import std.core;
+import std.io;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 
@@ -147,6 +148,38 @@ bitfield ACCESS {
 	AUTHLIM				: 3;
 };
 
+fn validate_ntag_checksum(ManufacturerData mdata) {
+
+    /*
+    0x88 is the CT/cascade digit.
+    This is XOR'd with the first 3 bytes of the serial to calculate BCC0.
+    */
+    
+    u8 bcc0 = 0x88 ^ 
+    mdata.serial1[0] ^
+    mdata.serial1[1] ^
+    mdata.serial1[2];
+    
+    if (bcc0 == mdata.checkByte0) {
+        std::print("NTAG BCC0 checksum OK. Value: {}", bcc0);
+    } else {
+        std::warning(std::format("NTAG BCC0 checksum failed! Value: {}", bcc0));
+    }
+    
+    // BCC1 is the XOR of the last 4 serial bytes.
+    
+    u8 bcc1 = mdata.serial2[0] ^
+    mdata.serial2[1] ^
+    mdata.serial2[2] ^
+    mdata.serial2[3];
+    
+    if (bcc1 == mdata.checkByte1) {
+        std::print("NTAG BCC1 checksum OK. Value: {}", bcc1);
+    } else {
+        std::warning(std::format("NTAG BCC1 checksum failed! Value: {}", bcc1));
+    }
+};
+
 struct Config {
 	MIRROR MIRROR;
 	u8 MIRROR_PAGE;
@@ -166,3 +199,5 @@ struct NTAG {
 };
 
 NTAG ntag @ 0x00;
+
+validate_ntag_checksum(ntag.manufacturerData);
