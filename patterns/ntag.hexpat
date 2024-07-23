@@ -2,6 +2,7 @@
 #pragma description NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC
 
 import std.core;
+import std.io;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 
