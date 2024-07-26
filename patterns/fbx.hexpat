@@ -85,9 +85,7 @@ struct PropertyRecord {
     }
 };
 
-using NodeRecord32B;
-
-struct NodeRecord32A {
+struct NodeRecord32 {
     u32 endOffset;
     u32 numProperties;
     u32 propertyListLen;
@@ -106,36 +104,11 @@ struct NodeRecord32A {
     auto posAfterPropertyRecords = posBeforePropertyRecords + propertyListLen;
     PropertyRecord propertyRecords[numProperties];
     std::assert($ == posAfterPropertyRecords, std::format("Invalid size of propertyRecords @ {:#x} !", posBeforePropertyRecords));
-    NodeRecord32B nestedList[while($ < endOffset)];
+    NodeRecord32 nestedList[while($ < endOffset)];
     std::assert($ == endOffset, std::format("Invalid size of nestedList @ {:#x} !", posAfterPropertyRecords));
 };
 
-struct NodeRecord32B {
-    u32 endOffset;
-    u32 numProperties;
-    u32 propertyListLen;
-    u8 nameLen;
-    
-    // Detect sentinel record which marks the end of a list of node records
-    if (endOffset == 0 
-        && numProperties == 0 
-        && propertyListLen == 0 
-        && nameLen == 0) {
-        break;
-    }
-    
-    char name[nameLen];
-    auto posBeforePropertyRecords = $;
-    auto posAfterPropertyRecords = posBeforePropertyRecords + propertyListLen;
-    PropertyRecord propertyRecords[numProperties];
-    std::assert($ == posAfterPropertyRecords, std::format("Invalid size of propertyRecords @ {:#x} !", posBeforePropertyRecords));
-    NodeRecord32A nestedList[while($ < endOffset)];
-    std::assert($ == endOffset, std::format("Invalid size of nestedList @ {:#x} !", posAfterPropertyRecords));
-};
-
-using NodeRecord64B;
-
-struct NodeRecord64A {
+struct NodeRecord64 {
     u64 endOffset;
     u64 numProperties;
     u64 propertyListLen;
@@ -154,30 +127,7 @@ struct NodeRecord64A {
     auto posAfterPropertyRecords = posBeforePropertyRecords + propertyListLen;
     PropertyRecord propertyRecords[numProperties];
     std::assert($ == posAfterPropertyRecords, std::format("Invalid size of propertyRecords @ {:#x} !", posBeforePropertyRecords));
-    NodeRecord64B nestedList[while($ < endOffset)];
-    std::assert($ == endOffset, std::format("Invalid size of nestedList @ {:#x} !", posAfterPropertyRecords));
-};
-
-struct NodeRecord64B {
-    u64 endOffset;
-    u64 numProperties;
-    u64 propertyListLen;
-    u8 nameLen;
-    
-    // Detect sentinel record which marks the end of a list of node records
-    if (endOffset == 0 
-        && numProperties == 0 
-        && propertyListLen == 0 
-        && nameLen == 0) {
-        break;
-    }
-    
-    char name[nameLen];
-    auto posBeforePropertyRecords = $;
-    auto posAfterPropertyRecords = posBeforePropertyRecords + propertyListLen;
-    PropertyRecord propertyRecords[numProperties];
-    std::assert($ == posAfterPropertyRecords, std::format("Invalid size of propertyRecords @ {:#x} !", posBeforePropertyRecords));
-    NodeRecord64A nestedList[while($ < endOffset)];
+    NodeRecord64 nestedList[while($ < endOffset)];
     std::assert($ == endOffset, std::format("Invalid size of nestedList @ {:#x} !", posAfterPropertyRecords));
 };
 
@@ -222,9 +172,9 @@ struct FBX {
     Header header;
     
     if  (header.version < 7500) {
-        NodeRecord32A rootRecords[while(true)];
+        NodeRecord32 rootRecords[while(true)];
     } else {
-        NodeRecord64A rootRecords[while(true)];
+        NodeRecord64 rootRecords[while(true)];
     }
     
     Footer footer;
