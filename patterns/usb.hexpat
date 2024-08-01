@@ -1,4 +1,4 @@
-#pragma description TODO
+#pragma description USB Descriptor
 
 import std.core;
 import std.io;

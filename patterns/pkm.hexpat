@@ -1,5 +1,5 @@
-#pragma description PKM (PacKMan) files containing ETC (Ericsson Texture Compression)
 #pragma author applecuckoo
+#pragma description PKM (PacKMan) files containing ETC (Ericsson Texture Compression)
 #pragma endian big
 
 enum PKMFormat : u16 {

@@ -1,4 +1,4 @@
-#pragma description TODO
+#pragma description Apple binary property list
 
 import std.math;
 import std.core;
