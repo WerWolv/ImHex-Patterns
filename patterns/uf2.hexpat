@@ -39,6 +39,8 @@ enum UF2_TagTypeEnum : u32 {
 	DeviceTypeIdentifier 	= 0xC8A729
 };
 
+// reference: https://microsoft.github.io/uf2/utils/uf2families.json
+
 enum UF2_FamilyID : u32 {
     ATMEGA32     = 0x16573617,
     SAML21       = 0x1851780a,
