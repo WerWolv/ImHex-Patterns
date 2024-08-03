@@ -11,35 +11,30 @@
     @source https://github.com/flipperdevices/flipperzero-firmware/blob/a403e5f543a5423e39ac1700ae4711e9e489445e/applications/main/infrared/infrared_app.c#L17
 */
 #define MAGIC_IR 0x1F
-#pragma magic [ 1F ] @ 0x00
 
 /**
     Expansion/UART
     @source https://github.com/flipperdevices/flipperzero-firmware/blob/a403e5f543a5423e39ac1700ae4711e9e489445e/applications/services/expansion/expansion_settings.c#L10
 */
 #define MAGIC_UART 0xEA
-#pragma magic [ EA ] @ 0x00
 
 /**
     Bluetooth
     @source https://github.com/flipperdevices/flipperzero-firmware/blob/a403e5f543a5423e39ac1700ae4711e9e489445e/applications/services/bt/bt_settings.c#L9
 */
 #define MAGIC_BT 0x19
-#pragma magic [ 19 ] @ 0x00
 
 /**
     Dolphin
     @source https://github.com/DarkFlippers/unleashed-firmware/blob/b2305ce5c7a6ab36babc30243a589eccfa9edcb6/applications/services/dolphin/helpers/dolphin_state.c#L14
 */
 #define MAGIC_DOLPHIN  0xD0
-#pragma magic [ 0D ] @ 0x00
 
 /**
     Desktop
     @source https://github.com/flipperdevices/flipperzero-firmware/blob/a403e5f543a5423e39ac1700ae4711e9e489445e/applications/services/desktop/desktop_settings.h#L14
 */
 #define MAGIC_DEKTOP 0x17
-#pragma magic [ 1/ ] @ 0x00
 
 /* ======= Common structures =======
 
