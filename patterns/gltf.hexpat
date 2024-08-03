@@ -1,5 +1,5 @@
 /**
- * @file <gltf.pat> ImHex Pattern for glTF binary files.
+ * @file <gltf.hexpat> ImHex Pattern for glTF binary files.
  * 
  * Copyright (c) 2023 H. Utku Maden <utkumaden@hotmail.com>
  *
@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-#pragma description TODO
+#pragma author H. Utku Maden
+#pragma description GL Transmission Format binary 3D model file (.glb)
+#pragma MIME model/gltf-binary
 
 import std.mem;
 import std.io;
