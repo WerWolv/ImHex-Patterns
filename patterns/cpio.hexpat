@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Old Binary CPIO Format
+#pragma description Old Binary CPIO
 
 import type.base;
 

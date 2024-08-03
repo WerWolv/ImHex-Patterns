@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Static library archive files
+#pragma description GNU Static library archive
 
 #pragma MIME application/x-archive
 

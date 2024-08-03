@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Windows Shell Link file format
+#pragma description Windows Shell Link / Shortcut
 
 #pragma MIME application/x-ms-shortcut
 

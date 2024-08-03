@@ -1,5 +1,5 @@
 #pragma author Shimogawa (aka Rebuild)
-#pragma description TrueType and OpenType font format
+#pragma description TrueType/OpenType font
 #pragma endian big
 #pragma MIME font/ttf
 #pragma MIME font/otf

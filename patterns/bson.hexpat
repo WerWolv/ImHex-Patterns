@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description BSON (Binary JSON) format
+#pragma description BSON (Binary JSON)
 
 #pragma MIME application/bson
 

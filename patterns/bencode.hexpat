@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Bencode encoding, used by Torrent files
+#pragma description Torrent data (Bencode)
 
 #pragma MIME application/x-bittorrent
 

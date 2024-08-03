@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Google Protobuf encoding 
+#pragma description Google Protobuf 
 
 import std.core;
 import std.mem;

@@ -1,4 +1,4 @@
-#pragma description Tar file format
+#pragma description GNU Tar
 
 #pragma MIME application/tar
 #pragma MIME application/x-tar

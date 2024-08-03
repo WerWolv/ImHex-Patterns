@@ -1,4 +1,4 @@
-#pragma description MIDI header, event fields provided
+#pragma description MIDI Musical Instrument Digital Interface
 
 import std.core;
 

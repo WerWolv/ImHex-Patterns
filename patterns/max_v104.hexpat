@@ -1,4 +1,4 @@
-#pragma description Mechanized Assault and Exploration v1.04 (strategy game) save file format
+#pragma description Mechanized Assault and Exploration v1.04 (strategy game) save
 
 import std.sys;
 import std.mem;

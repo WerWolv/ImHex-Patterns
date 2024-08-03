@@ -1,4 +1,4 @@
-#pragma description Tag Image File Format
+#pragma description Tag Image File Format (TIFF)
 
 #pragma MIME image/tiff
 

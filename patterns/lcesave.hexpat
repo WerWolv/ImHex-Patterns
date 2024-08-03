@@ -1,7 +1,6 @@
 #pragma author DexrnZacAttack
-#pragma description Pattern for Minecraft LCE Save Files (after decompression)
-#pragma version 1.3.0
-#pragma disclaimer This pattern is not affiliated with Mojang Studios nor Microsoft. Minecraft is a trademark of Mojang Studios and Microsoft.
+#pragma description Decompressed Minecraft LCE Save File
+
 #pragma endian big
 /* ^ switch this to little for Switch, PS4, or Xbox One */
 

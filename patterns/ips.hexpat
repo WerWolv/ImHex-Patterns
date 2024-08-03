@@ -1,5 +1,5 @@
 #pragma author gmestanley
-#pragma description IPS (International Patching System) files
+#pragma description IPS (International Patching System)
 
 #pragma endian big
 

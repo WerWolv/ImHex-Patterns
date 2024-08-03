@@ -1,5 +1,5 @@
 #pragma author Surasia
-#pragma description Halo Infinite Tag File
+#pragma description Halo Infinite Tag
 
 import std.string;
 import type.guid;

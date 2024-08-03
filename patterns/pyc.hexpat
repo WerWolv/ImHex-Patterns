@@ -1,4 +1,4 @@
-#pragma description Python bytecode files
+#pragma description Python bytecode
 
 import type.time;
 import std.mem;

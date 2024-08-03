@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Windows MiniDump files
+#pragma description Windows MiniDump
 
 #pragma MIME application/x-dmp
 

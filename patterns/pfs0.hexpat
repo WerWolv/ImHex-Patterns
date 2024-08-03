@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Nintendo Switch PFS0 archive (NSP files)
+#pragma description Nintendo Switch PFS0 archive (.nsp)
 
 import type.magic;
 import type.size;

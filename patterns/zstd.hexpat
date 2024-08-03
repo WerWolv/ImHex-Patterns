@@ -1,4 +1,4 @@
-#pragma description Zstandard compressed data format
+#pragma description Zstandard compressed data
 
 // https://github.com/facebook/zstd/blob/dev/doc/zstd_compression_format.md
 

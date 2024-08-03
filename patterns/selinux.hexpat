@@ -1,4 +1,4 @@
-#pragma description SE Linux modules
+#pragma description SE Linux module
 #pragma author Ange Albertini
 
 import std.sys;

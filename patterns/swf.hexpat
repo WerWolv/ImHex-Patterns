@@ -1,5 +1,5 @@
 #pragma author saturnaliam
-#pragma description SWF file header
+#pragma description Shockwave Flash Movie (SWF)
 #pragma endian little
 import type.magic;
 

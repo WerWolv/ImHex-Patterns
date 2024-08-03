@@ -1,6 +1,7 @@
+// Analyzed and reverse engineered by xtex
 #pragma author xtex
-#pragma description HiSilicon HSDT device-tree table file
-// Analyzed by reverse engineering by xtex
+
+#pragma description HiSilicon HSDT device-tree table
 import std.sys;
 import std.mem;
 #pragma endian little

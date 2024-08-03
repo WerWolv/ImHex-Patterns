@@ -1,4 +1,4 @@
-#pragma description GIF image files
+#pragma description GIF image
 
 #pragma MIME image/gif
 

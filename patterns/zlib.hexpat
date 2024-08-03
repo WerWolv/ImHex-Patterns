@@ -1,4 +1,4 @@
-#pragma description ZLIB compressed data format
+#pragma description ZLIB compressed data
 
 #pragma MIME application/zlib
 

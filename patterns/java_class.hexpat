@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Java Class files
+#pragma description Java Class
 
 #pragma endian big
 #pragma pattern_limit 100000000

@@ -1,4 +1,4 @@
-#pragma description ID3 tags in MP3 files
+#pragma description MP3 ID3 tags
 
 #pragma MIME audio/mpeg
 

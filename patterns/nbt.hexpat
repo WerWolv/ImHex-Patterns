@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Minecraft NBT format
+#pragma description Minecraft NBT
 
 import std.sys;
 
