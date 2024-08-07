@@ -36,7 +36,7 @@ namespace auto std::string {
         @tparam DataType The type of the characters.
     */
     struct NullStringBase<DataType> {
-        DataType string[while(std::mem::read_unsigned($, sizeof(DataType)) != 0x00)];
+        DataType data[while(std::mem::read_unsigned($, sizeof(DataType)) != 0x00)];
         DataType null_terminator;
     } [[sealed, format("std::string::impl::format_string"), transform("std::string::impl::format_string")]];
 
