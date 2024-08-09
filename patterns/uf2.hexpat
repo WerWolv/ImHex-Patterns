@@ -84,8 +84,8 @@ enum UF2_FamilyID : u32 {
     RP2XXX_ABSOLUTE = 0xe48bff57,
     RP2XXX_DATA     = 0xe48bff58,
     RP2350_ARM_S    = 0xe48bff59,
-    RP2350_RISCV    = 0xe48bff5a
-    RP2350_ARM_NS   = 0xe48bff5b
+    RP2350_RISCV    = 0xe48bff5a,
+    RP2350_ARM_NS   = 0xe48bff5b,
     STM32L4         = 0x00ff6919,
     GD32VF103       = 0x9af03e33,
     CSK4            = 0x4f6ace52,
