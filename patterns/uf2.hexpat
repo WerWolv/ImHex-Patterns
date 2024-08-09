@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description USB Flashing Format
+#pragma description USB Flashing Format (.uf2)
 
 import std.sys;
 import std.mem;

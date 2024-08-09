@@ -1,4 +1,4 @@
-#pragma description .DS_Store file format
+#pragma description macOS .DS_Store
 
 // Apple macOS .DS_Store format
 #pragma endian big

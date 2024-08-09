@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Microsoft Hyper-V Virtual Hard Disk format
+#pragma description Microsoft Hyper-V Virtual Hard Disk
 
 import std.io;
 import std.ptr;

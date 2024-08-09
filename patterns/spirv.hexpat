@@ -1,4 +1,4 @@
-#pragma description SPIR-V header and instructions
+#pragma description Khronos Group SPIR-V
 
 import std.mem;
 

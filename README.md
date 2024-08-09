@@ -62,6 +62,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | FFX | | [`patterns/ffx/*`](https://gitlab.com/EvelynTSMG/imhex-ffx-pats) | Various Final Fantasy X files |
 | File System | | [`patterns/fs.hexpat`](patterns/fs.hexpat) | Drive File System |
 | FLAC | `audio/flac` | [`patterns/flac.hexpat`](patterns/flac.hexpat) | Free Lossless Audio Codec, FLAC Audio Format |
+| Flipper Zero Settings | | [`patterns/flipper_settings.hexpat`](patterns/flipper_settings.hexpat) | Flipper Zero Settings Files |
 | GB | `application/x-gameboy-rom` | [`patterns/gb.hexpat`](patterns/gb.hexpat) | Gameboy ROM |
 | GGUF | | [`patterns/gguf.hexpat`](patterns/gguf.hexpat) | GGML Inference Models |
 | GIF | `image/gif` | [`patterns/gif.hexpat`](patterns/gif.hexpat) | GIF image files |
@@ -79,6 +80,9 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ISO | | [`patterns/iso.hexpat`](patterns/iso.hexpat) | ISO 9660 file system |
 | Java Class | `application/x-java-applet` | [`patterns/java_class.hexpat`](patterns/java_class.hexpat) | Java Class files |
 | JPEG | `image/jpeg` | [`patterns/jpeg.hexpat`](patterns/jpeg.hexpat) | JPEG Image Format |
+| Lua 5.1 | | [`patterns/lua51.hexpat`](patterns/lua51.hexpat) | Lua 5.1 bytecode |
+| Lua 5.2 | | [`patterns/lua52.hexpat`](patterns/lua52.hexpat) | Lua 5.2 bytecode |
+| Lua 5.3 | | [`patterns/lua53.hexpat`](patterns/lua53.hexpat) | Lua 5.3 bytecode |
 | Lua 5.4 | | [`patterns/lua54.hexpat`](patterns/lua54.hexpat) | Lua 5.4 bytecode |
 | LCE Savefile | | [`patterns/lcesave.hexpat`](patterns/lcesave.hexpat) | Minecraft Legacy Console Edition save file |
 | Mach-O | `application/x-mach-binary` | [`patterns/macho.hexpat`](patterns/macho.hexpat) | Mach-O executable |
@@ -112,6 +116,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | QOI  | `image/qoi` | [`patterns/qoi.hexpat`](patterns/qoi.hexpat) | QOI image files |
 | RAS  | `image/x-sun-raster` | [`patterns/ras.hexpat`](patterns/ras.hexpat) | RAS image files |
 | ReFS | | [`patterns/refs.hexpat`](patterns/refs.hexpat) | Microsoft Resilient File System |
+| RGBDS | | [`patterns/rgbds.hexpat`](patterns/rgbds.hexpat) | [RGBDS](https://rgbds.gbdev.io) object file format |
 | Shell Link | `application/x-ms-shortcut` | [`patterns/lnk.hexpat`](patterns/lnk.hexpat) | Windows Shell Link file format |
 | shp | | [`patterns/shp.hexpat`](patterns/shp.hexpat) | ESRI shape file |
 | shx | | [`patterns/shx.hexpat`](patterns/shx.hexpat) | ESRI index file |

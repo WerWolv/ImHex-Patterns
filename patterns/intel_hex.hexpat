@@ -1,4 +1,4 @@
-#pragma description Intel hexadecimal object file format definition
+#pragma description Intel hex
 
 /* If you have no delimiters between data records then remove 
  * the null_bytes field in the data_packet struct.

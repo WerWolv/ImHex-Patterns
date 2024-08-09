@@ -1,5 +1,5 @@
 #pragma author zhoubo
-#pragma description Parse AAC's ADTS(Audio Data Transport Stream) audio files.
+#pragma description AAC ADTSn (Audio Data Transport Stream) Audio
 #pragma magic [ FF F? ] @ 0x00
 #pragma pattern_limit 0xFFFFFF
 

@@ -1,4 +1,4 @@
-#pragma description PyInstaller binray files 
+#pragma description PyInstaller binray 
 
 #pragma endian big
 

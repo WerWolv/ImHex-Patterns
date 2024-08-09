@@ -23,7 +23,7 @@
  */
 
 #pragma author H. Utku Maden
-#pragma description GL Transmission Format binary 3D model file (.glb)
+#pragma description GL Transmission Format binary 3D model (.glb)
 #pragma MIME model/gltf-binary
 
 import std.mem;

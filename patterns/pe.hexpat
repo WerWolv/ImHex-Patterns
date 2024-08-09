@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description PE header, COFF header, Standard COFF fields and Windows Specific fields
+#pragma description Microsoft PE Portable Executable (exe/dll)
 
 #pragma MIME application/x-dosexec
 #pragma MIME application/x-msdownload

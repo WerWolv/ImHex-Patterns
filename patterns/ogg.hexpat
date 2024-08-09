@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description OGG Audio format
+#pragma description OGG Audio
 
 #pragma MIME audio/ogg
 

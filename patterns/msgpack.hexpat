@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description MessagePack binary serialization format
+#pragma description MessagePack
 
 #pragma MIME application/x-msgpack
 

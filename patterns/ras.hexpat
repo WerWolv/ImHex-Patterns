@@ -1,5 +1,5 @@
 #pragma author Fl3ch4
-#pragma description RAS image files
+#pragma description RAS image
 #pragma MIME image/x-sun-raster
 #pragma endian big
 

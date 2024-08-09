@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Xilinx FPGA Bitstreams
+#pragma description Xilinx FPGA Bitstream
 
 import std.mem;
 import std.io;

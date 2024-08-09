@@ -1,4 +1,4 @@
-#pragma description MPEG-4 Part 14 digital multimedia container format
+#pragma description MPEG-4 Part 14 digital multimedia container (MP4)
 
 #pragma endian big
 

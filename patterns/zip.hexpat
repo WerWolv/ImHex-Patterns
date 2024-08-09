@@ -1,4 +1,4 @@
-#pragma description End of Central Directory Header, Central Directory File Headers, Local File Header
+#pragma description ZIP compression archive
 
 #pragma MIME application/zip
 

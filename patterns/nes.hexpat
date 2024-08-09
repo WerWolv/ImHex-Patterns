@@ -1,5 +1,5 @@
 #pragma author gmestanley
-#pragma description .nes file format
+#pragma description Nintendo Entertainment System ROM (.nes)
 
 import std.mem;
 import std.string;

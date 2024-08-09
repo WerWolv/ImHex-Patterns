@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Nintendo Switch NRO files
+#pragma description Nintendo Switch NRO
 
 import std.io;
 import std.sys;

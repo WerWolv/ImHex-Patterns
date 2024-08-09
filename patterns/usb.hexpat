@@ -1,4 +1,4 @@
-#pragma description USB Descriptor
+#pragma description USB Device Descriptor
 
 import std.core;
 import std.io;

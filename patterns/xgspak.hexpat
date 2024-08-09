@@ -1,5 +1,5 @@
 #pragma author LolHacksRule
-#pragma description Exient XGS Engine Pak files
+#pragma description Exient XGS Engine Pak
 
 import std.mem;
 import std.core;

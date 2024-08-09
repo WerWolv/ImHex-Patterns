@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description JPEG Image Format
+#pragma description JPEG Image
 
 import std.io;
 import std.mem;

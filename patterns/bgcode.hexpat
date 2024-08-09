@@ -1,5 +1,5 @@
 #pragma author Shadlock0133 (aka Aurora)
-#pragma description Binary G-Code from Prusa
+#pragma description Prusa Binary G-Code
 
 import type.magic;
 import std.mem;
