@@ -1,4 +1,4 @@
-#pragma description PIF Image Format
+#pragma description PIF Image
 
 /* PIF - Portable Image Format
  *

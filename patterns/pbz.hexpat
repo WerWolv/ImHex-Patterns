@@ -6,6 +6,9 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#pragma author Nicolás Alvarez
+#pragma description Apple pbz
+
 import std.mem;
 import type.magic;
 

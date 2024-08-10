@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description STL 3D Model format
+#pragma description STL 3D Model
 
 #pragma MIME model/stl
 #pragma MIME model/x.stl-binary

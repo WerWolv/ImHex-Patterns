@@ -125,7 +125,6 @@ struct LuaFunction {
     Vector<LuaUpvalue> upvalues;
     Vector<LuaFunction> protos;
     LuaDebugInfo debugInfo;
-
 };
 
 struct LuaFile {

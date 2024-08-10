@@ -1,5 +1,5 @@
 #pragma author Surasia
-#pragma description Halo Infinite HavokScript 5.1 "luas" file
+#pragma description Halo Infinite HavokScript 5.1 "luas"
 
 import std.io;
 import std.mem;

@@ -1,4 +1,4 @@
-#pragma description OS2/Windows Bitmap files
+#pragma description OS2/Windows Bitmap
 
 #pragma MIME image/bmp
 #pragma endian little

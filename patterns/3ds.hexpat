@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Autodesk 3DS Max Model file
+#pragma description Autodesk 3DS Max Model
 
 import std.io;
 import type.base;

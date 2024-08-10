@@ -1,6 +1,6 @@
 #pragma author Fl3ch4
-#pragma description TODO
-#pragma MIME image/webp
+#pragma description RAS image
+#pragma MIME image/x-sun-raster
 #pragma endian big
 
 

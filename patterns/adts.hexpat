@@ -1,14 +1,13 @@
-#pragma authors: zhoubo
-#pragma version: 0.4
-#pragma description: Parse AAC's ADTS(Audio Data Transport Stream) audio files.
-#pragma category: Audio
-#pragma filemask: *.aac
-#pragma IDBytes: FF F //ADTS Syncword
-#pragma history:
-#pragma   0.4  2024-02-12 zhoubo: Porting from 010 Editor Templates.
-#pragma   0.3  2024-02-09 zhoubo: use BitfieldDisablePadding(Unpadded Bitfields) for odd header bytes(7,9 bytes) color, and remove FSeek.
-#pragma   0.2  2024-02-05 zhoubo: fix some comment & color.
-#pragma   0.1  2022-06-13 zhoubo: Init release. only ADTS, not support ADIF,LATM.
+#pragma author zhoubo
+#pragma description AAC ADTSn (Audio Data Transport Stream) Audio
+#pragma magic [ FF F? ] @ 0x00
+#pragma pattern_limit 0xFFFFFF
+
+// History
+// 0.4  2024-02-12 zhoubo: Porting from 010 Editor Templates.
+// 0.3  2024-02-09 zhoubo: use BitfieldDisablePadding(Unpadded Bitfields) for odd header bytes(7,9 bytes) color, and remove FSeek.
+// 0.2  2024-02-05 zhoubo: fix some comment & color.
+// 0.1  2022-06-13 zhoubo: Init release. only ADTS, not support ADIF,LATM.
 
 // More information available at:
 //  1. https://wiki.multimedia.cx/index.php?title=ADTS

@@ -1,7 +1,7 @@
 // https://github.com/ggerganov/ggml/blob/master/docs/gguf.md
 // https://github.com/openxla/iree/blob/main/runtime/src/iree/io/formats/gguf/gguf_parser.c
 
-#pragma description GGUF v3 File Format Patter
+#pragma description ggml GGUF v3
 #pragma authors @leonjza, jessie @ imhex discord
 
 #pragma pattern_limit 300000

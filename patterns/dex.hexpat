@@ -1,4 +1,4 @@
-#pragma description Dalvik EXecutable Format
+#pragma description Dalvik EXecutable
 
 import type.leb128;
 

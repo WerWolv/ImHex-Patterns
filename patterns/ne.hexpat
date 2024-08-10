@@ -1,4 +1,4 @@
-#pragma description NE header and Standard NE fields
+#pragma description Microsoft DOS NE executable 
 
 import std.mem;
 

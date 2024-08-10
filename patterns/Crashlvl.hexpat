@@ -1,5 +1,5 @@
 #pragma author AdventureT
-#pragma description Crash Bandicoot - Back in Time (fan game) User created level format
+#pragma description Crash Bandicoot - Back in Time (fan game) User created level
 #pragma history
 #pragma   0.3  2024-05-15 Added support for version 0.95
 #pragma   0.2  2023-10-29 Added support for version 0.94c

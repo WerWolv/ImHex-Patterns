@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description GZip compressed data format
+#pragma description GZip compressed data
 
 #pragma MIME application/gzip
 

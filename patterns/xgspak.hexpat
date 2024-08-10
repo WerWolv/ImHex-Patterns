@@ -1,3 +1,6 @@
+#pragma author LolHacksRule
+#pragma description Exient XGS Engine Pak
+
 import std.mem;
 import std.core;
 import type.time;

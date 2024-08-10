@@ -34,7 +34,7 @@ namespace auto type {
     */
     using Bin<T> = T [[format("type::impl::format_bin")]];
 
-	namespace impl {
+    namespace impl {
 
             fn format_number(auto value, str fmt) {
                 bool negative = value < 0;
@@ -50,6 +50,6 @@ namespace auto type {
             fn format_dec(auto value) { return type::impl::format_number(value, "{}"); };
             fn format_bin(auto value) { return type::impl::format_number(value, "0b{:08b}"); };
 
-	}
+    }
 
 }

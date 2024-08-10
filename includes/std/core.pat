@@ -56,17 +56,17 @@ namespace auto std::core {
 
 
     /**
-        Sets the current default endianess.
-        Any patterns created following this attribute will be created using the set endianess.
-        @param endian The new default endianess
+        Sets the current default endianness.
+        Any patterns created following this attribute will be created using the set endianness.
+        @param endian The new default endianness
     */
     fn set_endian(std::mem::Endian endian) {
         builtin::std::core::set_endian(u32(endian));
     };
 
     /**
-        Gets the current default endianess.
-        @return The currently set default endianess
+        Gets the current default endianness.
+        @return The currently set default endianness
     */
     fn get_endian() {
         return builtin::std::core::get_endian();
@@ -164,4 +164,13 @@ namespace auto std::core {
     fn set_pattern_comment(ref auto pattern, str comment) {
         builtin::std::core::set_pattern_comment(pattern, name);
     }; 
+
+    /**
+        Executes the function with the given name, passing in all given arguments
+        @param function_name The namespace-prefixed name of the function
+        @param args Arguments to pass to the function
+    */
+    fn execute_function(str function_name, auto ... args) {
+        builtin::std::core::execute_function(function_name, args);
+    };
 }

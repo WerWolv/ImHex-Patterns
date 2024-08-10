@@ -83,5 +83,11 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    return hasDescription ? EXIT_SUCCESS : EXIT_FAILURE;
+    if (!hasDescription) {
+        fmt::print("No description pragma found in pattern file\n");
+        fmt::print("Please add a #pragma description <your description> tag to the pattern!\n");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }

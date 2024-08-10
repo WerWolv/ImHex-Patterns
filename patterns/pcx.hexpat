@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description PCX Image format
+#pragma description PCX Image
 
 #pragma MIME application/x-pcx
 

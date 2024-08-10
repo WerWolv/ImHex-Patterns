@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description ELF header in elf binaries
+#pragma description Executable and Linkable Format executable (ELF)
 
 #pragma MIME application/x-executable
 #pragma MIME application/x-elf
@@ -498,12 +498,12 @@ bitfield SHF {
 bitfield ELF32_R_INFO {
     SYM  : 8;
     TYPE : 8;
-} [[left_to_right]];
+} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 16)]];
 
 bitfield ELF64_R_INFO {
     SYM  : 32;
     TYPE : 32;
-} [[left_to_right]];
+} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 64)]];
 
 bitfield PF {
     X        : 1;

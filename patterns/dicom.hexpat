@@ -1,4 +1,4 @@
-#pragma description DICOM file
+#pragma description DICOM Digital Imaging and Communications in Medicine
 
 #pragma MIME application/dicom
 #pragma endian little

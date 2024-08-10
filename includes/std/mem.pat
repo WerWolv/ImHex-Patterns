@@ -9,18 +9,15 @@ namespace auto std::mem {
     namespace impl {
 
         struct MagicSearchImpl<auto Magic, T> {
-            if ($ < (std::mem::base_address() + std::mem::size() - std::string::length(Magic) - 1)) {
-                char __potentialMagic__[std::string::length(Magic)] [[hidden, no_unique_address]];
-                
-                if (__potentialMagic__ == Magic) {
-                    T data [[inline]];
-                } else {
-                    padding[1];
-                    continue;
-                }
-            } else {
-                padding[1];
-                continue;
+            s128 address = builtin::std::mem::find_string_in_range(0, $, builtin::std::mem::size(), Magic);
+            if (address < 0)
+                break;
+
+            $ = address;
+            try {
+                T data [[inline]];
+            } catch {
+                T data;
             }
         };
 
@@ -32,7 +29,7 @@ namespace auto std::mem {
     using Section = u128;
 
     /**
-        The Endianess of a value
+        The endianness of a value
      */
     enum Endian : u8 {
         Native  = 0,
@@ -50,6 +47,15 @@ namespace auto std::mem {
     };
 
     /**
+        Function that returns true if the cursor position is at or beyond the given address
+        @param address The address to compare against
+        @return True if the cursor is at or beyond the given address
+    */
+    fn reached(u128 address) {
+        return $ >= address;
+    };
+
+    /**
         Aligns the given value to the given alignment
         @param alignment The alignment to align to
         @param value The value to align
@@ -63,7 +69,7 @@ namespace auto std::mem {
   
 
     /**
-        Gets the base address of the memory
+        Gets the base address of the data
         @return The base address of the memory
      */
     fn base_address() {
@@ -71,7 +77,7 @@ namespace auto std::mem {
     };
 
     /**
-        Gets the size of the memory
+        Gets the size of the data
         @return The size of the memory
      */
     fn size() {
@@ -79,17 +85,18 @@ namespace auto std::mem {
     };
 
     /**
-        Finds a sequence of bytes in the memory
+        Finds a sequence of bytes in the data
         @param occurrence_index The index of the occurrence to find
         @param bytes The bytes to find
         @return The address of the sequence
     */
     fn find_sequence(u128 occurrence_index, auto ... bytes) {
-        return builtin::std::mem::find_sequence_in_range(occurrence_index, builtin::std::mem::base_address(), builtin::std::mem::size(), bytes);
+        const u128 address = builtin::std::mem::base_address();
+        return builtin::std::mem::find_sequence_in_range(occurrence_index, address, address + builtin::std::mem::size(), bytes);
     };
 
     /**
-        Finds a sequence of bytes in a specific region of the memory
+        Finds a sequence of bytes in a specific region of the data
         @param occurrence_index The index of the occurrence to find
         @param offsetFrom The offset from which to start searching
         @param offsetTo The offset to which to search
@@ -100,11 +107,35 @@ namespace auto std::mem {
         return builtin::std::mem::find_sequence_in_range(occurrence_index, offsetFrom, offsetTo, bytes);
     };
 
+
+    /**
+        Finds a string in the data
+        @param occurrence_index The index of the occurrence to find
+        @param string The string to find
+        @return The address of the sequence
+    */
+    fn find_string(u128 occurrence_index, str string) {
+        const u128 address = builtin::std::mem::base_address();
+        return builtin::std::mem::find_string_in_range(occurrence_index, address, address + builtin::std::mem::size(), string);
+    };
+
+    /**
+        Finds a string in a specific region of the data
+        @param occurrence_index The index of the occurrence to find
+        @param offsetFrom The offset from which to start searching
+        @param offsetTo The offset to which to search
+        @param string The string to find
+        @return The address of the sequence
+    */
+    fn find_string_in_range(u128 occurrence_index, u128 offsetFrom, u128 offsetTo, str string) {
+        return builtin::std::mem::find_string_in_range(occurrence_index, offsetFrom, offsetTo, string);
+    };
+
     /**
         Reads a unsigned value from the memory
         @param address The address to read from
         @param size The size of the value to read
-        @param [endian] The endianess of the value to read. Defaults to native
+        @param [endian] The endianness of the value to read. Defaults to native
         @return The value read
     */
     fn read_unsigned(u128 address, u8 size, Endian endian = Endian::Native) {
@@ -115,7 +146,7 @@ namespace auto std::mem {
         Reads a signed value from the memory
         @param address The address to read from
         @param size The size of the value to read
-        @param [endian] The endianess of the value to read. Defaults to native
+        @param [endian] The endianness of the value to read. Defaults to native
         @return The value read
     */
     fn read_signed(u128 address, u8 size, Endian endian = Endian::Native) {
@@ -130,14 +161,6 @@ namespace auto std::mem {
     */
     fn read_string(u128 address, u128 size) {
         return builtin::std::mem::read_string(address, size);
-    };
-
-
-    /**
-        Gets the current bit offset within the current byte that a bitfield will read.
-    */
-    fn current_bit_offset() {
-        return builtin::std::mem::current_bit_offset();
     };
 
     /**
@@ -209,6 +232,14 @@ namespace auto std::mem {
     */
     fn copy_value_to_section(ref auto value, Section to_section, u64 to_address) {
         builtin::std::mem::copy_value_to_section(value, to_section, to_address);
+    };
+
+    /**
+        Returns the current bit offset when inside of a bitfield.
+        @return The current bit offset between 0 and 7
+    */
+    fn current_bit_offset() {
+        return builtin::std::mem::current_bit_offset();
     };
 
 

@@ -1,3 +1,6 @@
+#pragma author LolHacksRule
+#pragma description Exient XGS Engine Texture
+
 import type.magic;
 //By LolHacksRule
 

@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description PE header, COFF header, Standard COFF fields and Windows Specific fields
+#pragma description Microsoft PE Portable Executable (exe/dll)
 
 #pragma MIME application/x-dosexec
 #pragma MIME application/x-msdownload
@@ -452,6 +452,33 @@ struct ImportsStructure {
 struct ImportsTable {
 	ImportsDirectory importsDirectoryTable[while(std::mem::read_unsigned($, 16) != 0)];
 	ImportsStructure importsStructures[sizeof(importsDirectoryTable)/sizeof(importsDirectoryTable[0])] [[inline]];
+	$ = addressof(this)+coffHeader.optionalHeader.directories[1].size;
+};
+
+struct DelayedImportsDirectory {
+	u32 attributes;
+	u32 name;
+	u32 moduleHandle;
+	u32 delayImportAddressTable;
+	u32 delayImportNameTable;
+	u32 boundDelayImportTable;
+	u32 unloadDelayImportTable;
+	u32 timeStamp;
+};
+
+struct DelayImportsStructure {
+	if (parent.delayImportsDirectoryTable[std::core::array_index()].delayImportNameTable > 0) {
+		ImportsLookup delayedLookupTable[while(std::mem::read_unsigned($, wordsize()) != 0)] @ parent.delayImportsDirectoryTable[std::core::array_index()].delayImportNameTable - relativeVirtualDifference();
+	}
+	if (parent.delayImportsDirectoryTable[std::core::array_index()].name > 0) {
+		char dllName[] @ parent.delayImportsDirectoryTable[std::core::array_index()].name - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
+	}
+} [[inline]];
+
+// https://learn.microsoft.com/en-us/windows/win32/debug/pe-format#delay-load-import-tables-image-only
+struct DelayedImportsTable {
+	DelayedImportsDirectory delayImportsDirectoryTable[while(std::mem::read_unsigned($, 16) != 0)];
+	DelayImportsStructure delayImportsStructures[sizeof(delayImportsDirectoryTable)/sizeof(delayImportsDirectoryTable[0])] [[inline]];
 	$ = addressof(this)+coffHeader.optionalHeader.directories[1].size;
 };
 
@@ -1062,6 +1089,9 @@ struct Section {
 		}
 		if (dataDirectoryInSection[9]) {
 			TLSTable tlsTable @ coffHeader.optionalHeader.directories[9].rva - relativeVirtualDifference();
+		}
+		if (dataDirectoryInSection[13]) {
+			DelayedImportsTable delayedImportTable @ coffHeader.optionalHeader.directories[13].rva - relativeVirtualDifference();
 		}
 	}
 	clearBoolArray();

@@ -19,6 +19,8 @@
 // Made with help from a (since deleted) GPSBabel definition
 // https://github.com/GPSBabel/gpsbabel/blob/gpsbabel_1_8_0/wintec_tes.cc
 
+#pragma description Wintec TES GPS log
+
 #include "std/mem.pat"
 #include "std/string.pat"
 
