@@ -43,14 +43,6 @@ enum Type : u8 {
 	NegativeFixInt		= 0xE0 ... 0xFF
 };
 
-fn format_positive_fixint(u8 value) {
-	return value & 0b0111'1111;
-};
-
-fn format_negative_fixint(u8 value) {
-	return -(value & 0b0001'1111);
-};
-
 using MessagePack;
 
 struct MapEntry {
@@ -62,10 +54,10 @@ struct MessagePack {
 	
 	if (u8(type) <= 0x7F) {
 		$ -= 1;
-		u8 value [[format("format_positive_fixint")]];
+		u8 value;
 	} else if (u8(type) >= Type::NegativeFixInt) {
 		$ -= 1;
-		u8 value [[format("format_negative_fixint")]];
+		s8 value;
 	} else if (type == Type::Uint8)
 		be u8 value;
 	else if (type == Type::Uint16)
