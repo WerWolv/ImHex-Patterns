@@ -142,16 +142,14 @@ struct MessagePack {
 		s8 type;
 		u8 data[length];
 	} else if (type == Type::Ext16) {
-		u16 length;
+		be u16 length;
 		s8 type;
 		u8 data[length];
 	} else if (type == Type::Ext32) {
-		u32 length;
+		be u32 length;
 		s8 type;
 		u8 data[length];
 	}
-		
-		
 };
 
 MessagePack pack @ 0x00;
