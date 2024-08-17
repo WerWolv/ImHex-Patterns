@@ -1,6 +1,9 @@
 #pragma author endes
 #pragma description ext4 volume layout parser (until inodes)
 
+// Decodes the ext4 superblock, group descriptors and inodes.
+// Does not decode the directory entries, inode data, jornal or superblock backups.
+// Heavily based on the linux kernel documentation:
 // https://www.kernel.org/doc/html/latest/filesystems/ext4/
 
 #pragma endian little
@@ -247,12 +250,14 @@ struct ext4_super_block {
             u64 s_blocks_count = u64(s_blocks_count_hi) << 32 + s_blocks_count_lo;
             u64 s_r_blocks_count = u64(s_r_blocks_count_hi) << 32 + s_r_blocks_count_lo;
             u64 s_free_blocks_count = u64(s_free_blocks_count_hi) << 32 + s_free_blocks_count_lo;
+            u64 groups_count = std::math::ceil(s_blocks_count/float(s_blocks_per_group));
         } else {
             padding[12];
 
             u64 s_blocks_count = s_blocks_count_lo;
             u64 s_r_blocks_count = s_r_blocks_count_lo;
             u64 s_free_blocks_count = s_free_blocks_count_lo;
+            u64 groups_count = std::math::ceil(s_blocks_count/float(s_blocks_per_group));
         }
 
         if (s_feature_ro_compat.RO_COMPAT_EXTRA_ISIZE) {
@@ -301,18 +306,18 @@ struct ext4_super_block {
             padding[20];
         }
         
-        u32 s_error_count;
+        u32 s_error_count [[comment("Number of errors seen.")]];
         if (s_error_count > 0) {
-            type::time32_t s_first_error_time;
-            u32 s_first_error_ino;
-            u64 s_first_error_block;
-            char s_first_error_func[32];
-            u32 s_first_error_line;
-            type::time32_t s_last_error_time;
-            u32 s_last_error_ino;
-            u32 s_last_error_line;
-            u64 s_last_error_block;
-            char s_last_error_func[32];
+            type::time32_t s_first_error_time [[comment("First time an error happened.")]];
+            u32 s_first_error_ino [[comment("inode involved in first error.")]];
+            u64 s_first_error_block [[comment("Number of block involved of first error.")]];
+            char s_first_error_func[32] [[comment("Name of function where the error happened.")]];
+            u32 s_first_error_line [[comment("Line number where error happened.")]];
+            type::time32_t s_last_error_time [[comment("Last time an error happened.")]];
+            u32 s_last_error_ino [[comment("inode involved in most recent error.")]];
+            u32 s_last_error_line [[comment("Line number where most recent error happened.")]];
+            u64 s_last_error_block [[comment("Number of block involved in most recent error.")]];
+            char s_last_error_func[32] [[comment("Name of function where the most recent error happened.")]];
         } else {
             padding[104];
         }
@@ -385,168 +390,155 @@ struct ext4_super_block {
 ext4_super_block super_block @ 0x400;
 
 fn block_to_address(u32 block) {
-    return super_block.block_size * block - block;
+    return super_block.block_size * block;
+};
+
+fn block_pointer_to_address(u32 block) {
+    return block_to_address(block) - block;
 };
 
 struct ext4_bitmap {
     u8 data[super_block.block_size];
 };
 
-bitfield ext4_i_mode_lo {
-    S_IXOTH     : 1;
-    S_IWOTH     : 1;
-    S_IROTH     : 1;
-    S_IXGRP     : 1;
-    S_IWGRP     : 1;
-    S_IRGRP     : 1;
-    S_IXUSR     : 1;
-    S_IWUSR     : 1;
+bitfield ext4_i_mode {
+    S_IXOTH     : 1 [[comment("Others may execute.")]];
+    S_IWOTH     : 1 [[comment("Others may write.")]];
+    S_IROTH     : 1 [[comment("Others may read.")]];
+    S_IXGRP     : 1 [[comment("Group members may execute.")]];
+    S_IWGRP     : 1 [[comment("Group members may write.")]];
+    S_IRGRP     : 1 [[comment("Group members may read.")]];
+    S_IXUSR     : 1 [[comment("Owner may execute.")]];
+    S_IWUSR     : 1 [[comment("Owner may write.")]];
+    S_IRUSR     : 1 [[comment("Owner may read.")]];
+    S_ISVTX     : 1 [[comment("Sticky bit.")]];
+    S_ISGID     : 1 [[comment("Set GID.")]];
+    S_ISUID     : 1 [[comment("Set UID.")]];
+    S_IFIFO     : 1 [[comment("FIFO.")]];
+    S_IFCHR     : 1 [[comment("Character device.")]];
+    S_IFDIR     : 1 [[comment("Directory.")]];
+    S_IFREG     : 1 [[comment("Regular file.")]];
 };
 
-bitfield ext4_i_mode_hi {
-    S_IRUSR     : 1;
-    S_ISVTX     : 1;
-    S_ISGID     : 1;
-    S_ISUID     : 1;
-    S_IFIFO     : 1;
-    S_IFCHR     : 1;
-    S_IFDIR     : 1;
-    S_IFREG     : 1;
-};
-
-bitfield ext4_i_flags_lo {
-    EXT4_SECRM_FL     : 1;
-    EXT4_UNRM_FL     : 1;
-    EXT4_COMPR_FL     : 1;
-    EXT4_SYNC_FL     : 1;
-    EXT4_IMMUTABLE_FL     : 1;
-    EXT4_APPEND_FL     : 1;
-    EXT4_NODUMP_FL     : 1;
-    EXT4_NOATIME_FL     : 1;
-};
-
-bitfield ext4_i_flags_midlo {
-    EXT4_DIRTY_FL     : 1;
-    EXT4_COMPRBLK_FL     : 1;
-    EXT4_NOCOMPR_FL     : 1;
-    EXT4_ENCRYPT_FL     : 1;
-    EXT4_INDEX_FL     : 1;
-    EXT4_IMAGIC_FL     : 1;
-    EXT4_JOURNAL_DATA_FL     : 1;
-    EXT4_NOTAIL_FL     : 1;
-};
-
-bitfield ext4_i_flags_midhi {
-    EXT4_DIRSYNC_FL     : 1;
-    EXT4_TOPDIR_FL     : 1;
-    EXT4_HUGE_FILE_FL     : 1;
-    EXT4_EXTENTS_FL     : 1;
-    EXT4_VERITY_FL     : 1;
-    EXT4_EA_INODE_FL     : 1;
-    EXT4_EOFBLOCKS_FL     : 1;
-    padding     : 1;
-};
-
-bitfield ext4_i_flags_hi {
-    EXT4_SNAPFILE_FL     : 1;
-    padding     : 1;
-    EXT4_SNAPFILE_DELETED_FL     : 1;
-    EXT4_SNAPFILE_SHRUNK_FL     : 1;
-    EXT4_INLINE_DATA_FL     : 1;
-    EXT4_PROJINHERIT_FL     : 1;
-    padding     : 1;
-    EXT4_RESERVED_FL     : 1;
+bitfield ext4_i_flags {
+    EXT4_SECRM_FL               : 1 [[comment("This file requires secure deletion.")]];
+    EXT4_UNRM_FL                : 1 [[comment("This file should be preserved, should undeletion be desired.")]];
+    EXT4_COMPR_FL               : 1 [[comment("File is compressed.")]];
+    EXT4_SYNC_FL                : 1 [[comment("All writes to the file must be synchronous.")]];
+    EXT4_IMMUTABLE_FL           : 1 [[comment("File is immutable.")]];
+    EXT4_APPEND_FL              : 1 [[comment("File can only be appended.")]];
+    EXT4_NODUMP_FL              : 1 [[comment("The dump utility should not dump this file.")]];
+    EXT4_NOATIME_FL             : 1 [[comment("Do not update access time.")]];
+    EXT4_DIRTY_FL               : 1 [[comment("Dirty compressed file.")]];
+    EXT4_COMPRBLK_FL            : 1 [[comment("File has one or more compressed clusters.")]];
+    EXT4_NOCOMPR_FL             : 1 [[comment("Do not compress file.")]];
+    EXT4_ENCRYPT_FL             : 1 [[comment("Encrypted inode.")]];
+    EXT4_INDEX_FL               : 1 [[comment("Directory has hashed indexes.")]];
+    EXT4_IMAGIC_FL              : 1 [[comment("AFS magic directory.")]];
+    EXT4_JOURNAL_DATA_FL        : 1 [[comment("File data must always be written through the journal.")]];
+    EXT4_NOTAIL_FL              : 1 [[comment("File tail should not be merged.")]];
+    EXT4_DIRSYNC_FL             : 1 [[comment("All directory entry data should be written synchronously.")]];
+    EXT4_TOPDIR_FL              : 1 [[comment("Top of directory hierarchy.")]];
+    EXT4_HUGE_FILE_FL           : 1 [[comment("This is a huge file.")]];
+    EXT4_EXTENTS_FL             : 1 [[comment("Inode uses extents.")]];
+    EXT4_VERITY_FL              : 1 [[comment("Verity protected file.")]];
+    EXT4_EA_INODE_FL            : 1 [[comment("Inode stores a large extended attribute value in its data blocks.")]];
+    EXT4_EOFBLOCKS_FL           : 1 [[comment("This file has blocks allocated past EOF.")]];
+    padding                     : 1;
+    EXT4_SNAPFILE_FL            : 1 [[comment("Inode is a snapshot.")]];
+    padding                     : 1;
+    EXT4_SNAPFILE_DELETED_FL    : 1 [[comment("Snapshot is being deleted.")]];
+    EXT4_SNAPFILE_SHRUNK_FL     : 1 [[comment("Snapshot shrink has completed.")]];
+    EXT4_INLINE_DATA_FL         : 1 [[comment("Inode has inline data.")]];
+    EXT4_PROJINHERIT_FL         : 1 [[comment("Create children with the same project ID.")]];
+    padding                     : 1;
+    EXT4_RESERVED_FL            : 1 [[comment("Reserved for ext4 library.")]];
 };
 
 struct ext4_inode {
-    ext4_i_mode_lo i_mode_lo;
-    ext4_i_mode_hi i_mode_hi;
-    u16 i_uid;
-    u32 i_size;
-    type::time32_t i_atime;
-    type::time32_t i_ctime;
-    type::time32_t i_mtime;
-    type::time32_t i_dtime;
-    u16 i_gid;
-    u16 i_links_count;
-    ext4_i_flags_lo i_flags_lo;
-    ext4_i_flags_midlo i_flags_midlo;
-    ext4_i_flags_midhi i_flags_midhi;
-    ext4_i_flags_hi i_flags_hi;
-    u32 i_flags;
-    u32 i_osd1;
-    u32 i_block[15];
-    u32 i_generation;
-    u32 i_file_acl;
-    u32 i_dir_acl;
-    u32 i_faddr;
-    u8 i_osd2[12];
-    if (super_block.s_rev_level >= ext4_super_revision::V2_DYNAMIC_REV && super_block.s_inode_size > 128) {
-        if (i_extra_isize > 0) {
-            u16 i_checksum_hi;
-            if (i_extra_isize > 2) {
-                u32 i_ctime_extra;
-                u32 i_mtime_extra;
-                u32 i_atime_extra;
-                if (i_extra_isize > 14) {
-                    u32 i_crtime;
-                    u32 i_crtime_extra;
-                    u32 i_version_hi;
-                    if (i_extra_isize > 26) {
-                        u32 i_projid;
-                        if (i_extra_isize > 30) {
-                            padding[i_extra_isize-30];
+    ext4_i_mode i_mode [[comment("File mode.")]];
+    u16 i_uid [[comment("Lower 16-bits of Owner UID.")]];
+    u32 i_size [[comment("Lower 32-bits of size in bytes.")]];
+    type::time32_t i_atime [[comment("Last access time.")]];
+    type::time32_t i_ctime [[comment("Last inode change time.")]];
+    type::time32_t i_mtime [[comment("Last data modification time.")]];
+    type::time32_t i_dtime [[comment("Deletion Time.")]];
+    u16 i_gid [[comment("Lower 16-bits of GID.")]];
+    u16 i_links_count [[comment("Hard link count.")]];
+    u32 i_blocks_lo [[comment("Lower 32-bits of “block” count.")]];
+    ext4_i_flags i_flags [[comment("Inode flags.")]];
+    u32 i_osd1 [[comment("Depends of the OS.")]];
+    u32 i_block[15] [[comment("Block map or extent tree.")]];
+    u32 i_generation [[comment("File version (for NFS).")]];
+    u32 i_file_acl [[comment("Lower 32-bits of extended attribute block.")]];
+    u32 i_dir_acl [[comment("Upper 32-bits of file/directory size.")]];
+    u32 i_faddr [[comment("Fragment address.")]];
+    u8 i_osd2[12] [[comment("Depends of the OS.")]];
+    if (super_block.s_rev_level >= ext4_super_revision::V2_DYNAMIC_REV && super_block.s_inode_size > 0x80) {
+        u16 i_extra_isize [[comment("Size of this inode - 128.")]];
+        u16 i_checksum_hi [[comment("Upper 16-bits of the inode checksum.")]];
+            if (super_block.s_inode_size > 0x84) {
+                u32 i_ctime_extra [[comment("Extra change time bits.")]];
+                u32 i_mtime_extra [[comment("Extra modification time bits.")]];
+                u32 i_atime_extra [[comment("Extra access time bits.")]];
+                u32 i_crtime [[comment("File creation time.")]];
+                u32 i_crtime_extra [[comment("Extra file creation time bits.")]];
+                if (super_block.s_inode_size > 0x98) {
+                    u32 i_version_hi [[comment("Upper 32-bits for version number.")]];
+                    if (super_block.s_inode_size > 0x9C) {
+                        u32 i_projid [[comment("Project ID.")]];
+                        if (super_block.s_inode_size > 0xA0) {
+                            padding[super_block.s_inode_size - 0xA0];
                         }
                     }
                 }
             }
-        }
     }
 };
 
 bitfield ext4_bg_flags {
-    EXT4_BG_INODE_UNINIT   : 1;
-    EXT4_BG_BLOCK_UNINIT   : 1;
-    EXT4_BG_INODE_ZEROED   : 1;
+    EXT4_BG_INODE_UNINIT   : 1 [[comment("Inode table and bitmap are not initialized.")]];
+    EXT4_BG_BLOCK_UNINIT   : 1 [[comment("Block bitmap is not initialized.")]];
+    EXT4_BG_INODE_ZEROED   : 1 [[comment("Inode table is zeroed.")]];
 };
 
 struct ext4_group_desc {
-    ext4_bitmap *bg_block_bitmap : u32 [[pointer_base("block_to_address")]];
-    ext4_bitmap *bg_inode_bitmap : u32 [[pointer_base("block_to_address")]];
-    ext4_inode *bg_inode_table[super_block.s_inodes_per_group] : u32 [[pointer_base("block_to_address")]];
-    u16 bg_free_blocks_count;
-    u16 bg_free_inodes_count;
-    u16 bg_used_dirs_count;
-    ext4_bg_flags bg_flags;
+    ext4_bitmap *bg_block_bitmap : u32 [[pointer_base("block_pointer_to_address"), comment("Lower 32-bits of location of block bitmap.")]];
+    ext4_bitmap *bg_inode_bitmap : u32 [[pointer_base("block_pointer_to_address"), comment("Lower 32-bits of location of inode bitmap.")]];
+    ext4_inode *bg_inode_table[super_block.s_inodes_per_group] : u32 [[pointer_base("block_pointer_to_address"), comment("Lower 32-bits of location of inode table.")]];
+    u16 bg_free_blocks_count [[comment("Lower 16-bits of free block count.")]];
+    u16 bg_free_inodes_count [[comment("Lower 16-bits of free inode count.")]];
+    u16 bg_used_dirs_count [[comment("Lower 16-bits of directory count.")]];
+    ext4_bg_flags bg_flags [[comment("Block group flags.")]];
     padding[1];
-    u32 bg_exclude_bitmap_lo;
-    u16 bg_block_bitmap_csum_lo;
-    u16 bg_inode_bitmap_csum_lo;
-    u16 bg_itable_unused_lo;
-    u16 bg_checksum;
+    u32 bg_exclude_bitmap_lo [[comment("Lower 32-bits of location of snapshot exclusion bitmap.")]];
+    u16 bg_block_bitmap_csum_lo [[comment("Lower 16-bits of the block bitmap checksum.")]];
+    u16 bg_inode_bitmap_csum_lo [[comment("Lower 16-bits of the inode bitmap checksum.")]];
+    u16 bg_itable_unused_lo [[comment("Lower 16-bits of unused inode count.")]];
+    u16 bg_checksum [[comment("Group descriptor checksum.")]];
 
 };
 
 struct ext4_group_desc_64_bit : ext4_group_desc {
-    u32 bg_block_bitmap_hi;
-    u32 bg_inode_bitmap_hi;
-    u32 bg_inode_table_hi;
-    u16 bg_free_blocks_count_hi;
-    u16 bg_free_inodes_count_hi;
-    u16 bg_used_dirs_count_hi;
-    u16 bg_itable_unused_hi;
-    u32 bg_exclude_bitmap_hi;
-    u16 bg_block_bitmap_csum_hi;
-    u16 bg_inode_bitmap_csum_hi;
+    u32 bg_block_bitmap_hi [[comment("Upper 32-bits of location of block bitmap.")]];
+    u32 bg_inode_bitmap_hi [[comment("Upper 32-bits of location of inodes bitmap.")]];
+    u32 bg_inode_table_hi [[comment("Upper 32-bits of location of inodes table.")]];
+    u16 bg_free_blocks_count_hi [[comment("Upper 16-bits of free block count.")]];
+    u16 bg_free_inodes_count_hi [[comment("Upper 16-bits of free inode count.")]];
+    u16 bg_used_dirs_count_hi [[comment("Upper 16-bits of directory count.")]];
+    u16 bg_itable_unused_hi [[comment("Upper 16-bits of unused inode count.")]];
+    u32 bg_exclude_bitmap_hi [[comment("Upper 32-bits of location of snapshot exclusion bitmap.")]];
+    u16 bg_block_bitmap_csum_hi [[comment("Upper 16-bits of the block bitmap checksum.")]];
+    u16 bg_inode_bitmap_csum_hi [[comment("Upper 16-bits of the inode bitmap checksum.")]];
     padding[4];
 };
 
 struct ext4_group_descriptors {
     if (super_block.s_rev_level >= ext4_super_revision::V2_DYNAMIC_REV && super_block.s_feature_incompat.INCOMPAT_64BIT) {
-        ext4_group_desc_64_bit group_desc[std::math::ceil(super_block.s_blocks_count/float(super_block.s_blocks_per_group))];
+        ext4_group_desc_64_bit group_desc[super_block.groups_count];
     } else {
-        ext4_group_desc group_desc[std::math::ceil(super_block.s_blocks_count/float(super_block.s_blocks_per_group))];
+        ext4_group_desc group_desc[super_block.groups_count];
     }
 };
 
-ext4_group_descriptors group_descs @ block_to_address(2)+2;
+ext4_group_descriptors group_descs @ block_to_address(2);
