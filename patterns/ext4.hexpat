@@ -8,7 +8,6 @@
 
 #pragma endian little
 #pragma magic [EF 53] @ 0x438
-#pragma debug
 #pragma pattern_limit 0x90000
 
 import type.time;
