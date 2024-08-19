@@ -7,7 +7,7 @@
 // https://www.kernel.org/doc/html/latest/filesystems/ext4/
 
 #pragma endian little
-#pragma magic [EF 53] @ 0x438
+#pragma magic [53 EF] @ 0x438
 #pragma pattern_limit 0x90000
 
 import type.time;
@@ -157,7 +157,7 @@ struct ext4_super_block {
     u16 s_mnt_count [[comment("Number of mounts since the last fsck.")]];
     u16 s_max_mnt_count [[comment("Number of mounts beyond which a fsck is needed.")]];
 
-    type::Magic<"\xEF\x53"> s_magic;
+    type::Magic<"\x53\xEF"> s_magic;
 
     ext4_super_state s_state [[comment("File system state.")]];
     ext4_super_errors s_errors [[comment("Behaviour when detecting errors.")]];
@@ -246,9 +246,9 @@ struct ext4_super_block {
             u32 s_r_blocks_count_hi [[comment("High 32-bits of the reserved block count.")]];
             u32 s_free_blocks_count_hi [[comment("High 32-bits of the free block count.")]];
 
-            u64 s_blocks_count = u64(s_blocks_count_hi) << 32 + s_blocks_count_lo;
-            u64 s_r_blocks_count = u64(s_r_blocks_count_hi) << 32 + s_r_blocks_count_lo;
-            u64 s_free_blocks_count = u64(s_free_blocks_count_hi) << 32 + s_free_blocks_count_lo;
+            u64 s_blocks_count = (u64(s_blocks_count_hi) << 32) + s_blocks_count_lo;
+            u64 s_r_blocks_count = (u64(s_r_blocks_count_hi) << 32) + s_r_blocks_count_lo;
+            u64 s_free_blocks_count = (u64(s_free_blocks_count_hi) << 32) + s_free_blocks_count_lo;
             u64 groups_count = std::math::ceil(s_blocks_count/float(s_blocks_per_group));
         } else {
             padding[12];
@@ -374,7 +374,7 @@ struct ext4_super_block {
         if (s_feature_compat.RO_COMPAT_ORPHAN_PRESENT) {
             u32 s_orphan_file_inum [[comment("Orphan file inode number.")]];
         } else {
-            padding[8];
+            padding[4];
         }
 
         padding[376];
