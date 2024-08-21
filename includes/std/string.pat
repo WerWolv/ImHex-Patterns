@@ -125,6 +125,8 @@ namespace auto std::string {
         @return True if the string starts with the substring, false otherwise.
     */
     fn starts_with(str string, str part) {
+        if (std::string::length(string) < std::string::length(part))
+            return false;
         return std::string::substr(string, 0, std::string::length(part)) == part;
     };
 
@@ -135,6 +137,8 @@ namespace auto std::string {
         @return True if the string ends with the substring, false otherwise.
     */
     fn ends_with(str string, str part) {
+        if (std::string::length(string) < std::string::length(part))
+            return false;
         return std::string::substr(string, std::string::length(string) - std::string::length(part), std::string::length(part)) == part;
     };
 
