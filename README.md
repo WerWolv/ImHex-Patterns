@@ -96,7 +96,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NE   | | [`patterns/ne.hexpat`](patterns/ne.hexpat) | NE header and Standard NE fields |
 | nes   | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | .nes file format |
 | NotepadCache | | [`patterns/notepad-cache.hexpat`](patterns/notepad-cache.hexpat) | Windows Notepad Cache |
-| NotepadWindowState | | [`patterns/notepad-windowstate.hexpat`](patterns/notepad-windowstate.hexpat) | Windows 11 Notepad - Window State .bin file |
+| NotepadWindowState | | [`patterns/notepadwindowstate.hexpat`](patterns/notepadwindowstate.hexpat) | Windows 11 Notepad - Window State .bin file |
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
 | OGG | `audio/ogg` | [`patterns/ogg.hexpat`](patterns/ogg.hexpat) | OGG Audio format |
