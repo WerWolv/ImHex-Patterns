@@ -1209,7 +1209,7 @@ struct StringTable {
 	SymbolString strings[while($ < addressof(this) + size)];
 } [[inline]];
 
-StringTable stringTable[checkForSymbols] @ addressof(symbolTable) + sizeof(symbolTable);
+StringTable stringTable[sizeof(symbolTable)>0] @ addressof(symbolTable) + sizeof(symbolTable);
 
 // Rich Header
 bool checkForRichHeader in;
