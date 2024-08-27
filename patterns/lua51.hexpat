@@ -72,7 +72,7 @@ struct LocalVar {
 struct LuaDebugInfo {
     Vector<u32> lineInfo;
     Vector<LocalVar> localVar;
-    Vector<u32> upvalues;
+    Vector<LuaString> upvalues;
 };
 
 struct LuaConstants{
