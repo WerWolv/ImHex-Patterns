@@ -101,7 +101,6 @@ struct baseHeader {
     u32 YM2413_clk;
     gd3TagPos = $;
     u32 Gd3Offset;
-    //Gd3 *Gd3Offset : u32 [[pointer_base("std::ptr::relative_to_parent")]];
     u32 sampleCount;
     u32 loopOffset;
     u32 loopSamples;
