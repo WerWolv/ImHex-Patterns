@@ -36,8 +36,15 @@ struct LuaBinaryHeader {
     u8 lua_Number;
     u8 is_lua_Number_integral;
 };
+
+LuaBinaryHeader header @ 0;
+
 struct LuaString {
-    u64 size;
+    if (header.size_of_size_t == 4) {
+        u32 size;
+    } else {
+        u64 size;
+    }
     if (size > 0) {
         char data[size];
     }
@@ -72,7 +79,7 @@ struct LocalVar {
 struct LuaDebugInfo {
     Vector<u32> lineInfo;
     Vector<LocalVar> localVar;
-    Vector<u32> upvalues;
+    Vector<LuaString> upvalues;
 };
 
 struct LuaConstants{
@@ -96,9 +103,4 @@ struct LuaFunction {
     LuaDebugInfo debugInfo;
 };
 
-struct LuaFile {
-    LuaBinaryHeader header;
-    LuaFunction func;
-};
-
-LuaFile file @ 0;
+LuaFunction toplevelFunction @ 12; // Lua header size is always 12 bytes
