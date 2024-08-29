@@ -37,7 +37,7 @@ struct LuaBinaryHeader {
     u8 is_lua_Number_integral;
 };
 struct LuaString {
-    u64 size;
+    u32 size;
     if (size > 0) {
         char data[size];
     }
