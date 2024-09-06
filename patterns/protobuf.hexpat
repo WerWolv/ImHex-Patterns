@@ -1,5 +1,5 @@
 #pragma author WerWolv
-#pragma description Google Protobuf wire encoding
+#pragma description Google Protobuf wire encoding (.pb)
 
 import std.core;
 import std.io;
