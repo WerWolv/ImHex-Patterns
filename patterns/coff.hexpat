@@ -164,7 +164,10 @@ bitfield SectionFlags {
 };
 
 fn format_alignment(u8 alignment) {
-    return 1 << alignment;
+    if(alignment > 0) {
+        return 1 << (alignment - 1);
+    }
+    return alignment;
 };
 
 struct Relocations {
