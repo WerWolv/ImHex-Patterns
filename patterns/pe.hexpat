@@ -1106,7 +1106,7 @@ struct Section {
 	currentSectionIndex += 1;													// Make the current section index the next section's index
 } [[name(sectionsTable[currentSectionIndex-1].name)]];
 
-Section sections[coffHeader.numberOfSections] @ coffHeader.optionalHeader.sizeOfHeaders;
+Section sections[coffHeader.numberOfSections] @ sectionsTable[0].ptrRawData;
 
 // Symbol & String Tables
 enum SectionNumberType : s16 {
