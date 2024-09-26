@@ -44,7 +44,7 @@ struct ThumbnailLine<auto width> {
     type::RGBA8 pixels[width];
 };
 
-fn copyThumbnail(u32 height, auto lines, std::mem::Section target) {
+fn copyThumbnail(u32 height, ref auto lines, std::mem::Section target) {
     for (s64 l = (height - 1), l >= 0, l = l - 1) {
         u64 currentSectionSize = std::mem::get_section_size(target);
         // Append the current line to section.
