@@ -4,6 +4,7 @@
 /*
  * References:
  * https://projects.blender.org/blender/blender
+ * https://github.com/facebook/zstd/blob/master/contrib/seekable_format/zstd_seekable_compression_format.md
  *
  * Refer to the following files/structs:
  * source/blender/blenloader/intern/writefile.cc
@@ -13,6 +14,10 @@
 
 // Increased the pattern limit to be able to evaluate all pixels of the embedded thumbnail.
 #pragma pattern_limit 1000000
+
+#ifdef __IMHEX__
+    import hex.dec;
+#endif
 
 import std.core;
 import std.io;
@@ -100,7 +105,7 @@ enum Endianness : char {
     LITTLE_ENDIAN = 'v'
 };
 
-struct Blend {
+struct Blend<auto inputSize> {
     type::Magic<"BLENDER"> magic;
     PointerSize pointerSize;
     Endianness endianness;
@@ -113,16 +118,79 @@ struct Blend {
     }
 
     match (pointerSize) {
-        (PointerSize::POINTER_4BYTE): DataBlock<u32> dataBlock[while($ < sizeof($))];
-        (PointerSize::POINTER_8BYTE): DataBlock<u64> dataBlock[while($ < sizeof($))];
+        (PointerSize::POINTER_4BYTE): DataBlock<u32> dataBlock[while($ < inputSize)];
+        (PointerSize::POINTER_8BYTE): DataBlock<u64> dataBlock[while($ < inputSize)];
         (_): std::error("Invalid pointer size!");
     }
 };
 
-char magic[4] @ 0x00 [[hidden]];
+struct BlendWrapper {
+    u128 currentPos = $;
+    char magic[4] @ currentPos [[hidden]];
 
-if (magic == "\x28\xB5\x2F\xFD") { // ZSTD magic
-    std::error("ZSTD compressed blend files are not supported!");
-}
+    if (magic != "\x28\xB5\x2F\xFD") { // ZSTD magic
+        // Assume the blend file is uncompressed.
+        Blend<sizeof($)> blend @ currentPos;
+        return;
+    }
+} [[inline]];
 
-Blend blend @ 0x00;
+BlendWrapper blendWrapper @ 0x00;
+
+// Assume the blend file is ZSTD compressed. 
+
+struct SeekTableFooter {
+    u32 numFrames;
+    char flag;
+    type::Magic<"\xB1\xEA\x92\x8F"> footerMagic;
+};
+
+u128 seekTableFooterSize = 9;
+SeekTableFooter seekTableFooter @ (sizeof($) - seekTableFooterSize);
+
+struct SeekTableEntry {
+    u32 compressedSize;
+    u32 uncompressedSize;
+};
+
+u128 seekTableEntrySize = 8;
+SeekTableEntry seekTableEntries[seekTableFooter.numFrames]
+    @ (addressof(seekTableFooter) - seekTableFooter.numFrames * seekTableEntrySize);
+
+struct SeekTableHeader {
+    type::Magic<"\x5E\x2A\x4D\x18"> magic;
+    u32 frameSize;
+};
+
+u128 seekTableHeaderSize = 8;
+std::assert(seekTableFooter.numFrames > 0, "The seek table must contain entries!");
+SeekTableHeader seekTableHeader @ (addressof(seekTableEntries[0]) - seekTableHeaderSize);
+
+u32 frameIndex = 0;
+
+struct ZSTDFrame {
+    u8 data[seekTableEntries[frameIndex].compressedSize];
+    frameIndex = frameIndex + 1;
+};
+
+ZSTDFrame zstdFrames[seekTableFooter.numFrames] @ 0x00;
+
+#ifdef __IMHEX__
+    std::mem::Section decompressedSection = std::mem::create_section("decompressedBlend");
+    u128 previousSectionSize = 0;
+
+    for (u32 i = 0, i < seekTableFooter.numFrames, i = i + 1) {
+        std::assert(hex::dec::zstd_decompress(zstdFrames[i].data, decompressedSection),
+                    "Decompression failed!");
+        u32 uncompressedSize = seekTableEntries[i].uncompressedSize;
+        u128 currentSectionSize = std::mem::get_section_size(decompressedSection)
+                                  - previousSectionSize;
+        std::assert_warn(uncompressedSize == currentSectionSize,
+                         std::format("The uncompressedSize {} for ZSTDFrame #{} "
+                                     + "must be equal to its actual decompressed size{}!",
+                                     uncompressedSize, i, currentSectionSize));
+        previousSectionSize += currentSectionSize;
+    };
+
+    Blend<previousSectionSize> blend @ 0x00 in decompressedSection;
+#endif
