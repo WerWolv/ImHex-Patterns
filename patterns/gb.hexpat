@@ -7,6 +7,9 @@ import type.size;
 import std.string;
 import std.mem;
 
+const u16 ROMBANKSIZE_16K = 0x4000;
+const u16 ROMBANKSIZE_32K = 0x8000;
+
 bool uppercaseROMFeatures in;
 bool brandedROMFeatures in;
 
@@ -356,6 +359,16 @@ struct JumpVectors {
 	u8 int4[8] [[comment("serial")]];
 	u8 int5[8] [[comment("joypad")]];
 };
+
+struct romBank16K {
+    u8 Bank[ROMBANKSIZE_16K];
+};
+struct romBank32K {
+    u8 Bank[ROMBANKSIZE_32K];
+};
+
+romBank16K romBanks16K[std::mem::size() / ROMBANKSIZE_16K] @ 0x00;
+romBank32K romBanks32K[std::mem::size() / ROMBANKSIZE_32K] @ 0x00;
 
 JumpVectors jumpVectors @ 0x00 [[comment("Instructions called on interrupts or RST instructions")]];
 CartridgeStart cartridgeStart @ 0x100;
