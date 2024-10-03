@@ -98,6 +98,16 @@ enum UF2_FamilyID : u32 {
     NRF52832xxAB    = 0x6f752678,
     AT32F415        = 0xa0c97b8e,
     CH32V           = 0x699b62ec,
+    RA4M1           = 0x7be8976d,
+    RTL8710A        = 0x9fffd543,
+    RTL8710B        = 0x22e0d6fc,
+    RTL8720C        = 0xe08f7564,
+    RTL8720D        = 0x3379CFE2,
+    XR809           = 0x51e903a8,
+    BK7231U         = 0x675a40b0,
+    BK7251          = 0x6a82cc42,
+    BK7231N         = 0x7b3ef230,
+    BL602           = 0xde1270b7,
 };
 
 fn formatTagType(UF2_TagType type) {

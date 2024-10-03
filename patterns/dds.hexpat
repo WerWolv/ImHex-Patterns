@@ -1,6 +1,7 @@
 #pragma description DirectDraw Surface
 
 #pragma MIME image/vnd-ms.dds
+#pragma MIME image/x-dds
 #pragma endian little
 
 enum DXGI_FORMAT : u32 {

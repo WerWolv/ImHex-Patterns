@@ -1,7 +1,8 @@
 #pragma author WerWolv
-#pragma description Google Protobuf 
+#pragma description Google Protobuf wire encoding (.pb)
 
 import std.core;
+import std.io;
 import std.mem;
 
 import type.leb128;
@@ -31,10 +32,19 @@ enum WireType : u8 {
 	_32Bit 			= 5
 };
 
-bitfield Key {
-	field_number : 5;
-	wire_type    : 3;
-} [[bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 8)]];
+WireType wire_type;
+u32 tag;
+u32 field_number;
+
+struct Key {
+    type::uLEB128 keyDec;
+    field_number = u32(keyDec) >> 3;
+    wire_type = u32(keyDec) & 7;
+}[[sealed, format("format_key")]];
+
+fn format_key(Key keyObject) {
+    return std::format("{} with field number {}", wire_type, field_number);
+};
 
 union _64Bit {
 	u64 fixed64;
@@ -49,21 +59,21 @@ union _32Bit {
 };
 
 struct LengthDelimited {
-	type::LEB128 length;
+	type::uLEB128 length;
 	char data[length];
 };
 
 
 struct Entry {
-	Key key;
+    Key key;
 	
-	if (key.wire_type == WireType::Varint)
-		type::LEB128 value;
-	else if (key.wire_type == WireType::_64Bit)
+	if (wire_type == WireType::Varint)
+		type::uLEB128 value;
+	else if (wire_type == WireType::_64Bit)
 		_64Bit value;
-	else if (key.wire_type == WireType::LengthDelimited)
+	else if (wire_type == WireType::LengthDelimited)
 		LengthDelimited value;
-	else if (key.wire_type == WireType::_32Bit)
+	else if (wire_type == WireType::_32Bit)
 		_32Bit value;
 };
 
