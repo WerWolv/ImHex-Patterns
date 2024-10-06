@@ -12,11 +12,6 @@ import hex.core;
 #pragma pattern_limit 1000000
 #pragma array_limit 1000000
 
-fn add_virtual_file(str path, auto pattern)
-{
-    hex::core::add_virtual_file(path, pattern);
-};
-
 fn getFileType(str filename) {
     // EWWWWWWW HOW DO I FIX THIS
     match (std::string::substr(filename, std::string::length(filename) - 4, 4)) {
@@ -53,7 +48,7 @@ struct LCEIndex {
     if (parent.header.curVersion > 1)
         u64 timestamp [[name("File Timestamp")]]; // useless as it writes weirdly, and differently on certain consoles. (e.g using time since last reset, etc)
     u8 file[filesize] @ offset [[name(this.filename),comment(getFileType(std::string::to_string(filename))),attribute_name(this.filename)]]; // files in the index
-    add_virtual_file(std::string::to_string(filename), file);
+    hex::core::add_virtual_file(std::string::to_string(filename), file);
 } [[name("(" + getFileType(std::string::to_string(filename)) + ") " + std::string::to_string(this.filename))]];
 
 
@@ -70,7 +65,7 @@ struct CompressedSave {
     std::mem::Section zlib = std::mem::create_section(std::format("Compressed Save"));
     hex::dec::zlib_decompress(zlibData, zlib, 15);
     u8 decompressed[zlibSize] @ 0x00 in zlib;
-    add_virtual_file("save", decompressed);
+    hex::core::add_virtual_file("save", decompressed);
     std::error("This save is ZLib-compressed, grab the decompressed save from the Virtual Filesystem tab and use this pattern on it.");
 };
 
