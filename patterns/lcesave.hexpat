@@ -8,12 +8,13 @@ import std.string;
 import std.mem;
 import std.core;
 import hex.dec;
+import hex.core;
 #pragma pattern_limit 1000000
 #pragma array_limit 1000000
 
 fn add_virtual_file(str path, auto pattern)
 {
-    builtin::hex::core::add_virtual_file(path, pattern);
+    hex::core::add_virtual_file(path, pattern);
 };
 
 fn getFileType(str filename) {
