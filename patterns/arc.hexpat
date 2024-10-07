@@ -3,7 +3,9 @@
 #pragma endian big
 
 import std.string;
-import hex.core;
+#ifdef __IMHEX__
+    import hex.core;
+#endif
 
 struct Table {
     u16 nameSize;
@@ -11,7 +13,9 @@ struct Table {
     u32 offset;
     u32 size;
     u8 file[size] @ offset;
-    hex::core::add_virtual_file(fileName, file);
+    #ifdef __IMHEX__
+        hex::core::add_virtual_file(fileName, file);
+    #endif
 } [[name(std::string::to_string(fileName))]];
 
 struct ARC {
