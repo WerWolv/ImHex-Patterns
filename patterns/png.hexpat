@@ -1,4 +1,4 @@
-#pragma description PNG image files 
+#pragma description PNG image
 
 #pragma MIME image/png
 #pragma endian big
