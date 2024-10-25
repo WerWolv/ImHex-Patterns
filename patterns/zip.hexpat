@@ -157,17 +157,17 @@ enum CompressionMethod : u16 {
 };
 
 bitfield GeneralPurposeBitFlags {
-    bool encrypted : 1;
-    bool compressionOptions : 2;
-    bool crcAndSizesInCDAndDataDescriptor : 1;
-    bool enhancedDefalting : 1;
-    bool patchedData : 1;
-    bool strongEncryption : 1;
-    bool unused : 4;
-    bool filenameAndCommentAreUtf8 : 1;
-    bool reservedPKWARE_0 : 1;
-    bool centralDirectoryEncrypted : 1;
-    bool reservedPKWARE_1 : 2;
+    encrypted : 1;
+    compressionOptions : 2;
+    crcAndSizesInCDAndDataDescriptor : 1;
+    enhancedDeflating : 1;
+    patchedData : 1;
+    strongEncryption : 1;
+    unused : 4;
+    filenameAndCommentAreUtf8 : 1;
+    reservedPKWARE_0 : 1;
+    centralDirectoryEncrypted : 1;
+    reservedPKWARE_1 : 2;
 };
 
 struct LocalFileHeader {
