@@ -1,5 +1,5 @@
 #pragma author applecuckoo
-#pragma description VGM (Video Game music) sound log
+#pragma description VGM (Video Game Music) sound log
 
 #pragma endian little
 
@@ -12,7 +12,7 @@ u32 gd3TagPos;
 u32 chpClkBase;
 u32 chpVolBase;
 
-// note: the versionValue variable exists to help check which fields exist and which don't, otherwise the actual log data would erroneously show up as part of the header.
+// note: the versionValue variable exists to help check which fields exist and which don't, otherwise the actual log data would show up as part of the header.
 
 bitfield VGMVersion {
     bugfix : 4;
@@ -183,6 +183,7 @@ struct Header : baseHeader {
         u8 ES5503_ch;
         u8 ES5505_ch;
         u8 C352_clockDiv;
+        padding[1];
         u32 X1_010_clk;
         u32 C352_clk;
         u32 GA20_clk;
@@ -237,7 +238,9 @@ struct ExtraHeader {
 struct VGM {
     Header header;
     if (versionValue >= 170) {
-        ExtraHeader extraHeader;
+        if (header.extraHeaderOffset > 0) {
+            ExtraHeader extraHeader;
+        }
     }
     Gd3 tag @ (gd3TagPos + header.Gd3Offset);
 };
