@@ -3,10 +3,13 @@
 #pragma endian little
 
 // based on https://github.com/CesiumGS/quantized-mesh
-// potential improvements: figure out how to decode values, i.e. high water mark encoding for indices and oct16 for normals
+// potential improvements: figure out high water mark encoding for indices
+
+import std.math;
+import std.io;
 
 u8 extensionCount;
-extensionCount = 3; // NOTE: set this to the amount of extensions in your terrain.
+extensionCount = 0; // NOTE: set this to the amount of extensions in your terrain.
 
 // ZigZag decoder based on protobuf.hexpat by WerWolv
 
@@ -87,8 +90,46 @@ enum ExtensionTypes : u8 {
     Metadata = 0x4,
 };
 
+// Oct16 decode based on https://github.com/loicgasser/quantized-mesh-tile/blob/master/quantized_mesh_tile/utils.py
+
+fn signNotZero(float v) {
+    if (v < 0.0)
+    return -1.0;
+    else
+    return 1.0;
+};
+
+fn fromSnorm(u8 value) {
+    return float(std::math::clamp(value, 0.0, 255.0) / 255.0 * 2.0 - 1.0);
+};
+
+struct Oct16 {
+    u8 x;
+    u8 y;
+}[[sealed, format("format_oct16")]];
+
+fn format_oct16(Oct16 oct) {
+    float xOut;
+    float yOut;
+    float zOut;
+    
+    xOut = fromSnorm(oct.x);
+    yOut = fromSnorm(oct.y);
+    zOut = 1.0 - (std::math::abs(xOut) + std::math::abs(yOut));
+    
+    if (zOut < 0.0) {
+        float oldX;
+
+        oldX = xOut;
+        xOut = (1.0 - std::math::abs(yOut)) * signNotZero(oldX);
+        yOut = (1.0 - std::math::abs(oldX)) * signNotZero(yOut);
+    }
+    
+    return std::format("{}, {}, {}", xOut, yOut, zOut);
+};
+
 struct OctEncodedVertexNormals {
-    u8 xy[parent.parent.vertdata.vertexCount * 2]; // TODO: 
+    Oct16 xy[parent.parent.vertdata.vertexCount];
 };
 
 struct WaterMask {
