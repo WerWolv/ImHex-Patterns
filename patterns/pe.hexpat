@@ -393,7 +393,9 @@ struct ExportsTable {
 	ExportDirectoryTable directoryTable;
 	ExportAddress exportAddressTable[directoryTable.addressesAmount] @ directoryTable.addressTableRVA - relativeVirtualDifference();
 	ExportNamePointer exportNamePointerTable[directoryTable.namePointersAmount] @ directoryTable.namePointerTableRVA - relativeVirtualDifference();
-	u16 exportOrdinalTable[directoryTable.namePointersAmount] @ directoryTable.ordinalTableRVA - relativeVirtualDifference();
+	if (directoryTable.ordinalTableRVA > relativeVirtualDifference()) {
+		u16 exportOrdinalTable[directoryTable.namePointersAmount] @ directoryTable.ordinalTableRVA - relativeVirtualDifference();
+	}
 	char imageName[] @ directoryTable.imageNameRVA - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
 	$ = addressof(this)+coffHeader.optionalHeader.directories[0].size;
 };
