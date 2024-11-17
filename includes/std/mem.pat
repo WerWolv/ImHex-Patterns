@@ -258,8 +258,8 @@ namespace auto std::mem {
         @tparam To The type to reinterpret to
     */
     union Reinterpreter<From, To> {
-        From from;
-        To to;
+        From from_value;
+        To to_value;
     };
   
 
