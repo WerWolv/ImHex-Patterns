@@ -83,6 +83,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ISO | | [`patterns/iso.hexpat`](patterns/iso.hexpat) | ISO 9660 file system |
 | Java Class | `application/x-java-applet` | [`patterns/java_class.hexpat`](patterns/java_class.hexpat) | Java Class files |
 | JPEG | `image/jpeg` | [`patterns/jpeg.hexpat`](patterns/jpeg.hexpat) | JPEG Image Format |
+| LOC | | [`patterns/loc.hexpat`](patterns/loc.hexpat) | Minecraft Legacy Console Edition Language file |
 | Lua 5.1 | | [`patterns/lua51.hexpat`](patterns/lua51.hexpat) | Lua 5.1 bytecode |
 | Lua 5.2 | | [`patterns/lua52.hexpat`](patterns/lua52.hexpat) | Lua 5.2 bytecode |
 | Lua 5.3 | | [`patterns/lua53.hexpat`](patterns/lua53.hexpat) | Lua 5.3 bytecode |
