@@ -34,6 +34,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Bastion | | [`patterns/bastion/*`](https://gitlab.com/EvelynTSMG/imhex-bastion-pats) | Various [Bastion](https://en.wikipedia.org/wiki/Bastion_(video_game)) files |
 | Bencode | `application/x-bittorrent` | [`patterns/bencode.hexpat`](patterns/bencode.hexpat) | Bencode encoding, used by Torrent files |
 | Prusa BGCODE | | [`patterns/bgcode.hexpat`](patterns/bgcode.hexpat) | PrusaSlicer Binary G-Code files |
+| BLEND  | | [`patterns/blend.hexpat`](patterns/blend.hexpat) | Blender Project file |
 | BMP  | `image/bmp` | [`patterns/bmp.hexpat`](patterns/bmp.hexpat) | OS2/Windows Bitmap files |
 | BIN  | | [`patterns/selinux.hexpat`](patterns/selinux.pat) | SE Linux modules |
 | BSON | `application/bson` | [`patterns/bson.hexpat`](patterns/bson.hexpat) | BSON (Binary JSON) format |
