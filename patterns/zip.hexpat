@@ -156,10 +156,24 @@ enum CompressionMethod : u16 {
   AE_x = 99,             // AE-x encryption marker (see APPENDIX E)
 };
 
+bitfield GeneralPurposeBitFlags {
+    encrypted : 1;
+    compressionOptions : 2;
+    crcAndSizesInCDAndDataDescriptor : 1;
+    enhancedDeflating : 1;
+    patchedData : 1;
+    strongEncryption : 1;
+    unused : 4;
+    filenameAndCommentAreUtf8 : 1;
+    reservedPKWARE_0 : 1;
+    centralDirectoryEncrypted : 1;
+    reservedPKWARE_1 : 2;
+};
+
 struct LocalFileHeader {
     u32 headerSignature [[name("LCF PK\\3\\4")]];
     u16 version [[ comment("The minimum supported ZIP specification version needed to extract the file") ]];
-    u16 purposeBitflag  [[ comment("General purpose bit flag") ]];
+    GeneralPurposeBitFlags generalPurposeBitFlags  [[ comment("General purpose bit flag") ]];
     CompressionMethod compressionMethod [[ comment("Compression method") ]];
     u16 lastModifyTime [[ comment("File last modification time") ]];
     u16 lastModifyDate [[ comment("File last modification date") ]];
@@ -183,7 +197,7 @@ struct CentralDirectoryFileHeader {
     u32 headerSignature [[name("CDFH PK\\1\\2")]];
     u16 versionMade [[comment("Version file made by")]];
     u16 versionExtract [[comment("Minimum version needed to extract")]];
-    u16 generalFlag [[comment("General purpose bit flag")]];
+    GeneralPurposeBitFlags generalPurposeBitFlags [[comment("General purpose bit flag")]];
     CompressionMethod compressionMethod;
     u16 fileLastModifyTime [[comment("File last modification time")]];
     u16 fileLastModifyDate [[comment("File last modification date")]];
