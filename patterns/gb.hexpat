@@ -33,6 +33,10 @@ namespace format {
 			romSize = 1258291;
 			romBanks = 80;
 		}
+		if (cartSizeType == 0x54) {
+			romSize = 1572864;
+			romBanks = 96;
+		}
 		return std::format("size: {}, banks: {}", type::impl::size_formatter(romSize), romBanks);
 	};
 	
