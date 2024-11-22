@@ -92,7 +92,7 @@ bitfield XGSTextureFlags
 
 struct XGSTextureHeader
 {
-    type::Magic"XGST"> magic;
+    type::Magic<"XGST"> magic;
     u8 dataOffset;
     XGSPlatform compilationPlatform; //Definitely platform, this has no harm when modifying (except in Edge of Perception) but does help with knowing platform specific compressions, usually
     u16 headerSize; //?
