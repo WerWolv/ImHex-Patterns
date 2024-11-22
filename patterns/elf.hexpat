@@ -10,6 +10,7 @@
 import std.core;
 import std.io;
 import std.mem;
+import type.magic;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 
@@ -515,7 +516,7 @@ bitfield PF {
 };
 
 struct E_IDENT {
-    char EI_MAG[4];
+    type::Magic<"\x7fELF"> EI_MAG;
     EI_CLASS EI_CLASS;
     EI_DATA EI_DATA;
     EI_VERSION EI_VERSION;
