@@ -116,7 +116,7 @@ struct WebPData {
             padding[paddedChunkSize - sizeof(data)];
         }
     }
-} [[name(std::format("Chunk ({})", chunkHeader.chunkId))]];;
+} [[name(std::format("Chunk ({})", chunkHeader.chunkId))]];
 
 RiffHeader header @0x00;
 WebPData data[while (!std::mem::eof())] @ $;

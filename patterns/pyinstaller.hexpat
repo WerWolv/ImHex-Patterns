@@ -65,9 +65,9 @@ enum TypeCode : u8 {
 struct TOC {
     s32 structLen;
     u32 pos;
-    u32 len[[comment("len of the data (compressed)")]];;
-    u32 uLen[[comment("len of data (uncompressed)")]];;
-    bool cFlag[[comment("is it compressed")]];;
+    u32 len[[comment("len of the data (compressed)")]];
+    u32 uLen[[comment("len of data (uncompressed)")]];
+    bool cFlag[[comment("is it compressed")]];
     TypeCode typcd;
     char name[this.structLen - tocStructLength];
 

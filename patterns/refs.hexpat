@@ -238,7 +238,7 @@ struct SUPERBLOCK {
 };
 
 struct VOLUME_BOOT_RECORD {
-	BYTE jmpInstruction[3] [[comment("Jump Instruction"), name("JumpInstruction")]];;
+	BYTE jmpInstruction[3] [[comment("Jump Instruction"), name("JumpInstruction")]];
 	FILESYSTEM FileSystem[[comment("FileSystemName"), name("FileSystem")]];
 	BYTE UnKnown[5];
 	char Identifier[4][[comment("File System Recognition Structure, allows OS to recognise the structure"), name("FSRSIdentifier")]];

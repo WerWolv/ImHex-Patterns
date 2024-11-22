@@ -238,7 +238,7 @@ struct LuaFunction {
     }
     LuaInstruction instructions[instruction_count];
     s32 constantCount;
-    LuaConstant constants[constantCount];;
+    LuaConstant constants[constantCount];
     s32 HasDebugInfo;
     if (HasDebugInfo != 0) {
         u32 LineCount;

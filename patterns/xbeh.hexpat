@@ -63,9 +63,9 @@ union EntryPoint {
     u32 retailAddress [[format("format_retail_entrypoint")]];
 
     if ((betaAddress ^ 0xE682F45B) - parent.baseAddress < std::mem::size())
-        u8 beta     @ (betaAddress ^ 0xE682F45B) - parent.baseAddress;;
+        u8 beta     @ (betaAddress ^ 0xE682F45B) - parent.baseAddress;
     if ((debugAddress ^ 0x94859D4B) - parent.baseAddress < std::mem::size())
-        u8 debug    @ (debugAddress ^ 0x94859D4B) - parent.baseAddress;;
+        u8 debug    @ (debugAddress ^ 0x94859D4B) - parent.baseAddress;
     if ((retailAddress ^ 0xA8FC57AB) - parent.baseAddress < std::mem::size())
         u8 retail   @ (retailAddress ^ 0xA8FC57AB) - parent.baseAddress;
 };
@@ -303,7 +303,7 @@ union KernelImageThunkAddress {
     u32 retailAddress [[format("format_retail_kernel_image_thunk_address")]];
 
     if ((debugAddress ^ 0xEFB1F152) - parent.baseAddress < std::mem::size())
-        KernelImageThunk debug    @ (debugAddress ^ 0xEFB1F152) - parent.baseAddress;;
+        KernelImageThunk debug    @ (debugAddress ^ 0xEFB1F152) - parent.baseAddress;
     if ((retailAddress ^ 0x5B6D40B6) - parent.baseAddress < std::mem::size())
         KernelImageThunk retail   @ (retailAddress ^ 0x5B6D40B6) - parent.baseAddress;
 };

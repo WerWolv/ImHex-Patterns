@@ -651,7 +651,7 @@ struct Elf32_Shdr {
 			u8 data[sh_size] @ sh_offset [[sealed]];
 		}
     }
-} [[format("format_section_header")]];;
+} [[format("format_section_header")]];
 
 struct Elf64_Chdr {
     u32 ch_type;
