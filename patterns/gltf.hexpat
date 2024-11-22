@@ -67,3 +67,4 @@ fn gltf_format(gltf_chunk_type_t x)
 gltf_magic_t magic @ 0x00;
 gltf_chunk_t chunks[while(!std::mem::eof())] @ $;
 
+std::assert_warn(std::mem::size() == magic.length, "file size mismatch");
