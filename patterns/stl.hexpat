@@ -30,7 +30,7 @@ struct BinarySTLHeader {
     u32 triangleCount;
 };
 
-struct STL {    
+struct STL {
     if (std::mem::read_string(0, 6) == "solid ")
         std::warning("ASCII STL file!");
     else {

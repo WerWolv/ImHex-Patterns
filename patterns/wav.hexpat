@@ -53,7 +53,7 @@ struct WaveFormatPCM {
 };
 
 struct WaveMSADPCMCoefSet {
-  s16 coef1;    
+  s16 coef1;
   s16 coef2;
 };
 

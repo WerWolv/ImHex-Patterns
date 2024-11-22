@@ -35,7 +35,7 @@ namespace format {
 		}
 		return std::format("size: {}, banks: {}", type::impl::size_formatter(romSize), romBanks);
 	};
-	
+
 	fn ram_type(u8 ramType) {
 		u16 ramSize;
 		u16 ramBanks;
@@ -57,7 +57,7 @@ namespace format {
 		}
 		return std::format("size: {}, banks: {}", type::impl::size_formatter(ramSize), ramBanks);
 	};
-	
+
 	fn rom_features(u8 type) {
 		str result = "( ";
 		if (brandedROMFeatures) match(type) {
@@ -67,37 +67,37 @@ namespace format {
 		match(type) {
 			(0x00): result += "no_mbc";
 			(0x01): result += "mbc1";
-			(0x02): result += "mbc1 | ram"; 
+			(0x02): result += "mbc1 | ram";
 			(0x03): result += "mbc1 | ram | battery";
-			(0x05): result += "mbc2"; 
+			(0x05): result += "mbc2";
 			(0x06): result += "mbc2 | battery";
-			(0x08): result += "no_mbc | ram"; 
+			(0x08): result += "no_mbc | ram";
 			(0x09): result += "no_mbc | ram | battery";
-			(0x0B): result += "mmm01"; 
+			(0x0B): result += "mmm01";
 			(0x0C): result += "mmm01 | ram";
-			(0x0D): result += "mmm01 | ram | battery"; 
+			(0x0D): result += "mmm01 | ram | battery";
 			(0x0F): result += "mbc3 | timer | battery";
-			(0x10): result += "mbc3 | timer | ram | battery"; 
+			(0x10): result += "mbc3 | timer | ram | battery";
 			(0x11): result += "mbc3";
-			(0x12): result += "mbc3 | ram"; 
+			(0x12): result += "mbc3 | ram";
 			(0x13): result += "mbc3 | ram | battery";
-			(0x19): result += "mbc5"; 
+			(0x19): result += "mbc5";
 			(0x1A): result += "mbc5 | ram";
-			(0x1B): result += "mbc5 | ram | battery"; 
+			(0x1B): result += "mbc5 | ram | battery";
 			(0x1C): result += "mbc5 | rumble";
-			(0x1D): result += "mbc5 | rumble | ram"; 
+			(0x1D): result += "mbc5 | rumble | ram";
 			(0x1E): result += "mbc5 | rumble | ram | battery";
-			(0x20): result += "mbc6"; 
+			(0x20): result += "mbc6";
 			(0x22): result += "mbc7 | sensor | rumble";
-			(0xFC): result += "camera"; 
+			(0xFC): result += "camera";
 			(0xFD): result += "tama5";
-			(0xFE): result += "huc3"; 
+			(0xFE): result += "huc3";
 			(0xFF): result += "huc1 | ram | battery";
 		}
 		if (uppercaseROMFeatures) result = std::string::to_upper(result);
-		return result + " )"; 
+		return result + " )";
 	};
-	
+
 	fn licensee_code(u8 code) {
 		match(code) {
 			(0x00): return "None";
@@ -199,7 +199,7 @@ namespace format {
 			(0xCA): return "Ultra";
 			(0xCB): return "Vap";
 			(0xCC): return "Use Corporation";
-			(0xCD): return "Meldac"; 
+			(0xCD): return "Meldac";
 			(0xD1): return "Sofel";
 			(0xD2): return "Quest";
 			(0xD3): return "Sigma Enterprises";
@@ -224,7 +224,7 @@ namespace format {
 		return "Unknown Licensee";
 	};
 
-	fn new_licensee_code(str a) {		
+	fn new_licensee_code(str a) {
 		if (std::mem::read_unsigned(0x14B, 1) != 0x33) return "See old licensee code";
 		match(a) {
 			("00"): return "None";
@@ -293,7 +293,7 @@ namespace format {
 	};
 
 	using CGB;
-	
+
 	fn null_cgb_flags(CGB flags) {
 		return "NO_CGB";
 	};

@@ -89,9 +89,9 @@ namespace ip {
 		OSPF 	= 89,
 		SCTP 	= 132
 	};
-	
+
 	namespace udp {
-	
+
 		struct Packet {
 			u16 source_port;
 			u16 destination_port;
@@ -100,11 +100,11 @@ namespace ip {
 			u16 checksum;
 			u8 data[length - 8];
 		};
-	
+
 	}
-	
+
 	namespace tcp {
-	
+
 		bitfield Flags {
 			data_offset : 4;
 			padding : 3;
@@ -118,7 +118,7 @@ namespace ip {
 			syn : 1;
 			fin : 1;
 		};
-	
+
 		struct Packet {
 			u16 source_port;
 			u16 destination_port;
@@ -128,15 +128,15 @@ namespace ip {
 			u16 window_size;
 			u16 checksum;
 			u16 urgent_pointer;
-			
+
 			if (flags.data_offset > 5)
 				u8 options[(flags.data_offset - 5) * sizeof(u32)];
-				
+
 			u8 data[parent.parent.header.total_length - parent.parent.header.ihl * 4 - flags.data_offset * 4];
 		};
-	
+
 	}
-	
+
 	struct Payload {
 		if (parent.protocol == ip::Protocol::UDP)
 			udp::Packet packet [[inline]];
@@ -153,7 +153,7 @@ namespace ipv4 {
 	struct Address {
 		u8 octets[4];
 	} [[format("ipv4::address_formatter")]];
-	
+
 	fn address_formatter(Address addr) {
 		return std::format("{0}.{1}.{2}.{3}",
 			addr.octets[0],
@@ -168,15 +168,15 @@ namespace ipv4 {
 		tos 			: 8;
 		total_length 	: 16;
 	};
-	
+
 	bitfield Flags {
 		reserved 		: 1;
 		df 				: 1;
 		mf 				: 1;
 		fragment_offset : 13;
 	};
-		
-	
+
+
 	struct Packet {
 		Header header [[inline]];
 		u16 identification;
@@ -184,16 +184,16 @@ namespace ipv4 {
 		u8 time_to_live;
 		ip::Protocol protocol;
 		u16 header_checksum;
-		
+
 		Address source_ip_address;
 		Address destination_ip_address;
-		
+
 		if (header.ihl > 5)
 			u8 options[(header.ihl - 5) * sizeof(u32)];
-			
+
 		ip::Payload payload;
 	};
-	
+
 }
 
 
@@ -202,7 +202,7 @@ namespace ipv6 {
 	struct Address {
 		u16 segments[8];
 	} [[format("ipv6::address_formatter")]];
-	
+
 	fn address_formatter(Address addr) {
 		return std::format("{0:04X}:{1:04X}:{2:04X}:{3:04X}:{4:04X}:{5:04X}:{6:04X}:{7:04X}",
 			addr.segments[0],
@@ -221,16 +221,16 @@ namespace ipv6 {
 		ecn 		: 2;
 		flow_label 	: 20;
 	};
-	
+
 	struct Packet {
 		Header header [[inline]];
 		u16 payload_length;
 		ip::Protocol next_header;
 		u8 hop_limit;
-		
+
 		Address source_address;
 		Address destination_address;
-		
+
 		ip::Payload payload;
 	};
 
@@ -254,18 +254,18 @@ bitfield TCI {
 struct EthernetIIFrame {
 	MAC destination_address;
 	MAC source_address;
-	
+
 	u16 possible_tpid [[no_unique_address, hidden]];
 	if (possible_tpid == EtherType::VLANTaggedFrame) {
 		u16 tpid;
 		TCI tci [[inline]];
 	}
-	
+
 	EtherType type;
-	
+
 	Payload payload;
 	std::assert(sizeof(payload) >= 40 && sizeof(payload) <= 1500, std::format("Payload size out of range: {}", sizeof(payload)));
-	
+
 	u32 frame_check_sequence;
 };
 

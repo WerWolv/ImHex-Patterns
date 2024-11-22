@@ -13,9 +13,9 @@ namespace auto type {
         A 32 bit Unix time value
     */
     using time32_t = u32 [[format("type::impl::format_time_t")]];
-    
+
     /**
-        Alias name for `time32_t` 
+        Alias name for `time32_t`
     */
     using time_t = time32_t;
 

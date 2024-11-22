@@ -56,7 +56,7 @@ struct BaseBox {
         u64 largeSize;
         boxSize = largeSize;
         endOffset = startOffset + boxSize;
-    } else if (this.size == 0) { 
+    } else if (this.size == 0) {
         boxSize = std::mem::size() - startOffset;
         endOffset = std::mem::size();
     } else {

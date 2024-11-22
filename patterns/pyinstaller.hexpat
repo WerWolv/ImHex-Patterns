@@ -1,10 +1,10 @@
-#pragma description PyInstaller binray 
+#pragma description PyInstaller binray
 
 #pragma endian big
 
 import std.mem;
 
-// Reference: 
+// Reference:
 //     https://pyinstaller.org/en/stable/advanced-topics.html
 
 //  typedef struct _cookie {
@@ -59,7 +59,7 @@ enum TypeCode : u8 {
     Module = 109,
     Script = 115,
     Data = 120,
-    RuntimeOption = 111, 
+    RuntimeOption = 111,
 };
 
 struct TOC {
@@ -70,7 +70,7 @@ struct TOC {
     bool cFlag[[comment("is it compressed")]];;
     TypeCode typcd;
     char name[this.structLen - tocStructLength];
-    
+
     if(typcd == TypeCode::Zlib) {
         ZlibArchive zlibArchive @ startOffset + this.pos;
     }

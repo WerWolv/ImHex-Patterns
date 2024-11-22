@@ -1,6 +1,6 @@
 /**
  * @file <gltf.hexpat> ImHex Pattern for glTF binary files.
- * 
+ *
  * Copyright (c) 2023 H. Utku Maden <utkumaden@hotmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -59,7 +59,7 @@ fn gltf_format(gltf_chunk_type_t x)
 {
          if (x == gltf_chunk_type_t::JSON) return "JSON";
     else if (x == gltf_chunk_type_t::BIN) return "BIN";
-    
+
     return "";
 };
 

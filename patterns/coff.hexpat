@@ -116,11 +116,11 @@ struct SymbolTable {
     Type type;
     StorageClass storageClass;
     u8 numberOfAuxSymbols;
-    
+
     countedSymbols += 1 + numberOfAuxSymbols;
-    
+
     AuxSymbol auxSymbols[numberOfAuxSymbols];
-    
+
     if (countedSymbols >= parent.header.numberOfSymbols)
         break;
 };
@@ -187,7 +187,7 @@ struct Section {
     u16 numberOfRelocations;
     u16 numberOfLineNumbers;
     SectionFlags characteristics;
-    
+
     u8 rawData[sizeOfRawData] @ pointerToRawData [[sealed]];
     Relocations relocations[numberOfRelocations] @ pointerToRelocations;
 };
@@ -205,9 +205,9 @@ struct Header {
 
 struct COFF {
     Header header;
-    
+
     Section sectionTable[header.numberOfSections];
-    
+
     SymbolTable symbolTable[header.numberOfSymbols] @ header.pointerToSymbolTable;
     StringTable stringTable @ addressof(symbolTable) + sizeof(symbolTable);
 };

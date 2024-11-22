@@ -15,7 +15,7 @@ struct ARFile {
 	char file_mode[8];
 	char file_size[10];
 	u16 end_marker;
-	
+
 	if (end_marker == 0x0A60) {
 		u8 data[std::string::parse_int(this.file_size, 10)];
 		padding[sizeof(data) & 1];

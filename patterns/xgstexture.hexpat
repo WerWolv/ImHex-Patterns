@@ -24,7 +24,7 @@ enum XGSPlatform : u8
     DURANGO, //Xbox One
     WINPHONE, //PCOGL
     WINPHONE_LEGACY, //WP8
-    APPLE_TV, //Apple TV    
+    APPLE_TV, //Apple TV
 };
 
 enum XGSTextureFormat : u16
@@ -43,17 +43,17 @@ enum XGSTextureFormat : u16
     PVR_UNK,                        //2BPP no alpha? Crashes in ABGO v101
     RGB888,                         //Greyscale? unused, crashes in EOP but works in ABGO v101
     AL88,
-    //14,                           //8BPP something? Crash on EOP and PS3, on ABGO v101, nothing 
-    PVRTC_2BPP_RGBA = 15,           //Crash on PS3, on ABGO v101, nothing 
-    PVRTC_4BPP_RGBA,                //Crash on PS3 or is this 2bppRGBA, on ABGO v101, nothing 
-    PVRTC_4BPP_RGBA_2,              //May need to swap these two, crash on PS3, on ABGO v101, nothing 
-    PVRTC_4BPP_RGBA_3,              //Crashes on EOP and PS3, on ABGO v101, nothing 
-    //19,                           //Crash on PS3 and EOP, on ABGO v101, nothing 
-    //20,                           //Crash on PS3 and EOP, on ABGO v101, nothing 
-    //21,                           //Crash on PS3 and EOP, on ABGO v101, nothing 
-    RG88_OR_GR88 = 22,              //Unused. On PS3, it's unswizzled GR88, crashes on EOP, on ABGO v101, nothing 
-    L4,                             //Unused, crashes on EOP, on ABGO v101, nothing 
-    DXT1_OR_ETC1,                   //On Android this is usually DXT1, old Android has this DXT1 swizzled, null on PS3, crash on EOP, on ABGO v101, nothing 
+    //14,                           //8BPP something? Crash on EOP and PS3, on ABGO v101, nothing
+    PVRTC_2BPP_RGBA = 15,           //Crash on PS3, on ABGO v101, nothing
+    PVRTC_4BPP_RGBA,                //Crash on PS3 or is this 2bppRGBA, on ABGO v101, nothing
+    PVRTC_4BPP_RGBA_2,              //May need to swap these two, crash on PS3, on ABGO v101, nothing
+    PVRTC_4BPP_RGBA_3,              //Crashes on EOP and PS3, on ABGO v101, nothing
+    //19,                           //Crash on PS3 and EOP, on ABGO v101, nothing
+    //20,                           //Crash on PS3 and EOP, on ABGO v101, nothing
+    //21,                           //Crash on PS3 and EOP, on ABGO v101, nothing
+    RG88_OR_GR88 = 22,              //Unused. On PS3, it's unswizzled GR88, crashes on EOP, on ABGO v101, nothing
+    L4,                             //Unused, crashes on EOP, on ABGO v101, nothing
+    DXT1_OR_ETC1,                   //On Android this is usually DXT1, old Android has this DXT1 swizzled, null on PS3, crash on EOP, on ABGO v101, nothing
     LA44,                           //Crash on EOP, on ABGO v101, nothing
     DXT5,                           //Crash on EOP, on ABGO v101, nothing
     //?,                            //Crash on EOP, on ABGO v101, nothing, note starting here PS3 crashes

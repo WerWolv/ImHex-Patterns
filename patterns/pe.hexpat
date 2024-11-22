@@ -520,7 +520,7 @@ struct Bitmap {
 		Colors rgbq[bmh.clrUsed*((1 << bmh.bitCount)*!bmh.clrUsed)];
 		imageDataSize = imageDataSize - sizeof(rgbq);
 	}
-	
+
 	u8 imageData[imageDataSize-sizeof(bmh)];
 };
 
@@ -1041,7 +1041,7 @@ struct LineNumber {
 
 bool dataDirectoryInSection[coffHeader.optionalHeader.numberOfRVAsAndSizes];
 
-fn checkForDataDirectory() { 
+fn checkForDataDirectory() {
 	for (u32 i = 0, i < coffHeader.optionalHeader.numberOfRVAsAndSizes, i += 1)
 		if (coffHeader.optionalHeader.directories[i].rva - relativeVirtualDifference() < sectionsTable[currentSectionIndex].ptrRawData+sectionsTable[currentSectionIndex].sizeOfRawData
 		 && coffHeader.optionalHeader.directories[i].rva - relativeVirtualDifference() >= $)

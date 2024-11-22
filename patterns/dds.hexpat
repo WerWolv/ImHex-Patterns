@@ -203,7 +203,7 @@ enum DX10AlphaMode : u32 {
   Straight,
   PreMultiplied,
   Opaque,
-  Custom,	
+  Custom,
 };
 
 bitfield DX10MiscFlags {

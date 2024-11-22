@@ -66,7 +66,7 @@ struct LengthDelimited {
 
 struct Entry {
     Key key;
-	
+
 	if (wire_type == WireType::Varint)
 		type::uLEB128 value;
 	else if (wire_type == WireType::_64Bit)

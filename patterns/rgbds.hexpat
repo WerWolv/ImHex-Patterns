@@ -33,7 +33,7 @@ namespace fstack {
             LONG iters[depth];
         }
     };
-        
+
     LONG nbNodes @ $;
     Node nodes[nbNodes] @ $;
 }
@@ -54,7 +54,7 @@ namespace sym {
             LONG value;
         }
     };
-    
+
     Symbol symbols[nbSym] @ $;
 }
 
@@ -75,7 +75,7 @@ namespace sect {
         LONG rpnSize;
         BYTE rpn[rpnSize];
     };
-    
+
     enum Type : BYTE {
         WRAM0,
         VRAM,
@@ -105,7 +105,7 @@ namespace sect {
             Patch patches[nbPatches];
         }
     };
-    
+
     Section sections[nbSect] @ $;
 }
 
@@ -126,7 +126,7 @@ namespace assert {
         BYTE rpn[rpnSize];
         STRING msg;
     };
-    
+
     LONG nbAsserts @ $;
     Assertion assertions[nbAsserts] @ $;
 }

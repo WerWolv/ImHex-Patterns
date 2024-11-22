@@ -1,7 +1,7 @@
 #pragma once
 
 /*!
-    The File library allows reading and writing from/to external files using 
+    The File library allows reading and writing from/to external files using
     a C-like File IO API.
 
     **These functions are considered dangerous and require the user to manually permit them**
@@ -13,7 +13,7 @@ namespace auto std::file {
         A handle representing a file that has been opened
     */
     using Handle = s32;
-    
+
     /**
         The mode to open a file in.
         Read opens the file in read-only mode
@@ -45,7 +45,7 @@ namespace auto std::file {
         builtin::std::file::close(handle);
     };
 
-    
+
     /**
         Reads the content of a file into a string
         @param handle The file handle to read from
@@ -85,14 +85,14 @@ namespace auto std::file {
     };
 
     /**
-        Resizes a file 
+        Resizes a file
         @param handle The handle of the file to resize
     */
     fn resize(Handle handle, u64 size) {
         builtin::std::file::resize(handle, size);
     };
 
-    /** 
+    /**
         Flushes changes made to a file to disk
         @param handle The handle of the file to flush
     */

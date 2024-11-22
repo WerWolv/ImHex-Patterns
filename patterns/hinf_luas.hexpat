@@ -26,7 +26,7 @@ enum lua_endian : u8 {
     little_endian = 1,
     big_endian = 0,
 };
-    
+
 enum lua_numbertype : u8 {
     _float = 0,
     _int32 = 1,
@@ -136,7 +136,7 @@ enum HksOpCode : s8 {
         GETSLOT_D,
         GETGLOBAL_MEM,
     };
-    
+
 enum HksType : u8
     {
         TNIL,
@@ -212,10 +212,10 @@ struct LuaConstant {
     }
     else if (type == HksType::TLIGHTUSERDATA) {
         s64 userdata;
-    } 
+    }
     else {
         s64 data;
-    } 
+    }
 };
 
 struct HksLocal {
@@ -226,7 +226,7 @@ struct HksLocal {
 
 
 struct LuaFunction {
-   
+
     s32 upvaluecount;
     s32 paramcount;
     s8 isVarArg;
@@ -422,7 +422,7 @@ struct LuaScriptTagDefinition {
    LuaHeader lua_header;
    try {
     char pad[14];
-    LuaReferencedTagContainer referencedTags[referencedTags_count.count]; 
+    LuaReferencedTagContainer referencedTags[referencedTags_count.count];
    } catch {
     std::print("This file does not support referenced Tags.");
    }

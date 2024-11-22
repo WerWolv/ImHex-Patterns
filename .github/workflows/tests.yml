@@ -39,7 +39,7 @@ jobs:
             python3-pip           \
             libmagic-dev          \
             lcov
-        
+
         sudo pip install jsonschema
 
     - name: 📜 Setup ccache
@@ -74,7 +74,7 @@ jobs:
         cd constants
         for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
         cd ..
-        
+
         cd tips
         for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
         cd ..

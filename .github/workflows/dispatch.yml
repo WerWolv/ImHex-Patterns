@@ -8,7 +8,7 @@ on:
   repository_dispatch:
     types: [run_tests]
   workflow_dispatch:
-    inputs: 
+    inputs:
       generate_docs:
         description: "Regenerate docs"
         required: false
@@ -45,7 +45,7 @@ jobs:
         repo: Documentation
         owner: WerWolv
         event_type: update_pl_docs
-        
+
     - name: ✉️ Update PatternLanguage Website
       if: ${{ env.DISPATCH_TOKEN != '' }}
       uses: mvasigh/dispatch-action@main

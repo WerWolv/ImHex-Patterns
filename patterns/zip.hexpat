@@ -20,15 +20,15 @@ struct EndOfCentralDirectory {
 
 
 namespace extra {
-    
+
     bitfield Flags {
           bool modification_time_set : 1;
-          bool access_time_set : 1; 
+          bool access_time_set : 1;
           bool creation_time_set : 1;
           reserved: 5;  //reserved for additional timestamps; not set
     };
-    
-    struct X5455_ExtendedTimestamp {    
+
+    struct X5455_ExtendedTimestamp {
         Flags Flags;
         if (Flags.modification_time_set){
             u32 ModTime;
@@ -40,7 +40,7 @@ namespace extra {
             u32 CrTime;
         }
     };
-    
+
     struct X000A_NTFS {
         u32 reserved;
         u16 tag;
@@ -50,8 +50,8 @@ namespace extra {
         type::FILETIME AcTime;
         type::FILETIME CrTime;
     };
-    
-    struct X7875_NewUnix {    
+
+    struct X7875_NewUnix {
         u16 tag;
         u16 TSize;
         u8 version;
@@ -60,7 +60,7 @@ namespace extra {
         u8 GIDSize;
         u8 GID[GIDSize];
     };
-         
+
     struct X5855_InfoZipUnix {
         u32 AcTime;
         u32 ModTime;
@@ -71,7 +71,7 @@ namespace extra {
             u16 GID;
         }
     };
-    
+
     struct ExtraField {
         u16 tag;
         u16 TSize;
@@ -83,7 +83,7 @@ namespace extra {
             extra::X7875_NewUnix x7875_NewUnix;
         }else if (tag == 0x5855){
             extra::X5855_InfoZipUnix x5855_InfoZipUnix;
-        }else{    
+        }else{
             std::print("Unsupported tag 0x{:02X}", tag);
             padding[TSize];
         }
@@ -98,25 +98,25 @@ fn find_eocd() {
         return std::mem::size()-22;
     } else {
         // If it's not there, then there's probably a zip comment;
-        // search the last 64KB of the file for the signature.        
+        // search the last 64KB of the file for the signature.
         u128 offset_search_from = std::math::max(0, std::mem::size()-65536-22);
         u128 prev_address;
         while(1){
-            u128 current_address = std::mem::find_sequence_in_range(0, offset_search_from, std::mem::size(), 0x50,0x4B,0x05,0x06); 
-            
+            u128 current_address = std::mem::find_sequence_in_range(0, offset_search_from, std::mem::size(), 0x50,0x4B,0x05,0x06);
+
             //Reached EOF and did not find valid eocd.
             if (current_address == 340282366920938463463374607431768211455){
                 std::error("Could not find EOCD.");
             }
-            
+
             //Potential eocd found. Create a eocd struct
             EndOfCentralDirectory EOCD @ current_address;
-            
+
             //If central directory file header is valid, then we know the eocd offset is valid.
             if (std::mem::read_unsigned(EOCD.CDOffset, 4, std::mem::Endian::Little) == 0x2014B50){
                 return current_address;
             }
-            
+
             offset_search_from = current_address + 1;
             prev_address = current_address;
         }

@@ -1,6 +1,6 @@
 #pragma author 5h4rrK // https://www.github.com/5h4rrK
 #pragma organization temabi0s // (https://bi0s.in)
-#pragma description ReFS-File-System 
+#pragma description ReFS-File-System
 
 #pragma array_limit 10000
 
@@ -97,7 +97,7 @@ struct INDEX_HEADER {
 	u64 unused2[[name("UnUsed")]];
 	u32 end[[name("KeyIndexEnd")]];
 	u32 align[[name("Alignment")]];
-	$ = this.parent.start_pos + 0x50 + this.parent.rootsize + keyindxoff;	
+	$ = this.parent.start_pos + 0x50 + this.parent.rootsize + keyindxoff;
 	OFFSET_ENTRIES entries[keycount][[name("KeyEntries")]];
 
 };
@@ -142,7 +142,7 @@ struct ROOT_NODE{
 	char comps[rootsize - ($ - start_pos) + 0x50][[name("Components")]];
 	$ = (start_pos + 0x50 + rootsize);
 	INDEX_HEADER indxhdr[[name("IndexHeader")]];
-	// $ = start_pos + 0x50 + rootsize + indxhdr.keyindxoff;	
+	// $ = start_pos + 0x50 + rootsize + indxhdr.keyindxoff;
 	$ = (start_pos + 0x50 + rootsize + indxhdr.size);
 	INDEX_ENTRY_STRUCTURE indxentrystruct[indxhdr.keycount][[name("IndexEntry")]];
 };
@@ -214,7 +214,7 @@ struct CHECKPOINT {
 	u32 lenselfdescriptor[[comment("Self Descriptor Size"),name("SelfDescriptorSz")]];
 	u64 blockno[[comment("Most Recent CheckPoint") , name("BlockNumber")]];
 	u32 prev_pos = $;
-	$ = ($ / clustersz) *clustersz  + offsetselfdescriptor; 
+	$ = ($ / clustersz) *clustersz  + offsetselfdescriptor;
 	SELF_DESCRIPTOR selfdes[[name("SelfDescriptor")]];
 	$ = prev_pos;
 	$ += (0x28);

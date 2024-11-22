@@ -46,7 +46,7 @@ struct Value {
         Tag tag;
         s32 listLength;
         Value values[listLength] [[static]];
-    } else if (parent.tag == Tag::Compound) {       
+    } else if (parent.tag == Tag::Compound) {
         Element values[while(true)];
     } else if (parent.tag == Tag::IntArray){
         s32 arrayLength;
@@ -67,7 +67,7 @@ struct Element {
 
         u16 nameLength;
         char name[nameLength];
-            
+
         Value value;
     }
 };

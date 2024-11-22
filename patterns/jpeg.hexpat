@@ -107,7 +107,7 @@ fn sof0_component_read(SOF0Component c) {
 fn get_eoi_marker_position() {
     u32 pos = std::mem::find_sequence_in_range(0, $, std::mem::size(), 0xFF, 0xD9);
     return pos;
-    
+
 };
 
 struct SOF0 {
@@ -138,9 +138,9 @@ struct Segment {
     } else {
         type::Magic<"\xff"> magic;
         Marker marker;
-        
+
         if (marker == Marker::SOI || marker == Marker::EOI) {
-            
+
         } else {
             u16 length;
             if (marker == Marker::APP0) {
