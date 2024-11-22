@@ -42,7 +42,7 @@ enum Marker : u8 {
     APP14   = 0xEE,
     APP15   = 0xEF,
     COM     = 0xFE,
-    UNKNOWN = 0X00
+    UNKNOWN = 0x00
 };
 
 enum DensityUnit : u8 {
