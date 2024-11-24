@@ -230,7 +230,7 @@ struct Header {
     else if (cpuType == CpuType::BS32032 || cpuType == CpuType::BS32332 || cpuType == CpuType::NS32532) SubCpuType32XXX subCpuType;
     else if (cpuType == CpuType::I386 || cpuType == CpuType::X86_64) SubCpuTypeI386 subCpuType;
     else if (cpuType == CpuType::MIPS) SubCpuTypeMips subCpuType;
-    else if (cpuType == CpuType::HPPA) SubCpuTypeHPPA subCpuType;    
+    else if (cpuType == CpuType::HPPA) SubCpuTypeHPPA subCpuType;
     else if (cpuType == CpuType::ARM) SubCpuTypeARM subCpuType;
     else if (cpuType == CpuType::MC88000) SubCpuTypeMC88000 subCpuType;
     else if (cpuType == CpuType::MC98000) SubCpuTypeMC98000 subCpuType;
@@ -244,7 +244,7 @@ struct Header {
     u32 numCommands;
     type::Size<u32> sizeOfCommands;
     Flags flags;
-    
+
     if (magic == Magic::_64BitMagic) padding[sizeof(u32)];
 };
 
@@ -312,7 +312,7 @@ struct Section {
     u32 numRelocs;
     u32 flags;
     padding[8];
-    
+
     if (offset > 0)
         u8 data[size] @ offset [[sealed]];
 };
@@ -327,9 +327,9 @@ struct CommandSegment {
     u32 initProtection;
     u32 numSections;
     u32 flags;
-    
+
     Section sections[numSections];
-    
+
     if (fileOffset > 0)
         u8 data[fileSize] @ fileOffset [[sealed]];
 };
@@ -345,7 +345,7 @@ struct Section64 {
     u32 numRelocs;
     u32 flags;
     padding[12];
-    
+
     if (offset > 0)
         u8 data[size] @ offset [[sealed]];
 };
@@ -360,9 +360,9 @@ struct CommandSegment64 {
     u32 initProtection;
     u32 numSections;
     u32 flags;
-    
+
     Section64 sections[numSections];
-    
+
     if (fileOffset > 0)
         u8 data[fileSize] @ fileOffset [[sealed]];
 };
@@ -370,7 +370,7 @@ struct CommandSegment64 {
 struct LoadCommand {
     Command command;
     type::Size<u32> commandSize;
-    
+
     if (command == Command::UUID)
         CommandUUID data;
     else if (command == Command::Segment)

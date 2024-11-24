@@ -23,12 +23,12 @@ namespace format
     {
         return pck.lut.table[index].value;
     };
-    
+
     fn property(ref auto p)
     {
         return std::format("{}: {}", format::look_up_str(p.key), p.value);
     };
-    
+
     fn assets(ref auto assets)
     {
         return std::format("Assets: {}", assets.count);
@@ -38,12 +38,12 @@ namespace format
     {
         return std::format("count: {}", p.propertyCount);
     };
-    
+
     fn string(ref auto string)
     {
         return std::string::to_string(string.value);
     };
-    
+
     fn asset_entry(ref auto e)
     {
         return std::string::to_string(e.type);
@@ -96,22 +96,22 @@ enum AssetType : s32
     //! "0" file
     InfoFile = 4,
     //! (x16|x32|x64)Info.pck
-    TexturePackInfoFile = 5,    
+    TexturePackInfoFile = 5,
     //! languages.loc/localisation.loc
-    LocalisationFile = 6,    
-    //! GameRules.grf    
-    GameRulesFile = 7,    
-    //! audio.pck    
-    AudioFile = 8,    
-    //! colours.col    
-    ColourTableFile = 9,    
-    //! GameRules.grh    
-    GameRulesHeader = 10,    
-    //! Skins.pck    
-    SkinDataFile = 11,    
-    //! models.bin    
-	ModelsFile = 12,    
-    //! behaviours.bin 
+    LocalisationFile = 6,
+    //! GameRules.grf
+    GameRulesFile = 7,
+    //! audio.pck
+    AudioFile = 8,
+    //! colours.col
+    ColourTableFile = 9,
+    //! GameRules.grh
+    GameRulesHeader = 10,
+    //! Skins.pck
+    SkinDataFile = 11,
+    //! models.bin
+	ModelsFile = 12,
+    //! behaviours.bin
     BehavioursFile = 13,
     //! entityMaterials.bin
     MaterialFile = 14,
@@ -166,7 +166,7 @@ struct Assets
 } [[format("format::assets"), transform_entities("transform::assets")]];
 
 struct Pck
-{   
+{
     s32 version;
     if (version >> 24 & 0xff != 0)
     {

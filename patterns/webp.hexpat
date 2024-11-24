@@ -79,7 +79,7 @@ struct WebPANMFData {
     u24 frameDuration;
     ANMFFlags flags;
     u8 data[parent.chunkHeader.chunkSize - 16]; // lazy fix - can't be bothered implementing subchunks
-    
+
 };
 
 bitfield ALPHFlags {
@@ -97,7 +97,7 @@ struct WebPData {
     match (chunkHeader.chunkId) {
         ("VP8X"): WebPVP8XData VP8XData;
         ("ANIM"): WebPANIMData ANIMData;
-        ("ANMF"): { 
+        ("ANMF"): {
             WebPANMFData ANMFData;
             padding[paddedChunkSize - sizeof(ANMFData)];
         }
@@ -116,7 +116,7 @@ struct WebPData {
             padding[paddedChunkSize - sizeof(data)];
         }
     }
-} [[name(std::format("Chunk ({})", chunkHeader.chunkId))]];;
+} [[name(std::format("Chunk ({})", chunkHeader.chunkId))]];
 
 RiffHeader header @0x00;
 WebPData data[while (!std::mem::eof())] @ $;

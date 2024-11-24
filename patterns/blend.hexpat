@@ -36,7 +36,7 @@ struct BHead<Ptr> {
     char code[4];
     s32 len;
     Ptr old;
-    s32 SDNAnr; 
+    s32 SDNAnr;
     s32 nr;
 
     // ENDB marks the last data block in the file.
@@ -137,7 +137,7 @@ struct BlendWrapper {
 
 BlendWrapper blendWrapper @ 0x00;
 
-// Assume the blend file is ZSTD compressed. 
+// Assume the blend file is ZSTD compressed.
 
 struct SeekTableFooter {
     u32 numFrames;

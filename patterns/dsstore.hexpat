@@ -7,11 +7,11 @@ import std.io;
 struct RecordEntry {
   u32 length;
   char16 filename[length];
-  
+
   char id[4];
   // either blob or length
   char type[4];
-  
+
   if (type == "blob") {
     u32 blobCount;
     u8 blobData[blobCount];
@@ -67,15 +67,15 @@ struct BuddyBlock {
   u8 reserved[4];
   // padding for next multiple of 256 entries (1024 bytes)
   u32 addresses[blockCount];
-  
+
   // u8 padding[paddingCount];
   u32 directoryCount;
-  
+
   // directory entries
   u8 count;
   u8 name[count];
   u32 blockNumber;
-  
+
   // free lists
   // 32 free lists
   BuddyRootBlockOffsets off[32];
@@ -96,7 +96,7 @@ struct BuddyAllocator {
   u32 offsetBookkeeping2;
   u32 offsetData;
   u8 reserved[12];
-  
+
   BuddyRootBlock root @ offsetBookkeeping + 4;
 
   std::print("TOC {} address 0x{:08x}",
@@ -104,7 +104,7 @@ struct BuddyAllocator {
     root.offsets.addresses[root.toc.toc[0].value] >> 0x5 << 0x5);
 
   BlocksList blocks @ (root.offsets.addresses[root.toc.toc[0].value] >> 0x5 << 0x5) + 4;
-  
+
   std::print("Blocks start at address 0x{:08x}, size 0x{:04x}",
     root.offsets.addresses[blocks.blockId] >> 0x5 << 0x5,
     1 << (root.offsets.addresses[blocks.blockId] & 0x1f));

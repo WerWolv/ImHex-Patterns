@@ -25,15 +25,15 @@ struct QuantizedMeshHeader {
     double CenterX;
     double CenterY;
     double CenterZ;
-    
+
     float MinimumHeight;
     float MaximumHeight;
-    
+
     double BoundingSphereCenterX;
     double BoundingSphereCenterY;
     double BoundingSphereCenterZ;
     double BoundingSphereRadius;
-    
+
     double HorizonOcclusionPointX;
     double HorizonOcclusionPointY;
     double HorizonOcclusionPointZ;
@@ -112,11 +112,11 @@ fn format_oct16(Oct16 oct) {
     float xOut;
     float yOut;
     float zOut;
-    
+
     xOut = fromSnorm(oct.x);
     yOut = fromSnorm(oct.y);
     zOut = 1.0 - (std::math::abs(xOut) + std::math::abs(yOut));
-    
+
     if (zOut < 0.0) {
         float oldX;
 
@@ -124,7 +124,7 @@ fn format_oct16(Oct16 oct) {
         xOut = (1.0 - std::math::abs(yOut)) * signNotZero(oldX);
         yOut = (1.0 - std::math::abs(oldX)) * signNotZero(yOut);
     }
-    
+
     return std::format("{}, {}, {}", xOut, yOut, zOut);
 };
 
@@ -154,7 +154,7 @@ struct ExtensionHeader {
 struct QuantizedMesh {
     QuantizedMeshHeader header;
     VertexData vertdata;
-    
+
     if (vertdata.vertexCount > 65536) {
         IndexData32 indexdata;
         EdgeIndices32 edgeindices;
@@ -162,7 +162,7 @@ struct QuantizedMesh {
         IndexData16 indexdata;
         EdgeIndices16 edgeindices;
     }
-    
+
     ExtensionHeader extensions[extensionCount];
 };
 

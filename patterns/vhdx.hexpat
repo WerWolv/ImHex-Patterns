@@ -38,7 +38,7 @@ struct DataDescriptor {
 
 struct LogDescriptor {
 	char signature[4];
-	
+
 	if (signature == "zero")
 		ZeroDescriptor descriptor [[inline]];
 	else if (signature == "desc")
@@ -103,7 +103,7 @@ struct ParentLocatorEntry {
 	u32 valueOffset;
 	u16 keyLength;
 	u16 valueLength;
-	
+
 	char16 key[keyLength / 2] @ addressof(parent) + keyOffset;
 	char16 value[valueLength / 2] @ addressof(parent) + valueOffset;
 };
@@ -161,7 +161,7 @@ struct RegionTable {
 	u32 checksum;
 	u32 entryCount;
 	padding[4];
-	
+
 	RegionTableEntry entries[entryCount];
 };
 

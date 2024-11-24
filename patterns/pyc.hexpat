@@ -59,7 +59,7 @@ struct MarshalString {
         u8 length;
     else
         u32 length;
-        
+
     char data[length];
 };
 
@@ -67,50 +67,50 @@ struct MarshalSequence {
     if(parent.type == TYPE_SMALL_TUPLE)
         u8 length;
     else
-        u32 length;    
-    MarshalObject values[length];  
+        u32 length;
+    MarshalObject values[length];
 };
 
 struct MarshalCode {
     if(between(1, 3, 2, 3)) u16 numArgs;
     else if(above(2, 3)) u32 numArgs;
-    
+
     if(above(3, 8)) u32 numPosOnlyArgs;
-    
+
     if(_major >= 3) u32 numKwOnlyArgs;
-    
+
     if(between(1, 3, 2, 3)) u16 numLocals;
     else if(between(2, 3, 3, 11)) u32 numLocals;
-    
+
     if(between(1, 5, 2, 3)) u16 numStack;
     else if(above(2, 3)) u32 numStack;
-    
+
     if(between(1, 3, 2, 3)) u16 flags;
     else if(above(2, 3)) u32 flags;
-    
+
     MarshalObject code;
     MarshalObject constants;
     MarshalObject names;
-    
+
     if(above(1, 3)) MarshalObject localNames;
-    
+
     if(above(3, 11)) MarshalObject localKinds;
-    
+
     if(between(2, 1, 3, 11)) {
         MarshalObject freeVars;
         MarshalObject cellVars;
     }
-    
+
     MarshalObject fileName;
     MarshalObject name;
-    
+
     if(above(3, 11)) MarshalObject qualifiedName;
-    
+
     if(between(1, 5, 2, 3)) u16 firstLine;
     else if(above(2, 3)) u32 firstLine;
-    
+
     if(above(1, 5)) MarshalObject lnTable;
-    
+
     if(above(3, 11)) MarshalObject exceptionTable;
 };
 
@@ -120,7 +120,7 @@ struct DictEntry {
     MarshalObject value;
 };
 
-struct MarshalDict { 
+struct MarshalDict {
    DictEntry entries[while(true)];
 };
 
@@ -156,11 +156,11 @@ struct MarshalObject {
     u8 _type [[hidden]];
     u8 flag = _type & FLAG_REF;
     u8 type = _type & ~FLAG_REF;
-    
+
     if(flag) {
         refMember($-1);
     }
-    
+
     match(type) {
         (TYPE_NULL | TYPE_NONE | TYPE_STOPITER | TYPE_ELLIPSIS | TYPE_FALSE | TYPE_TRUE): continue;
         (TYPE_CODE): {
@@ -210,7 +210,7 @@ struct MarshalObject {
             std::print("Unknown marshal object type: {:c}", type);
         }
     }
-    
+
 } [[format("format_marshal")]];
 
 fn format_marshal(ref auto obj) {
@@ -313,23 +313,23 @@ struct PYCHeader {
     _minor = getMinor(magic);
     u8 major = _major [[export]];
     u8 minor = _minor [[export]];
-    
+
     if(above(3, 7)) {
         u32 flags;
     } else {
         u32 flags;
     }
-    
+
     if(flags & 0x1) {
         u64 checksum;
     } else {
         type::time32_t timestamp;
-        
+
         if(above(3, 3)) {
             u32 size;
         }
     }
-    
+
     MarshalObject object;
 };
 

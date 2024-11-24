@@ -159,7 +159,7 @@ struct CmapSubtable12 : BaseCmapSubtable {
 
 struct CmapSubtable {
     u16 format = std::mem::read_unsigned($, 2, std::mem::Endian::Big);
-    
+
     match (format) {
         (0): CmapSubtable0 table [[inline]];
         (2): CmapSubtable2 table [[inline]];
@@ -184,12 +184,12 @@ struct EncodingRecord {
     CmapPlatform platformId;
     u16 encodingId;
     u32 offset;
-    
+
     u64 endEncodingRecord = $;
     $ = startOfCmapTable + offset;
-    
+
     CmapSubtable subtable;
-    
+
     $ = endEncodingRecord;
 };
 
@@ -334,7 +334,7 @@ struct CompositeGlyphTable : GlyphTableHeader {
 
 struct GlyfTable {
     s16 type = std::mem::read_signed($, 2, std::mem::Endian::Big);
-    
+
     if (type >= 0) {
         SimpleGlyphTable table [[inline]];
     } else {
@@ -553,7 +553,7 @@ struct NameTableV1 : NameTableV0 {
 
 struct NameTable {
     u16 version = std::mem::read_unsigned($, 2, std::mem::Endian::Big);
-    
+
     match (version) {
         (0): NameTableV0 table [[inline]];
         (_): NameTableV1 table [[inline]];
@@ -613,7 +613,7 @@ struct OS2TableV5 : OS2TableV4 {
 
 struct OS2Table {
     u16 version = std::mem::read_unsigned($, 2, std::mem::Endian::Big);
-    
+
     match (version) {
         (0): OS2TableV0 table [[inline]];
         (1): OS2TableV1 table [[inline]];
@@ -648,10 +648,10 @@ struct PostTableV2 : PostTableV1 {
 struct PostTable {
     u16 major = std::mem::read_unsigned($, 2, std::mem::Endian::Big);
     u16 minor = std::mem::read_unsigned($ + 2, 2, std::mem::Endian::Big);
-    
+
     match (major, minor) {
         (2, 0): PostTableV2 table [[inline]];
-        (_, _): PostTableV1 table [[inline]]; 
+        (_, _): PostTableV1 table [[inline]];
     }
 };
 
@@ -715,11 +715,11 @@ struct TTF {
     u16 searchRange;
     u16 entrySelector;
     u16 rangeShift;
-    
+
     u64 start = $;
     HiddenForPreprocessing hidden[numTables] [[hidden]];
     $ = start;
-    
+
     Table tables[numTables];
 };
 

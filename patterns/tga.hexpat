@@ -61,7 +61,7 @@ struct Header {
   ColorMapSpec colorMapSpec;
   ImageSpec    imageSpec;
   char         imageId[idLength];
-  
+
   if (colorMapType == ColorMapType::ColorPalette) {
     u8 colorMapData[GetColorMapDataSize(colorMapSpec)];
   }

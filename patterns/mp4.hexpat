@@ -56,7 +56,7 @@ struct BaseBox {
         u64 largeSize;
         boxSize = largeSize;
         endOffset = startOffset + boxSize;
-    } else if (this.size == 0) { 
+    } else if (this.size == 0) {
         boxSize = std::mem::size() - startOffset;
         endOffset = std::mem::size();
     } else {
@@ -283,6 +283,14 @@ struct CompositionOffsetBox: FullBox {
     }
 };
 
+struct SampleSizeBox: FullBox {
+    u32 sample_size;
+    u32 sample_count;
+    if(this.sample_size==0) {
+        u32 entry_size[this.sample_count];
+    }
+};
+
 struct SubSampleBoxTable {
     u32 type = std::mem::read_unsigned($ + 4, 4, std::mem::Endian::Big);
 
@@ -293,6 +301,7 @@ struct SubSampleBoxTable {
         ("stco"): ChunkOffsetBox box [[inline]];
         ("stss"): SyncSampleBox box [[inline]];
         ("ctts"): CompositionOffsetBox box [[inline]];
+        ("stsz"): SampleSizeBox box [[inline]];
         (_): UnknownBox box [[inline]];
     }
 } [[name(std::format("SubSampleBoxTable({})", box.type))]];

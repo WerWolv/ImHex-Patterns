@@ -32,7 +32,7 @@ enum PakVersion : u8
 {
     Version0, //NFS Wii/Trilogy 3DS/DLS
     Version1, //ABGO V1/ABTF, AB Console Ports
-    Version2 //ABGO V2+    
+    Version2 //ABGO V2+
 };
 
 enum CompressionType : u32
@@ -67,7 +67,7 @@ struct XGSPakHeader
 struct XGSPakFolderBase
 {
     if (Head.ver == PakVersion::Version0)
-    {    
+    {
         char *name[] : u32[[pointer_base("offToStringTable")]];
         u32 filesInFolder;
         u32 subfolders;
@@ -102,7 +102,7 @@ struct XGSPakFolderBase
 struct XGSPakContentMeta
 {
     if (Head.ver == PakVersion::Version0)
-    {    
+    {
         char *name[] : u32 [[pointer_base("offToStringTable")]];
         u32 decompFileSize;
         u32 fileOff;

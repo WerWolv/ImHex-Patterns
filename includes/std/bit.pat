@@ -21,7 +21,7 @@ namespace auto std::bit {
         x = (x & a) + ((x >> 1) & a);
         x = (x & b) + ((x >> 2) & b);
         x = (x & c) + ((x >> 4) & c);
-        
+
         return x % 0xFF;
     };
 
@@ -33,19 +33,19 @@ namespace auto std::bit {
     fn has_single_bit(u128 x) {
         return x != 0 && (x & (x - 1)) == 0;
     };
-    
+
     /**
         Rounds the given number up to the next bigger power of two
         @param x The number
         @return Next bigger power of two that can fit `x`
     */
-    fn bit_ceil(u128 x) {        
+    fn bit_ceil(u128 x) {
         if (x == 0) return 0;
-        
+
         u8 i;
         while ((1 << i) < x)
             i = i + 1;
-        
+
         return 1 << i;
     };
 
@@ -56,11 +56,11 @@ namespace auto std::bit {
     */
     fn bit_floor(u128 x) {
         if (x == 0) return 0;
-        
+
         u8 i;
         while ((x >> i) > 0)
             i = i + 1;
-        
+
         return 1 << (i - 1);
     };
 
