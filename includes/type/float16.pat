@@ -50,7 +50,7 @@ namespace auto type {
             }
 
             std::mem::Reinterpreter<u32, float> converter;
-            converter.from = result;
+            converter.from_value = result;
 
             return std::format("{}", converter.to);
         };
