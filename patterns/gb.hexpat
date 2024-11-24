@@ -33,6 +33,10 @@ namespace format {
 			romSize = 1258291;
 			romBanks = 80;
 		}
+		if (cartSizeType == 0x54) {
+			romSize = 1572864;
+			romBanks = 96;
+		}
 		return std::format("size: {}, banks: {}", type::impl::size_formatter(romSize), romBanks);
 	};
 
@@ -131,6 +135,7 @@ namespace format {
 			(0x46 | 0xCF): return "Angel";
 			(0x47): return "Spectrum Holoby";
 			(0x49): return "Irem";
+			(0x4F): return "U.S. Gold";
 			(0x50): return "Absolute";
 			(0x51 | 0xB0): return "Acclaim";
 			(0x52): return "Activision";
@@ -217,6 +222,7 @@ namespace format {
 			(0xE8): return "Asmik";
 			(0xE9): return "Natsume";
 			(0xEA): return "King Records";
+			(0xEC): return "Epic/Sony Records";
 			(0xEE): return "IGS";
 			(0xF0): return "A Wave";
 			(0xF3): return "Extreme Entertainment";
@@ -287,7 +293,10 @@ namespace format {
 			("96"): return "Yonezawa/s’pal";
 			("97"): return "Kaneko";
 			("99"): return "Pack in soft";
+			("9H"): return "Bottom Up";
 			("A4"): return "Konami (Yu-Gi-Oh!)";
+			("BL"): return "MTO";
+			("DK"): return "Kodansha";
 		}
 		return "Unknown";
 	};
