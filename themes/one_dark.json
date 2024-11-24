@@ -1,5 +1,5 @@
 {
-	"base": "Dark",
+    "base": "Dark",
     "colors": {
         "imgui": {
             "border": "#6969777F",
