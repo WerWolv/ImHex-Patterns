@@ -5,7 +5,7 @@
 #pragma magic [ 52 47 42 39 ] @ 0x00
 #pragma endian little
 
-#include <std/string>
+#include <std/string.pat>
 
 using LONG = u32;
 using BYTE = u8;
