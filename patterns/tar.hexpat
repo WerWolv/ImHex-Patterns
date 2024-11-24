@@ -61,7 +61,7 @@ struct posix_header {
 struct tar {
     posix_header header_raw;
     char file[octal_to_decimal(header_raw.size)];
-    
+
     std::print("-" * 50);
     std::print("File Name: {}", header_raw.name);
     std::print("File Permissions: {}" , header_raw.mode);
@@ -78,7 +78,7 @@ struct tar {
     std::print("devmajor: {}", header_raw.devmajor);
     std::print("devminor: {}", header_raw.devminor);
     std::print("prefix: {}", header_raw.prefix);
-    
+
     char empty[while (std::mem::read_string($, 1) == NULL && !std::mem::eof())];
     if (std::mem::eof()) {
         break;

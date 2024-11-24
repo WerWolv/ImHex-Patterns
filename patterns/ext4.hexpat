@@ -211,7 +211,7 @@ struct ext4_super_block {
                 u32 s_journal_dev [[comment("Device number of journal file.")]];
             } else {
                 padding[4];
-            }   
+            }
         } else {
             padding[24];
         }
@@ -277,7 +277,7 @@ struct ext4_super_block {
         } else {
             padding[10];
         }
-        
+
         u32 s_raid_stripe_width [[comment("RAID stripe width. This is the number of logical blocks read from or written to the disk before coming back to the current disk.")]];
 
         if (s_feature_incompat.INCOMPAT_FLEX_BG) {
@@ -304,7 +304,7 @@ struct ext4_super_block {
         } else {
             padding[20];
         }
-        
+
         u32 s_error_count [[comment("Number of errors seen.")]];
         if (s_error_count > 0) {
             type::time32_t s_first_error_time [[comment("First time an error happened.")]];
@@ -329,7 +329,7 @@ struct ext4_super_block {
         } else {
             padding[8];
         }
-        
+
         u32 s_overhead_blocks [[comment("Overhead blocks/clusters in fs. (Huh? This field is always zero, which means that the linux kernel calculates it dynamically.)")]];
 
         if (s_feature_compat.COMPAT_SPARSE_SUPER2) {

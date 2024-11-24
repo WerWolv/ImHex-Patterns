@@ -22,7 +22,7 @@ struct Header {
     u32 numFiles;
     type::Size<u32> stringTableSize;
     padding[4];
-    
+
     FileEntry fileEntryTable[numFiles];
     String strings[numFiles];
 };
@@ -33,8 +33,8 @@ struct File {
 };
 
 struct PFS0 {
-    Header header; 
-    
+    Header header;
+
     File files[header.numFiles];
 };
 

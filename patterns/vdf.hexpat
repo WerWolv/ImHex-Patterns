@@ -15,9 +15,9 @@ enum Type : u8 {
 
 struct Entry {
 	Type type;
-	
+
 	char name[];
-	
+
 	if (type == Type::Set) {
 		Entry entries[while (std::mem::read_unsigned($, 1) != Type::EndSet)];
 		Type endSet [[hidden]];

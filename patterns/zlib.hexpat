@@ -22,7 +22,7 @@ if (data_len > (HEADER_SIZE + CSUM_SIZE)) {
 /// Compression method; only Deflate is used
 enum CM: u8 {
     Deflate = 8,
-    Reserved = 15,  
+    Reserved = 15,
 };
 
 /// Compression level
@@ -43,7 +43,7 @@ bitfield Header {
 } [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 16)]];
 
 
-/// Validate the header's checksum 
+/// Validate the header's checksum
 fn validate_hdr_checksum(Header hdr) {
     // Reassemble as a 2-byte big endian value
     u16 value = (
@@ -53,7 +53,7 @@ fn validate_hdr_checksum(Header hdr) {
         (hdr.fdict << 5) +
         (u8(hdr.flevel) << 6)
     );
-    
+
     if (value % 31 == 0) {
         std::print("Zlib header checksum OK. Value: {}", value);
     } else {
@@ -65,12 +65,12 @@ fn validate_hdr_checksum(Header hdr) {
 struct Zlib {
     /// Configuration
     Header header;
-    
+
     if (header.fdict) {
         /// Adler checksum of the optional dictionary
         u32 dict;
     }
-    
+
     /// Compressed data
     u8 data[data_len];
     /// Adler-32 checksum of uncompressed data

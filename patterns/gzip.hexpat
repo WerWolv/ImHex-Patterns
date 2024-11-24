@@ -55,26 +55,26 @@ struct GZip {
     type::time32_t modificationTime;
     ExtraFlags extraFlags;
     OperatingSystemID operatingSystemId;
-    
+
     if (flags.FEXTRA) {
         u16 extraLength;
         u8 extraField[extraLength];
     }
-    
+
     if (flags.FNAME) {
         char originalFileName[];
     }
-    
+
     if (flags.FCOMMENT) {
         char comment[];
     }
-    
+
     if (flags.FHCRC) {
         u16 crc16;
     }
-    
+
     u8 data[while($ < std::mem::size() - 8)] [[sealed]];
-    
+
     u32 crc32;
     type::Size<u32> isize;
 };

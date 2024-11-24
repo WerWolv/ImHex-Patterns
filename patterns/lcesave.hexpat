@@ -38,7 +38,7 @@ fn getFileType(str filename) {
                 return "Level File";
             else
                 return "Unknown DAT";
-      
+
         (_): return "File";
     }
 };
@@ -79,14 +79,14 @@ struct LCESave {
     u8 zlibMagic[2] @ 0x08 [[hidden]];
     // check if header matches
     if (zlibMagic[0] == 0x78 && zlibMagic[1] == 0x9C)
-        CompressedSave compSave @ 0x00;    
-    
+        CompressedSave compSave @ 0x00;
+
     // if not we will have continued.
     le u16 endianCheck @ 0x0A [[hidden]];
     // check if version is bigger than 14
     if (endianCheck > 14)
         std::core::set_endian(std::mem::Endian::Big);
-        
+
     // rest of the processing
     LCEHeader header [[name("Header")]];
     if (header.curVersion > 1)

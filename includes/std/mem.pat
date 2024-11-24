@@ -66,7 +66,7 @@ namespace auto std::mem {
 
         return remainder != 0 ? value + (alignment - remainder) : value;
     };
-  
+
 
     /**
         Gets the base address of the data
@@ -261,7 +261,7 @@ namespace auto std::mem {
         From from_value;
         To to_value;
     };
-  
+
 
     /**
         Aligns the cursor to the given alignment
@@ -280,11 +280,11 @@ namespace auto std::mem {
     } [[sealed, format("std::mem::impl::format_bytes")]];
 
     namespace impl {
-      
+
         fn format_bytes(auto bytes) {
             return "";
         };
-      
+
     }
 
 }

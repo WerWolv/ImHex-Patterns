@@ -29,14 +29,14 @@ enum Marker : u8 {
     UNK_0xF0 = 0xF0
 };
 
-fn get_marker_name(u8 marker) {    
+fn get_marker_name(u8 marker) {
     if (marker == Marker::Null){//    null	0000 0000
         return "Null ";
     }else if (marker == Marker::False){ //bool	0000 1000			// false
         return "False";
     }else if (marker == Marker::True){//bool	0000 1001			// true
         return "True";
-    }else if (marker == Marker::Fill){ //fill	0000 1111			// fill byte  
+    }else if (marker == Marker::Fill){ //fill	0000 1111			// fill byte
         return "Fill";
     }else if (marker & 0xF0 == Marker::Int){ //int	0001 nnnn	...		// # of bytes is 2^nnnn, big-endian bytes
         return "Int";
@@ -45,10 +45,10 @@ fn get_marker_name(u8 marker) {
     }else if (marker == Marker::Date){ //date	0011 0011	...		// 8 byte float follows, big-endian bytes
         return "Date";
     }else if (marker & 0xF0 == Marker::Data){ //data	0100 nnnn	[int]	...	// nnnn is number of bytes unless 1111 then int count follows, followed by bytes
-        return "Data";   
+        return "Data";
     }else if (marker & 0xF0 == Marker::ASCIIString){ //string	0101 nnnn	[int]	...	// ASCII string, nnnn is # of chars, else 1111 then int count, then bytes
         return "ASCIIString";
-    }else if (marker & 0xF0 == Marker::Unicode16String){ //string	0110 nnnn	[int]	...	// Unicode string, nnnn is # of chars, else 1111 then int count, then big-endian 2-byte 
+    }else if (marker & 0xF0 == Marker::Unicode16String){ //string	0110 nnnn	[int]	...	// Unicode string, nnnn is # of chars, else 1111 then int count, then big-endian 2-byte
         return "Unicode16String";
     }else if (marker & 0xF0 == Marker::UNK_0x70){ //0111 xxxx			// unused
         return "UNK_0x70";
@@ -56,19 +56,19 @@ fn get_marker_name(u8 marker) {
         return "UID";
     }else if (marker & 0xF0 == Marker::UNK_0x90){ // 1001 xxxx			// unused
         return "UNK_0x90";
-    }else if (marker & 0xF0 == Marker::Array){ //array	1010 nnnn	[int]	objref*	// nnnn is count, unless '1111', then int count follows        
+    }else if (marker & 0xF0 == Marker::Array){ //array	1010 nnnn	[int]	objref*	// nnnn is count, unless '1111', then int count follows
         return "Array";
     }else if (marker & 0xF0 == Marker::UNK_0xB0){ //1011 xxxx			// unused
         return "UNK_0xB0";
     }else if (marker & 0xF0 == Marker::Set){ //set	1100 nnnn	[int]	objref* // nnnn is count, unless '1111', then int count follows
         return "Set";
-    }else if (marker & 0xF0 == Marker::Dict){ //dict	1101 nnnn	[int]	keyref* objref*	// nnnn is count, unless '1111', then int count follows	
+    }else if (marker & 0xF0 == Marker::Dict){ //dict	1101 nnnn	[int]	keyref* objref*	// nnnn is count, unless '1111', then int count follows
         return "Dict";
     }else if (marker & 0xF0 == Marker::UNK_0xE0){ // 1110 xxxx			// unused
         return "UNK_0xE0";
     }else if (marker & 0xF0 == Marker::UNK_0xF0){  //1111 xxxx			// unused
         return "UNK_0xF0";
-    }    
+    }
 };
 
 fn format_tag(u8 marker) {
@@ -79,12 +79,12 @@ fn coredata_to_date (double val){
     return type::impl::format_time_t(978307200 + val);
 };
 
-struct DictElement {  
+struct DictElement {
     CFBinaryPlistObject key @ offsetTable[parent.objReference.key_refs[std::core::array_index()]].offset;
     CFBinaryPlistObject value @ offsetTable[parent.objReference.value_refs[std::core::array_index()]].offset;
 };
 
-struct ArrayElement {  
+struct ArrayElement {
     CFBinaryPlistObject value @ offsetTable[parent.objReference.value_refs[std::core::array_index()]].offset;
 };
 
@@ -142,23 +142,23 @@ struct CFBinaryPlistOffset{
 
 struct CFBinaryPlistObject{
     u8 marker [[format("get_marker_name")]];
-    
+
     u8 marker_msb = marker & 0xF0;
     u8 marker_lsb  = marker & 0x0F;
 
-    match (marker_msb){ 
+    match (marker_msb){
         (0x0): {
                 match (marker_lsb){
                     (Marker::Null): {
                         u8 value = 0x00 [[export]];
                     }
-                    (Marker::False): { 
+                    (Marker::False): {
                         bool value = false [[export]];
                     }
                     (Marker::True): {
                         bool value = true [[export]];
                     }
-                    (Marker::Fill): {  
+                    (Marker::Fill): {
                         //I think the correct implementation is to do nothing here. The marker will be used as padding (Fill) ???
                     }
                     (_): {
@@ -167,7 +167,7 @@ struct CFBinaryPlistObject{
                 }
         }
         (Marker::Int): {
-            be u8 size = std::math::pow(2, marker_lsb);     
+            be u8 size = std::math::pow(2, marker_lsb);
             // in format version '00', 1, 2, and 4-byte integers have to be interpreted as unsigned,
             // whereas 8-byte integers are signed (and 16-byte when available)
             // negative 1, 2, 4-byte integers are always emitted as 8 bytes in format '00'
@@ -181,10 +181,10 @@ struct CFBinaryPlistObject{
                 (8): be s64 value;
                 (16): be s128 value;
                 (_): std::error(std::format("Invalid size detected for 'Int' marker. Got size: {}.", size));
-            }                    
+            }
         }
         (Marker::Real): {
-            be u8 size = std::math::pow(2, marker_lsb); 
+            be u8 size = std::math::pow(2, marker_lsb);
             match (size){
                 (4): be float value;
                 (8): be double value;
@@ -196,7 +196,7 @@ struct CFBinaryPlistObject{
         }
         (Marker::Data): {
             ObjectLen ObjectLen;
-            u8 value[ObjectLen.size];      
+            u8 value[ObjectLen.size];
         }
         (Marker::ASCIIString): {
             ObjectLen ObjectLen;
@@ -216,7 +216,7 @@ struct CFBinaryPlistObject{
                 (8): be u64 value;
                 (16): be u128 value;
                 (_): std::error(std::format("Invalid size detected for 'UID' marker. Got size: {}.", size));
-            }      
+            }
         }
         (Marker::Set | Marker::Array): {
             ObjectLen ObjectLen;
@@ -226,7 +226,7 @@ struct CFBinaryPlistObject{
         }
         (Marker::Dict): {
             ObjectLen ObjectLen;
-            
+
             ObjectReference objReference;
             DictElement value[ObjectLen.size];
         }
@@ -235,7 +235,7 @@ struct CFBinaryPlistObject{
         }
         (_): {
             std::error(std::format("Got unknown marker 0x{:x}", marker));
-        }    
+        }
     }
 };
 
@@ -249,13 +249,13 @@ struct CFBinaryPlistHeader{
 
 struct CFBinaryPlistTrailer {
     u8 unused[5];
-    u8 sortVersion; 
+    u8 sortVersion;
     be u8 offsetIntSize;
     match (offsetIntSize){
         (1|2|4|8): {}
         (_): {std::error("Invalid offsetIntSize.");}
     }
-    be u8 objectRefSize; 
+    be u8 objectRefSize;
     match (objectRefSize){
         (1|2|4|8): {}
         (_): {std::error("Invalid objectRefSize.");}

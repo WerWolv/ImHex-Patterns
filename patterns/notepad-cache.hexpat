@@ -1,7 +1,7 @@
 #pragma author sethhall
 #pragma description Windows Notepad Cache Files
 
-// This was written based on the following blog post: 
+// This was written based on the following blog post:
 //    https://u0041.co/posts/articals/exploring-windows-artifacts-notepad-files/
 
 import type.leb128;

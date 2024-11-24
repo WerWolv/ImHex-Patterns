@@ -104,7 +104,7 @@ struct Tuple {
         u128 destinationPos = std::mem::get_section_size(decompressedSection);
         u128 destinationBackrefPos = destinationPos + ct.actualDisplacement;
         u128 maxNonOverlap = destinationPos - destinationBackrefPos;
-        
+
         if (ct.actualLength <= maxNonOverlap) { // Not overlapping
             std::mem::copy_section_to_section(decompressedSection,
                                               destinationBackrefPos,

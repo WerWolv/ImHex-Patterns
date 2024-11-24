@@ -7,7 +7,7 @@ import std.limits;
 */
 
 namespace auto std::random {
-  
+
     /**
         Represents the type of distribution to use to generate a random number
     */
@@ -68,7 +68,7 @@ namespace auto std::random {
         return builtin::std::random::generate(u32(distribution), param1, param2);
     };
 
-    
+
     /**
         Generates a uniformly distributed random number between `min` and `max`
         @param [min] Minimum number. Defaults to 0
@@ -77,5 +77,5 @@ namespace auto std::random {
     fn generate(u64 min = std::limits::u64_min(), u64 max = std::limits::u64_max()) {
         return std::random::generate_using(Distribution::Uniform, min, max);
     };
-  
+
 }

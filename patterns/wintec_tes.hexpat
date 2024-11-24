@@ -1,6 +1,6 @@
 // Wintec TES file
 //
-// Wintec produced small GPS-Loggers that created TES files. Each file 
+// Wintec produced small GPS-Loggers that created TES files. Each file
 // is a series of timestamps and coordinates. The format is exceedingly
 // simple. The same 16 byte struct is repeated from start to finish.
 //

@@ -20,7 +20,7 @@ namespace auto std::fxpt {
     fn to_float(fixed fxt, u32 precision) {
         return double(fxt) / double((1 << precision));
     };
-    
+
     /**
         Converts a floating point value into a fixed point value
         @param flt The floating point value to convert
@@ -41,7 +41,7 @@ namespace auto std::fxpt {
     fn change_precision(fixed value, u32 start_precision, u32 end_precision) {
         return std::fxpt::to_fixed(std::fxpt::to_float(value, start_precision), end_precision);
     };
-    
+
     /**
         Adds two fixed point numbers with a given precision together
         @param a First fixed point number
@@ -52,7 +52,7 @@ namespace auto std::fxpt {
     fn add(fixed a, fixed b, u32 precision) {
         return a + b;
     };
-    
+
     /**
         Subtracts two fixed point numbers with a given precision together
         @param a First fixed point number
@@ -63,7 +63,7 @@ namespace auto std::fxpt {
     fn subtract(fixed a, fixed b, u32 precision) {
         return a - b;
     };
-    
+
     /**
         Multiplies two fixed point numbers with a given precision together
         @param a First fixed point number
@@ -74,7 +74,7 @@ namespace auto std::fxpt {
     fn multiply(fixed a, fixed b, u32 precision) {
         return (a * b) / (1 << precision);
     };
-    
+
     /**
         Divides two fixed point numbers with a given precision together
         @param a First fixed point number

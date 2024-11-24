@@ -43,7 +43,7 @@ struct Header {
 
 Header header @ 0;
 std::assert(header.version == 1, "only version 1 supported");
-    
+
 struct Block {
     BlockType type;
     Compression compression;

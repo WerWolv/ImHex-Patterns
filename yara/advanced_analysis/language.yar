@@ -6,7 +6,7 @@ rule LanguageCpp {
     strings:
         $exception_windows = "_CxxThrowException" ascii fullword
         $iostreams = "iostream" ascii
-        
+
     condition:
         any of them
 }

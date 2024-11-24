@@ -1,9 +1,9 @@
 #pragma description Intel hex
 
-/* If you have no delimiters between data records then remove 
+/* If you have no delimiters between data records then remove
  * the null_bytes field in the data_packet struct.
  * Set the array at the bottom to the highest index + 1 in the Pattern Data view
- * NOTE: these were ascii hex values for me, so use the calculator tool to convert 
+ * NOTE: these were ascii hex values for me, so use the calculator tool to convert
  * values
 */
 #pragma endian big
@@ -29,25 +29,25 @@ struct data_packet {
 	Bytes byte_count [[color("00A9CBB7")]];
 	u32 address [[color("00F7FF58")]];
 	FileType recordType [[color("00FF934F")]];
-	
+
 	// both not A
 	if (byte_count.HOB < 65 && byte_count.LOB < 65) {
-		u16 data[((byte_count.HOB - 48) * 16) 
-			+ (byte_count.LOB - 48)] [[color("0095B46A")]]; 
+		u16 data[((byte_count.HOB - 48) * 16)
+			+ (byte_count.LOB - 48)] [[color("0095B46A")]];
 	// HOB is A but LOB is not
 	} else if (byte_count.HOB >= 65 && byte_count.LOB < 65) {
-		u16 data[((byte_count.HOB - 55) * 16) 
-			+ (byte_count.LOB - 48)] [[color("0095B46A")]]; 
+		u16 data[((byte_count.HOB - 55) * 16)
+			+ (byte_count.LOB - 48)] [[color("0095B46A")]];
 	// LOB is A but HOB is not
 	} else if (byte_count.HOB < 65 && byte_count.LOB >= 65) {
-		u16 data[((byte_count.HOB - 48) * 16) 
+		u16 data[((byte_count.HOB - 48) * 16)
 			+ (byte_count.LOB - 55)] [[color("0095B46A")]];
 	// both are A
 	} else {
-		u16 data[((byte_count.HOB - 55) * 16) 
-			+ (byte_count.LOB - 55)] [[color("0095B46A")]]; 
+		u16 data[((byte_count.HOB - 55) * 16)
+			+ (byte_count.LOB - 55)] [[color("0095B46A")]];
 	}
-	
+
 	u16 checksum [[color("0045F0DF")]];
 	u8 line_ending_1 [[color("005E565A")]];
 	if (line_ending_1 == '\r')

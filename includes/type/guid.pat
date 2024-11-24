@@ -29,7 +29,7 @@ namespace auto type {
 
         fn format_guid(GUID guid) {
             bool valid = ((le u16(guid.time_high_and_version) >> 12) <= 5) && (((guid.clock_seq_and_reserved >> 4) >= 8) || ((guid.clock_seq_and_reserved >> 4) == 0));
-    
+
             return std::format("{}{{{:08X}-{:04X}-{:04X}-{:02X}{:02X}-{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}}}",
                 valid ? "" : "Invalid ",
                 le u32(guid.time_low),

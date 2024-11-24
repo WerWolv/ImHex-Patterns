@@ -353,7 +353,7 @@ struct Object {
             u16 numOfMetafields;
             u8 metafields[numOfMetafields];
         }
-    } 
+    }
     else {
         u32 x;
         u32 y;

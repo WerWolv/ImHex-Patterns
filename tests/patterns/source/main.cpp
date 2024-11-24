@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
             return true;
         };
 
-        runtime.setDataSource(0x00, testFile.getSize(), 
+        runtime.setDataSource(0x00, testFile.getSize(),
             [&](pl::u64 address, pl::u8 *data, size_t size) {
                 testFile.seek(address);
                 testFile.readBuffer(data, size);
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
         runtime.addPragma("MIME", DummyPragmaHandler);
         runtime.addPragma("description", DescPragmaHandler);
         runtime.addDefine("__PL_UNIT_TESTS__");
-        
+
         runtime.setLogCallback([](auto level, const std::string &message) {
             switch (level) {
                 using enum pl::core::LogConsole::Level;

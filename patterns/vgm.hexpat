@@ -18,9 +18,9 @@ bitfield VGMVersion {
     bugfix : 4;
     minor : 4;
     major : 24;
-    
+
     versionValue = major * 100 + minor * 10 + bugfix;
-    
+
 } [[format("format_VGMVersion")]];
 
 fn format_VGMVersion(auto version) {
@@ -224,7 +224,7 @@ struct ExtraHeader {
     u32 chpClkOffset;
     chpVolBase = $;
     u32 chpVolOffset;
-    
+
     if (chpClkOffset > 0) {
         $ = chpClkBase + chpClkOffset;
         chpClkHeader chpClk;
@@ -232,7 +232,7 @@ struct ExtraHeader {
         $ = chpVolBase + chpVolOffset;
         chpVolHeader chpVol;
     }
-    
+
 };
 
 struct VGM {

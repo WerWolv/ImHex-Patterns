@@ -8,7 +8,7 @@ import std.mem;
 */
 
 namespace auto type {
-    
+
     /**
         Base LEB128 type. Use `uLEB128` and `sLEB128` instead.
     */
@@ -30,9 +30,9 @@ namespace auto type {
         Legacy alias for uLEB128
     */
     using LEB128 = uLEB128;
-    
+
     namespace impl {
-    
+
         fn transform_uleb128_array(ref auto array) {
             u128 res = array[0] & 0x7f;
             for(u8 i = 1, array[i-1] & 0x80 != 0, i+=1) {
@@ -41,19 +41,19 @@ namespace auto type {
             return res;
         };
 
-        fn transform_sleb128_array(ref auto array) {            
+        fn transform_sleb128_array(ref auto array) {
             s128 res = type::impl::transform_uleb128_array(array);
             if (res & 0x40 != 0) {
                 res |= ~0 << (sizeof(array) / sizeof(u8)) * 7;
             }
             return res;
         };
-        
+
         fn format_uleb128(ref auto leb128) {
             u128 res = type::impl::transform_uleb128_array(leb128.array);
             return std::format("{} ({:#x})", res, res);
         };
-    
+
         fn transform_uleb128(ref auto leb128) {
             return type::impl::transform_uleb128_array(leb128.array);
         };
@@ -62,11 +62,11 @@ namespace auto type {
             s128 res = type::impl::transform_sleb128_array(leb128.array);
             return std::format("{} ({:#x})", res, res);
         };
-    
+
         fn transform_sleb128(ref auto leb128) {
             return type::impl::transform_sleb128_array(leb128.array);
         };
 
     }
-    
+
 }

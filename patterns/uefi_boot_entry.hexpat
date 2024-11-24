@@ -25,7 +25,7 @@ struct FILE_PATH {
 // subsection 10.3.1
 enum MEDIA_DEVICE_PATH_SUBTYPE : u8 {
   HARD_DRIVE = 0x01,
-  FILE_PATH = 0x04,  
+  FILE_PATH = 0x04,
 };
 
 enum DEVICE_PATH_TYPE : u8 {
@@ -42,10 +42,10 @@ struct DEVICE_PATH {
     // the size of the data is the size of the structure minus the fields we know.
     // not always used
     u16 dataSize = length-1-1-2;
-    
+
     match (type, subtype) {
         (DEVICE_PATH_TYPE::MEDIA_DEVICE_PATH, MEDIA_DEVICE_PATH_SUBTYPE::HARD_DRIVE): HARD_DRIVE data;
-        (DEVICE_PATH_TYPE::MEDIA_DEVICE_PATH, MEDIA_DEVICE_PATH_SUBTYPE::FILE_PATH): FILE_PATH data;                              
+        (DEVICE_PATH_TYPE::MEDIA_DEVICE_PATH, MEDIA_DEVICE_PATH_SUBTYPE::FILE_PATH): FILE_PATH data;
         (_, _): u8 data[dataSize];
     }
 };
