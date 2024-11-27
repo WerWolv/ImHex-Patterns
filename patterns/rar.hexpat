@@ -295,12 +295,6 @@ struct CompressionInformation {
     vint value; // TODO: I'd like to somehow cast the resulting value to _CompressionInformation
 };
 
-fn to_CompressionInformation(vint v) {
-    std::mem::Reinterpreter<u64, _CompressionInformation> conv;
-    conv.from = v;
-    return conv.to;
-};
-
 struct FileOrServiceHeader {
     HeaderFlags flags;  // should be vint but not compatible with bitfield
     if (flags.extraAreaIsPresent) {
