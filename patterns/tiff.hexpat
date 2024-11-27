@@ -30,13 +30,13 @@ struct Big<T> {
         (_): std::error(std::format("Unrecognized version: {}", Version));
     }
 } [[sealed, format_read("format_read_big"), format_write("format_write_big"), transform("transform_big")]];
-fn format_read_big(Big<u32> v) {
+fn format_read_big(auto v) {
     return std::format("{} (0x{:X})", v, v);
 };
 fn format_write_big(str v) {
     return std::string::parse_int(v, 0);
 };
-fn transform_big(Big<u32> v) {
+fn transform_big(auto v) {
     return v.V;
 };
 
