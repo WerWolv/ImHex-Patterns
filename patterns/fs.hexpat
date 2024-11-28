@@ -2,6 +2,7 @@
 #pragma description Drive File System
 
 import std.io;
+import std.core;
 
 struct DiskTimeStamp {
 	u8 seconds, minutes, hours;
@@ -52,7 +53,7 @@ namespace fat32 {
 		lastLogical : 1;
 		padding : 1;
 		number : 5;
-	} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
+	} [[bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 8)]];
 
 	enum EntryStatus : u8 {
 		Regular = 0x00,
@@ -73,7 +74,7 @@ namespace fat32 {
 		subdirectory : 1;
 		archive : 1;
 		padding : 2;
-	} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 8)]];
+	} [[bitfield_order(std::core::BitfieldOrder::LeastToMostSignificant, 8)]];
 
 	struct DirEntry {
 		char fileName[8];
