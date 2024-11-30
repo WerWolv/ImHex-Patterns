@@ -5,13 +5,14 @@ import std.math;
 import std.io;
 import std.sys;
 
+namespace auto type {
 /**
     Types representing IEEE 754 2019 compatible decimal floating point numbers
     defines:
     IEEE754_SUPPRESS_WARNING - suppresses warnings about canonicity of values being decoded
     IEEE754_UNSEAL - show internal bitfields
 */
-namespace auto ieee754
+namespace ieee754
 {
     /**
         Decimal floating point numbers can be encoded using one of multiple methods
@@ -50,7 +51,7 @@ namespace auto ieee754
         sealed,
 #endif
         bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 1 + combination_width + significand_width),
-        format_read("ieee754::impl::format_decimal")
+        format_read("type::ieee754::impl::format_decimal")
     ]];
 
     /**
@@ -255,4 +256,5 @@ namespace auto ieee754
     using decimal192<auto encoding> = decimal<21, 170, encoding>;
     using decimal224<auto encoding> = decimal<23, 200, encoding>;
     using decimal256<auto encoding> = decimal<25, 230, encoding>;
+}
 }

@@ -5,13 +5,14 @@ import std.math;
 import std.io;
 import std.sys;
 
+namespace auto type {
 /**
     Types representing IEEE 754 2019 compatible binary floating point numbers
     defines:
     IEEE754_SUPPRESS_USAGE_WARNING - suppresses warnings related to recommendation to use built-in types
     IEEE754_UNSEAL - show internal bitfields
 */
-namespace auto ieee754
+namespace ieee754
 {
     /**
         Type representing a binary floating point number, taking a custom bias
@@ -41,8 +42,8 @@ namespace auto ieee754
         sealed,
 #endif
         bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 1 + exponent_width + significand_width),
-        format_read("ieee754::impl::format_binary"),
-        transform("ieee754::impl::transform_binary")
+        format_read("type::ieee754::impl::format_binary"),
+        transform("type::ieee754::impl::transform_binary")
     ]];
 
     /**
@@ -111,4 +112,5 @@ namespace auto ieee754
     //using binary192 = binary<17, 174>;
     //using binary224 = binary<18, 205>;
     //using binary256 = binary<19, 236>; //aka octuple
+}
 }
