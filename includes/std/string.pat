@@ -125,6 +125,8 @@ namespace auto std::string {
         @return True if the string starts with the substring, false otherwise.
     */
     fn starts_with(str string, str part) {
+        if (std::string::length(string) < std::string::length(part))
+            return false;
         return std::string::substr(string, 0, std::string::length(part)) == part;
     };
 
@@ -135,6 +137,8 @@ namespace auto std::string {
         @return True if the string ends with the substring, false otherwise.
     */
     fn ends_with(str string, str part) {
+        if (std::string::length(string) < std::string::length(part))
+            return false;
         return std::string::substr(string, std::string::length(string) - std::string::length(part), std::string::length(part)) == part;
     };
 
@@ -161,16 +165,16 @@ namespace auto std::string {
         @param string The string to reverse.
         @return The reversed string.
     */
-    fn reverse(str string) {    
+    fn reverse(str string) {
         str result;
-        
+
         s32 i;
         i = std::string::length(string);
         while (i > 0) {
             i = i - 1;
             result = result + std::string::at(string, i);
         }
-            
+
         return result;
     };
 
@@ -181,23 +185,23 @@ namespace auto std::string {
     */
     fn to_upper(str string) {
         str result;
-        
+
         u32 i;
         char c;
         while (i < std::string::length(string)) {
             c = std::string::at(string, i);
-            
+
             if (c >= 'a' && c <= 'z')
                 result = result + char(c - 0x20);
             else
                 result = result + c;
-            
+
             i = i + 1;
         }
-        
+
         return result;
     };
-    
+
     /**
         Converts a string to lower case.
         @param string The string to convert.
@@ -205,20 +209,20 @@ namespace auto std::string {
     */
     fn to_lower(str string) {
         str result;
-        
+
         u32 i;
         char c;
         while (i < std::string::length(string)) {
             c = std::string::at(string, i);
-            
+
             if (c >= 'A' && c <= 'Z')
                 result = result + char(c + 0x20);
             else
                 result = result + c;
-            
+
             i = i + 1;
         }
-        
+
         return result;
     };
 

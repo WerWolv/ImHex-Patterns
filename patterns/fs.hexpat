@@ -2,6 +2,7 @@
 #pragma description Drive File System
 
 import std.io;
+import std.core;
 
 struct DiskTimeStamp {
 	u8 seconds, minutes, hours;
@@ -46,25 +47,25 @@ namespace fat32 {
 		padding[12];
 		u32 trailSignature;
 	};
-	
+
 	bitfield SequenceNumber {
 		padding : 1;
 		lastLogical : 1;
 		padding : 1;
 		number : 5;
-	} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
-	
+	} [[bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 8)]];
+
 	enum EntryStatus : u8 {
 		Regular = 0x00,
 		DotEntry = 0x2E,
 		DeletedEntry = 0xE5
 	};
-	
+
 	union EntryStatusOrSequenceNumber {
 		EntryStatus entryStatus;
 		SequenceNumber sequenceNumber;
 	};
-	
+
 	bitfield Attributes {
 		readOnly : 1;
 		hidden : 1;
@@ -73,8 +74,8 @@ namespace fat32 {
 		subdirectory : 1;
 		archive : 1;
 		padding : 2;
-	} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 8)]];
-	
+	} [[bitfield_order(std::core::BitfieldOrder::LeastToMostSignificant, 8)]];
+
 	struct DirEntry {
 		char fileName[8];
 		char extension[3];
@@ -83,10 +84,10 @@ namespace fat32 {
 		u16 time, date;
 		u16 startingCluster;
 		u32 fileSize;
-		
+
 		u8 data[fileSize] @ startingCluster * bytesPerCluster;
 	};
-	
+
 	struct VFATDirEntry {
 		EntryStatusOrSequenceNumber entryStatusOrSequenceNumber;
 		char16 name1[5];
@@ -96,7 +97,7 @@ namespace fat32 {
 		char16 name2[6];
 		u16 startingCluster;
 		char16 name3[2];
-		
+
 		if (entryStatusOrSequenceNumber.sequenceNumber.number > 1)
 			VFATDirEntry nextLogicalEntry;
 		else
@@ -133,9 +134,9 @@ namespace fat32 {
 		char fsType[8];
 		u8 bootstrapCode[420];
 		u16 signature;
-		
+
 		bytesPerCluster = (sectorsPerCluster * 1024) * bytesPerSector;
-		
+
 		FSInfo fsInfo @ addressof(this) + fsInfoSector * bytesPerSector;
 		VFATDirEntry rootDirEntry @ addressof(this) + rootCluster * bytesPerCluster;
 	};
@@ -143,13 +144,13 @@ namespace fat32 {
 }
 
 struct PartitionEntry {
-	PartitionStatus status;	
+	PartitionStatus status;
 	CHS chsFirstSectorAddress;
 	PartitionType type;
 	CHS chsLastSectorAddress;
 	u32 lbaFirstSectorAddress;
 	u32 numSectors;
-	
+
 	if (type == PartitionType::EmptyPartitionEntry)
 		continue;
 	else if (type == PartitionType::FAT32_CHS || type == PartitionType::FAT32_LBA)

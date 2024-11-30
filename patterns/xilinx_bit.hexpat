@@ -21,7 +21,7 @@ struct Command {
 
 fn format_command(Command command) {
 	u32 x = command.value;
-	
+
 	if (x == 0x20000000) return "NOP";
 	if (x == 0xAA995566) return "SYNC";
 	if (x == 0x000000BB) return "Bus Width Sync";
@@ -32,10 +32,10 @@ fn format_command(Command command) {
 	if (x == 0x30018001) return "Write to IDCODE";
 	if (x == 0x30004000) return "Write to FDRI";
 	if (x == 0x30008001) return "Write to CMD";
-	
+
 	if ((x & 0xF0000000) == 0x30000000)
 		return std::format("Write to Register {}", (x & 0x0003E000) >> 13);
-	
+
 	return std::format("0x{:08X}", x);
 };
 

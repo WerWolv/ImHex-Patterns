@@ -7,11 +7,11 @@ import std.mem;
 import std.string;
 
 
-enum Magic:u24 { 
+enum Magic:u24 {
     UHL = 0x55484C,
     DSI = 0x445349,
     ACC = 0x414343,
-}; 
+};
 
 struct UHL {
     Magic magic;
@@ -95,7 +95,7 @@ struct ACC {
     ACCSub subs[9];
     char reserved4[18];
     char reserved5[69];
-    
+
 };
 
 struct DataRecords {

@@ -98,6 +98,16 @@ enum UF2_FamilyID : u32 {
     NRF52832xxAB    = 0x6f752678,
     AT32F415        = 0xa0c97b8e,
     CH32V           = 0x699b62ec,
+    RA4M1           = 0x7be8976d,
+    RTL8710A        = 0x9fffd543,
+    RTL8710B        = 0x22e0d6fc,
+    RTL8720C        = 0xe08f7564,
+    RTL8720D        = 0x3379CFE2,
+    XR809           = 0x51e903a8,
+    BK7231U         = 0x675a40b0,
+    BK7251          = 0x6a82cc42,
+    BK7231N         = 0x7b3ef230,
+    BL602           = 0xde1270b7,
 };
 
 fn formatTagType(UF2_TagType type) {
@@ -121,7 +131,7 @@ struct UF2_ExtensionTag {
 	u8 size;
 	UF2_TagType type;
 	u8 data[size - 4];
-	
+
 	if (size == 0 && type.bytes[0] == 0x00 && type.bytes[1] == 0x00 && type.bytes[2] == 0x00)
 		break;
 };
@@ -134,26 +144,26 @@ struct UF2_Block {
     u32 payloadSize;
     u32 blockNo;
     u32 numBlocks;
-    
+
     if (flags.FamilyIDPresent)
     	UF2_FamilyID familyId;
     else
     	u32 fileSize;
-    
+
     if (flags.MD5ChecksumPresent) {
     	u8 data[452];
-    	UF2_Hash hash; 
+    	UF2_Hash hash;
     }
     else {
     	u8 data[476];
     }
-    
+
     if (flags.ExtensionTagsPresent) {
 		UF2_ExtensionTag extensionTags[0xFF];
     }
-    
+
     u32 magicEnd;
-    
+
     std::assert(magicStart0 == "UF2\n", "Invalid magicStart0 value!");
     std::assert(magicStart1 == 0x9E5D5157, "Invalid magicStart1 value!");
     std::assert(magicEnd == 0x0AB16F30, "Invalid magicEnd value!");

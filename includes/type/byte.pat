@@ -8,7 +8,7 @@ import std.core;
 */
 
 namespace auto type {
-    
+
     /**
         Type visualizing the value of each individual bit
     */
@@ -22,7 +22,7 @@ namespace auto type {
         bit6 : 1;
         bit7 : 1;
     } [[format("type::impl::format_bits"), bitfield_order(std::core::BitfieldOrder::LeastToMostSignificant, 8)]];
-    
+
     /**
         Type visualizing the value of the two nibbles
     */
@@ -30,7 +30,7 @@ namespace auto type {
         low  : 4;
         high : 4;
     } [[format("type::impl::format_nibbles")]];
-    
+
     /**
         Type representing a single Byte. Decodes the byte as it's hexadecimal value, individual bits and nibbles
     */
@@ -50,9 +50,9 @@ namespace auto type {
                 byte.bits.bit0,
                 byte.bits.bit7);
         };
-        
+
         fn format_bits(Bits bits) {
-            return std::format("0b{}{}{}{}{}{}{}{}", 
+            return std::format("0b{}{}{}{}{}{}{}{}",
                 bits.bit7,
                 bits.bit6,
                 bits.bit5,
@@ -62,7 +62,7 @@ namespace auto type {
                 bits.bit1,
                 bits.bit0);
         };
-        
+
         fn format_nibbles(Nibbles nibbles) {
             return std::format("{{ {0:0X}, {1:0X} }}", nibbles.high, nibbles.low);
         };

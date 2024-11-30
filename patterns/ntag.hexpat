@@ -41,22 +41,22 @@ enum TNFType : u8 {
 struct NDEF {
 	NDEFFlags flags;
 	u8 typeLength;
-	
+
 	if (flags.SR)
 		u8 payloadLength;
 	else
 		u32 payloadLength;
-		
+
 	if (flags.IL)
 		u8 idLength;
-		
+
 	char type[typeLength];
-	
+
 	if (flags.IL)
 		u8 id[idLength];
-	
+
 	u8 payload[payloadLength];
-		
+
 	if (flags.ME)
 		break;
 };
@@ -102,7 +102,7 @@ struct TLV {
 		// Empty
 	} else {
 		Length length;
-		
+
 		if (length > 0) {
 			if (tag == Tag::LockControl) {
 				LockControl lockControl;
@@ -154,25 +154,25 @@ fn validate_ntag_checksum(ManufacturerData mdata) {
     0x88 is the CT/cascade digit.
     This is XOR'd with the first 3 bytes of the serial to calculate BCC0.
     */
-    
-    u8 bcc0 = 0x88 ^ 
+
+    u8 bcc0 = 0x88 ^
     mdata.serial1[0] ^
     mdata.serial1[1] ^
     mdata.serial1[2];
-    
+
     if (bcc0 == mdata.checkByte0) {
         std::print("NTAG BCC0 checksum OK. Value: {}", bcc0);
     } else {
         std::warning(std::format("NTAG BCC0 checksum failed! Value: {}", bcc0));
     }
-    
+
     // BCC1 is the XOR of the last 4 serial bytes.
-    
+
     u8 bcc1 = mdata.serial2[0] ^
     mdata.serial2[1] ^
     mdata.serial2[2] ^
     mdata.serial2[3];
-    
+
     if (bcc1 == mdata.checkByte1) {
         std::print("NTAG BCC1 checksum OK. Value: {}", bcc1);
     } else {

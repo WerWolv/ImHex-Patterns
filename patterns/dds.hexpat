@@ -1,6 +1,7 @@
 #pragma description DirectDraw Surface
 
 #pragma MIME image/vnd-ms.dds
+#pragma MIME image/x-dds
 #pragma endian little
 
 enum DXGI_FORMAT : u32 {
@@ -202,7 +203,7 @@ enum DX10AlphaMode : u32 {
   Straight,
   PreMultiplied,
   Opaque,
-  Custom,	
+  Custom,
 };
 
 bitfield DX10MiscFlags {

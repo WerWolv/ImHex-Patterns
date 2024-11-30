@@ -1,6 +1,6 @@
 /**
  * @file <gltf.hexpat> ImHex Pattern for glTF binary files.
- * 
+ *
  * Copyright (c) 2023 H. Utku Maden <utkumaden@hotmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,12 +28,13 @@
 
 import std.mem;
 import std.io;
+import type.magic;
 
 /**
  * @brief The glTF magic section.
  */
 struct gltf_magic_t {
-    char magic[4];  /**< The magic value. Must be "glTF" */
+    type::Magic<"glTF"> magic;  /**< The magic value. Must be "glTF" */
     u32 version;    /**< The version. Must be 2 for glTF 2.0. */
     u32 length;     /**< Length of the file in bytes, including magic section. */
 };
@@ -59,12 +60,11 @@ fn gltf_format(gltf_chunk_type_t x)
 {
          if (x == gltf_chunk_type_t::JSON) return "JSON";
     else if (x == gltf_chunk_type_t::BIN) return "BIN";
-    
+
     return "";
 };
 
 gltf_magic_t magic @ 0x00;
 gltf_chunk_t chunks[while(!std::mem::eof())] @ $;
 
-if (magic.magic != "glTF")
-    std::error("This file might not be a glTF file, expected \"glTF\", got %s", magic.magic);
+std::assert_warn(std::mem::size() == magic.length, "file size mismatch");

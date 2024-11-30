@@ -99,7 +99,7 @@ enum access_flag : type::uLEB128{
     static = 0x8,
     final = 0x10,
     synchronized = 0x20,
-    volatile = 0x40    
+    volatile = 0x40
 };
 
 struct encoded_field {
@@ -134,7 +134,7 @@ struct class_def_item {
     u32 class_data_off;
     //class_data_item *class_data_off:u32;
     u32 static_values_off;
-    char class_name[] @ addressof(parent.type_ids[class_idx].type_name);    
+    char class_name[] @ addressof(parent.type_ids[class_idx].type_name);
 }[[name(class_name)]];
 
 struct type_item {

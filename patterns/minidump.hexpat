@@ -263,7 +263,7 @@ struct MINIDUMP_UNLOADED_MODULE_LIST {
 
     if (SizeOfHeader > 12)
         padding[header.SizeOfHeader - 12];
-        
+
     MINIDUMP_UNLOADED_MODULE Modules[NumberOfEntries];
 };
 
@@ -303,7 +303,7 @@ struct MINIDUMP_MEMORY_INFO_LIST {
 
     if (SizeOfHeader > 16)
         padding[SizeOfHeader - 16];
-        
+
     MINIDUMP_MEMORY_INFO Info[NumberOfEntries];
 };
 
@@ -327,7 +327,7 @@ struct MINIDUMP_THREAD_INFO_LIST {
 
     if (SizeOfHeader > 12)
         padding[SizeOfHeader - 12];
-        
+
     MINIDUMP_THREAD_INFO Info[NumberOfEntries];
 };
 

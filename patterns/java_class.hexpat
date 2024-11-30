@@ -26,7 +26,7 @@ bool applyPadding = false;
 
 struct cp_info {
     bool isTop = false;
-    if(applyPadding) { 
+    if(applyPadding) {
         isTop = true;
         applyPadding = false;
     }
@@ -92,7 +92,7 @@ struct cp_info {
             }
         }
     }
-} [[format("fmt::const_name")]];    
+} [[format("fmt::const_name")]];
 
 namespace fmt {
     fn const_name(auto tag) {
@@ -115,7 +115,7 @@ namespace fmt {
             (_): return "Unknown";
         }
     };
-    
+
     fn const_ref(u2 index) {
         cp_info info = file.constant_pool[index-1];
         match(info.tag) {
@@ -138,7 +138,7 @@ namespace fmt {
             (_): return std::format("{:d} [Unknown]", index);
         }
     };
-    
+
     fn const_ref_top(u2 index) {
         cp_info info = file.constant_pool[index-1];
         match(info.tag) {
@@ -357,7 +357,7 @@ namespace fmt {
             (_): return std::format("{:d} [Unknown]", value);
         }
     };
-    
+
     fn atype_fmt(auto atype) {
         match(atype) {
             (4): return "T_BOOLEAN";
@@ -370,11 +370,11 @@ namespace fmt {
             (11): return "T_LONG";
         }
     };
-    
+
     fn instruction_code_fmt(ref auto code) {
         return fmt::byte_code_fmt(code.mnemonic);
     };
-    
+
     fn attribute(auto info) {
         return file.constant_pool[info.attribute_name_index-1].bytes;
     };
@@ -521,7 +521,7 @@ bitfield access_flags_module {
     padding          : 1;    // 0x4000
     ACC_MANDATED     : 1;    // 0x8000
 } [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 16)]];
-       
+
 using attribute_code;
 
 struct attribute_constant_value {

@@ -51,7 +51,7 @@ struct MapEntry {
 
 struct MessagePack {
 	Type type;
-	
+
 	if (u8(type) <= 0x7F) {
 		$ -= 1;
 		u8 value;

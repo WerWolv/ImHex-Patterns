@@ -20,7 +20,7 @@ namespace auto std::math {
         else
             return b;
     };
-    
+
     /**
         Compares the values `a` and `b` with each other and returns the bigger of the two
         @param a First value
@@ -56,9 +56,9 @@ namespace auto std::math {
         @return `x` if `x` is positive, `-x` otherwise
     */
     fn abs(auto x) {
-        if (x < 0) 
+        if (x < 0)
             return -x;
-        else 
+        else
             return x;
     };
 
@@ -96,13 +96,13 @@ namespace auto std::math {
     */
     fn factorial(u128 x) {
         u128 result;
-        
+
         result = x;
         while (x > 1) {
             x = x - 1;
             result = result * x;
         }
-        
+
         return result;
     };
 
@@ -336,5 +336,5 @@ namespace auto std::math {
     fn accumulate(u128 start, u128 end, u128 valueSize, std::mem::Section section = 0, AccumulateOperation operation = AccumulateOperation::Add, std::mem::Endian endian = std::mem::Endian::Native) {
         return builtin::std::math::accumulate(start, end, valueSize, section, u128(operation), u128(endian));
     };
-    
+
 }

@@ -99,7 +99,7 @@ struct expression {
     if ((type_g == policy_types::kernel && version >= 29) ||
         (type_g != policy_types::kernel))
         type_set type_names;
-    } 
+    }
 };
 
 struct constraint {
@@ -235,12 +235,12 @@ struct user_s {
     if (boundary_feature)
         u32 bounds;
     char key[length];
-    
+
     if (type_g == policy_types::kernel)
         extensible_bitmap roles;
     else
         role_set roles;
-    
+
     if ((type_g == policy_types::kernel && version >= 19) || (type_g == policy_types::module && version >= 5 && version < 6) || (type_g == policy_types::base && version >= 5 && version < 6)) {
         mls_range exp_range;
         mls_level exp_dftlevel;
@@ -258,7 +258,7 @@ struct bool_ { // conditional boolean
     u32 state;
     u32 length;
     char key[length];
-    if ((type_g != policy_types::kernel && version >= 14)) 
+    if ((type_g != policy_types::kernel && version >= 14))
         u32 flags;
 };
 using bools = symbols_list<bool_>;
@@ -289,7 +289,7 @@ struct symbols {
     if (symbols_count >= 6)
         bools bools;
     if (symbols_count >= 7)
-        sensitivity_levels levels; 
+        sensitivity_levels levels;
     if (symbols_count >= 8)
         categories cats;
 };
@@ -429,7 +429,7 @@ struct filename_trans_item {
 struct role_trans_rule_item {
     role_set roles;
     role_set types;
-    if (version >= 12) 
+    if (version >= 12)
         extensible_bitmap classes;
     u32 new_role;
 };
@@ -468,7 +468,7 @@ struct filename_trans_rule_item {
     u32 tclass;
     u32 otype;
 
-    if (version >= 21) 
+    if (version >= 21)
         u32 flags;
 };
 using filename_trans_rule = list<filename_trans_rule_item>;
@@ -668,10 +668,10 @@ struct Header {
     if (magic == magics::kernel)
         type_g = policy_types::kernel;
     else
-    if (policy_subtype == policy_types::module) 
+    if (policy_subtype == policy_types::module)
         type_g = policy_types::module;
     else
-        type_g = policy_types::base;        
+        type_g = policy_types::base;
     u32 __policyvers;
     version = __policyvers;
     boundary_feature = (type_g == policy_types::kernel && version >= 24) || (type_g != policy_types::kernel && version >= 9);
@@ -680,7 +680,7 @@ struct Header {
     u32 symbols_count_;
     symbols_count = symbols_count_;
     std::assert(0 <= symbols_count && symbols_count <= 9, "Invalid 'symbols_count' value.");
-    u32 object_contexts_count_; 
+    u32 object_contexts_count_;
     object_contexts_count = object_contexts_count_;
     std::assert(0 <= object_contexts_count && object_contexts_count <= 9, "Invalid 'object_contexts_count' value.");
     if (magic == magics::module)

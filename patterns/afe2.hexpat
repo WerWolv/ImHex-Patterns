@@ -52,8 +52,8 @@ std::assert(ctx.magic == ATMOSPHERE_REBOOT_TO_FATAL_MAGIC   ||
        ctx.magic == ATMOSPHERE_REBOOT_TO_FATAL_MAGIC_1 ||
        ctx.magic == ATMOSPHERE_REBOOT_TO_FATAL_MAGIC_0,
        "File is not a valid Atmosphere fatal error binary!");
-	   
-std::assert_warn(ctx.magic == ATMOSPHERE_REBOOT_TO_FATAL_MAGIC, 
+
+std::assert_warn(ctx.magic == ATMOSPHERE_REBOOT_TO_FATAL_MAGIC,
            "Atmosphere fatal error binary is for an older version!");
 
 

@@ -13,7 +13,7 @@ struct FileLump {
     u32 filePos;
     type::Size<u32> size;
     char name[8];
-    
+
     u8 data[size] @ filePos [[sealed]];
 };
 

@@ -393,7 +393,9 @@ struct ExportsTable {
 	ExportDirectoryTable directoryTable;
 	ExportAddress exportAddressTable[directoryTable.addressesAmount] @ directoryTable.addressTableRVA - relativeVirtualDifference();
 	ExportNamePointer exportNamePointerTable[directoryTable.namePointersAmount] @ directoryTable.namePointerTableRVA - relativeVirtualDifference();
-	u16 exportOrdinalTable[directoryTable.namePointersAmount] @ directoryTable.ordinalTableRVA - relativeVirtualDifference();
+	if (directoryTable.ordinalTableRVA > relativeVirtualDifference()) {
+		u16 exportOrdinalTable[directoryTable.namePointersAmount] @ directoryTable.ordinalTableRVA - relativeVirtualDifference();
+	}
 	char imageName[] @ directoryTable.imageNameRVA - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
 	$ = addressof(this)+coffHeader.optionalHeader.directories[0].size;
 };
@@ -518,7 +520,7 @@ struct Bitmap {
 		Colors rgbq[bmh.clrUsed*((1 << bmh.bitCount)*!bmh.clrUsed)];
 		imageDataSize = imageDataSize - sizeof(rgbq);
 	}
-	
+
 	u8 imageData[imageDataSize-sizeof(bmh)];
 };
 
@@ -1039,7 +1041,7 @@ struct LineNumber {
 
 bool dataDirectoryInSection[coffHeader.optionalHeader.numberOfRVAsAndSizes];
 
-fn checkForDataDirectory() { 
+fn checkForDataDirectory() {
 	for (u32 i = 0, i < coffHeader.optionalHeader.numberOfRVAsAndSizes, i += 1)
 		if (coffHeader.optionalHeader.directories[i].rva - relativeVirtualDifference() < sectionsTable[currentSectionIndex].ptrRawData+sectionsTable[currentSectionIndex].sizeOfRawData
 		 && coffHeader.optionalHeader.directories[i].rva - relativeVirtualDifference() >= $)
@@ -1106,7 +1108,7 @@ struct Section {
 	currentSectionIndex += 1;													// Make the current section index the next section's index
 } [[name(sectionsTable[currentSectionIndex-1].name)]];
 
-Section sections[coffHeader.numberOfSections] @ coffHeader.optionalHeader.sizeOfHeaders;
+Section sections[coffHeader.numberOfSections] @ sectionsTable[0].ptrRawData;
 
 // Symbol & String Tables
 enum SectionNumberType : s16 {
@@ -1209,7 +1211,7 @@ struct StringTable {
 	SymbolString strings[while($ < addressof(this) + size)];
 } [[inline]];
 
-StringTable stringTable[checkForSymbols] @ addressof(symbolTable) + sizeof(symbolTable);
+StringTable stringTable[sizeof(symbolTable)>0] @ addressof(symbolTable) + sizeof(symbolTable);
 
 // Rich Header
 bool checkForRichHeader in;

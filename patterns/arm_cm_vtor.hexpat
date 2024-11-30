@@ -40,21 +40,21 @@ VectorTable vector_table @ VTOR;
 
 fn main() {
 	u32 table_size = sizeof(vector_table);
-	
+
 	u32 default_handler_address = 0x00;
-	
+
 	for (u32 i = 4, i < table_size, i = i + 4) {
 		u32 occurrences = 0;
 		for (u32 j = 4, j < table_size, j = j + 4) {
 			if (std::mem::read_unsigned(i, 4) == std::mem::read_unsigned(j, 4)) {
 				occurrences = occurrences + 1;
-				
+
 				if (occurrences > 1)
 					default_handler_address = std::mem::read_unsigned(i, 4);
 			}
 		}
 	}
-	
+
 	if (default_handler_address != 0x00)
 		std::print("Default Handler implementation at 0x{:08X}", default_handler_address);
 };

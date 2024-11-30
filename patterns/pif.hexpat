@@ -44,7 +44,7 @@ struct PIFInfoHeader {
 struct PIF {
 	PIFFileHeader PIF_FileHeader;
 	PIFInfoHeader PIF_ImageHeader;
-	
+
 	if (PIF_ImageHeader.ImageType == imageType_t::IND24)
 	{
 		u24 ColorTable[PIF_ImageHeader.ColorTableSize/3];
@@ -57,7 +57,7 @@ struct PIF {
 	{
 		u8 ColorTable[PIF_ImageHeader.ColorTableSize];
 	}
-	
+
 	if ((PIF_ImageHeader.ImageType == imageType_t::RGB888) ||
 		(PIF_ImageHeader.ImageType == imageType_t::IND24))
 	{
