@@ -5,15 +5,15 @@ import std.math;
 import std.io;
 import std.sys;
 
-namespace auto type {
-/**
-    Types representing IEEE 754 2019 compatible decimal floating point numbers
-    defines:
-    IEEE754_SUPPRESS_WARNING - suppresses warnings about canonicity of values being decoded
-    IEEE754_UNSEAL - show internal bitfields
-*/
-namespace ieee754
+// Types representing IEEE 754 2019 compatible decimal floating point numbers
+namespace auto type::ieee754
 {
+    /**
+        settings:
+        IEEE754_SUPPRESS_WARNING - suppresses warnings about canonicity of values being decoded
+    */
+    bool IEEE754_SUPPRESS_WARNING in;
+
     /**
         Decimal floating point numbers can be encoded using one of multiple methods
         Selection of which method to use is implementation specific, and cannot be determined from the binary data alone
@@ -47,9 +47,6 @@ namespace ieee754
         std::assert((encoding == decimal_encoding::decimal) || ((significand_width + 4) <= 128), std::format("Invalid significand_width for binary encoding! Expected <= 120, got {}", significand_width));
     }
     [[
-#ifndef IEEE754_UNSEAL
-        sealed,
-#endif
         bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 1 + combination_width + significand_width),
         format_read("type::ieee754::impl::format_decimal")
     ]];
@@ -75,24 +72,26 @@ namespace ieee754
                 bool is_signaling = ((r.combination >> (w - 1)) & 1 == 1);
                 //Note: payload not processed / decoded
                 //Note: NaN might not be canonical
-#ifndef IEEE754_SUPPRESS_WARNING
-                //check if combination field is canonical (all remaining bits are 0)
-                auto remaining_combination_bits = (r.combination & ((1 << (w - 1)) - 1));
-                std::assert_warn(remaining_combination_bits == 0, std::format("NaN - remaining combination field bits not canonical! Expected 0, got {}", remaining_combination_bits));
-                //TODO: also check if encoding of the payload is canonical
-#endif
+                if(!IEEE754_SUPPRESS_WARNING)
+                {
+                    //check if combination field is canonical (all remaining bits are 0)
+                    auto remaining_combination_bits = (r.combination & ((1 << (w - 1)) - 1));
+                    std::assert_warn(remaining_combination_bits == 0, std::format("NaN - remaining combination field bits not canonical! Expected 0, got {}", remaining_combination_bits));
+                    //TODO: also check if encoding of the payload is canonical
+                }
                 return is_signaling ? "sNaN" : "qNaN";
             }
             else if((r.combination >> w) & 0b11111 == 0b11110)
             {
                 //Inf's
                 //Note: Inf might not be canonical
-#ifndef IEEE754_SUPPRESS_WARNING
-                //check if combination field is canonical (all remaining bits are 0)
-                auto remaining_combination_bits = r.combination & ((1 << w) - 1);
-                std::assert_warn(remaining_combination_bits == 0, std::format("Inf - remaining combination field bits not canonical! Expected 0, got {}", remaining_combination_bits));
-                std::assert_warn(r.significand == 0, std::format("Inf - significand not canonical! Expected 0, got {}", r.significand));
-#endif
+                if(!IEEE754_SUPPRESS_WARNING)
+                {
+                    //check if combination field is canonical (all remaining bits are 0)
+                    auto remaining_combination_bits = r.combination & ((1 << w) - 1);
+                    std::assert_warn(remaining_combination_bits == 0, std::format("Inf - remaining combination field bits not canonical! Expected 0, got {}", remaining_combination_bits));
+                    std::assert_warn(r.significand == 0, std::format("Inf - significand not canonical! Expected 0, got {}", r.significand));
+                }
                 return r.sign ? "-Inf" : "Inf";
             }
             else if(r.encoding == decimal_encoding::binary)
@@ -121,9 +120,10 @@ namespace ieee754
                 if((full_significand == 0) || (full_significand > max_value))
                 {
                     //0s
-#ifndef IEEE754_SUPPRESS_WARNING
-                    std::assert_warn(full_significand == 0, std::format("0 - significand not canonical! Expected < {}, got {}", max_value, full_significand));
-#endif
+                    if(!IEEE754_SUPPRESS_WARNING)
+                    {
+                        std::assert_warn(full_significand == 0, std::format("0 - significand not canonical! Expected < {}, got {}", max_value, full_significand));
+                    }
                     return r.sign ? "-0" : "0";
                 }
 
@@ -256,5 +256,4 @@ namespace ieee754
     using decimal192<auto encoding> = decimal<21, 170, encoding>;
     using decimal224<auto encoding> = decimal<23, 200, encoding>;
     using decimal256<auto encoding> = decimal<25, 230, encoding>;
-}
 }

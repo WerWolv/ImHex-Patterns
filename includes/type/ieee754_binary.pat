@@ -5,15 +5,15 @@ import std.math;
 import std.io;
 import std.sys;
 
-namespace auto type {
-/**
-    Types representing IEEE 754 2019 compatible binary floating point numbers
-    defines:
-    IEEE754_SUPPRESS_USAGE_WARNING - suppresses warnings related to recommendation to use built-in types
-    IEEE754_UNSEAL - show internal bitfields
-*/
-namespace ieee754
+// Types representing IEEE 754 2019 compatible binary floating point numbers
+namespace auto type::ieee754
 {
+    /**
+        settings:
+        IEEE754_SUPPRESS_USAGE_WARNING - suppresses warnings related to recommendation to use built-in types
+    */
+    bool IEEE754_SUPPRESS_USAGE_WARNING in;
+
     /**
         Type representing a binary floating point number, taking a custom bias
         @tparam exponent_width number of bits to use for the biased exponent
@@ -30,17 +30,15 @@ namespace ieee754
         std::assert(exponent_width > 0, std::format("Invalid exponent_width! Expected >0, got {}", exponent_width));
         std::assert(significand_width > 0, std::format("Invalid significand_width! Expected >0, got {}", significand_width));
 
-#ifndef IEEE754_SUPPRESS_USAGE_WARNING
-        //usage warnings, suppressible
-        if((exponent_width == 8) && (significand_width == 23)){ std::warning("IEEE 754 binary32 used, prefer the use of in-built type instead"); }
-        else if((exponent_width == 11) && (significand_width == 52)){ std::warning("IEEE 754 binary64 used, prefer the use of in-built type instead"); }
-        //else if((exponent_width == 15) && (significand_width == 112)){ std::warning("IEEE 754 binary128 used, prefer the use of in-built type instead"); }
-#endif
+        if(!IEEE754_SUPPRESS_USAGE_WARNING)
+        {
+            //usage warnings, suppressible
+            if((exponent_width == 8) && (significand_width == 23)){ std::warning("IEEE 754 binary32 used, prefer the use of in-built type instead"); }
+            else if((exponent_width == 11) && (significand_width == 52)){ std::warning("IEEE 754 binary64 used, prefer the use of in-built type instead"); }
+            //else if((exponent_width == 15) && (significand_width == 112)){ std::warning("IEEE 754 binary128 used, prefer the use of in-built type instead"); }
+        }
     }
     [[
-#ifndef IEEE754_UNSEAL
-        sealed,
-#endif
         bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 1 + exponent_width + significand_width),
         format_read("type::ieee754::impl::format_binary"),
         transform("type::ieee754::impl::transform_binary")
@@ -112,5 +110,4 @@ namespace ieee754
     //using binary192 = binary<17, 174>;
     //using binary224 = binary<18, 205>;
     //using binary256 = binary<19, 236>; //aka octuple
-}
 }
