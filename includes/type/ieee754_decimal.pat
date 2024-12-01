@@ -47,6 +47,7 @@ namespace auto type::ieee754
         std::assert((encoding == decimal_encoding::decimal) || ((significand_width + 4) <= 128), std::format("Invalid significand_width for binary encoding! Expected <= 120, got {}", significand_width));
     }
     [[
+        sealed,
         bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 1 + combination_width + significand_width),
         format_read("type::ieee754::impl::format_decimal")
     ]];

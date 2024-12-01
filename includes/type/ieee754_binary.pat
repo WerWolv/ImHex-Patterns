@@ -39,6 +39,7 @@ namespace auto type::ieee754
         }
     }
     [[
+        sealed,
         bitfield_order(std::core::BitfieldOrder::MostToLeastSignificant, 1 + exponent_width + significand_width),
         format_read("type::ieee754::impl::format_binary"),
         transform("type::ieee754::impl::transform_binary")
