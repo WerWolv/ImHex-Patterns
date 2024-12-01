@@ -51,7 +51,6 @@ jobs:
 
     - name: 🛠️ Build
       run: |
-        cd tests
         mkdir -p build
         cd build
         CC=gcc-12 CXX=g++-12 cmake                        \
@@ -59,14 +58,15 @@ jobs:
           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache            \
           -DCMAKE_C_FLAGS="-fuse-ld=lld --coverage"       \
           -DCMAKE_CXX_FLAGS="-fuse-ld=lld --coverage"     \
+          -DIMHEX_PATTERNS_ENABLE_UNIT_TESTS=ON           \
           -DLIBPL_ENABLE_TESTS=OFF                        \
           -DLIBPL_ENABLE_CLI=OFF                          \
           ..
-        make -j4
+        make -j4 unit_tests
 
     - name: 🧪 Perform Unit Tests
       run: |
-        cd tests/build
+        cd build
         ctest --output-on-failure -j 4
 
     - name: 📎 Validate JSON Files
