@@ -132,6 +132,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | shp | | [`patterns/shp.hexpat`](patterns/shp.hexpat) | ESRI shape file |
 | shx | | [`patterns/shx.hexpat`](patterns/shx.hexpat) | ESRI index file |
 | SPIRV | | [`patterns/spirv.hexpat`](patterns/spirv.hexpat) | SPIR-V header and instructions |
+| STDF | | [`patterns/stdfv4.hexpat`](patterns/stdfv4.hexpat) | Standard test data format for IC testers |
 | STL | `model/stl` | [`patterns/stl.hexpat`](patterns/stl.hexpat) | STL 3D Model format |
 | StuffItV5 | `application/x-stuffit` | [`patterns/sit5.hexpat`](patterns/sit5.hexpat) | StuffIt V5 archive |
 | SWF | |[`patterns/swf.hexpat`](patterns/swf.hexpat) | Shockwave Flash file format |
