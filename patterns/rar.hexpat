@@ -347,6 +347,9 @@ struct Header {
         (HeaderType::ServiceHeader): FileOrServiceHeader [[inline]];
         (HeaderType::EndOfArchive): EndOfArchiveHeader [[inline]];
     }
+    if (type == HeaderType::EndOfArchive) {
+        break;
+    }
 };
 
 struct RARv5 {
