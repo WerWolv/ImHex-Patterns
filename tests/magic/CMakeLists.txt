@@ -19,14 +19,14 @@ pkg_search_module(MAGIC libmagic>=5.39)
 target_include_directories(magic_test PRIVATE include)
 target_link_libraries(magic_test PRIVATE libpl magic fmt::fmt-header-only)
 
-set_target_properties(magic_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set_target_properties(magic_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 foreach (magic_file IN LISTS MAGIC_FILES)
     file(RELATIVE_PATH MAGIC_NAME ${MAGIC_FOLDER} ${magic_file})
 
     set(TEST_NAME "Magic/${MAGIC_NAME}")
 
-    add_test(NAME ${TEST_NAME} COMMAND magic_test "${MAGIC_NAME}" "${magic_file}" WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    add_test(NAME ${TEST_NAME} COMMAND magic_test "${MAGIC_NAME}" "${magic_file}" WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
     set_tests_properties(${TEST_NAME} PROPERTIES SKIP_RETURN_CODE 77)
 endforeach ()
 add_dependencies(unit_tests ${PROJECT_NAME})

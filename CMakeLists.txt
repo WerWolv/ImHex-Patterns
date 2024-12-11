@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
+project(ImHex-Patterns)
+
 option(IMHEX_PATTERNS_ENABLE_UNIT_TESTS "Enable building unit tests for ImHex-Patterns"          OFF)
 
 # if enabled, add a unit_test custom target for all the unit tests to be registered against
