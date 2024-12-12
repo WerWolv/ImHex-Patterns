@@ -3,7 +3,7 @@
 #pragma MIME application/x-bzip3
 #pragma endian little
 #pragma magic [42 5A 33 76 31] @ 0x00
-#include <std/mem>
+import std.mem;
 
 // Helper function for bit counting
 fn popcount(u8 b) {
