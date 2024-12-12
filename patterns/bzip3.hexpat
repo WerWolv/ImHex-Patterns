@@ -21,8 +21,15 @@ struct FrameHeader {
     u32 blockSize;         // Maximum block size
 };
 
-// Regular block header (for blocks >= 64 bytes)
-struct BlockHeader {
+// Small block header (for blocks < 64 bytes)
+struct SmallBlock {
+    u32 crc32;           // CRC32 checksum
+    u32 literal;         // Always 0xFFFFFFFF for small blocks
+    u8 data[parent.compressedSize - 8]; // Uncompressed data
+};
+
+// Regular block (blocks > 64 bytes)
+struct Block {
     u32 crc32;            // CRC32 checksum of uncompressed data
     u32 bwtIndex;         // Burrows-Wheeler transform index
     u8  model;            // Compression model flags
@@ -31,25 +38,19 @@ struct BlockHeader {
         u32 lzpSize;      // Size after LZP compression
     if ((model & 0x04) != 0)     
         u32 rleSize;      // Size after RLE compression
-};
-
-// Small block header (for blocks < 64 bytes)
-struct SmallBlock {
-    u32 crc32;           // CRC32 checksum
-    u32 literal;         // Always 0xFFFFFFFF for small blocks
-    u8 data[parent.compressedSize - 8]; // Uncompressed data
+        
+    u8 data[parent.compressedSize - (popcount(model) * 4 + 9)];
 };
 
 // Main block structure
-struct Block {
+struct Chunk {
     u32 compressedSize;   // Size of compressed block
     u32 origSize;         // Original uncompressed size
         
     if (compressedSize < 64) {
-        SmallBlock content;
+        SmallBlock block;
     } else {
-        BlockHeader header;
-        u8 data[compressedSize - (popcount(header.model) * 4 + 9)];
+        Block block;
     }
 };
 
@@ -57,7 +58,7 @@ struct Block {
 struct BZip3File {
     FrameHeader header;
     // Read blocks until end of file
-    Block blocks[while(!std::mem::eof())];
+    Chunk chunks[while(!std::mem::eof())];
 };
 
 BZip3File file @ 0x0;
