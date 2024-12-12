@@ -37,14 +37,14 @@ struct BlockHeader {
 struct SmallBlock {
     u32 crc32;           // CRC32 checksum
     u32 literal;         // Always 0xFFFFFFFF for small blocks
-    u8 data[];          // Uncompressed data
+    u8 data[parent.compressedSize - 8]; // Uncompressed data
 };
 
 // Main block structure
 struct Block {
     u32 compressedSize;   // Size of compressed block
     u32 origSize;         // Original uncompressed size
-    
+        
     if (compressedSize < 64) {
         SmallBlock content;
     } else {
