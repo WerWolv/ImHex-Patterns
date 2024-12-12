@@ -1,5 +1,5 @@
 #pragma author Sewer56
-#pragma Parses BZip3 compression (file format) by Kamila Szewczyk
+#pragma description Parses BZip3 compression (file format) by Kamila Szewczyk
 #pragma MIME application/x-bzip3
 #pragma endian little
 #pragma magic [42 5A 33 76 31] @ 0x00
