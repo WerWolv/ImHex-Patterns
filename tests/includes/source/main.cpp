@@ -5,7 +5,8 @@
 #include <fmt/format.h>
 #include <cstdlib>
 
-#include "../../cmake-build-release/_deps/pattern_language-src/lib/include/pl/core/ast/ast_node_function_definition.hpp"
+#include <pl/core/ast/ast_node_type_decl.hpp>
+#include <pl/core/ast/ast_node_function_definition.hpp>
 
 #define EXIT_SKIP 77
 
