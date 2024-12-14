@@ -19,6 +19,7 @@ target_link_libraries(includes_test PRIVATE libpl fmt::fmt-header-only)
 
 set_target_properties(includes_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+message(STATUS "Adding Include Tests")
 foreach (include IN LISTS INCLUDES)
     file(RELATIVE_PATH INCLUDE_NAME ${PATTERN_INCLUDES} ${include})
 

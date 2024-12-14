@@ -19,6 +19,7 @@ target_link_libraries(patterns_tests PRIVATE libpl fmt::fmt-header-only)
 
 set_target_properties(patterns_tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+message(STATUS "Adding Pattern Tests")
 foreach (pattern IN LISTS PATTERNS)
     get_filename_component(PATTERN_NAME ${pattern} NAME)
 
@@ -39,5 +40,6 @@ foreach (pattern IN LISTS PATTERNS)
         set(TEST_NAME "Patterns/${PATTERN_NAME}")
         add_test(NAME ${TEST_NAME} COMMAND patterns_tests "${PATTERN_NAME}" "${pattern}" "${PATTERN_INCLUDES}" WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
         set_tests_properties(${TEST_NAME} PROPERTIES SKIP_RETURN_CODE 77)
+        message(STATUS "  No test file available for ${PATTERN_NAME} pattern")
     endif ()
 endforeach ()

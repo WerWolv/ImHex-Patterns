@@ -3,38 +3,27 @@
 #include <wolv/io/file.hpp>
 
 #include <fmt/format.h>
+#include <wolv/utils/string.hpp>
 #include <cstdlib>
 
 #define EXIT_SKIP 77
 
 int main(int argc, char **argv) {
-    // If only 4 arguments have been provided, then no test file was provided. Skip the test in that case
-    if (argc == 4)
-        return EXIT_SKIP;
-
     // Any number of arguments other than 5 are invalid
-    if (argc != 5)
+    if (argc != 4 && argc != 5)
         return EXIT_FAILURE;
+
+    bool hasTestFile = argc == 5;
 
     // Extract command line arguments
     const std::string patternName       = argv[1];
     const std::fs::path patternFilePath = argv[2];
     const std::fs::path includePath     = argv[3];
-    const std::fs::path testFilePath    = argv[4];
-
-    if (testFilePath.empty())
-        return EXIT_SKIP;
-
-    fmt::print("Running test {} on test file {}\n", patternName, testFilePath.stem().string());
+    const std::fs::path testFilePath    = hasTestFile ? argv[4] : "";
 
     // Open pattern file
     wolv::io::File patternFile(patternFilePath, wolv::io::File::Mode::Read);
     if (!patternFile.isValid())
-        return EXIT_FAILURE;
-
-    // Open test file
-    wolv::io::File testFile(testFilePath, wolv::io::File::Mode::Read);
-    if (!testFile.isValid())
         return EXIT_FAILURE;
 
     // Setup Pattern Language Runtime
@@ -47,12 +36,20 @@ int main(int argc, char **argv) {
             return true;
         };
 
-        runtime.setDataSource(0x00, testFile.getSize(),
-            [&](pl::u64 address, pl::u8 *data, size_t size) {
-                testFile.seek(address);
-                testFile.readBuffer(data, size);
-            }
-        );
+        if (hasTestFile) {
+            // Open test file
+            static wolv::io::File testFile(testFilePath, wolv::io::File::Mode::Read);
+            if (!testFile.isValid())
+                return EXIT_FAILURE;
+
+            runtime.setDataSource(0x00, testFile.getSize(),
+                [&](pl::u64 address, pl::u8 *data, size_t size) {
+                    testFile.seek(address);
+                    testFile.readBuffer(data, size);
+                }
+            );
+        }
+
         runtime.setDangerousFunctionCallHandler([]{ return true; });
         runtime.setIncludePaths({ includePath });
         runtime.addPragma("MIME", DummyPragmaHandler);
@@ -66,21 +63,50 @@ int main(int argc, char **argv) {
                 case Info:       fmt::print("    [INFO]  "); break;
                 case Warning:    fmt::print("    [WARN]  "); break;
                 case Error:      fmt::print("    [ERROR] "); break;
+                default: break;
             }
 
-            fmt::print("{}\n", message);
+            fmt::println("{}", message);
         });
     }
 
+    if (hasTestFile) {
+        // Execute pattern
+        fmt::println("Executing pattern {} using test file {}", patternName, wolv::util::toUTF8String(testFilePath.filename()));
 
-    // Execute pattern
-    if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
-        fmt::print("Error during execution!\n");
+        if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
+            fmt::println("Error when executing pattern!");
 
-        if (const auto &hardError = runtime.getEvalError(); hardError.has_value())
-            fmt::print("Hard error: {}:{} - {}\n\n", hardError->line, hardError->column, hardError->message);
+            if (const auto &compileErrors = runtime.getCompileErrors(); !compileErrors.empty()) {
+                for (const auto &error : compileErrors) {
+                    fmt::println("{}", error.format());
+                }
+            } else if (const auto &evalError = runtime.getEvalError(); evalError.has_value()) {
+                fmt::println("{}:{}  {}", evalError->line, evalError->column, evalError->message);
+            }
 
-        return EXIT_FAILURE;
+            return EXIT_FAILURE;
+        }
+    } else {
+        // Parse the file
+        fmt::println("Parsing pattern {} without executing it", patternName);
+        const auto ast = runtime.parseString(patternFile.readString(), "<Source Code>");
+        if (!ast.has_value()) {
+            fmt::println("Error when parsing pattern!");
+
+            if (const auto &compileErrors = runtime.getCompileErrors(); !compileErrors.empty()) {
+                for (const auto &error : compileErrors) {
+                    fmt::println("{}", error.format());
+                }
+            }
+
+            return EXIT_FAILURE;
+        }
+
+        if (ast->empty()) {
+            fmt::println("Pattern {} produced no AST", patternName);
+            return EXIT_FAILURE;
+        }
     }
 
     if (!hasDescription) {
