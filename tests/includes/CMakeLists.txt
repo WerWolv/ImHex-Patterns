@@ -17,7 +17,7 @@ add_executable(includes_test
 target_include_directories(includes_test PRIVATE include)
 target_link_libraries(includes_test PRIVATE libpl fmt::fmt-header-only)
 
-set_target_properties(includes_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set_target_properties(includes_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 message(STATUS "Adding Include Tests")
 foreach (include IN LISTS INCLUDES)
@@ -25,6 +25,7 @@ foreach (include IN LISTS INCLUDES)
 
     set(TEST_NAME "Includes/${INCLUDE_NAME}")
 
-    add_test(NAME ${TEST_NAME} COMMAND includes_test "${INCLUDE_NAME}" "${include}" "${PATTERN_INCLUDES}" WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    add_test(NAME ${TEST_NAME} COMMAND includes_test "${INCLUDE_NAME}" "${include}" "${PATTERN_INCLUDES}" WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
     set_tests_properties(${TEST_NAME} PROPERTIES SKIP_RETURN_CODE 77)
 endforeach ()
+add_dependencies(unit_tests ${PROJECT_NAME})
