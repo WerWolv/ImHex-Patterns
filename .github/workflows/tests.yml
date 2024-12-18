@@ -11,7 +11,7 @@ on:
 jobs:
   tests:
     name: 🧪 Unit Tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       actions: read
       contents: read
@@ -29,8 +29,8 @@ jobs:
         sudo apt install -y       \
             build-essential       \
             ccache                \
-            gcc-12                \
-            g++-12                \
+            gcc-14                \
+            g++-14                \
             lld                   \
             ${PKGCONF:-}          \
             cmake                 \
@@ -53,7 +53,7 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        CC=gcc-12 CXX=g++-12 cmake                        \
+        CC=gcc-14 CXX=g++-14 cmake                        \
           -DCMAKE_C_COMPILER_LAUNCHER=ccache              \
           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache            \
           -DCMAKE_C_FLAGS="-fuse-ld=lld --coverage"       \
@@ -61,8 +61,9 @@ jobs:
           -DIMHEX_PATTERNS_ENABLE_UNIT_TESTS=ON           \
           -DLIBPL_ENABLE_TESTS=OFF                        \
           -DLIBPL_ENABLE_CLI=OFF                          \
+          -G Ninja                                        \
           ..
-        make -j4 unit_tests
+        ninja unit_tests
 
     - name: 🧪 Perform Unit Tests
       run: |
