@@ -34,7 +34,7 @@ jobs:
             lld                   \
             ${PKGCONF:-}          \
             cmake                 \
-            make                  \
+            ninja                 \
             python3               \
             python3-pip           \
             libmagic-dev          \
