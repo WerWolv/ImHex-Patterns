@@ -468,6 +468,578 @@
             "mask": "1001'0011",
             "mnemonic": "i2s",
             "format": ""
+        },
+        {
+            "mask": "0110'0000",
+            "mnemonic": "iadd",
+            "format": ""
+        },
+        {
+            "mask": "0010'1110",
+            "mnemonic": "iaload",
+            "format": ""
+        },
+        {
+            "mask": "0111'1110",
+            "mnemonic": "iand",
+            "format": ""
+        },
+        {
+            "mask": "0100'1111",
+            "mnemonic": "iastore",
+            "format": ""
+        },
+        {
+            "mask": "0000'0010",
+            "mnemonic": "iconst_m1",
+            "format": ""
+        },
+        {
+            "mask": "0000'0011",
+            "mnemonic": "iconst_0",
+            "format": ""
+        },
+        {
+            "mask": "0000'0100",
+            "mnemonic": "iconst_1",
+            "format": ""
+        },
+        {
+            "mask": "0000'0101",
+            "mnemonic": "iconst_2",
+            "format": ""
+        },
+        {
+            "mask": "0000'0110",
+            "mnemonic": "iconst_3",
+            "format": ""
+        },
+        {
+            "mask": "0000'0111",
+            "mnemonic": "iconst_4",
+            "format": ""
+        },
+        {
+            "mask": "0000'1000",
+            "mnemonic": "iconst_5",
+            "format": ""
+        },
+        {
+            "mask": "0110'1100",
+            "mnemonic": "idiv",
+            "format": ""
+        },
+        {
+            "mask": "1010'0101 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "if_acmpeq",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1010'0110 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "if_acmpne",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1001'1111 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "if_icmpeq",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1010'0010 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "if_icmpge",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1010'0011 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "if_icmpgt",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1010'0100 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "if_icmple",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1010'0001 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "if_icmplt",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1010'0000 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "if_icmpne",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1001'1001 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "ifeq",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1001'1100 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "ifge",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1001'1101 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "ifgt",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1001'1110 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "ifle",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1001'1011 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "iflt",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1001'1010 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "ifne",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1100'0111 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "ifnonnull",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1100'0110 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "ifnull",
+            "format":"0x{B:04X}"
+        },
+        {
+            "mask": "1000'0100 IIII'IIII CCCC'CCCC",
+            "mnemonic": "iinc",
+            "format": "#{I}, {C}"
+        },
+        {
+            "mask": "0001'0101 IIII'IIII",
+            "mnemonic": "iload",
+            "format": "#{I}"
+        },
+        {
+            "mask": "0001'1010",
+            "mnemonic": "iload_0",
+            "format": ""
+        },
+        {
+            "mask": "0001'1011",
+            "mnemonic": "iload_1",
+            "format": ""
+        },
+        {
+            "mask": "0001'1100",
+            "mnemonic": "iload_2",
+            "format": ""
+        },
+        {
+            "mask": "0001'1101",
+            "mnemonic": "iload_3",
+            "format": ""
+        },
+        {
+            "mask": "1111'1110",
+            "mnemonic": "impdep1",
+            "format": ""
+        },
+        {
+            "mask": "1111'1111",
+            "mnemonic": "impdep2",
+            "format": ""
+        },
+        {
+            "mask": "0110'1000",
+            "mnemonic": "imul",
+            "format": ""
+        },
+        {
+            "mask": "0111'0100",
+            "mnemonic": "ineg",
+            "format": ""
+        },
+        {
+            "mask": "1100'0001 IIII'IIII IIII'IIII",
+            "mnemonic": "instanceof",
+            "format": "#{I}"
+        },
+        {
+            "mask": "1011'1010 IIII'IIII IIII'IIII 0000'0000 0000'0000",
+            "mnemonic": "invokedynamic",
+            "format": "#{I}"
+        },
+        {
+            "mask": "1011'1001 IIII'IIII IIII'IIII CCCC'CCCC 0000'0000",
+            "mnemonic": "invokeinterface",
+            "format": "#{I}, {C}"
+        },
+        {
+            "mask": "1011'0111 IIII'IIII IIII'IIII",
+            "mnemonic": "invokespecial",
+            "format": "#{I}"
+        },
+        {
+            "mask": "1011'1000 IIII'IIII IIII'IIII",
+            "mnemonic": "invokestatic",
+            "format": "#{I}"
+        },
+        {
+            "mask": "1011'0110 IIII'IIII IIII'IIII",
+            "mnemonic": "invokevirtual",
+            "format": "#{I}"
+        },
+        {
+            "mask": "1000'0000",
+            "mnemonic": "ior",
+            "format": ""
+        },
+        {
+            "mask": "0111'0000",
+            "mnemonic": "irem",
+            "format": ""
+        },
+        {
+            "mask": "1010'1100",
+            "mnemonic": "ireturn",
+            "format": ""
+        },
+        {
+            "mask": "0111'1000",
+            "mnemonic": "ishl",
+            "format": ""
+        },
+        {
+            "mask": "0111'1010",
+            "mnemonic": "ishr",
+            "format": ""
+        },
+        {
+            "mask": "0011'0110 IIII'IIII",
+            "mnemonic": "istore",
+            "format": "#{I}"
+        },
+        {
+            "mask": "0011'1011",
+            "mnemonic": "istore_0",
+            "format": ""
+        },
+        {
+            "mask": "0011'1100",
+            "mnemonic": "istore_1",
+            "format": ""
+        },
+        {
+            "mask": "0011'1101",
+            "mnemonic": "istore_2",
+            "format": ""
+        },
+        {
+            "mask": "0011'1110",
+            "mnemonic": "istore_3",
+            "format": ""
+        },
+        {
+            "mask": "0110'0100",
+            "mnemonic": "isub",
+            "format": ""
+        },
+        {
+            "mask": "0111'1100",
+            "mnemonic": "iushr",
+            "format": ""
+        },
+        {
+            "mask": "1000'0010",
+            "mnemonic": "ixor",
+            "format": ""
+        },
+        {
+            "mask": "1010'1000 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "jsr",
+            "format": "{B}"
+        },
+        {
+            "mask": "1100'1001 BBBB'BBBB BBBB'BBBB BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "jsr_w",
+            "format": "{B}"
+        },
+        {
+            "mask": "1000'1010",
+            "mnemonic": "l2d",
+            "format": ""
+        },
+        {
+            "mask": "1000'1001",
+            "mnemonic": "l2f",
+            "format": ""
+        },
+        {
+            "mask": "1000'1000",
+            "mnemonic": "l2i",
+            "format": ""
+        },
+        {
+            "mask": "0110'0001",
+            "mnemonic": "ladd",
+            "format": ""
+        },
+        {
+            "mask": "0010'1111",
+            "mnemonic": "laload",
+            "format": ""
+        },
+        {
+            "mask": "0111'1111",
+            "mnemonic": "land",
+            "format": ""
+        },
+        {
+            "mask": "0101'0000",
+            "mnemonic": "lastore",
+            "format": ""
+        },
+        {
+            "mask": "1001'0100",
+            "mnemonic": "lcmp",
+            "format": ""
+        },
+        {
+            "mask": "0000'1001",
+            "mnemonic": "lconst_0",
+            "format": ""
+        },
+        {
+            "mask": "0000'1010",
+            "mnemonic": "lconst_1",
+            "format": ""
+        },
+        {
+            "mask": "0001'0010 IIII'IIII",
+            "mnemonic": "ldc",
+            "format": "#{I}"
+        },
+        {
+            "mask": "0001'0011 IIII'IIII IIII'IIII",
+            "mnemonic": "ldc_w",
+            "format": "#{I}"
+        },
+        {
+            "mask": "0001'0100 IIII'IIII IIII'IIII",
+            "mnemonic": "ldc2_w",
+            "format": "#{I}"
+        },
+        {
+            "mask": "0110'1101",
+            "mnemonic": "ldiv",
+            "format": ""
+        },
+        {
+            "mask": "0001'0110 IIII'IIII",
+            "mnemonic": "lload",
+            "format": "#{I}"
+        },
+        {
+            "mask": "0001'1110",
+            "mnemonic": "lload_0",
+            "format": ""
+        },
+        {
+            "mask": "0001'1111",
+            "mnemonic": "lload_1",
+            "format": ""
+        },
+        {
+            "mask": "0010'0000",
+            "mnemonic": "lload_2",
+            "format": ""
+        },
+        {
+            "mask": "0010'0001",
+            "mnemonic": "lload_3",
+            "format": ""
+        },
+        {
+            "mask": "0110'1001",
+            "mnemonic": "lmul",
+            "format": ""
+        },
+        {
+            "mask": "0111'0101",
+            "mnemonic": "lneg",
+            "format": ""
+        },
+        {
+            "mask": "1000'0001",
+            "mnemonic": "lor",
+            "format": ""
+        },
+        {
+            "mask": "0111'0001",
+            "mnemonic": "lrem",
+            "format": ""  
+        },
+        {
+            "mask": "1010'1101",
+            "mnemonic": "lreturn",
+            "format": ""
+        },
+        {
+            "mask": "0111'1001",
+            "mnemonic": "lshl",
+            "format": ""
+        },
+        {
+            "mask": "0111'1011",
+            "mnemonic": "lshr",
+            "format": ""
+        },
+        {
+            "mask": "0011'0111 IIII'IIII",
+            "mnemonic": "lstore",
+            "format": "#{I}"  
+        },
+        {
+            "mask": "0011'1111",
+            "mnemonic": "lstore_0",
+            "format": ""
+        },
+        {
+            "mask": "0100'0000",
+            "mnemonic": "lstore_1",
+            "format": ""
+        },
+        {
+            "mask": "0100'0001",
+            "mnemonic": "lstore_2",
+            "format": ""
+        },
+        {
+            "mask": "0100'0010",
+            "mnemonic": "lstore_3",
+            "format": ""
+        },
+        {
+            "mask": "0110'0101",
+            "mnemonic": "lsub",
+            "format": ""
+        },
+        {
+            "mask": "0111'1101",
+            "mnemonic": "lushr",
+            "format": ""
+        },
+        {
+            "mask": "1000'0011",
+            "mnemonic": "lxor",
+            "format": ""
+        },
+        {
+            "mask": "1100'0010",
+            "mnemonic": "monitorenter",
+            "format": ""
+        },
+        {
+            "mask": "1100'0011",
+            "mnemonic": "monitorexit",
+            "format": ""
+        },
+        {
+            "mask": "1100'0101 IIII'IIII IIII'IIII DDDD'DDDD",
+            "mnemonic": "multianewarray",
+            "format": "{D}, #{I}"
+        },
+        {
+            "mask": "1011'1011 IIII'IIII IIII'IIII",
+            "mnemonic": "new",
+            "format": "#{I}"
+        },
+        {
+            "mask": "1011'1100 TTTT'TTTT",
+            "mnemonic": "newarray",
+            "format": "#{T}"
+        },
+        {
+            "mask": "1011'1100 TTTT'TTTT",
+            "mnemonic": "newarray",
+            "format": "#{T}"
+        },
+        {
+            "mask": "0000'0000",
+            "mnemonic": "nop",
+            "format": ""
+        },
+        {
+            "mask": "0101'0111",
+            "mnemonic": "pop",
+            "format": ""
+        },
+        {
+            "mask": "0101'1000",
+            "mnemonic": "pop2",
+            "format": ""
+        },
+        {
+            "mask": "1011'0101 IIII'IIII IIII'IIII",
+            "mnemonic": "putfield",
+            "format": "#{I}"
+        },
+        {
+            "mask": "1011'0011 IIII'IIII IIII'IIII",
+            "mnemonic": "putstatic",
+            "format": "#{I}"
+        },
+        {
+            "mask": "1010'1001 IIII'IIII",
+            "mnemonic": "ret",
+            "format": "#{I}"
+        },
+        {
+            "mask": "1011'0001",
+            "mnemonic": "return",
+            "format": ""
+        },
+        {
+            "mask": "0011'0101",
+            "mnemonic": "saload",
+            "format": ""
+        },
+        {
+            "mask": "0101'0110",
+            "mnemonic": "sastore",
+            "format": ""
+        },
+        {
+            "mask": "0001'0001 BBBB'BBBB BBBB'BBBB",
+            "mnemonic": "sipush",
+            "format": "0x{B:04X}"
+        },
+        {
+            "mask": "0101'1111",
+            "mnemonic": "swap",
+            "format": ""
+        },
+        {
+            "mask": "1010'1011",
+            "mnemonic": "lookupswitch",
+            "format": ""
+        },
+        {
+            "mask": "1010'1010",
+            "mnemonic": "tableswitch",
+            "format": ""
+        },
+        {
+            "mask": "XXXX'XXXX",
+            "mnemonic": "invalid",
+            "format": "0x{B:02X}"
+        }
+    ],
+    "prefixes": [
+        {
+            "mask": "1100'0100",
+            "mnemonic": "wide",
+            "format": ""
         }
     ]
 }
