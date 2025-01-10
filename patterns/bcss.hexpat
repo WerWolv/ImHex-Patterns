@@ -1,7 +1,7 @@
 #pragma author ttimasdf
 #pragma description BeyondCompare Snapshot (BCSS) file
 
-#pragma magic [42 43 53 53] @ 0x0
+#pragma magic [42 43 53 53] @ 0x00
 
 #pragma array_limit 4294967295
 #pragma pattern_limit 4294967295
@@ -27,7 +27,7 @@ enum EntryType : u8 {
     DIRECTORY   = 0x01,
     FILE        = 0x02,
     SYMLINK     = 0x03,
-    NULL        = 0x00,
+    // NULL        = 0x00,
     DIR_END     = 0xFF,
 };
 
@@ -75,11 +75,11 @@ struct BCSSEntry {
         (EntryType::DIR_END) : {
             on_dir_exit();
         }
-        (EntryType::NULL) : {
-            // some buggy edge cases
-            u8 unknown[7];
-            std::warning(std::format("invalid empty entry current_lvl={} current_pos=0x{:02x}", current_path_level, $));
-        }
+        // (EntryType::NULL) : {
+        //     // some buggy edge cases
+        //     u8 unknown[7];
+        //     std::warning(std::format("invalid empty entry current_lvl={} current_pos=0x{:02x}", current_path_level, $));
+        // }
         (_): {
             std::error(std::format("unknown EntryType idx={} current_pos=0x{:02x}", std::core::array_index(), $));
         }
@@ -159,7 +159,7 @@ struct BCSSFile {
         #ifdef __IMHEX__
         hex::core::add_virtual_file("bcss_content", decompressed_content);
         #endif
-        std::warning("BCSS file content is compressed, open `bcss_content` file from the Virtual Filesystem tab and run this pattern on it.");
+        std::warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n! BCSS file content is compressed !\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nopen `bcss_content` file from the Virtual Filesystem tab and run this pattern on it.");
     } else {
         BCSSEntry entries[while(!std::mem::eof())];
     }
