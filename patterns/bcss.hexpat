@@ -1,6 +1,8 @@
 #pragma author ttimasdf
 #pragma description BeyondCompare Snapshot (BCSS) file
 
+#pragma magic [42 43 53 53] @ 0x0
+
 #pragma array_limit 4294967295
 #pragma pattern_limit 4294967295
 
@@ -9,7 +11,8 @@ import std.io;
 import std.mem;
 import std.array;
 import std.string;
-
+import type.magic;
+import hex.dec;
 
 #ifdef __IMHEX__
 import hex.core;
@@ -96,7 +99,7 @@ fn on_dir_enter(str folder_name) {
 fn on_dir_exit() {
     if (current_path_level > 0) {
         current_path_level -= 1;
-    } else {
+    } else if (!std::mem::eof()) {
         std::warning(std::format("on_dir_exit current_lvl already == 0 current_pos=0x{:02x}", $));
     }
     // std::print("on_dir_exit current_lvl={}", current_path_level);
@@ -123,6 +126,9 @@ fn fmt_BCSSEntry(BCSSEntry e) {
             (EntryType::DIRECTORY | EntryType::FILE) : {
                 return std::format("{}: {}", (e.type == EntryType::DIRECTORY ? "Dir" : "File"), e.name.data);
             }
+            (EntryType::SYMLINK) : {
+                return std::format("Symlink: {} -> {}", e.name.data, e.target.data);
+            }
             (EntryType::DIR_END) : {
                 return "Directory End";
             }
@@ -132,5 +138,31 @@ fn fmt_BCSSEntry(BCSSEntry e) {
     }
 };
 
+struct BCSSFile {
+    if (std::mem::read_unsigned(0, 4) == 0x53534342) {
+        type::Magic<"BCSS"> magic;
+        u8 unknown[14];
+        std::string::SizedString<u16> root_path;
 
-BCSSEntry entries[while(!std::mem::eof())] @ 0x00;
+        u8 zlib_content[std::mem::size()-$];
+
+        // manually add zlib header which is essential for hex::dec::zlib_decompress
+        const str zlib_header = "\x78\x9c";
+        std::mem::Section zlib_compressed = std::mem::create_section("zlib_compressed");
+        std::mem::copy_value_to_section(zlib_header, zlib_compressed, 0);
+        std::mem::copy_value_to_section(zlib_content, zlib_compressed, 2);
+        u8 zlib[std::mem::get_section_size(zlib_compressed)] @ 0x00 in zlib_compressed;
+
+        std::mem::Section zlib_decompressed = std::mem::create_section("zlib_decompressed");
+        hex::dec::zlib_decompress(zlib, zlib_decompressed, 15);
+        u8 decompressed_content[std::mem::get_section_size(zlib_decompressed)] @ 0x00 in zlib_decompressed;
+        #ifdef __IMHEX__
+        hex::core::add_virtual_file("bcss_content", decompressed_content);
+        #endif
+        std::warning("BCSS file content is compressed, open `bcss_content` file from the Virtual Filesystem tab and run this pattern on it.");
+    } else {
+        BCSSEntry entries[while(!std::mem::eof())];
+    }
+};
+
+BCSSFile bcss_file @ 0x00;
