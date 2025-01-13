@@ -12,9 +12,9 @@ import std.mem;
 import std.array;
 import std.string;
 import type.magic;
-import hex.dec;
 
 #ifdef __IMHEX__
+import hex.dec;
 import hex.core;
 #endif
 
@@ -153,13 +153,13 @@ struct BCSSFile {
         std::mem::copy_value_to_section(zlib_content, zlib_compressed, 2);
         u8 zlib[std::mem::get_section_size(zlib_compressed)] @ 0x00 in zlib_compressed;
 
-        std::mem::Section zlib_decompressed = std::mem::create_section("zlib_decompressed");
-        hex::dec::zlib_decompress(zlib, zlib_decompressed, 15);
-        u8 decompressed_content[std::mem::get_section_size(zlib_decompressed)] @ 0x00 in zlib_decompressed;
         #ifdef __IMHEX__
-        hex::core::add_virtual_file("bcss_content", decompressed_content);
+            std::mem::Section zlib_decompressed = std::mem::create_section("zlib_decompressed");
+            hex::dec::zlib_decompress(zlib, zlib_decompressed, 15);
+            u8 decompressed_content[std::mem::get_section_size(zlib_decompressed)] @ 0x00 in zlib_decompressed;
+            hex::core::add_virtual_file("bcss_content", decompressed_content);
+            std::warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n! BCSS file content is compressed !\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nopen `bcss_content` file from the Virtual Filesystem tab and run this pattern on it.");
         #endif
-        std::warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n! BCSS file content is compressed !\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nopen `bcss_content` file from the Virtual Filesystem tab and run this pattern on it.");
     } else {
         BCSSEntry entries[while(!std::mem::eof())];
     }
