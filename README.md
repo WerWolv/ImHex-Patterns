@@ -33,6 +33,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ARIA2 | | [`patterns/aria2.hexpat`](patterns/aria2.hexpat) | ARIA2 Download Manager Control files |
 | ARM VTOR | | [`patterns/arm_cm_vtor.hexpat`](patterns/arm_cm_vtor.hexpat) | ARM Cortex M Vector Table Layout |
 | Bastion | | [`patterns/bastion/*`](https://gitlab.com/EvelynTSMG/imhex-bastion-pats) | Various [Bastion](https://en.wikipedia.org/wiki/Bastion_(video_game)) files |
+| BeyondCompare BCSS | | [`patterns/bcss.hexpat`](patterns/bcss.hexpat) | BeyondCompare Snapshot (BCSS) file |
 | Bencode | `application/x-bittorrent` | [`patterns/bencode.hexpat`](patterns/bencode.hexpat) | Bencode encoding, used by Torrent files |
 | Prusa BGCODE | | [`patterns/bgcode.hexpat`](patterns/bgcode.hexpat) | PrusaSlicer Binary G-Code files |
 | BLEND  | | [`patterns/blend.hexpat`](patterns/blend.hexpat) | Blender Project file |
