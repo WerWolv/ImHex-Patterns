@@ -1,5 +1,6 @@
 #pragma author Surasia
 #pragma description Halo Infinite HavokScript 5.1 "luas"
+#pragma magic [ 75 63 73 68 ] @ 0x00
 
 import std.io;
 import std.mem;

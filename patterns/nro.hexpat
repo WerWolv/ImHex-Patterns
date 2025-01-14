@@ -1,5 +1,6 @@
 #pragma author WerWolv
 #pragma description Nintendo Switch NRO
+#pragma magic [ 4E 52 4F 30 ] @ 0x10
 
 import std.io;
 import std.sys;

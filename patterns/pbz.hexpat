@@ -8,6 +8,7 @@
 
 #pragma author Nicolás Alvarez
 #pragma description Apple pbz
+#pragma magic [ 70 62 7A ] @ 0x00
 
 import std.mem;
 import type.magic;

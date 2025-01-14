@@ -1,5 +1,6 @@
 #pragma author WerWolv
 #pragma description Drive File System
+#pragma MIME application/x-ima
 
 import std.io;
 import std.core;

@@ -1,4 +1,5 @@
 #pragma description Dalvik EXecutable
+#pragma magic [ 64 65 78 0A ?? ?? ?? 00 ]
 
 import type.leb128;
 

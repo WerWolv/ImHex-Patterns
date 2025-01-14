@@ -1,6 +1,6 @@
 #pragma author zhoubo
 #pragma description AAC ADTSn (Audio Data Transport Stream) Audio
-#pragma magic [ FF F? ] @ 0x00
+#pragma MIME audio/x-hx-aac-adts
 #pragma pattern_limit 0xFFFFFF
 
 // History

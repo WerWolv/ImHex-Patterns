@@ -1,6 +1,7 @@
 #pragma author applecuckoo
 #pragma description PKM (PacKMan) files containing ETC (Ericsson Texture Compression)
 #pragma endian big
+#pragma magic [ 50 4B 4D 20 ] @ 0x00
 
 enum PKMFormat : u16 {
     ETC1_RGB_NO_MIPMAPS,

@@ -1,5 +1,6 @@
 #pragma author bake
-#pragma description veadotube mini avatar file
+#pragma description Veadotube Mini Avatar File
+#pragma magic [ 56 45 41 44 4F 54 55 42 45 ] @ 0x00
 
 import std.mem;
 import std.io;

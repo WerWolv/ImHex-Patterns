@@ -1,4 +1,5 @@
 #pragma description ISO 9660 file system
+#pragma MIME application/x-iso9660-image
 
 #pragma endian little
 

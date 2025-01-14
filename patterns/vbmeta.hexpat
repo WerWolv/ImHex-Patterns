@@ -1,4 +1,5 @@
 #pragma description Android VBMeta image
+#pragma magic [ 41 56 42 30 ] @ 0x00
 
 #pragma endian big
 import std.core;

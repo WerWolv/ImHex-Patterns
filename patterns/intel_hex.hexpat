@@ -7,6 +7,7 @@
  * values
 */
 #pragma endian big
+#pragma MIME text/x-hex
 
 import std.mem;
 

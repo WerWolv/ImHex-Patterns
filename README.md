@@ -25,7 +25,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 |------|------|------|-------------|
 | 3DS | | [`patterns/3ds.hexpat`](patterns/3ds.hexpat) | Autodesk 3DS Max Model file |
 | 7Z | | [`patterns/7z.hexpat`](patterns/7z.hexpat) | 7z File Format |
-| ADTS | | [`patterns/adts.hexpat`](patterns/adts.hexpat) | ADTS/AAC audio files |
+| ADTS | `audio/x-hx-aac-adts` | [`patterns/adts.hexpat`](patterns/adts.hexpat) | ADTS/AAC audio files |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
 | ANI | `application/x-navi-animation` | [`patterns/ani.hexpat`](patterns/ani.hexpat) | Windows Animated Cursor file |
 | AR | `application/x-archive` | [`patterns/ar.hexpat`](patterns/ar.hexpat) | Static library archive files |
@@ -41,14 +41,14 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | BIN  | | [`patterns/selinux.hexpat`](patterns/selinux.pat) | SE Linux modules |
 | BINKA  | | [`patterns/binka.hexpat`](patterns/binka.pat) | RAD Game Tools Bink Audio (BINKA) files |
 | BSON | `application/bson` | [`patterns/bson.hexpat`](patterns/bson.hexpat) | BSON (Binary JSON) format |
-| bplist | | [`patterns/bplist.hexpat`](patterns/bplist.hexpat) | Apple's binary property list format (bplist) |
+| bplist | `application/x-bplist` | [`patterns/bplist.hexpat`](patterns/bplist.hexpat) | Apple's binary property list format (bplist) |
 | BSP | | [`patterns/bsp_goldsrc.hexpat`](patterns/bsp_goldsrc.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
 | BZIP3 | | [`patterns/bzip3.hexpat`](patterns/bzip3.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
 | CCHVA | | [`patterns/cchva.hexpat`](patterns/cchva.hexpat) | Command and Conquer Voxel Animation |
 | CCVXL | | [`patterns/ccvxl.hexpat`](patterns/ccvxl.hexpat) | Command and Conquer Voxel Model |
 | CCPAL | | [`patterns/ccpal.hexpat`](patterns/ccpal.hexpat) | Command and Conquer Voxel Palette |
 | CDA | | [`patterns/cda.hexpat`](patterns/cda.hexpat) | Compact Disc Audio track |
-| CHM | | [`patterns/chm.hexpat`](patterns/chm.hexpat) | Windows HtmlHelp Data (ITSF / CHM) |
+| CHM | `application/vnd.ms-htmlhelp` | [`patterns/chm.hexpat`](patterns/chm.hexpat) | Windows HtmlHelp Data (ITSF / CHM) |
 | COFF | `application/x-coff` | [`patterns/coff.hexpat`](patterns/coff.hexpat) | Common Object File Format (COFF) executable |
 | CPIO | `application/x-cpio` | [`patterns/cpio.hexpat`](patterns/cpio.hexpat) | Old Binary CPIO Format |
 | CrashLvl | | [`patterns/Crashlvl.hexpat`](patterns/Crashlvl.hexpat) | Crash Bandicoot - Back in Time (fan game) User created level format |
@@ -64,13 +64,13 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DTA | | [`patterns/max_v104.hexpat`](patterns/max_v104.hexpat) | Mechanized Assault and Exploration v1.04 (strategy game) save file format |
 | DTED | | [`patterns/dted.hexpat`](patterns/dted.hexpat) | Digital Terrain Elevation Data (DTED) |
 | ELF  | `application/x-executable` | [`patterns/elf.hexpat`](patterns/elf.hexpat) | ELF header in elf binaries |
-| EVTX | | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
+| EVTX | `application/x-ms-evtx` | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
 | EXT4 | | [`patterns/ext4.hexpat`](patterns/ext4.hexpat) | Ext4 filesystem |
 | FAS | | [`patterns/fas_oskasoftware.hexpat`](patterns/fas_oskasoftware.hexpat) [`patterns/fas_oskasoftware_old.hexpat`](patterns/fas_oskasoftware_old.hexpat) (Old versions of Oska DeskMate) | Oska Software DeskMates FAS (Frames and Sequences) file |
 | FBX | | [`patterns/fbx.hexpat`](patterns/fbx.hexpat) | Kaydara FBX Binary |
 | FDT | | [`patterns/fdt.hexpat`](patterns/fdt.hexpat) | Flat Linux Device Tree blob |
 | FFX | | [`patterns/ffx/*`](https://gitlab.com/EvelynTSMG/imhex-ffx-pats) | Various Final Fantasy X files |
-| File System | | [`patterns/fs.hexpat`](patterns/fs.hexpat) | Drive File System |
+| File System | `application/x-ima` | [`patterns/fs.hexpat`](patterns/fs.hexpat) | Drive File System |
 | FLAC | `audio/flac` | [`patterns/flac.hexpat`](patterns/flac.hexpat) | Free Lossless Audio Codec, FLAC Audio Format |
 | Flipper Zero Settings | | [`patterns/flipper_settings.hexpat`](patterns/flipper_settings.hexpat) | Flipper Zero Settings Files |
 | GB | `application/x-gameboy-rom` | [`patterns/gb.hexpat`](patterns/gb.hexpat) | Game Boy ROM |
@@ -88,7 +88,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Intel HEX  | | [`patterns/intel_hex.hexpat`](patterns/intel_hex.hexpat) | [Intel hexadecimal object file format definition]("https://en.wikipedia.org/wiki/Intel_HEX") |
 | IP | | [`patterns/ip.hexpat`](patterns/ip.hexpat) | Ethernet II Frames (IP Packets) |
 | IPS | | [`patterns/ips.hexpat`](patterns/ips.hexpat) | IPS (International Patching System) files |
-| ISO | | [`patterns/iso.hexpat`](patterns/iso.hexpat) | ISO 9660 file system |
+| ISO | `application/x-iso9660-image` | [`patterns/iso.hexpat`](patterns/iso.hexpat) | ISO 9660 file system |
 | Java Class | `application/x-java-applet` | [`patterns/java_class.hexpat`](patterns/java_class.hexpat) | Java Class files |
 | JPEG | `image/jpeg` | [`patterns/jpeg.hexpat`](patterns/jpeg.hexpat) | JPEG Image Format |
 | LOC | | [`patterns/loc.hexpat`](patterns/loc.hexpat) | Minecraft Legacy Console Edition Language file |
@@ -106,8 +106,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | MSSCMP | | [`patterns/msscmp.hexpat`](patterns/msscmp.hexpat) | Miles Sound System Compressed Archive |
 | NACP | | [`patterns/nacp.hexpat`](patterns/nacp.hexpat) | Nintendo Switch NACP files |
 | NBT | | [`patterns/nbt.hexpat`](patterns/nbt.hexpat) | Minecraft NBT format |
-| NE   | | [`patterns/ne.hexpat`](patterns/ne.hexpat) | NE header and Standard NE fields |
-| nes   | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | .nes file format |
+| NE | `application/x-ms-ne-executable` | [`patterns/ne.hexpat`](patterns/ne.hexpat) | NE header and Standard NE fields |
+| nes | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | .nes file format |
 | NotepadCache | | [`patterns/notepad-cache.hexpat`](patterns/notepad-cache.hexpat) | Windows Notepad Cache |
 | NotepadWindowState | | [`patterns/notepadwindowstate.hexpat`](patterns/notepadwindowstate.hexpat) | Windows 11 Notepad - Window State .bin file |
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
@@ -117,8 +117,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | PCAP | `application/vnd.tcpdump.pcap` | [`patterns/pcap.hexpat`](patterns/pcap.hexpat) | pcap header and packets |
 | PCK | | [`patterns/pck.hexpat`](patterns/pck.hexpat) | Minecraft Legacy Console Edition .pck file |
 | PCX | `application/x-pcx` | [`patterns/pcx.hexpat`](patterns/pcx.hexpat) | PCX Image format |
-| PE   | `application/x-dosexec` `application/x-msdownload` | [`patterns/pe.hexpat`](patterns/pe.hexpat) | PE header, COFF header, Standard COFF fields and Windows Specific fields |
-| PP   | | [`patterns/selinuxpp.hexpat`](patterns/selinuxpp.pat) | SE Linux package |
+| PE | `application/x-dosexec` `application/x-msdownload` | [`patterns/pe.hexpat`](patterns/pe.hexpat) | PE header, COFF header, Standard COFF fields and Windows Specific fields |
+| PP | | [`patterns/selinuxpp.hexpat`](patterns/selinuxpp.pat) | SE Linux package |
 | PFS0 | | [`patterns/pfs0.hexpat`](patterns/pfs0.hexpat) | Nintendo Switch PFS0 archive (NSP files) |
 | PIF | `image/pif` | [`patterns/pif.hexpat`](patterns/pif.hexpat) | PIF Image Format |
 | PKM | | [`patterns/pkm.hexpat`](patterns/pkm.hexpat) | PKM texture format |
@@ -127,12 +127,12 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Protobuf | | [`patterns/protobuf.hexpat`](patterns/protobuf.hexpat) | Google Protobuf encoding |
 | psafe3 | | [`patterns/psafe3.hexpat`](patterns/psafe3.hexpat`) | Password Safe V3 |
 | PyInstaller | | [`patterns/pyinstaller.hexpat`](patterns/pyinstaller.hexpat) | PyInstaller binray files |
-| PYC | | [`patterns/pyc.hexpat`](patterns/pyc.hexpat) | Python bytecode files |
+| PYC | `application/x-bytecode.python` | [`patterns/pyc.hexpat`](patterns/pyc.hexpat) | Python bytecode files |
 | QBCL | | [`patterns/qbcl.hexpat`](patterns/qbcl.hexpat) | Qubicle voxel scene project file |
-| QOI  | `image/qoi` | [`patterns/qoi.hexpat`](patterns/qoi.hexpat) | QOI image files |
+| QOI | `image/qoi` | [`patterns/qoi.hexpat`](patterns/qoi.hexpat) | QOI image files |
 | quantized-mesh | | [`patterns/quantized-mesh.hexpat`](patterns/quantized-mesh.hexpat) | Cesium quantized-mesh terrain |
 | RAR | `application/x-rar` | [`patterns/rar.hexpat`](patterns/rar.hexpat) | RAR archive file format |
-| RAS  | `image/x-sun-raster` | [`patterns/ras.hexpat`](patterns/ras.hexpat) | RAS image files |
+| RAS | `image/x-sun-raster` | [`patterns/ras.hexpat`](patterns/ras.hexpat) | RAS image files |
 | ReFS | | [`patterns/refs.hexpat`](patterns/refs.hexpat) | Microsoft Resilient File System |
 | RGBDS | | [`patterns/rgbds.hexpat`](patterns/rgbds.hexpat) | [RGBDS](https://rgbds.gbdev.io) object file format |
 | Shell Link | `application/x-ms-shortcut` | [`patterns/lnk.hexpat`](patterns/lnk.hexpat) | Windows Shell Link file format |
@@ -143,7 +143,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | STL | `model/stl` | [`patterns/stl.hexpat`](patterns/stl.hexpat) | STL 3D Model format |
 | StuffItV5 | `application/x-stuffit` | [`patterns/sit5.hexpat`](patterns/sit5.hexpat) | StuffIt V5 archive |
 | SQLite3 | `application/vnd.sqlite3` | [`patterns/sqlite3.hexpat`](patterns/sqlite3.hexpat) | SQLite3 Database |
-| SWF | |[`patterns/swf.hexpat`](patterns/swf.hexpat) | Shockwave Flash file format |
+| SWF | `application/x-shockwave-flash` |[`patterns/swf.hexpat`](patterns/swf.hexpat) | Shockwave Flash file format |
 | TAR | `application/x-tar` | [`patterns/tar.hexpat`](patterns/tar.hexpat) | Tar file format |
 | TES | | [`patterns/wintec_tes.hexpat`](patterns/wintec_tes.hexpat) | Wintec TES GPS log |
 | TIFF | `image/tiff` | [`patterns/tiff.hexpat`](patterns/tiff.hexpat) | Tag Image File Format |
@@ -166,7 +166,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | XCI | | [`patterns/xci.hexpat`](patterns/xci.hexpat) | Nintendo Switch XCI cartridge ROM |
 | XGT | | [`patterns/xgt.hexpat`](patterns/xgstexture.hexpat) | Exient XGS Engine Texture |
 | Xilinx BIT | | [`patterns/xilinx_bit.hexpat`](patterns/xilinx_bit.hexpat) | Xilinx FPGA Bitstreams |
-| Xilinx Bootgen | | [`patterns/xilinx_bootgen.hexpat`](patterns/xilinx_bootgen.hexpat) | Xilinx ZynqMP Boot Images |
+| Xilinx Bootgen | `application/x-xilinx-boot-zynqmp` | [`patterns/xilinx_bootgen.hexpat`](patterns/xilinx_bootgen.hexpat) | Xilinx ZynqMP Boot Images |
 | ZIP  | `application/zip` | [`patterns/zip.hexpat`](patterns/zip.hexpat) | End of Central Directory Header, Central Directory File Headers |
 | ZLIB | `application/zlib` | [`patterns/zlib.hexpat`](patterns/zlib.hexpat) | ZLIB compressed data format |
 | ZSTD | `application/zstd` | [`patterns/zstd.hexpat`](patterns/zstd.hexpat) | Zstandard compressed data format |

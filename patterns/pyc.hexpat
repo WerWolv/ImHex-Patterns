@@ -1,4 +1,5 @@
 #pragma description Python bytecode
+#pragma MIME application/x-bytecode.python
 
 import type.time;
 import std.mem;

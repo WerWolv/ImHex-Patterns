@@ -1,4 +1,5 @@
 #pragma description Lua 5.3 bytecode
+#pragma magic [ 1B 4C 75 61 53 ] @ 0x00
 
 import std.io;
 import type.base;

@@ -1,5 +1,6 @@
 #pragma author Calcoph
 #pragma description ESRI shapefile indices
+#pragma magic [ 00 00 27 0A ] @ 0x00
 
 // Spec:
 // https://www.esri.com/content/dam/esrisites/sitecore-archive/Files/Pdfs/library/whitepapers/pdfs/shapefile.pdf

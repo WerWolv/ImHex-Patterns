@@ -1,6 +1,6 @@
 #pragma description SUP Bluray Subtitle
 
-#pragma magic [50 47] @ 0x00
+#pragma magic [ 50 47 ] @ 0x00
 #pragma endian big
 
 import std.mem;

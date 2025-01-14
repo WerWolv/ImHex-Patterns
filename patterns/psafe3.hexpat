@@ -3,6 +3,7 @@
 
 #pragma endian little
 #pragma description Password Safe V3
+#pragma magic [ 50 57 53 33 ] @ 0x00
 
 import std.mem;
 import std.sys;

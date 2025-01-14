@@ -1,5 +1,6 @@
 #pragma author gmestanley
 #pragma description IPS (International Patching System)
+#pragma magic [ 50 41 54 43 48 ] @ 0x00
 
 #pragma endian big
 

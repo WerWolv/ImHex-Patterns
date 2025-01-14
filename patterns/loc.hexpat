@@ -2,8 +2,8 @@
 #pragma description Minecraft LCE LOC file
 
 #pragma endian big
-#pragma array_limit 739845729834
-#pragma pattern_limit 34893726894
+#pragma array_limit 0
+#pragma pattern_limit 0
 
 import std.string;
 

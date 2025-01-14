@@ -1,4 +1,4 @@
-#pragma magic [50 41 47 45] // PAGE 
+#pragma magic [ 50 41 47 45 ] @ 0x00 // PAGE 
 #pragma author "5h4rrK"
 #pragma description "KERNEL DUMP"
 
@@ -99,4 +99,4 @@ struct DUMP_HEADER64 {
 
 };
 
-DUMP_HEADER64 dmp @0x00 [[name("DumpHeader")]];
+DUMP_HEADER64 dmp @ 0x00 [[name("DumpHeader")]];

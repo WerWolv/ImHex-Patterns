@@ -1,5 +1,6 @@
 #pragma author Shadlock0133 (aka Aurora) / WerWolv
 #pragma description Prusa Binary G-Code
+#pragma magic [ 47 43 44 45 ] @ 0x00
 
 import type.magic;
 import std.mem;

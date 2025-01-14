@@ -1,4 +1,5 @@
 #pragma description Apple Disk Image Trailer (DMG)
+#pragma magic [ 6B 6F 6C 79 ] @ -512
 
 #pragma endian big
 

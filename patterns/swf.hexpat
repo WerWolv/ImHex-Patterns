@@ -1,8 +1,9 @@
 #pragma author saturnaliam
 #pragma description Shockwave Flash Movie (SWF)
 #pragma endian little
-import type.magic;
+#pragma MIME application/x-shockwave-flash
 
+import type.magic;
 
 // RECTs are more complicated, but for the header,
 // this works fine.

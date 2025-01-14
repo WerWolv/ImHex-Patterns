@@ -2,9 +2,11 @@
 #pragma author Ange Albertini
 
 import std.sys;
-#pragma pattern_limit 13107200
-#pragma array_limit 13107200
+#pragma pattern_limit 0
+#pragma array_limit 0
 #pragma endian little
+#pragma magic [ 8C FF 7C F9 ] @ 0x00
+#pragma magic [ 8D FF 7C F9 ] @ 0x00
 
 u32 version;
 u32 symbols_count;
