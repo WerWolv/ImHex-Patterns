@@ -3,6 +3,7 @@
 
 #pragma description ggml GGUF v3
 #pragma authors @leonjza, jessie @ imhex discord
+#pragma magic [ 47 47 55 46 ] @ 0x00
 
 #pragma pattern_limit 300000
 
