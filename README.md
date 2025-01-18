@@ -44,6 +44,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | bplist | `application/x-bplist` | [`patterns/bplist.hexpat`](patterns/bplist.hexpat) | Apple's binary property list format (bplist) |
 | BSP | | [`patterns/bsp_goldsrc.hexpat`](patterns/bsp_goldsrc.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
 | BZIP3 | | [`patterns/bzip3.hexpat`](patterns/bzip3.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
+| CAB | | [`patterns/cab.hexpat`](patterns/cab.hexpat) | Microsoft Cabinet (CAB) Files |
 | CCHVA | | [`patterns/cchva.hexpat`](patterns/cchva.hexpat) | Command and Conquer Voxel Animation |
 | CCVXL | | [`patterns/ccvxl.hexpat`](patterns/ccvxl.hexpat) | Command and Conquer Voxel Model |
 | CCPAL | | [`patterns/ccpal.hexpat`](patterns/ccpal.hexpat) | Command and Conquer Voxel Palette |
