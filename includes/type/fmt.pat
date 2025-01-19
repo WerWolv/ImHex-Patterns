@@ -30,7 +30,7 @@ namespace auto type {
     namespace impl {
 
         fn format_formatted(ref auto formatted) {
-            return std::format(std::format("{{0:{}}}", formatted.FormatString), formatted.value);
+            return std::format(formatted.FormatString, formatted.value);
         };
 
         fn transform_formatted(ref auto formatted) {
