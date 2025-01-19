@@ -4,6 +4,7 @@
 #pragma endian little
 
 import std.io;
+import std.mem;
 
 enum VolumeDescriptorTypes : u8 {
   BootRecord,
@@ -128,8 +129,9 @@ struct VolumeDescriptor {
     StrDateFormat expirationTime[[format("FormatStrDate")]];
     StrDateFormat effectiveTime[[format("FormatStrDate")]];
     u8 fileStructVersion;
-    padding[0x200 + 0x28E];
   }
+  padding[0x800 - $ % 0x800];
 };
 
-VolumeDescriptor data @ 0x8000;
+VolumeDescriptor descriptors[while(std::mem::read_unsigned($, 1) != 0xFF)] @ 0x8000;
+VolumeDescriptor terminator @ $;
