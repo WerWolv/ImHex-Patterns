@@ -97,6 +97,10 @@ struct DirectoryRecord {
   u8 fileNameLen;
   char fileName[fileNameLen];
   padding[$ % 2];
+  u8 remainingSize = $ - addressof(this);
+  if (recordSize > remainingSize) {
+    u8 systemUse[recordSize - remainingSize];
+  }
 };
 
 fn GetSupplementaryEncoding() {
