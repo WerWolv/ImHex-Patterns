@@ -133,7 +133,7 @@ struct VolumeDescriptor {
     char setId[0x80];
     char publisherId[0x80];
     char preparerId[0x80];
-  } else if (type == VolumeDescriptorTypes::SupplementaryVolume && GetSupplementaryEncoding()) {
+    char applicationId[0x80];
     char copyrightFileId[0x25];
     char abstractFileId[0x25];
     char bibliographicFileId[0x25];
@@ -142,7 +142,7 @@ struct VolumeDescriptor {
     StrDateFormat expirationTime[[format("FormatStrDate")]];
     StrDateFormat effectiveTime[[format("FormatStrDate")]];
     u8 fileStructVersion;
-  } else if (type == VolumeDescriptorTypes::SupplementaryVolume) {
+  } else if (type == VolumeDescriptorTypes::SupplementaryVolume && GetSupplementaryEncoding()) {
     u8 flags;
     be char16 systemId[0x10];
     be char16 volumeId[0x10];
