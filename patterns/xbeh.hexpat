@@ -329,7 +329,7 @@ fn relative_to_base(auto pointer) {
 };
 
 fn relative_to_base_section(auto pointer) {
-    return -parent.parent.baseAddress;
+    return -parent.parent.parent.baseAddress;
 };
 
 bitfield LibraryFlags {
