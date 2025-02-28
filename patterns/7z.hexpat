@@ -1,9 +1,11 @@
 #pragma description 7z Archive
 #pragma MIME application/x-7z-compressed
+#pragma magic [ 37 7A BC AF 27 1C ] @ 0x00
 
 import std.io;
 import std.mem;
 import std.math;
+import type.magic;
 
 
 enum Type:u8{
@@ -11,13 +13,9 @@ enum Type:u8{
     sizeStartHeader = 0x20,  // Size of start Header
 };
 
-enum TypeB:u48{
-    sevenZipSignature = 0x1C27AFBC7A37,  // Defining 7z signature
-};
-
 struct StartHeader {
     // File signature
-    u48 signature  [[color("FF0000")] ];
+    type::Magic<"7z\xBC\xAF\x27\x1C"> signature  [[color("FF0000")] ];
     // Version format
     u16 formatVersion [[color("00FF00")]];
     // CRC start header
@@ -61,13 +59,6 @@ struct EndHeader {
 };
 
 EndHeader endheader @ Type::sizeStartHeader;
-
-// Check 7z type
-if(startheader.signature ==  TypeB::sevenZipSignature){
-    std::print("It is a 7z File Type");
-}else{
-    std::print("The file is not 7z type");
-}
 
 std::print("Format Version {} ",startheader.formatVersion);
 
