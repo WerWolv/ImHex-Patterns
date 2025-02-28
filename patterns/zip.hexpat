@@ -102,10 +102,10 @@ fn find_eocd() {
         u128 offset_search_from = std::math::max(0, std::mem::size()-65536-22);
         u128 prev_address;
         while(1){
-            u128 current_address = std::mem::find_sequence_in_range(0, offset_search_from, std::mem::size(), 0x50,0x4B,0x05,0x06);
+            s128 current_address = std::mem::find_sequence_in_range(0, offset_search_from, std::mem::size(), 0x50,0x4B,0x05,0x06);
 
             //Reached EOF and did not find valid eocd.
-            if (current_address == 340282366920938463463374607431768211455){
+            if (current_address == -1) {
                 std::error("Could not find EOCD.");
             }
 
