@@ -49,8 +49,8 @@
             "format": "#{I}"
         },
         {
-            "mask": "areturn",
-            "mnemonic": "1011'0000",
+            "mask": "1011'0000",
+            "mnemonic": "areturn",
             "format": ""
         },
         {
@@ -84,8 +84,8 @@
             "format": ""
         },
         {
-            "mask": "athrow",
-            "mnemonic": "1011'1111",
+            "mask": "1011'1111",
+            "mnemonic": "athrow",
             "format": ""
         },
         {
