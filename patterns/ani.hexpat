@@ -36,7 +36,12 @@ struct RiffChunk {
     u32 size;
     if (signature == "RIFF" || signature == "LIST") {
         char type[4];
-        RiffChunk chunks[while($ - addressof(type) < size)];
+
+        // Compatible with error size defined in ani files
+        u32 remain = sizeof($) - addressof(type);
+        u32 marked = size > remain ? remain : size;
+
+        RiffChunk chunks[while($ - addressof(type) < marked)];
     } else if (signature[0] == 'I' && parent.type == "INFO") {
         char info[size];
     } else if (signature == "anih") {
