@@ -101,8 +101,9 @@ struct ThumbCacheHeader {
 struct CacheRecord {
     char signature[4];
     if (signature != "CMMM") {
-        std::warning("Cache entry signature invalid: {}", signature);
-        break; 
+        std::warning(std::format("Invalid cache entry at 0x{:08x}, skipping: {} ", $, type::escape_bytes(signature)));
+        padding[while(std::mem::read_string($, 4) != "CMMM")];
+        continue; 
     }
     u32 size;
     u64 entry_hash;
