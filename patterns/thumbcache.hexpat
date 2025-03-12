@@ -125,7 +125,7 @@ struct CacheRecord {
     u64 header_checksum;
     char16 name[(name_size / 2)];
     if(padding_size > 0) {
-        u8 p[padding_size];
+        padding[padding_size];
     }
     if(data_size > 0) {
         u8 data[data_size];
@@ -141,7 +141,7 @@ struct CacheRecord {
         }
         hex::core::add_virtual_file(std::string::to_string(name) + suffix, data);
     }
-    u8 zero_padding[while(std::mem::read_unsigned($, 1) == 0x00)];
+    padding[while(std::mem::read_unsigned($, 1) == 0x00)];
 };
 
 ThumbCacheHeader header @ 0x00;
