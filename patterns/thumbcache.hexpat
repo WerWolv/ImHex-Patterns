@@ -1,17 +1,24 @@
 #pragma author MrMcX
 #pragma description Windows thumbcache files
+/*
+Thanks to Joachim Metz for his work that helped improve the pattern:
+https://github.com/libyal/libwtcdb/blob/main/documentation/Windows%20Explorer%20Thumbnail%20Cache%20database%20format.asciidoc
+*/
 
 #pragma magic [0x43 0x4D 0x4D 0x4D] @ 0x00
 
 #pragma endian little
 import std.mem;
+import type.magic;
+import hex.core;
+import std.string;
 
 enum WinVer : u32 {
-    WIN_VISTA = 0x14,
-    WIN_7     = 0x15,
-    WIN_8     = 0x1A ... 0x1E,
-    WIN_8_1   = 0x1F,
-    WIN_10    = 0x20
+    WIN_VISTA = 20,
+    WIN_7     = 21,
+    WIN_8     = 30,
+    WIN_8_1   = 31,
+    WIN_10    = 32
 };
 
 enum Win7Vista_Type : u32 {
@@ -66,40 +73,39 @@ enum Win10_Type: u32 {
 };
 
 struct ThumbCacheHeader {
-    char signature[4];
-    if (signature != "CMMM") {
-        std::print("Thumbcache-Signatur ungültig: {}", signature);
-        break; 
-    }
+    type::Magic<"CMMM"> signature;
     WinVer version;
-    if(version == WinVer::WIN_VISTA || version == WinVer::WIN_7) {
-        Win7Vista_Type type;
-    } else if(version == WinVer::WIN_8) {
-        Win8_Type type;
+    if(version == WinVer::WIN_10) {
+        Win10_Type type;
     } else if(version == WinVer::WIN_8_1) {
         Win81_Type type;
-    } else if(version == WinVer::WIN_10) {
-        Win10_Type type;
+    } else if(version == WinVer::WIN_8) {
+        Win8_Type type;
+    } else if(version <= WinVer::WIN_7) {
+        Win7Vista_Type type;
+    } else {
+        u32 type;
+        std::print("Unknown cache type: {}", type);
     }
 
-    if(version == WinVer::WIN_8 || version == WinVer::WIN_8_1 || version == WinVer::WIN_10) {
+    if(version >= WinVer::WIN_8) {
         u32;
     }
     u32 header_size;
     u32 offset_to_first_empty;
-    if(version == WinVer::WIN_VISTA || version == WinVer::WIN_7) {
+    if(version <= WinVer::WIN_7) {
         u32 count;
     }
 };
 
-struct CMMMRecord {
+struct CacheRecord {
     char signature[4];
     if (signature != "CMMM") {
-        std::print("CMMMRecord-Signatur ungültig: {}", signature);
+        std::warning("Cache entry signature invalid: {}", signature);
         break; 
     }
     u32 size;
-    u64 id1;
+    u64 entry_hash;
     
     if(header.version == WinVer::WIN_VISTA) {
         char16 extension[4];
@@ -117,18 +123,26 @@ struct CMMMRecord {
     u32;
     u64 data_checksum;
     u64 header_checksum;
-    
-    if(name_size > 0) {
-        char16 name[(name_size / 2)];
-    }
+    char16 name[(name_size / 2)];
     if(padding_size > 0) {
         u8 p[padding_size];
     }
     if(data_size > 0) {
         u8 data[data_size];
+        if(data[0] == 0x42 && data[1] == 0x4D) {
+            str suffix = ".bmp";
+        } else if(data[0] == 0xFF && data[1] == 0xD8 && data[2] == 0xFF && data[3] == 0xE0) {
+            str suffix = ".jpg";
+        } else if(data[0] == 0x89 && data[1] == 0x50 && data[2] == 0x4E && data[3] == 0x47) {
+            str suffix = ".png"; 
+        } else {
+            str suffix = "";
+            std::warning("Thumbnail file type unknown, no suffix added");
+        }
+        hex::core::add_virtual_file(std::string::to_string(name) + suffix, data);
     }
-    u8 zero[while(std::mem::read_unsigned($, 1) == 0x00)];
+    u8 zero_padding[while(std::mem::read_unsigned($, 1) == 0x00)];
 };
 
 ThumbCacheHeader header @ 0x00;
-CMMMRecord record[while(!std::mem::reached(header.offset_to_first_empty))] @ header.header_size;
+CacheRecord records[while(!std::mem::reached(header.offset_to_first_empty))] @ header.header_size;
