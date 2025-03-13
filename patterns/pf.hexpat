@@ -1,6 +1,10 @@
 #pragma author MrMcX
 #pragma description Parse forensically relevant parts of Windows Prefetch(*.pf) (only uncompressed SCCA version)
 /*
+The pattern implements the uncompressed SCCA format which is used below Windows 10.
+For the newer compressed file format starting with "MAM\x04" has to be decompressed first,
+for example using the at https://gist.github.com/dfirfpi/113ff71274a97b489dfd
+
 Thanks to Joachim Metz for his work that this pattern is heavily based on:
 https://github.com/libyal/libscca/blob/main/documentation/Windows%20Prefetch%20File%20(PF)%20format.asciidoc
 Unknown values commented with "jm:" refer to Joachim Metz' format analysis
