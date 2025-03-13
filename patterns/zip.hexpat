@@ -21,24 +21,11 @@ struct EndOfCentralDirectory {
 
 namespace extra {
 
-    bitfield Flags {
+    bitfield UTFlags {
           bool modification_time_set : 1;
           bool access_time_set : 1;
           bool creation_time_set : 1;
           reserved: 5;  //reserved for additional timestamps; not set
-    };
-
-    struct X5455_ExtendedTimestamp {
-        Flags Flags;
-        if (Flags.modification_time_set){
-            u32 ModTime;
-        }
-        if (Flags.access_time_set){
-            u32 AcTime;
-        }
-        if (Flags.creation_time_set){
-            u32 CrTime;
-        }
     };
 
     struct X000A_NTFS {
@@ -76,7 +63,23 @@ namespace extra {
         u16 tag;
         u16 TSize;
         if (tag == 0x5455){
-            extra::X5455_ExtendedTimestamp x5455_ExtendedTimestamp;
+            // 0x5455 needs parsed with TSize in context to prevent overshoot from mismatched TSize/flags set
+            UTFlags Flags;
+            u64 extraEndFromFlags = $ + 4*(Flags.modification_time_set + Flags.access_time_set + Flags.creation_time_set);
+            u64 extraEndFromTSize = $ + TSize - 1;
+            u64 extraEnd = std::math::min(extraEndFromFlags, extraEndFromTSize);
+
+            if ( ($ < extraEnd) && Flags.modification_time_set) {
+                type::time32_t ModTime;
+            }
+
+            if ( ($ < extraEnd) && Flags.access_time_set) {
+                type::time32_t AcTime;
+            }
+
+            if ( ($ < extraEnd) && Flags.creation_time_set) {
+                type::time32_t CrTime;
+            }
         }else if (tag == 0x000a){
             extra::X000A_NTFS x000A_NTFS;
         }else if (tag == 0x7875){
@@ -175,8 +178,8 @@ struct LocalFileHeader {
     u16 version [[ comment("The minimum supported ZIP specification version needed to extract the file") ]];
     GeneralPurposeBitFlags generalPurposeBitFlags  [[ comment("General purpose bit flag") ]];
     CompressionMethod compressionMethod [[ comment("Compression method") ]];
-    u16 lastModifyTime [[ comment("File last modification time") ]];
-    u16 lastModifyDate [[ comment("File last modification date") ]];
+    type::DOSTime lastModifyTime [[ comment("File last modification time") ]];
+    type::DOSDate lastModifyDate [[ comment("File last modification date") ]];
     u32 crc32 [[ comment("CRC-32") ]];
     u32 compressedSize [[ comment("Compressed size") ]];
     u32 uncompressedSize [[ comment("Uncompressed size") ]];
@@ -199,8 +202,8 @@ struct CentralDirectoryFileHeader {
     u16 versionExtract [[comment("Minimum version needed to extract")]];
     GeneralPurposeBitFlags generalPurposeBitFlags [[comment("General purpose bit flag")]];
     CompressionMethod compressionMethod;
-    u16 fileLastModifyTime [[comment("File last modification time")]];
-    u16 fileLastModifyDate [[comment("File last modification date")]];
+    type::DOSTime fileLastModifyTime [[comment("File last modification time")]];
+    type::DOSDate fileLastModifyDate [[comment("File last modification date")]];
     u32 crc32 [[comment("CRC-32 of uncompressed data")]];
     u32 compressedSize;
     u32 uncompressedSize;
