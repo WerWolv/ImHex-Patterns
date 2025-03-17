@@ -277,6 +277,8 @@ enum Magic : u32 {
     MAGIC_3_9 = 0x0A0D0D61,
     MAGIC_3_10 = 0x0A0D0D6F,
     MAGIC_3_11 = 0x0A0D0DA7,
+    MAGIC_3_12 = 0x0A0D0DCB,
+    MAGIC_3_13 = 0x0A0D0DF3,
 
     INVALID = 0,
 };
@@ -285,7 +287,7 @@ fn getMajor(Magic magic) {
     match(magic) {
         (Magic::MAGIC_1_0 | Magic::MAGIC_1_1 | Magic::MAGIC_1_3 | Magic::MAGIC_1_4 | Magic::MAGIC_1_5 | Magic::MAGIC_1_6): return 1;
         (Magic::MAGIC_2_0 | Magic::MAGIC_2_1 | Magic::MAGIC_2_2 | Magic::MAGIC_2_3 | Magic::MAGIC_2_4 | Magic::MAGIC_2_5 | Magic::MAGIC_2_6 | Magic::MAGIC_2_7): return 2;
-        (Magic::MAGIC_3_0 | Magic::MAGIC_3_1 | Magic::MAGIC_3_2 | Magic::MAGIC_3_3 | Magic::MAGIC_3_4 | Magic::MAGIC_3_5 | Magic::MAGIC_3_5_3 | Magic::MAGIC_3_6 | Magic::MAGIC_3_7 | Magic::MAGIC_3_8 | Magic::MAGIC_3_9 | Magic::MAGIC_3_10 | Magic::MAGIC_3_11): return 3;
+        (Magic::MAGIC_3_0 | Magic::MAGIC_3_1 | Magic::MAGIC_3_2 | Magic::MAGIC_3_3 | Magic::MAGIC_3_4 | Magic::MAGIC_3_5 | Magic::MAGIC_3_5_3 | Magic::MAGIC_3_6 | Magic::MAGIC_3_7 | Magic::MAGIC_3_8 | Magic::MAGIC_3_9 | Magic::MAGIC_3_10 | Magic::MAGIC_3_11 | Magic::MAGIC_3_12 | Magic::MAGIC_3_13): return 3;
         (Magic::INVALID): return 0;
     }
 };
@@ -304,6 +306,8 @@ fn getMinor(Magic magic) {
         (Magic::MAGIC_3_9): return 9;
         (Magic::MAGIC_3_10): return 10;
         (Magic::MAGIC_3_11): return 11;
+        (Magic::MAGIC_3_12): return 12;
+        (Magic::MAGIC_3_13): return 13;
         (Magic::INVALID): return 0;
     }
 };
