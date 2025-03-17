@@ -1,8 +1,10 @@
 #pragma description ISO 9660 file system
+#pragma MIME application/x-iso9660-image
 
 #pragma endian little
 
 import std.io;
+import std.mem;
 
 enum VolumeDescriptorTypes : u8 {
   BootRecord,
@@ -95,6 +97,19 @@ struct DirectoryRecord {
   u8 fileNameLen;
   char fileName[fileNameLen];
   padding[$ % 2];
+  u8 remainingSize = $ - addressof(this);
+  if (recordSize > remainingSize) {
+    u8 systemUse[recordSize - remainingSize];
+  }
+};
+
+fn GetSupplementaryEncoding() {
+  const u128 escapeSequencesOffset = 89 - 8;
+
+  str encoding = std::mem::read_string($ + escapeSequencesOffset, 0x20);
+  return encoding == "%/@\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+      || encoding == "%/C\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+      || encoding == "%/E\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 };
 
 struct VolumeDescriptor {
@@ -127,8 +142,37 @@ struct VolumeDescriptor {
     StrDateFormat expirationTime[[format("FormatStrDate")]];
     StrDateFormat effectiveTime[[format("FormatStrDate")]];
     u8 fileStructVersion;
-    padding[0x200 + 0x28E];
+  } else if (type == VolumeDescriptorTypes::SupplementaryVolume && GetSupplementaryEncoding()) {
+    u8 flags;
+    be char16 systemId[0x10];
+    be char16 volumeId[0x10];
+    padding[8];
+    di32 spaceSize;
+    u8 escapeSequences[0x20];
+    di16 setSize;
+    di16 sequenceNumber;
+    di16 logicalBlockSize;
+    di32 pathTableSize;
+    PathTablePtr pathTableOffset;
+    DirectoryRecord rootDir;
+    be char16 setId[0x40];
+    be char16 publisherId[0x40];
+    be char16 preparerId[0x40];
+    be char16 applicationId[0x40];
+    be char16 copyrightFileId[0x12];
+    padding[1];
+    be char16 abstractFileId[0x12];
+    padding[1];
+    be char16 bibliographicFileId[0x12];
+    padding[1];
+    StrDateFormat creationTime[[format("FormatStrDate")]];
+    StrDateFormat modificationTime[[format("FormatStrDate")]];
+    StrDateFormat expirationTime[[format("FormatStrDate")]];
+    StrDateFormat effectiveTime[[format("FormatStrDate")]];
+    u8 fileStructVersion;
   }
+  padding[0x800 - $ % 0x800];
 };
 
-VolumeDescriptor data @ 0x8000;
+VolumeDescriptor descriptors[while(std::mem::read_unsigned($, 1) != 0xFF)] @ 0x8000;
+VolumeDescriptor terminator @ $;

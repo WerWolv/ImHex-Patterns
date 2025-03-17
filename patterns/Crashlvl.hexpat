@@ -1,5 +1,6 @@
 #pragma author AdventureT
 #pragma description Crash Bandicoot - Back in Time (fan game) User created level
+#pragma magic [ 43 52 41 53 48 4C 56 4C ] @ 0x00
 #pragma history
 #pragma   0.3  2024-05-15 Added support for version 0.95
 #pragma   0.2  2023-10-29 Added support for version 0.94c

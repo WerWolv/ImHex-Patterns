@@ -43,7 +43,7 @@ namespace auto type {
 
         fn transform_sleb128_array(ref auto array) {
             s128 res = type::impl::transform_uleb128_array(array);
-            if (res & 0x40 != 0) {
+            if (res & 1 << ((sizeof(array) / sizeof(u8)) * 7 - 1) != 0) {
                 res |= ~0 << (sizeof(array) / sizeof(u8)) * 7;
             }
             return res;

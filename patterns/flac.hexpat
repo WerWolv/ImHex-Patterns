@@ -1,5 +1,6 @@
 #pragma author WerWolv
 #pragma description Free Lossless Audio Codec, FLAC Audio Format
+#pragma MIME audio/flac
 
 import std.sys;
 import std.core;

@@ -5,6 +5,9 @@
 #include <fmt/format.h>
 #include <cstdlib>
 
+#include <pl/core/ast/ast_node_type_decl.hpp>
+#include <pl/core/ast/ast_node_function_definition.hpp>
+
 #define EXIT_SKIP 77
 
 int main(int argc, char **argv) {
@@ -61,15 +64,58 @@ int main(int argc, char **argv) {
         });
     }
 
-    // Execute pattern
-    if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
-        fmt::print("Error during execution!\n");
+    // Parse pattern
+    const auto ast = runtime.parseString(patternFile.readString(), "<Source Code>");
+    if (!ast.has_value()) {
+        fmt::println("Error when parsing include file!");
 
-        if (const auto &hardError = runtime.getEvalError(); hardError.has_value())
-            fmt::print("Hard error: {}:{} - {}\n\n", hardError->line, hardError->column, hardError->message);
+        if (const auto &compileErrors = runtime.getCompileErrors(); !compileErrors.empty()) {
+            for (const auto &error : compileErrors) {
+                fmt::println("{}", error.format());
+            }
+        } else if (const auto &evalError = runtime.getEvalError(); evalError.has_value()) {
+            fmt::println("{}:{}  {}", evalError->line, evalError->column, evalError->message);
+        }
 
         return EXIT_FAILURE;
     }
+
+    bool missingComments = false;
+    for (const std::shared_ptr<pl::core::ast::ASTNode> &node : *ast) {
+        if (auto typeDecl = dynamic_cast<pl::core::ast::ASTNodeTypeDecl*>(node.get())) {
+            if (typeDecl->getDocComment().empty() && !pl::hlp::containsIgnoreCase(typeDecl->getName(), "impl")) {
+                fmt::println("Type {} has no doc comment!", typeDecl->getName());
+                missingComments = true;
+            }
+        } else if (auto functionDef = dynamic_cast<pl::core::ast::ASTNodeFunctionDefinition*>(node.get())) {
+            if (functionDef->getDocComment().empty() && !pl::hlp::containsIgnoreCase(functionDef->getName(), "impl")) {
+                fmt::println("Function {} has no doc comment!", functionDef->getName());
+                missingComments = true;
+            }
+        }
+    }
+
+    if (missingComments)
+        return EXIT_FAILURE;
+
+    if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
+        if (const auto &evalError = runtime.getEvalError(); evalError.has_value()) {
+            fmt::println("{}:{}  {}", evalError->line, evalError->column, evalError->message);
+        }
+
+        return EXIT_FAILURE;
+    }
+
+    if (!runtime.getPatterns().empty()) {
+        fmt::println("Library created patterns!");
+        return EXIT_FAILURE;
+    }
+
+    if (!runtime.getSections().empty()) {
+        fmt::println("Library created sections!");
+        return EXIT_FAILURE;
+    }
+
 
     return EXIT_SUCCESS;
 }

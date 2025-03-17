@@ -1,5 +1,6 @@
 #pragma author WerWolv
 #pragma description Flat Linux Device Tree blob
+#pragma magic [ D0 0D FE ED ] @ 0x00
 
 #pragma endian big
 

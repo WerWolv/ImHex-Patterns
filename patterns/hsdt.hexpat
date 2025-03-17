@@ -2,9 +2,11 @@
 #pragma author xtex
 
 #pragma description HiSilicon HSDT device-tree table
+#pragma endian little
+#pragma magic [ 48 53 44 54 ] @ 0x00
+
 import std.sys;
 import std.mem;
-#pragma endian little
 
 u32 dt_hdr_offset;
 if (std::mem::read_unsigned(4096, 4, std::mem::Endian::Little) == 0x54445348) {

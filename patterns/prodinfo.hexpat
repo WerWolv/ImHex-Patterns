@@ -1,5 +1,6 @@
 #pragma author WerWolv
 #pragma description Nintendo Switch PRODINFO
+#pragma magic [ 43 41 4C 30 ] @ 0x00
 
 enum Model : u16 {
 	NX = 1

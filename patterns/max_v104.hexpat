@@ -3,8 +3,8 @@
 import std.sys;
 import std.mem;
 
-#pragma array_limit 12544
-#pragma pattern_limit 2000000
+#pragma array_limit 0
+#pragma pattern_limit 0
 #pragma eval_depth 32
 
 enum FileType : u8

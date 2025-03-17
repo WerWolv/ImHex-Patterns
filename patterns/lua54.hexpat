@@ -1,4 +1,5 @@
 #pragma description Lua 5.4 bytecode
+#pragma magic [ 1B 4C 75 61 54 ] @ 0x00
 
 import std.io;
 import std.mem;

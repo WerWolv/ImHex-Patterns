@@ -1,5 +1,6 @@
 #pragma endian little
 #pragma description Xilinx Zynq UltraScale+ Boot Image
+#pragma MIME application/x-xilinx-boot-zynqmp
 #pragma magic [ 58 4E 4C 58 ] @ 0x24
 
 // Spec: Xilinx UG1283 https://docs.xilinx.com/r/en-US/ug1283-bootgen-user-guide/Zynq-UltraScale-MPSoC-Boot-and-Configuration

@@ -1,4 +1,5 @@
 #pragma description Microsoft DOS NE executable
+#pragma MIME application/x-ms-ne-executable
 
 import std.mem;
 

@@ -4,6 +4,7 @@
 // Extension: PP
 // https://github.com/SELinuxProject/selinux/blob/master/libsepol/src/module.c
 
+#pragma magic [ 8F FF 7C F9 ] @ 0x00
 #pragma endian little
 import std.sys;
 

@@ -1,6 +1,8 @@
 #pragma description Digital Terrain Elevation Data
 #pragma endian big
 
+#pragma magic [ 4C 48 55 ] @ 0x00
+
 import std.core;
 import std.io;
 import std.mem;

@@ -1,5 +1,6 @@
 #pragma author Surasia
 #pragma description Halo Infinite Tag
+#pragma magic [ 75 63 73 68 ] @ 0x00
 
 import std.string;
 import type.guid;

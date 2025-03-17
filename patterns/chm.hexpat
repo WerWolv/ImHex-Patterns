@@ -1,5 +1,6 @@
 #pragma author WerWolv
 #pragma description Windows HtmlHelp Data (ITSF / CHM)
+#pragma MIME application/vnd.ms-htmlhelp
 
 import type.magic;
 import type.size;

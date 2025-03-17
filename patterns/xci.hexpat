@@ -1,5 +1,6 @@
 #pragma author WerWolv
 #pragma description Nintendo Switch XCI cartridge ROM
+#pragma magic [ 48 46 53 30 ] @ 0x00
 
 import std.core;
 

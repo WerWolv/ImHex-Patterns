@@ -1,4 +1,5 @@
 #pragma description Apple binary property list
+#pragma MIME application/x-bplist
 
 import std.math;
 import std.core;

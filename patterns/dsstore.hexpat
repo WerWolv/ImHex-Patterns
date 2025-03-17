@@ -1,4 +1,5 @@
 #pragma description macOS .DS_Store
+#pragma magic [ 42 75 64 31 ] @ 0x04
 
 // Apple macOS .DS_Store format
 #pragma endian big

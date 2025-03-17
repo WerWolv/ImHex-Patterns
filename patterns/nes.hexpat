@@ -1,5 +1,6 @@
 #pragma author gmestanley
 #pragma description Nintendo Entertainment System ROM (.nes)
+#pragma MIME application/x-nes-rom
 
 import std.mem;
 import std.string;

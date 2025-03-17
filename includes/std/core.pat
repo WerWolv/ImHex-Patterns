@@ -173,4 +173,20 @@ namespace auto std::core {
     fn execute_function(str function_name, auto ... args) {
         builtin::std::core::execute_function(function_name, args);
     };
+
+    /**
+        Sets the pattern color palette for all future created patterns
+        @param args RGBA8 colors as 32 bit integers (0xAABBGGRR)
+    */
+    fn set_pattern_palette_colors(auto ... colors) {
+        builtin::std::core::set_pattern_palette_colors(colors);
+    };
+
+    /**
+        Resets the current pattern palette progress back to zero.
+        This can be useful to force all instances of a type to have the same coloring for its members
+    */
+    fn reset_pattern_palette() {
+        builtin::std::core::reset_pattern_palette();
+    };
 }

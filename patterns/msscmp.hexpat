@@ -2,8 +2,8 @@
 #pragma description MSSCMP (Miles Sound System Compressed Archive)
 #pragma magic [ 42 41 4E 4B ] @ 0x00
 #pragma magic [ 4B 4E 41 42 ] @ 0x00
-#pragma array_limit 4294967295
-#pragma pattern_limit 4294967295
+#pragma array_limit 0
+#pragma pattern_limit 0
 
 import type.magic;
 import std.core;

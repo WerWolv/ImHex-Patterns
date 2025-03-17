@@ -1,80 +1,101 @@
-#pragma author Shadlock0133 (aka Aurora)
+#pragma author Shadlock0133 (aka Aurora) / WerWolv
 #pragma description Prusa Binary G-Code
+#pragma magic [ 47 43 44 45 ] @ 0x00
 
 import type.magic;
 import std.mem;
 
 enum ChecksumType : u16 {
-    None,
-    CRC32,
+    None = 0,
+    CRC32 = 1
 };
 
 enum BlockType : u16 {
-    FileMetadata,
-    GCode,
-    SlicerMetadata,
-    PrinterMetadata,
-    PrintMetadata,
-    Thumbnail,
+    FileMetadata = 0,
+    GCode = 1,
+    SlicerMetadata = 2,
+    PrinterMetadata = 3,
+    PrintMetadata = 4,
+    Thumbnail = 5
 };
 
-enum Compression : u16 {
-    None,
-    Deflate,
-    Heatshrink11_4,
-    Heatshrink12_4,
+enum CompressionType : u16 {
+    NoCompression = 0,
+    Deflate = 1,
+    HeatshrinkWindowSize11 = 2,
+    HeatshrinkWindowSize12 = 3
+};
+
+struct BlockHeader {
+    BlockType type;
+    CompressionType compressionType;
+    u32 uncompressedSize;
+    
+    if (compressionType != CompressionType::NoCompression) {
+        u32 compressedSize;
+    }
+    
+    u32 dataSize = compressionType == CompressionType::NoCompression ? uncompressedSize : compressedSize;
 };
 
 enum Encoding : u16 {
-    Ini,
+    INI = 0
+};
+
+struct Metadata {
+    Encoding encoding;
+    char data[parent.header.dataSize];
 };
 
 enum ImageFormat : u16 {
-    Png,
-    Jpg,
-    Qoi,
+    PNG = 0,
+    JPG = 1,
+    QOI = 2
 };
 
-struct Header {
-    type::Magic<"GCDE"> magic;
-    u32 version;
-    ChecksumType checksum_type;
+struct Thumbnail {
+    ImageFormat format;
+    u16 width, height;
+    std::mem::Bytes<parent.header.dataSize> imageData;
+} [[hex::visualize("image", imageData)]];
+
+enum GCodeEncoding : u16 {
+    NoEncoding = 0,
+    MeatPack = 1,
+    MeatPackWithComments = 2
 };
 
-Header header @ 0;
-std::assert(header.version == 1, "only version 1 supported");
+struct GCode {
+    GCodeEncoding encoding;
+    
+    std::mem::Bytes<parent.header.dataSize> gcode;
+};
 
 struct Block {
-    BlockType type;
-    Compression compression;
-    u32 uncompressed_size;
-    auto size = uncompressed_size;
-    if (compression != Compression::None) {
-        u32 compressed_size;
-        size = compressed_size;
+    BlockHeader header;
+    
+    match (header.type) {
+        (BlockType::FileMetadata):    Metadata fileMetadata;
+        (BlockType::PrinterMetadata): Metadata printerMetadata;
+        (BlockType::Thumbnail):       Thumbnail thumbnail;
+        (BlockType::PrintMetadata):   Metadata printMetadata;
+        (BlockType::SlicerMetadata):  Metadata slicerMetadata;
+        (BlockType::GCode):           GCode gcode;
+        (_):                          std::error("Invalid Block type!");
     }
-    match (type) {
-        (BlockType::FileMetadata
-        | BlockType::PrinterMetadata
-        | BlockType::PrintMetadata
-        | BlockType::SlicerMetadata): {
-            Encoding encoding;
-        }
-        (BlockType::Thumbnail): {
-            ImageFormat image_format;
-            u16 width;
-            u16 height;
-        }
-        (BlockType::GCode): {
-            u16;
-        }
-        (_): { std::assert(false, "unknown type"); }
-    }
-    u8 data[size];
-    match (header.checksum_type) {
-        (ChecksumType::None): {}
-        (ChecksumType::CRC32): { u32 checksum; }
-    }
+    
+    if (parent.checksumType != ChecksumType::None)
+        u32 checksum;
 };
 
-Block blocks[while(!std::mem::eof())] @ $;
+struct BGCode {
+    type::Magic<"GCDE"> magic;
+    u32 version;
+    std::assert(version == 1, "Only Version 1 is supported");
+    
+    ChecksumType checksumType;
+    
+    Block blocks[while(!std::mem::eof())];
+};
+
+BGCode bgcode @ 0x00;
