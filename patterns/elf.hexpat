@@ -643,7 +643,6 @@ struct Elf32_Shdr {
 		// Section has no data
 		} else if (sh_type == SHT::STRTAB) {
 			String stringTable[while($ < (sh_offset + sh_size))] @ sh_offset;
-			stringTableIndex = std::core::array_index();
 		} else if (sh_type == SHT::SYMTAB || sh_type == SHT::DYNSYM) {
 			Elf32_Sym symbolTable[sh_size / sh_entsize] @ sh_offset;
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
@@ -703,7 +702,6 @@ struct Elf64_Shdr {
 			// Section has no data
 		} else if (sh_type == SHT::STRTAB) {
 			String stringTable[while($ < (sh_offset + sh_size))] @ sh_offset;
-			stringTableIndex = std::core::array_index();
 		} else if (sh_type == SHT::SYMTAB || sh_type == SHT::DYNSYM) {
 			Elf64_Sym symbolTable[sh_size / sh_entsize] @ sh_offset;
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
@@ -734,10 +732,12 @@ struct ELF {
 
 	if (e_ident.EI_CLASS == EI_CLASS::ELFCLASS32) {
 		Elf32_Ehdr ehdr;
+		stringTableIndex = ehdr.e_shstrndx;
 		Elf32_Phdr phdr[ehdr.e_phnum] @ ehdr.e_phoff;
 		Elf32_Shdr shdr[ehdr.e_shnum] @ ehdr.e_shoff;
 	} else if (e_ident.EI_CLASS == EI_CLASS::ELFCLASS64) {
 		Elf64_Ehdr ehdr;
+		stringTableIndex = ehdr.e_shstrndx;
 		Elf64_Phdr phdr[ehdr.e_phnum] @ ehdr.e_phoff;
 		Elf64_Shdr shdr[ehdr.e_shnum] @ ehdr.e_shoff;
 	}
