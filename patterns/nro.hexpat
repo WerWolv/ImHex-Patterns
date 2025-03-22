@@ -4,6 +4,7 @@
 
 import std.io;
 import std.sys;
+import type.magic;
 
 struct MOD0 {
 	char magic[4];
@@ -27,7 +28,7 @@ struct SegmentHeader {
 };
 
 struct Header {
-	char magic[4];
+	type::Magic<"NRO0"> magic;
 	u32 version;
 	u32 file_size;
 	u32 flags;
@@ -67,7 +68,6 @@ fn is_homebrew() {
 
 Start start @ 0x00;
 Header header @ $;
-std::assert(header.magic == "NRO0", "Invalid NRO File!");
 
 AssetHeader assets @ header.file_size;
 

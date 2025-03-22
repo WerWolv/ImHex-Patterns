@@ -10,6 +10,7 @@ import std.mem;
 import std.string;
 import std.time;
 import std.io;
+import type.magic;
 
 struct TableDirectory {
     char tag[4];
@@ -47,7 +48,6 @@ struct LongDatetime {
     s64 time;
 } [[format("format_longdatetime")]];
 
-using HeadTable;
 
 u64 currentOffset;
 u64 currentLength;
@@ -55,7 +55,7 @@ u64 glyfStart;
 bool hasPostScriptOutlines = false;
 u16 numHMetrics;
 u16 gNumGlyphs;
-HeadTable headTable;
+s16 indexToLocFormat;
 
 // begin avar
 
@@ -185,12 +185,7 @@ struct EncodingRecord {
     u16 encodingId;
     u32 offset;
 
-    u64 endEncodingRecord = $;
-    $ = startOfCmapTable + offset;
-
-    CmapSubtable subtable;
-
-    $ = endEncodingRecord;
+    CmapSubtable subtable @ startOfCmapTable + offset;
 };
 
 struct CmapTable {
@@ -397,7 +392,7 @@ struct HeadTable {
     FixedPoint32 version;
     FixedPoint32 fontRevision;
     u32 checksumAdjustment;
-    u32 magic;
+    type::Magic<"\x5f\x0f\x3c\xf5"> magicNumber;
     HeadFlag flags;
     u16 unitsPerEm;
     LongDatetime created;
@@ -467,16 +462,13 @@ struct GlyfWithOffset<auto longOffset> {
         u32 nextOff = u32(std::mem::read_unsigned($, 2, std::mem::Endian::Big)) * 2;
     }
     curGlyfSize = nextOff - realOffset;
-    u64 prev = $;
-    $ = glyfStart + realOffset;
     if (curGlyfSize != 0) {
-        GlyfTable glyf;
+        GlyfTable glyf @ glyfStart + realOffset;
     }
-    $ = prev;
 };
 
 struct LocaTable {
-    if (headTable.indexToLocFormat == 1) {
+    if (indexToLocFormat == 1) {
         //u32 offsets[gNumGlyphs + 1];
         GlyfWithOffset<true> glyfs[gNumGlyphs];
     } else {
@@ -522,19 +514,13 @@ struct NameRecord {
     u16 nameId;
     u16 length;
     u16 stringOffset;
-    u64 cur = $;
-    $ = curStorageOffset + stringOffset;
-    char16 string[length / 2];
-    $ = cur;
+    char16 string[length / 2] @ curStorageOffset + stringOffset;
 };
 
 struct LangTagRecord {
     u16 length;
     u16 langTagOffset;
-    u64 cur = $;
-    $ = curStorageOffset + langTagOffset;
-    char16 langTag[length / 2];
-    $ = cur;
+    char16 langTag[length / 2] @ curStorageOffset + langTagOffset;
 };
 
 struct NameTableV0 {
@@ -670,7 +656,7 @@ struct HiddenForPreprocessing {
         ("maxp"): MaxpTable table;
         ("head"): {
             HeadTable table;
-            headTable = table;
+            indexToLocFormat = table.indexToLocFormat;
         }
         ("glyf"): {
             glyfStart = $;
@@ -716,9 +702,7 @@ struct TTF {
     u16 entrySelector;
     u16 rangeShift;
 
-    u64 start = $;
-    HiddenForPreprocessing hidden[numTables] [[hidden]];
-    $ = start;
+    HiddenForPreprocessing hidden[numTables] @ $ [[hidden]];
 
     Table tables[numTables];
 };
