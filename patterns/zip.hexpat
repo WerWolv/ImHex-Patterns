@@ -192,7 +192,7 @@ struct LocalFileHeader {
     char fileName[fileNameLength] [[ comment("File Name") ]];
     u64 extraEnd = $ + extraFieldLength;
     extra::ExtraField extraFields[while (extra::has_extra_field(extraEnd))] [[comment("Extra Fields")]];
-    char unresolvedExtraFields[extraEnd - $];
+    padding[extraEnd - $];
     u8 data[compressedSize] [[name("File Data")]];
 };
 
@@ -222,7 +222,7 @@ struct CentralDirectoryFileHeader {
     char fileName[fileNameLength];
     u64 extraEnd = $ + extraFieldLength;
     extra::ExtraField extraFields[while (extra::has_extra_field(extraEnd))] [[comment("Extra Fields")]];
-    char unresolvedExtraFields[extraEnd - $];
+    padding[extraEnd - $];
     char comment[fileCommentLength] @ extraEnd;
 };
 
