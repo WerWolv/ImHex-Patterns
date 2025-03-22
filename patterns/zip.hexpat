@@ -90,9 +90,10 @@ namespace extra {
     };
     
     fn has_supported_extra_field(u32 extraEnd) {
+        if ($ + 4 > extraEnd) return false;
         u16 tag = std::mem::read_unsigned($, 2, std::mem::Endian::Little);
-        u16 len = std::mem::read_unsigned($, 2, std::mem::Endian::Little);
-        return $ + len < extraEnd && (tag == 0x5455 || tag == 0x000a || tag == 0x7875 || tag == 0x5855);
+        u16 len = std::mem::read_unsigned($ + 2, 2, std::mem::Endian::Little);
+        return $ + 4 + len <= extraEnd && (tag == 0x5455 || tag == 0x000a || tag == 0x7875 || tag == 0x5855);
     };
 }
 
@@ -190,7 +191,7 @@ struct LocalFileHeader {
     u16 extraFieldLength [[ comment("Extra field length (m)") ]];
     char fileName[fileNameLength] [[ comment("File Name") ]];
     u64 extraEnd = $ + extraFieldLength;
-    extra::ExtraField extraFields[while ($ < extraEnd && extra::has_supported_extra_field(extraEnd))] [[comment("Extra Fields")]];
+    extra::ExtraField extraFields[while (extra::has_supported_extra_field(extraEnd))] [[comment("Extra Fields")]];
     char unresolvedExtraFields[extraEnd - $];
     u8 data[compressedSize] [[name("File Data")]];
 };
@@ -220,7 +221,7 @@ struct CentralDirectoryFileHeader {
     File file;
     char fileName[fileNameLength];
     u64 extraEnd = $ + extraFieldLength;
-    extra::ExtraField extraFields[while ($ < extraEnd && extra::has_supported_extra_field(extraEnd))] [[comment("Extra Fields")]];
+    extra::ExtraField extraFields[while (extra::has_supported_extra_field(extraEnd))] [[comment("Extra Fields")]];
     char unresolvedExtraFields[extraEnd - $];
     char comment[fileCommentLength] @ extraEnd;
 };
