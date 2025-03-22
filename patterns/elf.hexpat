@@ -744,7 +744,12 @@ struct ELF {
 };
 
 ELF elf @ 0x00;
-
+EI_DATA endian @ 0x05 [[hidden]];
+match (endian) {
+    (EI_DATA::ELFDATA2LSB): std::core::set_endian(std::mem::Endian::Little);
+    (EI_DATA::ELFDATA2MSB): std::core::set_endian(std::mem::Endian::Big);
+    (_): std::core::set_endian(std::mem::Endian::Native);
+}
 
 fn gen_shdr_disp_name(ref auto pattern, str member_name, u8 member_index) {
     return std::format(
