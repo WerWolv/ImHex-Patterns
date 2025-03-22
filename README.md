@@ -145,6 +145,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | shx | | [`patterns/shx.hexpat`](patterns/shx.hexpat) | ESRI index file |
 | sup | | [`patterns/sup.hexpat`](patterns/sup.hexpat) | PGS Subtitle |
 | SPIRV | | [`patterns/spirv.hexpat`](patterns/spirv.hexpat) | SPIR-V header and instructions |
+| STDF | | [`patterns/stdfv4.hexpat`](patterns/stdfv4.hexpat) | Standard test data format for IC testers |
 | STL | `model/stl` | [`patterns/stl.hexpat`](patterns/stl.hexpat) | STL 3D Model format |
 | StuffItV5 | `application/x-stuffit` | [`patterns/sit5.hexpat`](patterns/sit5.hexpat) | StuffIt V5 archive |
 | SQLite3 | `application/vnd.sqlite3` | [`patterns/sqlite3.hexpat`](patterns/sqlite3.hexpat) | SQLite3 Database |
