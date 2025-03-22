@@ -25,7 +25,7 @@ namespace auto hex::dec {
         @param pattern The pattern whose bytes should be decompressed
         @param section The section to decompress the data into
         @param window_size The window size passed to zlib
-        @return true if successful, false otherwise
+        @return A value representing either the number of bytes decompressed or an error code from zlib
     */
     fn zlib_decompress(ref auto pattern, std::mem::Section section, u64 window_size = 0) {
         return builtin::hex::dec::zlib_decompress(pattern, section, window_size);
@@ -71,5 +71,5 @@ namespace auto hex::dec {
     fn lz4_decompress(ref auto pattern, std::mem::Section section, bool frame = true) {
         return builtin::hex::dec::lz4_decompress(pattern, section, frame);
     };
-    
+
 }

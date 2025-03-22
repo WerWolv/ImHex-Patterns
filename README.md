@@ -25,6 +25,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 |------|------|------|-------------|
 | 3DS | | [`patterns/3ds.hexpat`](patterns/3ds.hexpat) | Autodesk 3DS Max Model file |
 | 7Z | | [`patterns/7z.hexpat`](patterns/7z.hexpat) | 7z File Format |
+| ADTFDAT | | [`patterns/adtfdat.hexpat`](patterns/adtfdat.hexpat) | [ADTFDAT files](https://digitalwerk.gitlab.io/solutions/adtf_content/adtf_base/adtf_file_library) |
 | ADTS | `audio/x-hx-aac-adts` | [`patterns/adts.hexpat`](patterns/adts.hexpat) | ADTS/AAC audio files |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
 | ANI | `application/x-navi-animation` | [`patterns/ani.hexpat`](patterns/ani.hexpat) | Windows Animated Cursor file |
@@ -43,7 +44,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | BSON | `application/bson` | [`patterns/bson.hexpat`](patterns/bson.hexpat) | BSON (Binary JSON) format |
 | bplist | `application/x-bplist` | [`patterns/bplist.hexpat`](patterns/bplist.hexpat) | Apple's binary property list format (bplist) |
 | BSP | | [`patterns/bsp_goldsrc.hexpat`](patterns/bsp_goldsrc.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
-| BZIP3 | | [`patterns/bzip3.hexpat`](patterns/bzip3.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
+| BZIP3 | | [`patterns/bzip3.hexpat`](patterns/bzip3.hexpat) | Parses BZip3 compression (file format) by Kamila Szewczyk |
 | CAB | | [`patterns/cab.hexpat`](patterns/cab.hexpat) | Microsoft Cabinet (CAB) Files |
 | CCHVA | | [`patterns/cchva.hexpat`](patterns/cchva.hexpat) | Command and Conquer Voxel Animation |
 | CCVXL | | [`patterns/ccvxl.hexpat`](patterns/ccvxl.hexpat) | Command and Conquer Voxel Model |
@@ -107,6 +108,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | MSSCMP | | [`patterns/msscmp.hexpat`](patterns/msscmp.hexpat) | Miles Sound System Compressed Archive |
 | NACP | | [`patterns/nacp.hexpat`](patterns/nacp.hexpat) | Nintendo Switch NACP files |
 | NBT | | [`patterns/nbt.hexpat`](patterns/nbt.hexpat) | Minecraft NBT format |
+| NDS | `application/x-nintendo-ds-rom` | [`patterns/nds.hexpat`](patterns/nds.hexpat) | DS Cartridge Header |
 | NE | `application/x-ms-ne-executable` | [`patterns/ne.hexpat`](patterns/ne.hexpat) | NE header and Standard NE fields |
 | nes | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | .nes file format |
 | NotepadCache | | [`patterns/notepad-cache.hexpat`](patterns/notepad-cache.hexpat) | Windows Notepad Cache |
@@ -121,6 +123,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | PE | `application/x-dosexec` `application/x-msdownload` | [`patterns/pe.hexpat`](patterns/pe.hexpat) | PE header, COFF header, Standard COFF fields and Windows Specific fields |
 | PP | | [`patterns/selinuxpp.hexpat`](patterns/selinuxpp.pat) | SE Linux package |
 | PFS0 | | [`patterns/pfs0.hexpat`](patterns/pfs0.hexpat) | Nintendo Switch PFS0 archive (NSP files) |
+| PF | | [`patterns/pf.hexpat`](patterns/pf.hexpat) | Microsoft uncompressed prefetch files (.pf) |
 | PIF | `image/pif` | [`patterns/pif.hexpat`](patterns/pif.hexpat) | PIF Image Format |
 | PKM | | [`patterns/pkm.hexpat`](patterns/pkm.hexpat) | PKM texture format |
 | PNG  | `image/png` | [`patterns/png.hexpat`](patterns/png.hexpat) | PNG image files |
@@ -136,21 +139,25 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | RAS | `image/x-sun-raster` | [`patterns/ras.hexpat`](patterns/ras.hexpat) | RAS image files |
 | ReFS | | [`patterns/refs.hexpat`](patterns/refs.hexpat) | Microsoft Resilient File System |
 | RGBDS | | [`patterns/rgbds.hexpat`](patterns/rgbds.hexpat) | [RGBDS](https://rgbds.gbdev.io) object file format |
+| RPM | | [`patterns/rpm.hexpat`](patterns/rpm.hexpat) | [RPM](http://ftp.rpm.org/max-rpm/s1-rpm-file-format-rpm-file-format.html) package file format |
 | Shell Link | `application/x-ms-shortcut` | [`patterns/lnk.hexpat`](patterns/lnk.hexpat) | Windows Shell Link file format |
 | shp | | [`patterns/shp.hexpat`](patterns/shp.hexpat) | ESRI shape file |
 | shx | | [`patterns/shx.hexpat`](patterns/shx.hexpat) | ESRI index file |
 | sup | | [`patterns/sup.hexpat`](patterns/sup.hexpat) | PGS Subtitle |
 | SPIRV | | [`patterns/spirv.hexpat`](patterns/spirv.hexpat) | SPIR-V header and instructions |
+| STDF | | [`patterns/stdfv4.hexpat`](patterns/stdfv4.hexpat) | Standard test data format for IC testers |
 | STL | `model/stl` | [`patterns/stl.hexpat`](patterns/stl.hexpat) | STL 3D Model format |
 | StuffItV5 | `application/x-stuffit` | [`patterns/sit5.hexpat`](patterns/sit5.hexpat) | StuffIt V5 archive |
 | SQLite3 | `application/vnd.sqlite3` | [`patterns/sqlite3.hexpat`](patterns/sqlite3.hexpat) | SQLite3 Database |
 | SWF | `application/x-shockwave-flash` |[`patterns/swf.hexpat`](patterns/swf.hexpat) | Shockwave Flash file format |
 | TAR | `application/x-tar` | [`patterns/tar.hexpat`](patterns/tar.hexpat) | Tar file format |
 | TES | | [`patterns/wintec_tes.hexpat`](patterns/wintec_tes.hexpat) | Wintec TES GPS log |
+| Thumbcache | | [`patterns/thumbcache.hexpat`](patterns/thumbcache.hexpat) | Windows thumbcache_*.db |
 | TIFF | `image/tiff` | [`patterns/tiff.hexpat`](patterns/tiff.hexpat) | Tag Image File Format |
 | TGA | `image/tga` | [`patterns/tga.hexpat`](patterns/tga.hexpat) | Truevision TGA/TARGA image |
 | TTF | `font/ttf`, `font/otf` | [`patterns/ttf.hexpat`](patterns/ttf.hexpat) | TrueType and OpenType font format |
 | Ubiquiti | | [`patterns/ubiquiti.hexpat`](patterns/ubiquiti.hexpat) | Ubiquiti Firmware (update) image |
+| UPK | | [`patterns/upk-ue3.hexpat`](patterns/upk-ue3.hexpat) | Unreal Engine 3 UPK file |
 | UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat)` | UEFI structs for parsing efivars |
 | UEFI Boot Entry | | [`patterns/uefi_boot_entry.hexpat`](patterns/uefi_boot_entry.hexpat) | UEFI Boot Entry (Load option) |
 | UF2 | | [`patterns/uf2.hexpat`](patterns/uf2.hexpat) | [USB Flashing Format](https://github.com/microsoft/uf2) |

@@ -62,7 +62,8 @@ namespace extra {
     struct ExtraField {
         u16 tag;
         u16 TSize;
-        if (tag == 0x5455){
+
+        if (tag == 0x5455) {
             // 0x5455 needs parsed with TSize in context to prevent overshoot from mismatched TSize/flags set
             UTFlags Flags;
             u64 extraEndFromFlags = $ + 4*(Flags.modification_time_set + Flags.access_time_set + Flags.creation_time_set);
@@ -80,16 +81,23 @@ namespace extra {
             if ( ($ < extraEnd) && Flags.creation_time_set) {
                 type::time32_t CrTime;
             }
-        }else if (tag == 0x000a){
+        } else if (tag == 0x000a) {
             extra::X000A_NTFS x000A_NTFS;
-        }else if (tag == 0x7875){
+        } else if (tag == 0x7875) {
             extra::X7875_NewUnix x7875_NewUnix;
-        }else if (tag == 0x5855){
+        } else if (tag == 0x5855) {
             extra::X5855_InfoZipUnix x5855_InfoZipUnix;
-        }else{
+        } else {
             std::print("Unsupported tag 0x{:02X}", tag);
             padding[TSize];
         }
+    };
+    
+    fn has_extra_field(u32 extraEnd) {
+        if ($ + 4 > extraEnd) return false;
+        u16 tag = std::mem::read_unsigned($, 2, std::mem::Endian::Little);
+        u16 len = std::mem::read_unsigned($ + 2, 2, std::mem::Endian::Little);
+        return !(tag == 0 || len == 0) && $ + 4 + len <= extraEnd;
     };
 }
 
@@ -105,10 +113,10 @@ fn find_eocd() {
         u128 offset_search_from = std::math::max(0, std::mem::size()-65536-22);
         u128 prev_address;
         while(1){
-            u128 current_address = std::mem::find_sequence_in_range(0, offset_search_from, std::mem::size(), 0x50,0x4B,0x05,0x06);
+            s128 current_address = std::mem::find_sequence_in_range(0, offset_search_from, std::mem::size(), 0x50,0x4B,0x05,0x06);
 
             //Reached EOF and did not find valid eocd.
-            if (current_address == 340282366920938463463374607431768211455){
+            if (current_address == -1) {
                 std::error("Could not find EOCD.");
             }
 
@@ -187,7 +195,8 @@ struct LocalFileHeader {
     u16 extraFieldLength [[ comment("Extra field length (m)") ]];
     char fileName[fileNameLength] [[ comment("File Name") ]];
     u64 extraEnd = $ + extraFieldLength;
-    extra::ExtraField extraFields[while ($ < extraEnd)] [[comment("Extra Fields")]];
+    extra::ExtraField extraFields[while (extra::has_extra_field(extraEnd))] [[comment("Extra Fields")]];
+    padding[extraEnd - $];
     u8 data[compressedSize] [[name("File Data")]];
 };
 
@@ -216,8 +225,9 @@ struct CentralDirectoryFileHeader {
     File file;
     char fileName[fileNameLength];
     u64 extraEnd = $ + extraFieldLength;
-    extra::ExtraField extraFields[while ($ < extraEnd)] [[comment("Extra Fields")]];
-    char comment[fileCommentLength];
+    extra::ExtraField extraFields[while (extra::has_extra_field(extraEnd))] [[comment("Extra Fields")]];
+    padding[extraEnd - $];
+    char comment[fileCommentLength] @ extraEnd;
 };
 
 CentralDirectoryFileHeader centralDirHeaders[fileInfo.CDRCount] @ (fileInfo.CDOffset) [[name("Files")]];
