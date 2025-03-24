@@ -101,7 +101,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | LCE Savefile | | [`patterns/lcesave.hexpat`](patterns/lcesave.hexpat) | Minecraft Legacy Console Edition save file |
 | LZNT1 | | [`patterns/lznt1.hexpat`](patterns/lznt1.hexpat) | LZNT1 compressed data format |
 | Mach-O | `application/x-mach-binary` | [`patterns/macho.hexpat`](patterns/macho.hexpat) | Mach-O executable |
-| MBR & GPT | [`patterns/partition_table.hexpat`](patterns/partition_table.hexpat) | Partition tables with primary focus on GPT |
+| MBR & GPT | | [`patterns/partition_table.hexpat`](patterns/partition_table.hexpat) | Partition tables with primary focus on GPT |
 | MIDI | `audio/midi` | [`patterns/midi.hexpat`](patterns/midi.hexpat) | MIDI header, event fields provided |
 | MiniDump | `application/x-dmp` | [`patterns/minidump.hexpat`](patterns/minidump.hexpat) | Windows MiniDump files |
 | mp4 | `video/mp4` | [`patterns/mp4.hexpat`](patterns/mp4.hexpat) | MPEG-4 Part 14 digital multimedia container format |
