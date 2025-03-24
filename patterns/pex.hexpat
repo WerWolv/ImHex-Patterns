@@ -50,6 +50,10 @@ namespace formatter {
             (_):   return "Unknown type";
         }
     };
+    
+    fn vartypestruct(ref auto data) {
+        return formatter::vartype(data.varType);
+    };
 
     fn arraycount(ref auto data) {
         return std::format("[{}]", data.count);
@@ -63,6 +67,69 @@ namespace formatter {
             (3): std::assert(true, "Unknown function type");
         }
     };
+
+    fn resolveop(u8 op) {
+        match (op)
+        {
+            (0x00): return "nop";
+            (0x01): return "iadd";
+            (0x02): return "fadd";
+            (0x03): return "isub";
+            (0x04): return "fsub";
+            (0x05): return "imul";
+            (0x06): return "fmul";
+            (0x07): return "idiv";
+            (0x08): return "fdiv";
+            (0x09): return "imod";
+            (0x0A): return "not";
+            (0x0B): return "ineg";
+            (0x0C): return "fneg";
+            (0x0D): return "assign";
+            (0x0E): return "cast";
+            (0x0F): return "cmp_eq";
+            (0x10): return "cmp_lt";
+            (0x11): return "cmp_lte";
+            (0x12): return "cmp_gt";
+            (0x13): return "comp_gte";
+            (0x14): return "jmp";
+            (0x15): return "jmpt";
+            (0x16): return "jmpf";
+            (0x17): return "callmethod";
+            (0x18): return "callparent";
+            (0x19): return "callstatic";
+            (0x1A): return "return";
+            (0x1B): return "strcat";
+            (0x1C): return "propget";
+            (0x1D): return "propset";
+            (0x1E): return "array_create";
+            (0x1F): return "array_length";
+            (0x20): return "array_getlement";
+            (0x21): return "array_setelement";
+            (0x22): return "array_findelement";
+            (0x23): return "array_rfindelement";
+            (0x24): return "is";
+            (0x25): return "struct_create";
+            (0x26): return "struct_get";
+            (0x27): return "struct_set";
+            (0x28): return "array_findstruct";
+            (0x29): return "array_rfindstruct";
+            (0x2A): return "array_add";
+            (0x2B): return "array_insert";
+            (0x2C): return "array_removelast";
+            (0x2D): return "array_remove";
+            (0x2E): return "array_clear";
+            (0x2F): return "array_getallmatchingstructs";
+            (0x30): return "lock_guards";
+            (0x31): return "unlock_guards";
+            (0x32): return "try_lock_guards";
+            (_): return "Unknown";
+        }
+    };
+
+    fn resolveopstruct(auto data) {
+        return formatter::resolveop(data.op);
+    };
+
 }
 
 fn StringLookup(u16 idx) {
@@ -72,11 +139,9 @@ fn StringLookup(u16 idx) {
 struct PexVersion {
     u8 MajorVersion;
     u8 MinorVersion;
-}[[sealed, format("formatter::pexversion")]];
+} [[sealed, format("formatter::pexversion")]];
 
-struct StringReference {
-    u16 name;
-} [[sealed, format("formatter::structname")]];
+using StringReference = u16 [[format("StringLookup")]];
 
 // Dynamic array of strings
 struct StringsTable {
@@ -87,25 +152,25 @@ struct StringsTable {
 
 struct Time {
     u64 Time;
-}[[sealed, format("formatter::time")]];
+} [[sealed, format("formatter::time")]];
 
 struct VariableData {
     u8 varType [[format("formatter::vartype")]];
     match (varType)
     {
         (0x0): {} // object pointer
-        (0x1): u16 stringVal  [[format("StringLookup")]]; // identifier
-        (0x2): u16 stringVal  [[format("StringLookup")]]; // string
+        (0x1): StringReference stringVal; // identifier
+        (0x2): StringReference stringVal; // string
         (0x3): s32 intVal; // integer
         (0x4): float floatVal;
         (0x5): bool boolVal;
         (_): std::assert(false, "Unknown type for variable data");
     }
-};
+} [[format("formatter::vartypestruct")]];
 
 struct VariableType {
-    u16 name [[format("StringLookup")]];
-    u16 varType [[format("StringLookup")]];
+    StringReference name;
+    StringReference varType;
 };
 
 struct VariableTypes {
@@ -115,7 +180,7 @@ struct VariableTypes {
 } [[format("formatter::arraycount")]];
 
 struct Instruction {
-    u8 op;
+    u8 op [[format("formatter::resolveop")]];
     match (op)
     {
     (
@@ -147,18 +212,18 @@ struct Instruction {
         0x2A | // array_add
         0x2B | // array_insert
         0x2D   // array_remove
-    ): VariableData argument[3];
+    ): VariableData arguments[3];
     (
         0x22 | // array_findelement
         0x23   // array_rfindelement
-    ): VariableData argument[4];
+    ): VariableData arguments[4];
     (
         0x14 | // jmp
         0x1A | // return
         0x25 | // struct_create
         0x2C | // array_removelast
         0x2E   // array_clear
-    ): VariableData argument[1];
+    ): VariableData arguments[1];
     (
         0x0A | // not
         0x0B | // ineg
@@ -169,55 +234,54 @@ struct Instruction {
         0x16 | // jmpf
         0x1E | // array_create
         0x1F   // array_length
-    ): VariableData argument[2];
+    ): VariableData arguments[2];
     (
         0x28 | // array_findstruct
         0x29   // array_rfindstruct
-    ): VariableData argument[5];
+    ): VariableData arguments[5];
     (
         0x2F   // array_getallmatchingstructs
-    ): VariableData argument[6];
+    ): VariableData arguments[6];
     (
         0x17 | // callmethod
         0x19   // callstatic
     ): {
-        VariableData argument[4];
-        std::assert(argument[3].varType == 0x3, "VarArgs not integer");
-        if (argument[3].intVal > 0)
-            VariableData varArgument[argument[3].intVal];
+        VariableData arguments[4];
+        std::assert(arguments[3].varType == 0x3, "VarArgs not integer");
+        if (arguments[3].intVal > 0)
+            VariableData vararguments[arguments[3].intVal];
         }
     (
         0x18   // callparent
     ): {
-        VariableData argument[3];
-        std::assert(argument[2].varType == 0x3, "VarArgs not integer");
-        if (argument[2].intVal > 0)
-            VariableData varArgument[argument[2].intVal];
+        VariableData arguments[3];
+        std::assert(arguments[2].varType == 0x3, "VarArgs not integer");
+        if (arguments[2].intVal > 0)
+            VariableData vararguments[arguments[2].intVal];
         }
     (
         0x30 | // lock_guards
         0x31   // unlock_guards
     ): {
-        VariableData argument[1];
-        std::assert(argument[0].varType == 0x3, "VarArgs not integer");
-        if (argument[0].intVal > 0)
-            VariableData varArgument[argument[0].intVal];
+        VariableData arguments[1];
+        std::assert(arguments[0].varType == 0x3, "VarArgs not integer");
+        if (arguments[0].intVal > 0)
+            VariableData vararguments[arguments[0].intVal];
         }
     (
         0x32   // try_lock_guards
     ): {
-        VariableData argument[2];
-        std::assert(argument[1].varType == 0x3, "VarArgs not integer");
-        if (argument[1].intVal > 0)
-            VariableData varArgument[argument[1].intVal];
+        VariableData arguments[2];
+        std::assert(arguments[1].varType == 0x3, "VarArgs not integer");
+        if (arguments[1].intVal > 0)
+            VariableData vararguments[arguments[1].intVal];
         }
     (_): {
-        Printf("Invalid opcode: %Xh\n", op);
+        std::print("Invalid opcode: {:02x}", op);
         std::assert(false, "Invalid opcode");
         }
     }
-
-};
+} [[format("formatter::resolveopstruct")]];;
 
 struct Instructions {
     u16 count;
@@ -225,9 +289,15 @@ struct Instructions {
         Instruction instruction[count] [[inline]];
 } [[format("formatter::arraycount")]];
 
-struct Function {
-    u16 returnType [[format("StringLookup")]];
-    u16 docString [[format("StringLookup")]];
+/*
+ 
+ this "BaseFunction" struct is used by the Papyrus struct property
+ getter and setter functions, and by regular named functions.
+ 
+ */
+struct BaseFunction {
+    StringReference returnType;
+    StringReference docString;
     u32 userFlags;
     u8 flags;
     VariableTypes arguments;
@@ -236,8 +306,8 @@ struct Function {
 };
 
 struct NamedFunction {
-    u16 name [[format("StringLookup")]];
-    Function function [[inline]];
+    StringReference name;
+    BaseFunction function [[inline]];
 } [[format("formatter::structname")]];
 
 struct NamedFunctions {
@@ -247,9 +317,15 @@ struct NamedFunctions {
 } [[format("formatter::arraycount")]];
 
 struct State {
-    u16 name [[format("StringLookup")]];
+    StringReference name;
     NamedFunctions functions;
 } [[format("formatter::structname")]];
+
+struct SyncStates {
+    u16 count;
+    if (count > 0)
+        StringReference names[count] [[inline]];
+} [[format("formatter::arraycount")]];
 
 struct States {
     u16 count;
@@ -258,18 +334,18 @@ struct States {
 } [[format("formatter::arraycount")]];
 
 struct Property {
-    u16 name [[format("StringLookup")]];
-    u16 typeName [[format("StringLookup")]];
-    u16 docString [[format("StringLookup")]];
+    StringReference name;
+    StringReference typeName;
+    StringReference docString;
     u32 userFlags;
     u8 flags;
     if ((flags & 0x4) != 0)
-        u16 autoVarName [[format("StringLookup")]];
+        StringReference autoVarName;
     else {
         if ((flags & 0x1) != 0)
-            Function readHandler;
+            BaseFunction readHandler;
         if ((flags & 0x2) != 0)
-            Function writeHandler;
+            BaseFunction writeHandler;
     }
 } [[format("formatter::structname")]];
 
@@ -280,8 +356,8 @@ struct Properties {
 } [[format("formatter::arraycount")]];
 
 struct Variable {
-    u16 name [[format("StringLookup")]];
-    u16 typeName [[format("StringLookup")]];
+    StringReference name;
+    StringReference typeName;
     u32 userFlags;
     VariableData data;
     if (g_GameId >= GAMEID::GAME_Fallout4)
@@ -295,12 +371,12 @@ struct Variables {
 } [[format("formatter::arraycount")]];
 
 struct ObjectStructMember {
-    u16 name [[format("StringLookup")]];
-    u16 typeName [[format("StringLookup")]];
+    StringReference name;
+    StringReference typeName;
     u32 userFlags;
     VariableData data;
     u8 constFlag;
-    u16 docString [[format("StringLookup")]];
+    StringReference docString;
 } [[format("formatter::typedstructname")]];
 
 struct ObjectStructMembers {
@@ -310,7 +386,7 @@ struct ObjectStructMembers {
 } [[format("formatter::arraycount")]];
 
 struct ObjectStruct {
-    u16 name [[format("StringLookup")]];
+    StringReference name;
     ObjectStructMembers members;
 } [[format("formatter::structname")]];
 
@@ -327,12 +403,12 @@ struct Guards {
 } [[format("formatter::arraycount")]];
 
 struct ScriptObjectData {
-    u16 parentClassName [[format("StringLookup")]];
-    u16 docString [[format("StringLookup")]];
+    StringReference parentClassName;
+    StringReference docString;
     if (g_GameId >= GAMEID::GAME_Fallout4)
         u8  constFlag;
     u32 userFlags;
-    u16 autoStateName [[format("StringLookup")]];
+    StringReference autoStateName;
     if (g_GameId >= GAMEID::GAME_Fallout4)
         ObjectStructs structs;
     Variables variables;
@@ -341,11 +417,11 @@ struct ScriptObjectData {
     Properties properties;
     States states;
     if (g_GameId == GAMEID::GAME_Fallout76)
-        u16 unknown;
+        SyncStates syncStates;
 };
 
 struct ScriptObject {
-    u16 name [[format("StringLookup")]];
+    StringReference name;
     u32 length;
     ScriptObjectData data;
 
@@ -363,7 +439,7 @@ struct ScriptObjects {
 } [[format("formatter::arraycount")]];
 
 struct UserFlag {
-    u16 name [[format("StringLookup")]];
+    StringReference name;
     u8  flagIndex;
 } [[format("formatter::structname")]];
 
@@ -380,9 +456,9 @@ struct StringMembers {
 } [[format("formatter::arraycount")]];
 
 struct DebugPropertyGroup {
-    u16 objectName [[format("StringLookup")]];
-    u16 name [[format("StringLookup")]];
-    u16 docString [[format("StringLookup")]];
+    StringReference objectName;
+    StringReference name;
+    StringReference docString;
     u32 userFlags;
     StringMembers members;
 } [[format("formatter::structname")]];
@@ -394,18 +470,18 @@ struct DebugInstructions {
 } [[format("formatter::arraycount")]];
 
 struct DebugFunction {
-    u16 objectName [[format("StringLookup")]];
-    u16 stateName [[format("StringLookup")]];
-    u16 name [[format("StringLookup")]];
+    StringReference objectName;
+    StringReference stateName;
+    StringReference name;
     u8  functionType [[format("formatter::functiontype")]];
     DebugInstructions instructions;
 } [[format("formatter::structname")]];
 
 struct DebugStruct {
-    u16 name [[format("StringLookup")]];
-    u16 orderName [[format("StringLookup")]];
+    StringReference parentName;
+    StringReference name;
     StringMembers members;
-};
+} [[format("formatter::structname")]];
 
 struct DebugFunctions {
     u16 count;
