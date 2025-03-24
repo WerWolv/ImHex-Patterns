@@ -497,14 +497,15 @@ bitfield SHF {
 };
 
 bitfield ELF32_R_INFO {
-    SYM  : 8;
-    TYPE : 8;
-} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 16)]];
+    TYPE    : 8;
+    SYM     : 8;
+    padding : 16;
+} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 32)]];
 
 bitfield ELF64_R_INFO {
-    SYM  : 32;
     TYPE : 32;
-} [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 64)]];
+    SYM  : 32;
+} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 64)]];
 
 bitfield PF {
     X        : 1;
@@ -645,6 +646,10 @@ struct Elf32_Shdr {
 			String stringTable[while($ < (sh_offset + sh_size))] @ sh_offset;
 		} else if (sh_type == SHT::SYMTAB || sh_type == SHT::DYNSYM) {
 			Elf32_Sym symbolTable[sh_size / sh_entsize] @ sh_offset;
+		} else if (sh_type == SHT::REL) {
+			Elf32_Rel relTable[sh_size / sh_entsize] @ sh_offset;
+		} else if (sh_type == SHT::RELA) {
+			Elf32_Rela relaTable[sh_size / sh_entsize] @ sh_offset;
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
 		} else {
@@ -704,6 +709,10 @@ struct Elf64_Shdr {
 			String stringTable[while($ < (sh_offset + sh_size))] @ sh_offset;
 		} else if (sh_type == SHT::SYMTAB || sh_type == SHT::DYNSYM) {
 			Elf64_Sym symbolTable[sh_size / sh_entsize] @ sh_offset;
+		} else if (sh_type == SHT::REL) {
+			Elf64_Rel relTable[sh_size / sh_entsize] @ sh_offset;
+		} else if (sh_type == SHT::RELA) {
+			Elf64_Rela relaTable[sh_size / sh_entsize] @ sh_offset;
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
 		} else {
