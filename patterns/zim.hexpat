@@ -55,7 +55,7 @@ struct ClusterPointer {
 struct Entry {
     u16 mimetype [[format("mimename")]];
     u8 parameterlen [[hidden]];
-    char namespacee;
+    char _namespace [[name("namespace")]];
     u32 revision;
     if (mimetype == 0xFFFF) {
         u32 redirectIndex;
