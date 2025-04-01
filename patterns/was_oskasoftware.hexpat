@@ -1,8 +1,8 @@
 #pragma author DmitriLeon2000
-#pragma description Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set) file
+#pragma description Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set)
 #pragma endian little
 
-#include <type/size.pat>
+import type.size;
 
 struct Sound {
     char name[];

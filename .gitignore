@@ -1,5 +1,12 @@
 
-tests/cmake-build-debug/
+tests/cmake*/
+tests/build*/
+build/
 
+.vscode/
+.devcontainer/
+.cache/
 .idea/
 .DS_Store
+
+compile_commands.json

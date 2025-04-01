@@ -6,8 +6,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <std/mem.pat>
-#include <type/magic.pat>
+#pragma author Nicolás Alvarez
+#pragma description Apple pbz
+#pragma magic [ 70 62 7A ] @ 0x00
+
+import std.mem;
+import type.magic;
 
 #pragma endian big
 

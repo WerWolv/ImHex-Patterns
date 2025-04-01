@@ -1,9 +1,9 @@
 #pragma author WerWolv
-#pragma description Icon (.ico) or Cursor (.cur) files
+#pragma description Windows Icon (.ico) or Cursor (.cur)
 
 #pragma endian little
 
-#include <std/sys.pat>
+import std.sys;
 
 #pragma MIME image/vnd.microsoft.icon
 #pragma MIME image/x-icon
@@ -31,7 +31,7 @@ struct ICONDIRENTRY {
 	u8 width, height;
 	u8 num_colors;
 	u8 reserved [[hidden]];
-	
+
 	if (header.type == ImageType::Icon) {
 		u16 color_planes;
 		u16 bits_per_pixel;
@@ -39,7 +39,7 @@ struct ICONDIRENTRY {
 		u16 horizontal_hotspot_coordinate;
 		u16 vertical_hotspot_coordinate;
 	}
-	
+
 	u32 image_data_size;
 	ImageData *image_data : u32;
 };

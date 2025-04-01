@@ -1,8 +1,8 @@
-#pragma description ID3 tags in MP3 files
+#pragma description MP3 ID3 tags
 
 #pragma MIME audio/mpeg
 
-#include <std/mem.pat>
+import std.mem;
 
 namespace v1 {
 
@@ -40,7 +40,7 @@ namespace v2 {
         u8 major;
         u8 revision;
     };
-    
+
     bitfield TagHeaderFlags {
         unsynchronized : 1;
         extended       : 1;
@@ -48,14 +48,14 @@ namespace v2 {
         footer         : 1;
         padding        : 4;
     };
-    
+
     struct TagHeader {
         char           identifier[3];
         TagVersion     version;
         TagHeaderFlags flags;
         SyncSafeInt    size;
     } [[static]];
-    
+
     bitfield ExtendedFlag {
         padding      : 1;
         update       : 1;
@@ -70,14 +70,14 @@ namespace v2 {
         ExtendedFlag flags[nflagbytes];
         u8           data[size];
     };
-    
+
     struct TagFooter {
         char           identifier[3];
         TagVersion     version;
         TagHeaderFlags flags;
         SyncSafeInt    size;
     } [[static]];
-    
+
     bitfield FrameFlags {
         padding               : 1;
         tagalterpreservation  : 1;
@@ -123,7 +123,7 @@ namespace v2 {
     };
 
     }
-    
+
     struct Frame {
         FrameId     id;
         SyncSafeInt size;

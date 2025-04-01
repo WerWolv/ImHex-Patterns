@@ -1,17 +1,17 @@
 #pragma once
 
-#include <hex/impl/imhex_check.pat>
+import hex.impl.imhex_check;
 
 /*!
     Library to interact with the currently loaded provider.
 */
 
-namespace hex::prv {
-    
-    
+namespace auto hex::prv {
+
+
     /**
         Queries information from the currently loaded provider. The kind of information that's available depends on the provider that's loaded
-        
+
         > **Available information**
         > - File Provider
         >   - `file_path() -> str`
@@ -32,12 +32,12 @@ namespace hex::prv {
         >   - `region_size(regionName) -> u64`
         >   - `process_id() -> u32`
         >   - `process_name() -> str`
-        
+
         @param category Information category
         @param argument Extra argument to pass along
     */
     fn get_information(str category, str argument = "") {
         return builtin::hex::prv::get_information(category, argument);
     };
-    
+
 }

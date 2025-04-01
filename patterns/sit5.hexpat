@@ -6,8 +6,8 @@
 #pragma endian big
 #pragma MIME application/x-stuffit
 
-#include <std/io.pat>
-#include <std/time.pat>
+import std.io;
+import std.time;
 
 namespace v5 {
 
@@ -17,19 +17,19 @@ namespace v5 {
         encrypted : 1;
         padding : 5;
     };
-    
+
     bitfield Flags2 {
         padding : 7;
         resource_fork : 1;
         padding : 8;
     };
-    
+
     using MacOSHFSPlusDate = u32 [[format("v5::format_macos_date")]];
-    
+
     fn format_macos_date(MacOSHFSPlusDate date) {
         return std::time::format(std::time::to_utc(date - 2082844800));
     };
-    
+
     struct Header {
         char magic[0x50];
         u32 unknown1;
@@ -37,7 +37,7 @@ namespace v5 {
         u32 entriesOffset;
         u32 unknown2;
     };
-    
+
     struct EntryHeader {
         u32 magic;
         u8 version;
@@ -49,12 +49,12 @@ namespace v5 {
         u32 prevEntryOffset, nextEntryOffset, parentEntryOffset;
         u16 nameSize;
         u16 headerChecksum;
-        
+
         u32 dataForkUncompressedLength, dataForkCompressedLength;
         u16 dataForkChecksum;
         u16 unknown3;
     };
-    
+
     enum CompressionMethod : u8 {
         None            = 0x00, // No compression
         Rle90           = 0x01, // Run length encoding
@@ -66,25 +66,25 @@ namespace v5 {
         Stuffit14       = 0x0E, // Unknown
         StuffItArsenic  = 0x0F  // BWT and arithmetic coding
     };
-    
+
     struct Entry {
         EntryHeader header;
         if (header.flags.folder) {
             u16 numFiles;
-            
+
             if (header.dataForkUncompressedLength)
                 std::print("Folder entry {} is special!", std::core::array_index());
         } else {
             CompressionMethod compressionMethod;
         }
-        
+
         u8 passwordDataLength;
         u8 passwordInformation[passwordDataLength];
         char fileName[header.nameSize];
         u16 commentSize;
         u16 unknown2;
         char comment[commentSize];
-        
+
         if (!header.flags.folder) {
             Flags2 flags;
             u16 unknown3;
@@ -94,25 +94,25 @@ namespace v5 {
             u32 unknown4;
             u32 unknown5;
             u8 unknown6[6];
-            
+
             if (header.version == 1)
                 u32 unknown7;
-                            
+
             u8 compressedData[header.dataForkCompressedLength] [[sealed]];
-            
+
             if (header.nextEntryOffset == 0x00)
                 break;
             else
                 $ = header.nextEntryOffset;
         }
     };
-    
+
     struct StuffIt {
         Header header;
-        
+
         Entry entries[while(true)] @ header.entriesOffset;
     };
-    
+
 }
 
 v5::StuffIt stuffIt @ 0x00;

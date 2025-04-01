@@ -1,8 +1,8 @@
-#pragma description OS2/Windows Bitmap files
+#pragma description OS2/Windows Bitmap
 
 #pragma MIME image/bmp
 #pragma endian little
-#include <std/mem.pat>
+import std.mem;
 
 struct BitmapFileHeader {
 	u8 bfType[2];
@@ -97,7 +97,7 @@ struct Bitmap {
 		(_):   BitmapInfoHeaderV1 bmih;
 	}
 	padding[bmih.biSize - sizeof(bmih)];
-	
+
 	if (bmih.biBitCount <= 8)
 	{
 		if (bmih.biClrUsed > 0 )
@@ -105,7 +105,7 @@ struct Bitmap {
 		else
 			Colors rgbq[1 << bmih.biBitCount];
 	}
-	
+
 	if (bmih.biSizeImage > 0 )
 		u8 lineData[bmih.biSizeImage];
 	else

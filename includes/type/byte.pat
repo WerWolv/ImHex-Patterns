@@ -1,13 +1,14 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
+import std.core;
 
 /*!
     Types to display single bytes using various different representations
 */
 
-namespace type {
-    
+namespace auto type {
+
     /**
         Type visualizing the value of each individual bit
     */
@@ -20,8 +21,8 @@ namespace type {
         bit5 : 1;
         bit6 : 1;
         bit7 : 1;
-    } [[format("type::impl::format_bits"), right_to_left]];
-    
+    } [[format("type::impl::format_bits"), bitfield_order(std::core::BitfieldOrder::LeastToMostSignificant, 8)]];
+
     /**
         Type visualizing the value of the two nibbles
     */
@@ -29,9 +30,9 @@ namespace type {
         low  : 4;
         high : 4;
     } [[format("type::impl::format_nibbles")]];
-    
+
     /**
-        Type representing a single Byte. Decodes the byte as it's hexadeicmal value, individual bits and nibbles
+        Type representing a single Byte. Decodes the byte as it's hexadecimal value, individual bits and nibbles
     */
     union Byte {
         u8 value;
@@ -40,7 +41,7 @@ namespace type {
     } [[format("type::impl::format_byte"), single_color]];
 
 
-	namespace impl {
+    namespace impl {
 
         fn format_byte(Byte byte) {
             return std::format("0x{0:02X} (0b{1:08b}) LSB:{2}, MSB:{3}",
@@ -49,9 +50,9 @@ namespace type {
                 byte.bits.bit0,
                 byte.bits.bit7);
         };
-        
+
         fn format_bits(Bits bits) {
-            return std::format("0b{}{}{}{}{}{}{}{}", 
+            return std::format("0b{}{}{}{}{}{}{}{}",
                 bits.bit7,
                 bits.bit6,
                 bits.bit5,
@@ -61,11 +62,11 @@ namespace type {
                 bits.bit1,
                 bits.bit0);
         };
-        
+
         fn format_nibbles(Nibbles nibbles) {
             return std::format("{{ {0:0X}, {1:0X} }}", nibbles.high, nibbles.low);
         };
 
-	}
+    }
 
 }

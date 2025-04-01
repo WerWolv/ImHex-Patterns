@@ -1,8 +1,8 @@
-#pragma description UEFI structs for parsing efivars
+#pragma description UEFI efivars
 
 #define WIN_CERT_TYPE_PKCS_SIGNED_DATA 0x0002
 #define WIN_CERT_TYPE_EFI_PKCS115   0x0EF0
-#define WIN_CERT_TYPE_EFI_GUID     0x0EF1 
+#define WIN_CERT_TYPE_EFI_GUID     0x0EF1
 
 struct EFI_TIME {
  u16  Year;             // 1900 – 9999

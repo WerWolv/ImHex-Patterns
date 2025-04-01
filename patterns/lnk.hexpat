@@ -1,11 +1,11 @@
 #pragma author WerWolv
-#pragma description Windows Shell Link file format
+#pragma description Windows Shell Link / Shortcut
 
 #pragma MIME application/x-ms-shortcut
 
-#include <std/core.pat>
-#include <type/guid.pat>
-#include <type/size.pat>
+import std.core;
+import type.guid;
+import type.size;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 
@@ -104,7 +104,7 @@ enum Keys : u8 {
     KEY_X       = 0x58,
     KEY_Y       = 0x59,
     KEY_Z       = 0x5A,
-    
+
     VK_F1       = 0x70,
     VK_F2       = 0x71,
     VK_F3       = 0x72,
@@ -161,12 +161,12 @@ struct ShellLinkHeader {
     HotKeyFlags HotKey;
     padding[2];
     padding[4];
-    padding[4];	
+    padding[4];
 };
 
 struct ItemID {
     type::Size16 ItemIDSize;
-    
+
     if (ItemIDSize == 0x00)
         break;
     else
@@ -264,15 +264,15 @@ struct CommonNetworkRelativeLink {
     u32 NetNameOffset;
     u32 DeviceNameOffset;
     NetworkProviderType NetworkProviderType;
-    
+
     if (NetNameOffset > 0x14) {
         u32 NetNameOffsetUnicode;
         u32 DeviceNameOffsetUnicode;
     }
-    
+
     char NetName[];
     char DeviceName[];
-        
+
     if (NetNameOffset > 0x14) {
         char16 NetNameUnicode[];
         char16 DeviceNameUnicode[];
@@ -287,22 +287,22 @@ struct LinkInfo {
     u32 LocalBasePathOffset;
     u32 CommonNetworkRelativeLinkOffset;
     u32 CommonPathSuffixOffset;
-    
+
     if (LinkInfoHeaderSize >= 0x24) {
         u32 LocalBasePathOffsetUnicode;
         u32 CommonPathSuffixOffsetUnicode;
     }
-    
+
     if (LinkInfoFlags.VolumeIDAndLocalBasePath) {
         VolumeID VolumeID;
         char LocalBasePath[];
-    }	
-    
+    }
+
     if (LinkInfoFlags.CommonNetworkRelativeLinkAndPathSuffix)
         CommonNetworkRelativeLink CommonNetworkRelativeLink;
-        
+
     char CommonPathSuffix[];
-    
+
     if (LinkInfoHeaderSize >= 0x24) {
         if (LinkInfoFlags.VolumeIDAndLocalBasePath)
             char16 LocalBasePathUnicode[];
@@ -333,12 +333,12 @@ bitfield FillAttributes {
     FOREGROUND_GREEN        : 1;
     FOREGROUND_RED          : 1;
     FOREGROUND_INTENSITY    : 1;
-    
+
     BACKGROUND_BLUE         : 1;
     BACKGROUND_GREEN        : 1;
     BACKGROUND_RED          : 1;
     BACKGROUND_INTENSITY    : 1;
-    
+
     padding                 : 8;
 };
 
@@ -417,12 +417,12 @@ struct VistaAndAboveIDListDataBlock {
 
 struct ExtraDataBlock {
     type::Size32 BlockSize;
-    
+
     if (BlockSize < 0x04)
         break;
     else {
         u32 BlockSignature;
-    
+
         if (BlockSignature == 0xA000'0002)
             ConsoleDataBlock CONSOLE_PROPS;
         else if (BlockSignature == 0xA000'0004)

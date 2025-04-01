@@ -1,12 +1,12 @@
 #include <pl.hpp>
 
-#include <pl/core/errors/preprocessor_errors.hpp>
-#include <pl/core/errors/evaluator_errors.hpp>
-
 #include <wolv/io/file.hpp>
 
 #include <fmt/format.h>
 #include <cstdlib>
+
+#include <pl/core/ast/ast_node_type_decl.hpp>
+#include <pl/core/ast/ast_node_function_definition.hpp>
 
 #define EXIT_SKIP 77
 
@@ -30,12 +30,11 @@ int main(int argc, char **argv) {
     // Setup Pattern Language Runtime
     pl::PatternLanguage runtime;
     {
-        constexpr auto DummyPragmaHandler = [](const auto&, const auto&){
-            pl::core::err::M0006.throwError("Include files should never use this pragma!");
+        constexpr auto DummyPragmaHandler = [](const auto&, const auto&) {
             return false;
         };
 
-        runtime.setDataSource(0x00, 0x100000, 
+        runtime.setDataSource(0x00, 0x100000,
             [&](pl::u64 address, pl::u8 *data, size_t size) {
                 pl::core::err::E0011.throwError("Include files should never read from memory directly!");
             }
@@ -65,15 +64,58 @@ int main(int argc, char **argv) {
         });
     }
 
-    // Execute pattern
-    if (!runtime.executeString(patternFile.readString())) {
-        fmt::print("Error during execution!\n");
+    // Parse pattern
+    const auto ast = runtime.parseString(patternFile.readString(), "<Source Code>");
+    if (!ast.has_value()) {
+        fmt::println("Error when parsing include file!");
 
-        if (const auto &hardError = runtime.getError(); hardError.has_value())
-            fmt::print("Hard error: {}:{} - {}\n\n", hardError->line, hardError->column, hardError->message);
+        if (const auto &compileErrors = runtime.getCompileErrors(); !compileErrors.empty()) {
+            for (const auto &error : compileErrors) {
+                fmt::println("{}", error.format());
+            }
+        } else if (const auto &evalError = runtime.getEvalError(); evalError.has_value()) {
+            fmt::println("{}:{}  {}", evalError->line, evalError->column, evalError->message);
+        }
 
         return EXIT_FAILURE;
     }
+
+    bool missingComments = false;
+    for (const std::shared_ptr<pl::core::ast::ASTNode> &node : *ast) {
+        if (auto typeDecl = dynamic_cast<pl::core::ast::ASTNodeTypeDecl*>(node.get())) {
+            if (typeDecl->getDocComment().empty() && !pl::hlp::containsIgnoreCase(typeDecl->getName(), "impl")) {
+                fmt::println("Type {} has no doc comment!", typeDecl->getName());
+                missingComments = true;
+            }
+        } else if (auto functionDef = dynamic_cast<pl::core::ast::ASTNodeFunctionDefinition*>(node.get())) {
+            if (functionDef->getDocComment().empty() && !pl::hlp::containsIgnoreCase(functionDef->getName(), "impl")) {
+                fmt::println("Function {} has no doc comment!", functionDef->getName());
+                missingComments = true;
+            }
+        }
+    }
+
+    if (missingComments)
+        return EXIT_FAILURE;
+
+    if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
+        if (const auto &evalError = runtime.getEvalError(); evalError.has_value()) {
+            fmt::println("{}:{}  {}", evalError->line, evalError->column, evalError->message);
+        }
+
+        return EXIT_FAILURE;
+    }
+
+    if (!runtime.getPatterns().empty()) {
+        fmt::println("Library created patterns!");
+        return EXIT_FAILURE;
+    }
+
+    if (!runtime.getSections().empty()) {
+        fmt::println("Library created sections!");
+        return EXIT_FAILURE;
+    }
+
 
     return EXIT_SUCCESS;
 }

@@ -1,10 +1,10 @@
 #pragma author WerWolv
-#pragma description Nintendo Switch NACP files
+#pragma description Nintendo Switch NACP
 
 #pragma endian little
 
-#include <std/sys.pat>
-#include <std/io.pat>
+import std.sys;
+import std.io;
 
 struct ApplicationTitle {
 	char name[0x200];
@@ -145,7 +145,7 @@ fn main() {
 	std::print("Application Name:       {}", nacp.american_english_title.name);
 	std::print("Application Publisher:  {}", nacp.american_english_title.publisher);
 	std::print("Application Version:    {}", nacp.display_version);
-	
+
 	if (nacp.device_save_data_size_max > 0)
 		std::print("This application has a device save file!");
 };

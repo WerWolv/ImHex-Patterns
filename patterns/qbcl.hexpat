@@ -1,4 +1,4 @@
-#pragma description Qubicle voxel scene project file
+#pragma description Qubicle voxel scene project
 
 // Qubicle QBCL format
 

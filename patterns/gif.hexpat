@@ -1,4 +1,4 @@
-#pragma description GIF image files
+#pragma description GIF image
 
 #pragma MIME image/gif
 
@@ -13,13 +13,13 @@
 #define EXTENSION_INTRODUCER_MAGIC 0x21
 #define GIF_TRAILER_MAGIC 0x3B
 
-#include <std/io.pat>
-#include <std/core.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
-#include <std/math.pat>
+import std.io;
+import std.core;
+import std.mem;
+import std.string;
+import std.math;
 
-#include <type/magic.pat>
+import type.magic;
 
 bitfield GCT_Flags {
     size : 3 [[comment("physical size = 2^(flags.size + 1)")]];
@@ -27,7 +27,7 @@ bitfield GCT_Flags {
     colorRes : 3 [[comment("Indicates the richness of the original pallet")]];
     enabled : 1;
 };
-    
+
 bitfield ImageDescriptorFlags {
     lctSize: 3;
     reserved: 2;
@@ -35,7 +35,7 @@ bitfield ImageDescriptorFlags {
     interlaceFlag: 1;
     lctEnable: 1;
 };
-    
+
 bitfield GCE_Flags {
     transparent : 1;
     userInput : 1;
@@ -109,7 +109,7 @@ struct PlainTextExtension {
     u8 textForegroundColorIndex;
     u8 textBackgroundColorIndex;
     DataSubBlocks plainTextData;
-    
+
 };
 
 struct GraphicControlExtension {
@@ -141,9 +141,9 @@ namespace format {
         if(value == 0x00) return "Do nothing";
         if(value == 0x01) return "Do not remove pixels";
         if(value == 0x02) return "Restore background pixels";
-        if(value == 0x03) return "Restore previous pixels"; 
+        if(value == 0x03) return "Restore previous pixels";
     };
-    
+
     fn extension_name(u8 label) {
         if(label == LABEL_GC) return "Graphical Control Extension";
         if(label == LABEL_COMMENT) return "Comment Extension";

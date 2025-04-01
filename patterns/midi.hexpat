@@ -1,6 +1,6 @@
-#pragma description MIDI header, event fields provided
+#pragma description MIDI Musical Instrument Digital Interface
 
-#include <std/core.pat>
+import std.core;
 
 #pragma MIME audio/midi
 #pragma endian big

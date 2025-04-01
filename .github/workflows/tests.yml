@@ -11,7 +11,7 @@ on:
 jobs:
   tests:
     name: 🧪 Unit Tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       actions: read
       contents: read
@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: 🧰 Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         submodules: recursive
 
@@ -28,56 +28,54 @@ jobs:
         sudo apt update
         sudo apt install -y       \
             build-essential       \
-            gcc-12                \
-            g++-12                \
+            ccache                \
+            gcc-14                \
+            g++-14                \
             lld                   \
             ${PKGCONF:-}          \
             cmake                 \
-            make                  \
+            ninja-build           \
             python3               \
             python3-pip           \
             libmagic-dev          \
             lcov
-        
+
         sudo pip install jsonschema
+
+    - name: 📜 Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ runner.os }}-ccache-${{ github.run_id }}
+        restore-keys: ${{ runner.os }}-ccache
+        max-size: 1G
 
     - name: 🛠️ Build
       run: |
-        cd tests
         mkdir -p build
         cd build
-        CC=gcc-12 CXX=g++-12 cmake                        \
+        CC=gcc-14 CXX=g++-14 cmake                        \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache              \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache            \
           -DCMAKE_C_FLAGS="-fuse-ld=lld --coverage"       \
           -DCMAKE_CXX_FLAGS="-fuse-ld=lld --coverage"     \
+          -DIMHEX_PATTERNS_ENABLE_UNIT_TESTS=ON           \
           -DLIBPL_ENABLE_TESTS=OFF                        \
           -DLIBPL_ENABLE_CLI=OFF                          \
+          -G Ninja                                        \
           ..
-        make -j4
+        ninja unit_tests
 
     - name: 🧪 Perform Unit Tests
       run: |
-        cd tests/build
-        ctest --output-on-failure
-
-    #- name: ⚗️ Generate Coverage Report
-    #  run: |
-    #    cd tests/build
-    #    lcov -d ./_deps/pattern_language-build/lib --gcov-tool /usr/bin/gcov-12 -c -o coverage.info
-
-    #- name: ⬆️ Upload Coverage Report
-    #  uses: coverallsapp/github-action@master
-    #  env:
-    #    NODE_OPTIONS: --max-old-space-size=8000 
-    #  with:
-    #    github-token: ${{ secrets.GITHUB_TOKEN }}
-    #    path-to-lcov: tests/build/coverage.info
+        cd build
+        ctest --output-on-failure -j 4
 
     - name: 📎 Validate JSON Files
       run: |
         cd constants
         for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
         cd ..
-        
+
         cd tips
         for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
         cd ..

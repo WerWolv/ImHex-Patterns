@@ -1,13 +1,13 @@
 #pragma author WerWolv
-#pragma description Autodesk 3DS Max Model file
+#pragma description Autodesk 3DS Max Model
 
-#include <std/io.pat>
-#include <type/base.pat>
+import std.io;
+import type.base;
 
 #pragma MIME image/x-3ds
 
 // Heavily based off of ZiZi's 010 Editor 3DS Template
-enum ChunkIdentifier : u16 {    
+enum ChunkIdentifier : u16 {
     NULL_CHUNK                            = 0x0000,
     ChunkType                             = 0x0995,
     ChunkUnique                           = 0x0996,
@@ -40,10 +40,10 @@ enum ChunkIdentifier : u16 {
     COLOR_24                              = 0x0011, // r,g,b: Byte
     LIN_COLOR_24                          = 0x0012, // r,g,b: Byte (gamma corrected)
     LIN_COLOR_F                           = 0x0013, // r,g,b: Single precision float (gamma corrected)
-    
+
     INT_PERCENTAGE                        = 0x0030, // u16 integer
     FLOAT_PERCENTAGE                      = 0x0031, // Single precision float
-    
+
     M3DMAGIC                              = 0x4D4D,
     SMAGIC                                = 0x2D2D,
     LMAGIC                                = 0x2D3D,
@@ -72,7 +72,7 @@ enum ChunkIdentifier : u16 {
             RAY_BIAS                      = 0x1460,
             USE_RAYTRACE                  = 0x1470,
             O_CONSTS                      = 0x1500,
-    
+
             AMBIENT_LIGHT                 = 0x2100,
 
             FOG                           = 0x2200,
@@ -82,7 +82,7 @@ enum ChunkIdentifier : u16 {
             USE_DISTANCE_CUE              = 0x2301,
             WORLD_LAYERED_FOG             = 0x2302,
             WORLD_USE_LAYERED_FOG         = 0x2303,
-            
+
             DEFAULT_VIEW                  = 0x3000,
             VIEW_TOP                      = 0x3010,
             VIEW_BOTTOM                   = 0x3020,
@@ -93,7 +93,7 @@ enum ChunkIdentifier : u16 {
             VIEW_USER                     = 0x3070,
             VIEW_CAMERA                   = 0x3080,
             VIEW_WINDOW                   = 0x3090,
-            
+
             NAMED_OBJECT                  = 0x4000,
                 OBJ_HIDDEN                = 0x4010,
                 OBJ_VIS_LOFTER            = 0x4011,
@@ -103,7 +103,7 @@ enum ChunkIdentifier : u16 {
                 OBJ_PROCEDURAL            = 0x4015,
                 OBJ_FROZEN                = 0x4016,
                 OBJ_DONT_RCVSHADOW        = 0x4017,
-    
+
             N_TRI_OBJECT                  = 0x4100,
                 POINT_ARRAY               = 0x4110,
                 POINT_FLAG_ARRAY          = 0x4111,
@@ -134,7 +134,7 @@ enum ChunkIdentifier : u16 {
                     DL_SPOT_OVERSHOOT     = 0x4652,
                     DL_SPOT_PROJECTOR     = 0x4653,
                     DL_EXCLUDE            = 0x4654,
-                    DL_RANGE              = 0x4655, /* Not used in R3 */ 
+                    DL_RANGE              = 0x4655, /* Not used in R3 */
                     DL_SPOT_ROLL          = 0x4656,
                     DL_SPOT_ASPECT        = 0x4657,
                     DL_RAY_BIAS           = 0x4658,
@@ -143,22 +143,22 @@ enum ChunkIdentifier : u16 {
                 DL_INNER_RANGE            = 0x4659,
                 DL_OUTER_RANGE            = 0x465A,
                 DL_MULTIPLIER             = 0x465B,
-                
+
             N_AMBIENT_LIGHT               = 0x4680,
-        
+
             N_CAMERA                      = 0x4700,
             CAM_SEE_CONE                  = 0x4710,
             CAM_RANGES                    = 0x4720,
-            
+
             HIERARCHY                     = 0x4F00,
             PARENT_OBJECT                 = 0x4F10,
             PIVOT_OBJECT                  = 0x4F20,
             PIVOT_LIMITS                  = 0x4F30,
             PIVOT_ORDER                   = 0x4F40,
             XLATE_RANGE                   = 0x4F50,
-            
+
             POLY_2D                       = 0x5000,
-            
+
             /* Flags in shaper file that tell whether polys make up an ok shape */
             SHAPE_OK                      = 0x5010,
             SHAPE_NOT_OK                  = 0x5011,
@@ -177,8 +177,8 @@ enum ChunkIdentifier : u16 {
             YZ_CURVE                      = 0x6080,
             INTERPCT                      = 0x6090,
             DEFORM_LIMIT                  = 0x60A0,
-            
-            /* Flags for Modeler options */ 
+
+            /* Flags for Modeler options */
             USE_CONTOUR                   = 0x6100,
             USE_TWEEN                     = 0x6110,
             USE_SCALE                     = 0x6120,
@@ -187,7 +187,7 @@ enum ChunkIdentifier : u16 {
             USE_FIT                       = 0x6150,
             USE_BEVEL                     = 0x6160,
 
-            /* Viewport description chunks */ 
+            /* Viewport description chunks */
             VIEWPORT_LAYOUT_OLD           = 0x7000,
             VIEWPORT_DATA_OLD             = 0x7010,
             VIEWPORT_LAYOUT               = 0x7001,
@@ -196,7 +196,7 @@ enum ChunkIdentifier : u16 {
             VIEWPORT_SIZE                 = 0x7020,
             NETWORK_VIEW                  = 0x7030,
 
-            /* External Application Data */ 
+            /* External Application Data */
             XDATA_SECTION                 = 0x8000,
             XDATA_ENTRY                   = 0x8001,
             XDATA_APPNAME                 = 0x8002,
@@ -215,8 +215,8 @@ enum ChunkIdentifier : u16 {
             XDATA_RFU1                    = 0x800F,
 
             PARENT_NAME                   = 0x80F0,
-            
-            /* Material Chunk IDs */ 
+
+            /* Material Chunk IDs */
             MAT_ENTRY                     = 0xAFFF,
                 MAT_NAME                  = 0xA000,
                 MAT_AMBIENT               = 0xA010,
@@ -228,7 +228,7 @@ enum ChunkIdentifier : u16 {
                 MAT_TRANSPARENCY          = 0xA050,
                 MAT_XPFALL                = 0xA052,
                 MAT_REFBLUR               = 0xA053,
-                
+
                 MAT_SELF_ILLUM            = 0xA080,
                 MAT_TWO_SIDE              = 0xA081,
                 MAT_DECAL                 = 0xA082,
@@ -241,13 +241,13 @@ enum ChunkIdentifier : u16 {
                 MAT_XPFALLIN              = 0xA08A,
                 MAT_PHONGSOFT             = 0xA08C,
                 MAT_WIREABS               = 0xA08E,
-                
+
                 MAT_SHADING               = 0xA100,
-                
+
                 MAT_TEXMAP                = 0xA200,
                     MAT_MAPNAME           = 0xA300,
                     MAT_ACUBIC            = 0xA310,
-                    
+
                     MAT_MAP_TILINGOLD     = 0xA350,
                     MAT_MAP_TILING        = 0xA351,
                     MAT_MAP_TEXBLUR_OLD   = 0xA352,
@@ -262,14 +262,14 @@ enum ChunkIdentifier : u16 {
                     MAT_MAP_RCOL          = 0xA364,
                     MAT_MAP_GCOL          = 0xA366,
                     MAT_MAP_BCOL          = 0xA368,
-                    
+
                 MAT_SPECMAP               = 0xA204,
                 MAT_OPACMAP               = 0xA210,
                 MAT_REFLMAP               = 0xA220,
                 MAT_BUMPMAP               = 0xA230,
                 MAT_USE_REFBLUR           = 0xA250,
                 MAT_BUMP_PERCENT          = 0xA252,
-                
+
                 MAT_SXP_TEXT_DATA         = 0xA320,
                 MAT_SXP_TEXT2_DATA        = 0xA321,
                 MAT_SXP_OPAC_DATA         = 0xA322,
@@ -285,7 +285,7 @@ enum ChunkIdentifier : u16 {
                 MAT_SXP_SHIN_MASKDATA     = 0xA334,
                 MAT_SXP_SELFI_MASKDATA    = 0xA336,
                 MAT_SXP_REFL_MASKDATA     = 0xA338,
-                
+
                 MAT_TEX2MAP               = 0xA33A,
                 MAT_SHINMAP               = 0xA33C,
                 MAT_SELFIMAP              = 0xA33D,
@@ -297,8 +297,8 @@ enum ChunkIdentifier : u16 {
                 MAT_SPECMASK              = 0xA348,
                 MAT_SELFIMASK             = 0xA34A,
                 MAT_REFLMASK              = 0xA34C,
-                
-        /* Keyframe Chunk IDs */ 
+
+        /* Keyframe Chunk IDs */
         KFDATA                            = 0xB000,
             KFHDR                         = 0xB00A,
             AMBIENT_NODE_TAG              = 0xB001,
@@ -308,13 +308,13 @@ enum ChunkIdentifier : u16 {
             LIGHT_NODE_TAG                = 0xB005,
             L_TARGET_NODE_TAG             = 0xB006,
             SPOTLIGHT_NODE_TAG            = 0xB007,
-            
+
             KFSEG                         = 0xB008,
             KFCURTIME                     = 0xB009,
-            
+
                 NODE_HDR                  = 0xB010,
                 INSTANCE_NAME             = 0xB011,
-                PRESCALE                  = 0xB012, 
+                PRESCALE                  = 0xB012,
                 PIVOT                     = 0xB013,
                 BOUNDBOX                  = 0xB014,
                 MORPH_SMOOTH              = 0xB015,
@@ -329,10 +329,10 @@ enum ChunkIdentifier : u16 {
                 FALL_TRACK_TAG            = 0xB028,
                 HIDE_TRACK_TAG            = 0xB029,
                 NODE_ID                   = 0xB030,
-                
-    
+
+
 	CMAGIC                                = 0xC23D,
-    
+
         C_MDRAWER                         = 0xC010,
         C_TDRAWER                         = 0xC020,
         C_SHPDRAWER                       = 0xC030,
@@ -395,7 +395,7 @@ enum ChunkIdentifier : u16 {
         C_BITMAP_DRAWER                   = 0xC25B,
         C_RGB_FILE                        = 0xC260,
         C_RGB_OVASPECT                    = 0xC270,
-            
+
         C_RGB_ANIMTYPE                    = 0xC271,
         C_RENDER_ALL                      = 0xC272,
         C_REND_FROM                       = 0xC273,
@@ -513,16 +513,16 @@ enum ChunkIdentifier : u16 {
         C_VTR_IN                          = 0xC775,
         C_VTR_PK                          = 0xC780,
         C_VTR_SH                          = 0xC785,
-   
-/* Material chunks */ 
-        C_WORK_MTLS                       = 0xC790, /* Old-style -- now ignored */ 
-        C_WORK_MTLS_2                     = 0xC792, /* Old-style -- now ignored */ 
-        C_WORK_MTLS_3                     = 0xC793, /* Old-style -- now ignored */ 
-        C_WORK_MTLS_4                     = 0xC794, /* Old-style -- now ignored */ 
-        C_WORK_MTLS_5                     = 0xCB00, /* Old-style -- now ignored */ 
-        C_WORK_MTLS_6                     = 0xCB01, /* Old-style -- now ignored */ 
-        C_WORK_MTLS_7                     = 0xCB02, /* Old-style -- now ignored */ 
-        C_WORK_MTLS_8                     = 0xCB03, /* Old-style -- now ignored */ 
+
+/* Material chunks */
+        C_WORK_MTLS                       = 0xC790, /* Old-style -- now ignored */
+        C_WORK_MTLS_2                     = 0xC792, /* Old-style -- now ignored */
+        C_WORK_MTLS_3                     = 0xC793, /* Old-style -- now ignored */
+        C_WORK_MTLS_4                     = 0xC794, /* Old-style -- now ignored */
+        C_WORK_MTLS_5                     = 0xCB00, /* Old-style -- now ignored */
+        C_WORK_MTLS_6                     = 0xCB01, /* Old-style -- now ignored */
+        C_WORK_MTLS_7                     = 0xCB02, /* Old-style -- now ignored */
+        C_WORK_MTLS_8                     = 0xCB03, /* Old-style -- now ignored */
         C_WORKMTL                         = 0xCB04,
         C_SXP_TEXT_DATA                   = 0xCB10,
         C_SXP_TEXT2_DATA                  = 0xCB20,
@@ -542,15 +542,15 @@ enum ChunkIdentifier : u16 {
 
         C_BGTYPE                          = 0xC7A1,
         C_MEDTILE                         = 0xC7B0,
-   
+
 /* Contrast */
         C_LO_CONTRAST                     = 0xC7D0,
         C_HI_CONTRAST                     = 0xC7D1,
- 
-/* 3d frozen display */ 
+
+/* 3d frozen display */
         C_FROZ_DISPLAY                    = 0xC7E0,
- 
-/* Booleans */ 
+
+/* Booleans */
         C_BOOLWELD                        = 0xc7f0,
         C_BOOLTYPE                        = 0xc7f1,
 
@@ -569,8 +569,8 @@ enum ChunkIdentifier : u16 {
         C_MAPDRAWER8                      = 0xCA08,
         C_MAPDRAWER9                      = 0xCA09,
         C_MAPDRAWER_ENTRY                 = 0xCA10,
-   
-/* System Options */ 
+
+/* System Options */
         C_BACKUP_FILE                     = 0xCA20,
         C_DITHER_256                      = 0xCA21,
         C_SAVE_LAST                       = 0xCA22,
@@ -596,8 +596,8 @@ enum ChunkIdentifier : u16 {
         C_AUTO_SMOOTH                     = 0xCA80,
         C_DXF_SMOOTH_ANG                  = 0xCA90,
         C_SMOOTH_ANG                      = 0xCAA0,
-   
-/* Special network-use chunks */ 
+
+/* Special network-use chunks */
         C_NET_USE_VPOST                   = 0xCC00,
         C_NET_USE_GAMMA                   = 0xCC10,
         C_NET_FIELD_ORDER                 = 0xCC20,
@@ -628,8 +628,8 @@ enum ChunkIdentifier : u16 {
         C_VIEW_PRES_RATIO                 = 0xCE50,
         C_BGND_PRES_RATIO                 = 0xCE60,
         C_NTH_SERIAL_NUM                  = 0xCE70,
-   
-    /* Video Post */ 
+
+    /* Video Post */
     VPDATA                                = 0xd000,
 
         P_QUEUE_ENTRY                     = 0xd100,
@@ -648,7 +648,7 @@ enum ChunkIdentifier : u16 {
         P_QUEUE_ALIGN                     = 0xd190,
 
         P_CUSTOM_SIZE                     = 0xd1a0,
-     
+
         P_ALPH_NONE                       = 0xd210,
         P_ALPH_PSEUDO                     = 0xd220,  /* Old chunk */
         P_ALPH_OP_PSEUDO                  = 0xd221,  /* Old chunk */
@@ -732,7 +732,7 @@ bitfield Spline {
     Use_Bias       : 1;
     Use_Ease_To    : 1;
     Use_Ease_From  : 1;
-    
+
     padding : 3;
 
     if (Use_Tension == 1)
@@ -745,7 +745,7 @@ bitfield Spline {
         float Ease_To;
     if (Use_Ease_From == 1)
         float Ease_From;
-        
+
     padding : 8;
 };
 
@@ -795,7 +795,7 @@ struct Keys<auto identifier> {
         ) : {
             RotationKey data[count];
         }
-        
+
         (
             ChunkIdentifier::FOV_TRACK_TAG |
             ChunkIdentifier::ROLL_TRACK_TAG |
@@ -804,13 +804,13 @@ struct Keys<auto identifier> {
         ) : {
             AngleKey data[count];
         }
-        
+
         (
             ChunkIdentifier::MORPH_TRACK_TAG
         ) : {
             MorphKey data[count];
         }
-        
+
         (
             ChunkIdentifier::HIDE_TRACK_TAG
         ) : {
@@ -842,7 +842,7 @@ struct Chunk {
     u32 chunkSize;
     u32 dataLength = chunkSize - 6 [[export]];
     u32 chunkEnd = $ + dataLength;
-    
+
     if (chunkSize > 0) {
         std::print("{}", identifier);
         match (identifier) {
@@ -894,14 +894,14 @@ struct Chunk {
             ): {
                 Chunk chunks[while($ < chunkEnd)];
             }
-            
+
             (
                 ChunkIdentifier::M3D_VERSION |
                 ChunkIdentifier::MESH_VERSION
             ): {
                 u32 version;
             }
-            
+
             (
                 ChunkIdentifier::LO_SHADOW_BIAS         |
                 ChunkIdentifier::HI_SHADOW_BIAS         |
@@ -921,41 +921,41 @@ struct Chunk {
             ): {
                 float value;
             }
-            
+
             (
                 ChunkIdentifier::V_GRADIENT
             ) : {
                 float position;
                 Chunk chunks[while($ < chunkEnd)];
             }
-            
+
             (
                 ChunkIdentifier::NAMED_OBJECT
             ) : {
                 char name[];
                 Chunk chunks[while($ < chunkEnd)];
             }
-            
+
             (
                 ChunkIdentifier::POINT_ARRAY
             ) : {
                 u16 count;
                 Vector3f vectices[count] [[hex::visualize("3d", this, null)]];
             }
-            
+
             (
                 ChunkIdentifier::TEX_VERTS
             ) : {
                 u16 count;
                 Vector2f coords[count];
             }
-            
+
             (
                 ChunkIdentifier::MESH_MATRIX
             ) : {
                 Vector3f x, y, z, w;
             }
-            
+
             (
                 ChunkIdentifier::FACE_ARRAY
             ) : {
@@ -963,26 +963,26 @@ struct Chunk {
                 Face faces[count];
                 Chunk chunks[while($ < chunkEnd)];
             }
-            
+
             (
                 ChunkIdentifier::POINT_FLAG_ARRAY
             ) : {
                 u16 count;
                 VertexFlags flags[count];
             }
-            
+
             (
                 ChunkIdentifier::SMOOTH_GROUP
             ) : {
                 u32 groups[dataLength / sizeof(u32)];
             }
-            
+
             (
                 ChunkIdentifier::MESH_COLOR
             ) : {
                 u8 value;
             }
-            
+
             (
                 ChunkIdentifier::MSH_MAT_GROUP
             ) : {
@@ -990,7 +990,7 @@ struct Chunk {
                 u16 count;
                 u16 groups[count];
             }
-            
+
             (
                 ChunkIdentifier::KFHDR
             ) : {
@@ -998,25 +998,25 @@ struct Chunk {
                 char name[];
                 u32 animationLength;
             }
-            
+
             (
                 ChunkIdentifier::KFSEG
             ) : {
                 u32 start, end;
             }
-            
+
             (
                 ChunkIdentifier::KFCURTIME
             ) : {
                 u32 frameIndex;
             }
-            
+
             (
                 ChunkIdentifier::NODE_ID
             ) : {
                 type::Hex<u16> id;
             }
-            
+
             (
                 ChunkIdentifier::NODE_HDR
             ) : {
@@ -1026,47 +1026,47 @@ struct Chunk {
                 KeyFlags2 flags2;
                 type::Hex<u16> parentId;
             }
-            
+
             (
                 ChunkIdentifier::PIVOT
             ) : {
                 Vector3f value;
             }
-            
+
             (
                 ChunkIdentifier::BOUNDBOX
             ) : {
                 Vector3f min, max;
             }
-           
+
             (
                 ChunkIdentifier::COLOR_24 |
                 ChunkIdentifier::LIN_COLOR_24
             ) : {
                 RGB<u8> color;
             }
-            
+
             (
                 ChunkIdentifier::COLOR_F |
                 ChunkIdentifier::LIN_COLOR_F
             ) : {
                 RGB<float> color;
             }
-            
+
             (
                 ChunkIdentifier::INT_PERCENTAGE |
                 ChunkIdentifier::MAT_BUMP_PERCENT
             ) : {
                 u16 value;
             }
-            
+
             (
                 ChunkIdentifier::SHADOW_MAP_SIZE |
                 ChunkIdentifier::MAT_SHADING
             ) : {
                 u16 value;
             }
-            
+
             (
                 ChunkIdentifier::POS_TRACK_TAG    |
                 ChunkIdentifier::ROT_TRACK_TAG    |
@@ -1077,13 +1077,13 @@ struct Chunk {
                 ChunkIdentifier::MORPH_TRACK_TAG  |
                 ChunkIdentifier::HOT_TRACK_TAG    |
                 ChunkIdentifier::FALL_TRACK_TAG   |
-                ChunkIdentifier::HIDE_TRACK_TAG 
+                ChunkIdentifier::HIDE_TRACK_TAG
             ) : {
                 TrackFlags flags;
                 u8 unknown[8];
                 Keys<identifier> keys;
             }
-            
+
             (
                 ChunkIdentifier::INSTANCE_NAME |
                 ChunkIdentifier::BIT_MAP       |
@@ -1093,26 +1093,26 @@ struct Chunk {
             ) : {
                 char name[];
             }
-            
+
             (
                 ChunkIdentifier::MAT_MAP_TILING
             ) : {
                 u16 tiling;
             }
-            
+
             (
                 ChunkIdentifier::WORLD_VIEWPORT_SIZE
             ) : {
                 u16 x, y, w, h;
             }
-            
+
             (
                 ChunkIdentifier::N_DIRECT_LIGHT
             ) : {
                 Vector3f position;
                 Chunk chunks[while($ < chunkEnd)];
             }
-            
+
             (
                 ChunkIdentifier::DL_SPOTLIGHT
             ) : {
@@ -1120,16 +1120,16 @@ struct Chunk {
                 float hotspot, falloff;
                 Chunk chunks[while($ < chunkEnd)];
             }
-            
+
             (
                 ChunkIdentifier::N_CAMERA
             ) : {
                 Vector3f position, target;
                 float roll, fov;
             }
-            
-            
-            
+
+
+
             (_) : {
                 std::warning(std::format("Unhandled Chunk ID: {}, Skipping 0x{:04X} bytes", identifier, dataLength));
                 $ += dataLength;

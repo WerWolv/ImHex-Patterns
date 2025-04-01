@@ -1,14 +1,14 @@
 #pragma author WerWolv
-#pragma description STL 3D Model format
+#pragma description STL 3D Model
 
 #pragma MIME model/stl
 #pragma MIME model/x.stl-binary
 #pragma MIME model/x.stl-ascii
 #pragma MIME application/sla
 
-#include <std/sys.pat>
-#include <std/mem.pat>
-#include <std/core.pat>
+import std.sys;
+import std.mem;
+import std.core;
 
 struct Vector3f {
     float x, y, z;
@@ -30,7 +30,7 @@ struct BinarySTLHeader {
     u32 triangleCount;
 };
 
-struct STL {    
+struct STL {
     if (std::mem::read_string(0, 6) == "solid ")
         std::warning("ASCII STL file!");
     else {

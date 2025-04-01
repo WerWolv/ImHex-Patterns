@@ -1,13 +1,13 @@
-#pragma description Zstandard compressed data format
+#pragma description Zstandard compressed data
 
 // https://github.com/facebook/zstd/blob/dev/doc/zstd_compression_format.md
 
 #pragma MIME application/zstd
 
-#include <std/core.pat>
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.core;
+import std.io;
+import std.mem;
+import std.sys;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 

@@ -1,7 +1,8 @@
-#pragma description Python bytecode files
+#pragma description Python bytecode
+#pragma MIME application/x-bytecode.python
 
-#include <type/time.pat>
-#include <std/mem.pat>
+import type.time;
+import std.mem;
 
 #define FLAG_REF 0x80
 #define TYPE_NULL               '0'
@@ -48,10 +49,6 @@ fn below(u8 major, u8 minor) {
     return _major <=major && _minor < minor;
 };
 
-fn is(u8 major, u8 minor) {
-    return _major == major && _minor == minor;
-};
-
 fn between(u8 major, u8 minor, u8 otherMajor, u8 otherMinor) {
     return above(major, minor) && below(otherMajor, otherMinor);
 };
@@ -63,7 +60,7 @@ struct MarshalString {
         u8 length;
     else
         u32 length;
-        
+
     char data[length];
 };
 
@@ -71,50 +68,50 @@ struct MarshalSequence {
     if(parent.type == TYPE_SMALL_TUPLE)
         u8 length;
     else
-        u32 length;    
-    MarshalObject values[length];  
+        u32 length;
+    MarshalObject values[length];
 };
 
 struct MarshalCode {
     if(between(1, 3, 2, 3)) u16 numArgs;
     else if(above(2, 3)) u32 numArgs;
-    
+
     if(above(3, 8)) u32 numPosOnlyArgs;
-    
+
     if(_major >= 3) u32 numKwOnlyArgs;
-    
+
     if(between(1, 3, 2, 3)) u16 numLocals;
     else if(between(2, 3, 3, 11)) u32 numLocals;
-    
+
     if(between(1, 5, 2, 3)) u16 numStack;
     else if(above(2, 3)) u32 numStack;
-    
+
     if(between(1, 3, 2, 3)) u16 flags;
     else if(above(2, 3)) u32 flags;
-    
+
     MarshalObject code;
     MarshalObject constants;
     MarshalObject names;
-    
+
     if(above(1, 3)) MarshalObject localNames;
-    
+
     if(above(3, 11)) MarshalObject localKinds;
-    
+
     if(between(2, 1, 3, 11)) {
         MarshalObject freeVars;
         MarshalObject cellVars;
     }
-    
+
     MarshalObject fileName;
     MarshalObject name;
-    
+
     if(above(3, 11)) MarshalObject qualifiedName;
-    
+
     if(between(1, 5, 2, 3)) u16 firstLine;
     else if(above(2, 3)) u32 firstLine;
-    
+
     if(above(1, 5)) MarshalObject lnTable;
-    
+
     if(above(3, 11)) MarshalObject exceptionTable;
 };
 
@@ -124,7 +121,7 @@ struct DictEntry {
     MarshalObject value;
 };
 
-struct MarshalDict { 
+struct MarshalDict {
    DictEntry entries[while(true)];
 };
 
@@ -160,11 +157,11 @@ struct MarshalObject {
     u8 _type [[hidden]];
     u8 flag = _type & FLAG_REF;
     u8 type = _type & ~FLAG_REF;
-    
+
     if(flag) {
         refMember($-1);
     }
-    
+
     match(type) {
         (TYPE_NULL | TYPE_NONE | TYPE_STOPITER | TYPE_ELLIPSIS | TYPE_FALSE | TYPE_TRUE): continue;
         (TYPE_CODE): {
@@ -214,7 +211,7 @@ struct MarshalObject {
             std::print("Unknown marshal object type: {:c}", type);
         }
     }
-    
+
 } [[format("format_marshal")]];
 
 fn format_marshal(ref auto obj) {
@@ -280,6 +277,8 @@ enum Magic : u32 {
     MAGIC_3_9 = 0x0A0D0D61,
     MAGIC_3_10 = 0x0A0D0D6F,
     MAGIC_3_11 = 0x0A0D0DA7,
+    MAGIC_3_12 = 0x0A0D0DCB,
+    MAGIC_3_13 = 0x0A0D0DF3,
 
     INVALID = 0,
 };
@@ -288,7 +287,7 @@ fn getMajor(Magic magic) {
     match(magic) {
         (Magic::MAGIC_1_0 | Magic::MAGIC_1_1 | Magic::MAGIC_1_3 | Magic::MAGIC_1_4 | Magic::MAGIC_1_5 | Magic::MAGIC_1_6): return 1;
         (Magic::MAGIC_2_0 | Magic::MAGIC_2_1 | Magic::MAGIC_2_2 | Magic::MAGIC_2_3 | Magic::MAGIC_2_4 | Magic::MAGIC_2_5 | Magic::MAGIC_2_6 | Magic::MAGIC_2_7): return 2;
-        (Magic::MAGIC_3_0 | Magic::MAGIC_3_1 | Magic::MAGIC_3_2 | Magic::MAGIC_3_3 | Magic::MAGIC_3_4 | Magic::MAGIC_3_5 | Magic::MAGIC_3_5_3 | Magic::MAGIC_3_6 | Magic::MAGIC_3_7 | Magic::MAGIC_3_8 | Magic::MAGIC_3_9 | Magic::MAGIC_3_10 | Magic::MAGIC_3_11): return 3;
+        (Magic::MAGIC_3_0 | Magic::MAGIC_3_1 | Magic::MAGIC_3_2 | Magic::MAGIC_3_3 | Magic::MAGIC_3_4 | Magic::MAGIC_3_5 | Magic::MAGIC_3_5_3 | Magic::MAGIC_3_6 | Magic::MAGIC_3_7 | Magic::MAGIC_3_8 | Magic::MAGIC_3_9 | Magic::MAGIC_3_10 | Magic::MAGIC_3_11 | Magic::MAGIC_3_12 | Magic::MAGIC_3_13): return 3;
         (Magic::INVALID): return 0;
     }
 };
@@ -307,6 +306,8 @@ fn getMinor(Magic magic) {
         (Magic::MAGIC_3_9): return 9;
         (Magic::MAGIC_3_10): return 10;
         (Magic::MAGIC_3_11): return 11;
+        (Magic::MAGIC_3_12): return 12;
+        (Magic::MAGIC_3_13): return 13;
         (Magic::INVALID): return 0;
     }
 };
@@ -317,23 +318,23 @@ struct PYCHeader {
     _minor = getMinor(magic);
     u8 major = _major [[export]];
     u8 minor = _minor [[export]];
-    
+
     if(above(3, 7)) {
         u32 flags;
     } else {
         u32 flags;
     }
-    
+
     if(flags & 0x1) {
         u64 checksum;
     } else {
         type::time32_t timestamp;
-        
+
         if(above(3, 3)) {
             u32 size;
         }
     }
-    
+
     MarshalObject object;
 };
 

@@ -1,13 +1,13 @@
-#pragma description Tag Image File Format
+#pragma description Tag Image File Format (TIFF)
 
 #pragma MIME image/tiff
 
 #pragma eval_depth 100
 
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
-#include <std/core.pat>
+import std.io;
+import std.mem;
+import std.string;
+import std.core;
 
 char Magic[2] @ 0 [[hidden]];
 match (Magic) {
@@ -30,13 +30,13 @@ struct Big<T> {
         (_): std::error(std::format("Unrecognized version: {}", Version));
     }
 } [[sealed, format_read("format_read_big"), format_write("format_write_big"), transform("transform_big")]];
-fn format_read_big(Big<u32> v) {
+fn format_read_big(auto v) {
     return std::format("{} (0x{:X})", v, v);
 };
 fn format_write_big(str v) {
     return std::string::parse_int(v, 0);
 };
-fn transform_big(Big<u32> v) {
+fn transform_big(auto v) {
     return v.V;
 };
 

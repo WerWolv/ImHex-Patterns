@@ -1,7 +1,9 @@
-#include <std/core.pat>
-#include <std/io.pat>
-#include <std/mem.pat>
-#include <std/string.pat>
+#pragma description USB Device Descriptor
+
+import std.core;
+import std.io;
+import std.mem;
+import std.string;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 
@@ -17,7 +19,7 @@ enum DescriptorType : u8 {
     OTGDescriptor                       = 0x09,
     DebugDescriptor                     = 0x0A,
     InterfaceAssociationDescriptor      = 0x0B,
-    
+
     HIDDescriptor                       = 0x21,
     ReportDescriptor                    = 0x22,
     PhysicalDescriptor                  = 0x23
@@ -128,7 +130,7 @@ fn format_bcd(ref auto bcd) {
     str result;
     for (s8 i = sizeof(bcd.bytes) - 1, i >= 0, i -= 1)
         result += std::format("{:X}.", bcd.bytes[i]);
-        
+
     return std::string::substr(result, 0, std::string::length(result) - 1);
 };
 
@@ -138,12 +140,12 @@ struct DeviceDescriptor {
     if (bDeviceClass == InterfaceClass::Hub) {
         HubInterfaceSubClass bDeviceSubClass;
         if (bDeviceSubClass == HubInterfaceSubClass::Hub)
-            HubInterfaceProtocol bDeviceSubClass;
+            HubInterfaceProtocol bDeviceSubClassProtocol;
         else
-            u8 bDeviceSubClass;
+            u8 bDeviceSubClassProtocol;
     } else if (bDeviceClass == InterfaceClass::AudioVideoDevice) {
         AudioVideoDeviceSubClass bDeviceSubClass;
-        u8 bDeviceSubClass;
+        u8 bDeviceSubClassProtocol;
     } else {
         u8 bDeviceSubClass;
     }
@@ -166,7 +168,7 @@ struct InterfaceDescriptor {
     u8 bInterfaceNumber;
     u8 bAlternateSetting;
     u8 bNumEndpoints;
-    
+
     InterfaceClass bInterfaceClass;
     if (bInterfaceClass == InterfaceClass::Hub) {
         HubInterfaceSubClass bInterfaceSubClass;
@@ -181,7 +183,7 @@ struct InterfaceDescriptor {
         u8 bInterfaceSubClass;
         u8 bInterfaceProtocol;
     }
-    
+
     u8 iInterface;
 };
 
@@ -229,7 +231,7 @@ struct DeviceQualifierDescriptor {
 bitfield OTGAttributes {
     SRPSupport : 1;
     HNPSupport : 1;
-} [[right_to_left]];
+} [[bitfield_order(BitfieldOrder::LeastToMostSignificant, 2)]];
 
 struct OTGDescriptor {
     OTGAttributes bmAttributes;
@@ -246,7 +248,7 @@ struct HIDDescriptor {
 struct USBDescriptor {
     u8 bLength;
     DescriptorType bDescriptorType;
-    
+
     if (bDescriptorType == DescriptorType::DeviceDescriptor)
         DeviceDescriptor deviceDescriptor [[inline]];
     else if (bDescriptorType == DescriptorType::ConfigDescriptor)
@@ -265,7 +267,7 @@ struct USBDescriptor {
         OTGDescriptor otgDescriptor [[inline]];
     else if (bDescriptorType == DescriptorType::HIDDescriptor)
         HIDDescriptor hidDescriptor [[inline]];
-    
+
     padding[bLength - ($ - addressof(this))];
 };
 

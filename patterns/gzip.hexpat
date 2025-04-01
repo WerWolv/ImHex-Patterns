@@ -1,12 +1,12 @@
 #pragma author WerWolv
-#pragma description GZip compressed data format
+#pragma description GZip compressed data
 
 #pragma MIME application/gzip
 
-#include <type/time.pat>
-#include <type/size.pat>
-#include <std/core.pat>
-#include <std/mem.pat>
+import type.time;
+import type.size;
+import std.core;
+import std.mem;
 
 using BitfieldOrder = std::core::BitfieldOrder;
 
@@ -55,26 +55,26 @@ struct GZip {
     type::time32_t modificationTime;
     ExtraFlags extraFlags;
     OperatingSystemID operatingSystemId;
-    
+
     if (flags.FEXTRA) {
         u16 extraLength;
         u8 extraField[extraLength];
     }
-    
+
     if (flags.FNAME) {
         char originalFileName[];
     }
-    
+
     if (flags.FCOMMENT) {
         char comment[];
     }
-    
+
     if (flags.FHCRC) {
         u16 crc16;
     }
-    
+
     u8 data[while($ < std::mem::size() - 8)] [[sealed]];
-    
+
     u32 crc32;
     type::Size<u32> isize;
 };

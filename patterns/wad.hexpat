@@ -1,8 +1,9 @@
 #pragma author WerWolv
 #pragma description DOOM WAD Archive
+#pragma magic [ 50 57 41 44 ] @ 0x00
 
-#include <type/magic.pat>
-#include <type/size.pat>
+import type.magic;
+import type.size;
 
 enum WADType : char {
     Internal = 'I',
@@ -13,7 +14,7 @@ struct FileLump {
     u32 filePos;
     type::Size<u32> size;
     char name[8];
-    
+
     u8 data[size] @ filePos [[sealed]];
 };
 

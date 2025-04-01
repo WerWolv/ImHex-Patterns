@@ -1,7 +1,8 @@
 #pragma description Android VBMeta image
+#pragma magic [ 41 56 42 30 ] @ 0x00
 
 #pragma endian big
-#include <std/core.pat>
+import std.core;
 
 using uint8_t = u8;
 using uint32_t = u32;
@@ -157,7 +158,7 @@ struct AvbDescriptor<auto end> {
   AvbDescriptorTag tag;
   uint64_t num_bytes_following;
   u8 data[num_bytes_following] [[hidden]];
-  
+
   match (tag) {
     (AvbDescriptorTag::AVB_DESCRIPTOR_TAG_PROPERTY)       : AvbPropertyDescriptor descriptor @ addressof(data);
     (AvbDescriptorTag::AVB_DESCRIPTOR_TAG_HASHTREE)       : AvbHashtreeDescriptor descriptor @ addressof(data);
@@ -204,7 +205,7 @@ struct AvbVBMetaImage
                      header.hash_offset, header.hash_size,
                      header.signature_offset, header.signature_size>
     authentication_data;
-  
+
   AuxiliaryData<header.auxiliary_data_block_size,
                 header.public_key_offset, header.public_key_size,
                 header.public_key_metadata_offset, header.public_key_metadata_size,

@@ -8,5 +8,5 @@ Thanks a lot for any additions or improvements :)
 ## Adding new Patterns
 
 When adding new patterns, if possible, please also add a test file named `<pattern_name>.hexpat.<extension>` to the `/tests/patterns/test_data` directory. This allows our Unit Tests to be run against your code so we can make sure it stays up-to-date and doesn't break when changes are made to the PatternLanguage.
-Please try to keep these files as small as possible (~100kiB at most) so cloning stays fast. 
+Please try to keep these files as small as possible (~100kiB at most) so cloning stays fast.
 Please also make sure to not submit any test files that are under copyright such as game files, ROMs or files extracted from other programs. We don't want a DMCA takedown on this repo.

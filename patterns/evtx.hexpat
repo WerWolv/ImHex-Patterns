@@ -1,5 +1,5 @@
 #pragma description MS Windows Vista Event Log
-
+#pragma MIME application/x-ms-evtx
 #pragma endian little
 
 struct Header {

@@ -1,9 +1,10 @@
-#pragma description End of Central Directory Header, Central Directory File Headers, Local File Header
+#pragma description ZIP compression archive
 
 #pragma MIME application/zip
 
-#include <std/mem.pat>
-#include <std/math.pat>
+import std.mem;
+import std.math;
+import type.time;
 
 struct EndOfCentralDirectory {
     u32 headerSignature [[comment("EoCD magic"), name("EoCD PK\\5\\6")]];
@@ -17,6 +18,89 @@ struct EndOfCentralDirectory {
     char coment[commentLength] [[name("Comment")]];
 };
 
+
+namespace extra {
+
+    bitfield UTFlags {
+          bool modification_time_set : 1;
+          bool access_time_set : 1;
+          bool creation_time_set : 1;
+          reserved: 5;  //reserved for additional timestamps; not set
+    };
+
+    struct X000A_NTFS {
+        u32 reserved;
+        u16 tag;
+        u16 TSize;
+        //Timestamps are in FILETIME format. Converted to Unix for easier handling.
+        type::FILETIME ModTime;
+        type::FILETIME AcTime;
+        type::FILETIME CrTime;
+    };
+
+    struct X7875_NewUnix {
+        u16 tag;
+        u16 TSize;
+        u8 version;
+        u8 UIDSize;
+        u8 UID[UIDSize];
+        u8 GIDSize;
+        u8 GID[GIDSize];
+    };
+
+    struct X5855_InfoZipUnix {
+        u32 AcTime;
+        u32 ModTime;
+        if (parent.TSize > 8){
+            u16 UID;
+        }
+        if (parent.TSize > 10){
+            u16 GID;
+        }
+    };
+
+    struct ExtraField {
+        u16 tag;
+        u16 TSize;
+
+        if (tag == 0x5455) {
+            // 0x5455 needs parsed with TSize in context to prevent overshoot from mismatched TSize/flags set
+            UTFlags Flags;
+            u64 extraEndFromFlags = $ + 4*(Flags.modification_time_set + Flags.access_time_set + Flags.creation_time_set);
+            u64 extraEndFromTSize = $ + TSize - 1;
+            u64 extraEnd = std::math::min(extraEndFromFlags, extraEndFromTSize);
+
+            if ( ($ < extraEnd) && Flags.modification_time_set) {
+                type::time32_t ModTime;
+            }
+
+            if ( ($ < extraEnd) && Flags.access_time_set) {
+                type::time32_t AcTime;
+            }
+
+            if ( ($ < extraEnd) && Flags.creation_time_set) {
+                type::time32_t CrTime;
+            }
+        } else if (tag == 0x000a) {
+            extra::X000A_NTFS x000A_NTFS;
+        } else if (tag == 0x7875) {
+            extra::X7875_NewUnix x7875_NewUnix;
+        } else if (tag == 0x5855) {
+            extra::X5855_InfoZipUnix x5855_InfoZipUnix;
+        } else {
+            std::print("Unsupported tag 0x{:02X}", tag);
+            padding[TSize];
+        }
+    };
+    
+    fn has_extra_field(u32 extraEnd) {
+        if ($ + 4 > extraEnd) return false;
+        u16 tag = std::mem::read_unsigned($, 2, std::mem::Endian::Little);
+        u16 len = std::mem::read_unsigned($ + 2, 2, std::mem::Endian::Little);
+        return !(tag == 0 || len == 0) && $ + 4 + len <= extraEnd;
+    };
+}
+
 fn find_eocd() {
     // If there is no zip comment, which is the common case,
     // the end-of-central-directory record will be 22 bytes long
@@ -25,25 +109,25 @@ fn find_eocd() {
         return std::mem::size()-22;
     } else {
         // If it's not there, then there's probably a zip comment;
-        // search the last 64KB of the file for the signature.        
+        // search the last 64KB of the file for the signature.
         u128 offset_search_from = std::math::max(0, std::mem::size()-65536-22);
         u128 prev_address;
         while(1){
-            u128 current_address = std::mem::find_sequence_in_range(0, offset_search_from, std::mem::size(), 0x50,0x4B,0x05,0x06); 
-            
+            s128 current_address = std::mem::find_sequence_in_range(0, offset_search_from, std::mem::size(), 0x50,0x4B,0x05,0x06);
+
             //Reached EOF and did not find valid eocd.
-            if (current_address == 340282366920938463463374607431768211455){
+            if (current_address == -1) {
                 std::error("Could not find EOCD.");
             }
-            
+
             //Potential eocd found. Create a eocd struct
             EndOfCentralDirectory EOCD @ current_address;
-            
+
             //If central directory file header is valid, then we know the eocd offset is valid.
             if (std::mem::read_unsigned(EOCD.CDOffset, 4, std::mem::Endian::Little) == 0x2014B50){
                 return current_address;
             }
-            
+
             offset_search_from = current_address + 1;
             prev_address = current_address;
         }
@@ -83,20 +167,36 @@ enum CompressionMethod : u16 {
   AE_x = 99,             // AE-x encryption marker (see APPENDIX E)
 };
 
+bitfield GeneralPurposeBitFlags {
+    encrypted : 1;
+    compressionOptions : 2;
+    crcAndSizesInCDAndDataDescriptor : 1;
+    enhancedDeflating : 1;
+    patchedData : 1;
+    strongEncryption : 1;
+    unused : 4;
+    filenameAndCommentAreUtf8 : 1;
+    reservedPKWARE_0 : 1;
+    centralDirectoryEncrypted : 1;
+    reservedPKWARE_1 : 2;
+};
+
 struct LocalFileHeader {
     u32 headerSignature [[name("LCF PK\\3\\4")]];
     u16 version [[ comment("The minimum supported ZIP specification version needed to extract the file") ]];
-    u16 purposeBitflag  [[ comment("General purpose bit flag") ]];
+    GeneralPurposeBitFlags generalPurposeBitFlags  [[ comment("General purpose bit flag") ]];
     CompressionMethod compressionMethod [[ comment("Compression method") ]];
-    u16 lastModifyTime [[ comment("File last modification time") ]];
-    u16 lastModifyDate [[ comment("File last modification date") ]];
+    type::DOSTime lastModifyTime [[ comment("File last modification time") ]];
+    type::DOSDate lastModifyDate [[ comment("File last modification date") ]];
     u32 crc32 [[ comment("CRC-32") ]];
     u32 compressedSize [[ comment("Compressed size") ]];
     u32 uncompressedSize [[ comment("Uncompressed size") ]];
     u16 fileNameLength [[ comment("File name length (n)") ]];
     u16 extraFieldLength [[ comment("Extra field length (m)") ]];
     char fileName[fileNameLength] [[ comment("File Name") ]];
-    char extraField[extraFieldLength] [[ comment("Extra Field") ]];
+    u64 extraEnd = $ + extraFieldLength;
+    extra::ExtraField extraFields[while (extra::has_extra_field(extraEnd))] [[comment("Extra Fields")]];
+    padding[extraEnd - $];
     u8 data[compressedSize] [[name("File Data")]];
 };
 
@@ -109,10 +209,10 @@ struct CentralDirectoryFileHeader {
     u32 headerSignature [[name("CDFH PK\\1\\2")]];
     u16 versionMade [[comment("Version file made by")]];
     u16 versionExtract [[comment("Minimum version needed to extract")]];
-    u16 generalFlag [[comment("General purpose bit flag")]];
+    GeneralPurposeBitFlags generalPurposeBitFlags [[comment("General purpose bit flag")]];
     CompressionMethod compressionMethod;
-    u16 fileLastModifyTime [[comment("File last modification time")]];
-    u16 fileLastModifyDate [[comment("File last modification date")]];
+    type::DOSTime fileLastModifyTime [[comment("File last modification time")]];
+    type::DOSDate fileLastModifyDate [[comment("File last modification date")]];
     u32 crc32 [[comment("CRC-32 of uncompressed data")]];
     u32 compressedSize;
     u32 uncompressedSize;
@@ -124,8 +224,10 @@ struct CentralDirectoryFileHeader {
     u32 externalFileAttributes;
     File file;
     char fileName[fileNameLength];
-    u8 extraField[extraFieldLength];
-    char comment[fileCommentLength];
+    u64 extraEnd = $ + extraFieldLength;
+    extra::ExtraField extraFields[while (extra::has_extra_field(extraEnd))] [[comment("Extra Fields")]];
+    padding[extraEnd - $];
+    char comment[fileCommentLength] @ extraEnd;
 };
 
 CentralDirectoryFileHeader centralDirHeaders[fileInfo.CDRCount] @ (fileInfo.CDOffset) [[name("Files")]];

@@ -1,10 +1,11 @@
 #pragma author gmestanley
-#pragma description IPS (International Patching System) files
+#pragma description IPS (International Patching System)
+#pragma magic [ 50 41 54 43 48 ] @ 0x00
 
 #pragma endian big
 
-#include <std/mem.pat>
-#include <std/string.pat>
+import std.mem;
+import std.string;
 
 struct Hunk {
 	u24 offset;

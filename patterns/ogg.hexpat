@@ -1,10 +1,11 @@
 #pragma author WerWolv
-#pragma description OGG Audio format
+#pragma description OGG Audio
 
 #pragma MIME audio/ogg
 
-#include <std/core.pat>
-#include <std/mem.pat>
+import std.core;
+import std.mem;
+import type.magic;
 
 bitfield HeaderType {
 	Continuation	: 1;
@@ -17,7 +18,7 @@ struct SegmentData {
 };
 
 struct Ogg {
-	char capturePattern[4];
+	type::Magic<"OggS"> capturePattern;
 	u8 version;
 	HeaderType headerType;
 	u64 granulePosition;

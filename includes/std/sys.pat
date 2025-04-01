@@ -1,16 +1,16 @@
 #pragma once
 
-#include <std/io.pat>
+import std.io;
 
 /*!
     Basic helper functions
 */
 
-namespace std {
+namespace auto std {
 
     /**
         Asserts that a given value is true. If it's not, abort evaluation and print the given message to the console
-        @param conditoon The condition that is required to be true
+        @param condition The condition that is required to be true
         @param message The message to print in case the assertion doesn't hold
     */
     fn assert(bool condition, str message) {
@@ -21,7 +21,7 @@ namespace std {
 
     /**
         Asserts that a given value is true. If it's not, print the given message to the console as a warning
-        @param conditoon The condition that is required to be true
+        @param condition The condition that is required to be true
         @param message The message to print in case the assertion doesn't hold
     */
     fn assert_warn(bool condition, str message) {
@@ -47,6 +47,13 @@ namespace std {
     */
     fn sizeof_pack(auto ... pack) {
         return builtin::std::sizeof_pack(pack);
+    };
+
+    /**
+        Throws an error notifying the developer that the current code path is not implemented currently.
+    */
+    fn unimplemented() {
+        std::error("Unimplemented code path reached!");
     };
 
 }

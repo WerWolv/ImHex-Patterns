@@ -1,8 +1,12 @@
-#pragma description SE Linux modules
+#pragma description SE Linux module
+#pragma author Ange Albertini
 
-#include <std/sys.pat>
-#pragma pattern_limit 13107200
+import std.sys;
+#pragma pattern_limit 0
+#pragma array_limit 0
 #pragma endian little
+#pragma magic [ 8C FF 7C F9 ] @ 0x00
+#pragma magic [ 8D FF 7C F9 ] @ 0x00
 
 u32 version;
 u32 symbols_count;
@@ -17,6 +21,13 @@ enum magics: u32 {
     module = 0xf97cff8d,
 };
 
+bitfield CONFIG {
+	DENY_UNKNOWN: 1;
+	MLS: 1;
+	REJECT_UNKNOWN: 1;
+	ALLOW_UNKNOWN: 1;
+	padding: 4 + 3 * 8;
+};
 
 enum policy_types: u32 {
     kernel = 0,
@@ -90,7 +101,7 @@ struct expression {
     if ((type_g == policy_types::kernel && version >= 29) ||
         (type_g != policy_types::kernel))
         type_set type_names;
-    } 
+    }
 };
 
 struct constraint {
@@ -226,12 +237,12 @@ struct user_s {
     if (boundary_feature)
         u32 bounds;
     char key[length];
-    
+
     if (type_g == policy_types::kernel)
         extensible_bitmap roles;
     else
         role_set roles;
-    
+
     if ((type_g == policy_types::kernel && version >= 19) || (type_g == policy_types::module && version >= 5 && version < 6) || (type_g == policy_types::base && version >= 5 && version < 6)) {
         mls_range exp_range;
         mls_level exp_dftlevel;
@@ -249,7 +260,7 @@ struct bool_ { // conditional boolean
     u32 state;
     u32 length;
     char key[length];
-    if ((type_g != policy_types::kernel && version >= 14)) 
+    if ((type_g != policy_types::kernel && version >= 14))
         u32 flags;
 };
 using bools = symbols_list<bool_>;
@@ -280,7 +291,7 @@ struct symbols {
     if (symbols_count >= 6)
         bools bools;
     if (symbols_count >= 7)
-        sensitivity_levels levels; 
+        sensitivity_levels levels;
     if (symbols_count >= 8)
         categories cats;
 };
@@ -420,7 +431,7 @@ struct filename_trans_item {
 struct role_trans_rule_item {
     role_set roles;
     role_set types;
-    if (version >= 12) 
+    if (version >= 12)
         extensible_bitmap classes;
     u32 new_role;
 };
@@ -459,7 +470,7 @@ struct filename_trans_rule_item {
     u32 tclass;
     u32 otype;
 
-    if (version >= 21) 
+    if (version >= 21)
         u32 flags;
 };
 using filename_trans_rule = list<filename_trans_rule_item>;
@@ -659,19 +670,19 @@ struct Header {
     if (magic == magics::kernel)
         type_g = policy_types::kernel;
     else
-    if (policy_subtype == policy_types::module) 
+    if (policy_subtype == policy_types::module)
         type_g = policy_types::module;
     else
-        type_g = policy_types::base;        
+        type_g = policy_types::base;
     u32 __policyvers;
     version = __policyvers;
     boundary_feature = (type_g == policy_types::kernel && version >= 24) || (type_g != policy_types::kernel && version >= 9);
     std::assert((magic == magics::kernel && 15 <= version && version <= 33) || (magic != magics::kernel && 4 <= version && version <= 21), "Non matching type_g != and type");
-    u32 config;
+    CONFIG config;
     u32 symbols_count_;
     symbols_count = symbols_count_;
     std::assert(0 <= symbols_count && symbols_count <= 9, "Invalid 'symbols_count' value.");
-    u32 object_contexts_count_; 
+    u32 object_contexts_count_;
     object_contexts_count = object_contexts_count_;
     std::assert(0 <= object_contexts_count && object_contexts_count <= 9, "Invalid 'object_contexts_count' value.");
     if (magic == magics::module)

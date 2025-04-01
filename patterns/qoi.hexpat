@@ -1,9 +1,9 @@
-#pragma description QOI image files
+#pragma description QOI image
 
 #pragma MIME image/qoi
 #pragma endian big
 
-#include <std/mem.pat>
+import std.mem;
 
 namespace qoi {
 

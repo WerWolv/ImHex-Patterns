@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/mem.pat>
+import std.mem;
 
 /*!
     The Pointer library contains helper functions to deal with pointer types.
     The `relative_to` functions are meant to be used with the `[[pointer_base]]` attribute
 */
 
-namespace std::ptr {
+namespace auto std::ptr {
 
     /**
         Use the offset of the current pointer as start address
@@ -57,7 +57,7 @@ namespace std::ptr {
         // `pointerValue` is `no_unique_address` because we don't want to advance
         // the current memory location after reading the value of the pointer itself;
         // we want to examine the value at this address to determine what should be
-        // displayed. It's also `hidden` so the editor only displays either thee 
+        // displayed. It's also `hidden` so the editor only displays either thee
         // padding or the populated pointer/pointee field.
         PointerTy pointerValue [[no_unique_address, hidden]];
         if (pointerValue == 0x0) {

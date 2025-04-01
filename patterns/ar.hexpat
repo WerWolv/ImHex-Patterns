@@ -1,11 +1,11 @@
 #pragma author WerWolv
-#pragma description Static library archive files
+#pragma description GNU Static library archive
 
 #pragma MIME application/x-archive
 
-#include <std/string.pat>
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.string;
+import std.mem;
+import std.sys;
 
 struct ARFile {
 	char file_name[16];
@@ -15,7 +15,7 @@ struct ARFile {
 	char file_mode[8];
 	char file_size[10];
 	u16 end_marker;
-	
+
 	if (end_marker == 0x0A60) {
 		u8 data[std::string::parse_int(this.file_size, 10)];
 		padding[sizeof(data) & 1];
@@ -23,6 +23,9 @@ struct ARFile {
 };
 
 char signature[8] @ 0x00;
+if (signature == "!<arch>\r") {
+    std::error("Archive file got corrupted due to CRLF line ending conversion!");
+}
 std::assert(signature == "!<arch>\n", "File is not a valid archive!");
 
 ARFile files[while($ < std::mem::size())] @ $;

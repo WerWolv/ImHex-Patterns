@@ -1,6 +1,7 @@
 #pragma description DirectDraw Surface
 
 #pragma MIME image/vnd-ms.dds
+#pragma MIME image/x-dds
 #pragma endian little
 
 enum DXGI_FORMAT : u32 {
@@ -167,16 +168,26 @@ bitfield Caps2Flags {
 };
 
 bitfield PixelFormatFlags {
-  alphaPixels : 1;
-  alpha       : 1;
-  fourCC      : 1;
-  padding     : 3;
-  rgb         : 1; // 0x40
-  padding     : 2;
-  yuv         : 1; // 0x200
-  padding     : 3;
-  luminance   : 1; // 0x20000
-  padding     : 17;
+  alphaPixels 	    : 1;  // DDPF_ALPHAPIXELS
+  alpha       	    : 1;  // DDPF_ALPHA
+  fourCC      	    : 1;  // DDPF_FOURCC
+  paletteIndexed4   : 1;  // DDPF_PALETTEINDEXED4
+  paletteIndexedTo8 : 1;  // DDPF_PALETTEINDEXEDTO8
+  paletteIndexed8   : 1;  // DDPF_PALETTEINDEXED8
+  rgb               : 1;  // DDPF_RGB
+  compressed        : 1;  // DDPF_COMPRESSED
+  rgbToYuv          : 1;  // DDPF_RGBTOYUV
+  yuv               : 1;  // DDPF_YUV
+  zBuffer           : 1;  // DDPF_ZBUFFER
+  paletteIndexed1   : 1;  // DDPF_PALETTEINDEXED1
+  paletteIndexed2   : 1;  // DDPF_PALETTEINDEXED2
+  zPixels           : 1;  // DDPF_ZPIXELS
+  stencilBuffer     : 1;  // DDPF_STENCILBUFFER
+  alphaResult       : 1;  // DDPF_ALPHARESULT
+  luminance         : 1;  // DDPF_LUMINANCE
+  bumpLuminance     : 1;  // DDPF_BUMPLUMINANCE
+  bumpDudv          : 1;  // DDPF_BUMPDUDV
+  padding           : 13; // Padding bits to complete 32-bit structure
 };
 
 enum DX10ResourceDimension : u32 {
@@ -192,7 +203,7 @@ enum DX10AlphaMode : u32 {
   Straight,
   PreMultiplied,
   Opaque,
-  Custom,	
+  Custom,
 };
 
 bitfield DX10MiscFlags {

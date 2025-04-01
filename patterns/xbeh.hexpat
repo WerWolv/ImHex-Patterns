@@ -3,12 +3,12 @@
 
 #pragma MIME audio/x-xbox-executable
 
-#include <type/magic.pat>
-#include <type/size.pat>
-#include <type/time.pat>
+import type.magic;
+import type.size;
+import type.time;
 
-#include <std/io.pat>
-#include <std/mem.pat>
+import std.io;
+import std.mem;
 
 
 bitfield AllowedMedia {
@@ -61,11 +61,11 @@ union EntryPoint {
     u32 betaAddress [[format("format_beta_entrypoint")]];
     u32 debugAddress [[format("format_debug_entrypoint")]];
     u32 retailAddress [[format("format_retail_entrypoint")]];
-    
+
     if ((betaAddress ^ 0xE682F45B) - parent.baseAddress < std::mem::size())
-        u8 beta     @ (betaAddress ^ 0xE682F45B) - parent.baseAddress;;
-    if ((debugAddress ^ 0x94859D4B) - parent.baseAddress < std::mem::size())    
-        u8 debug    @ (debugAddress ^ 0x94859D4B) - parent.baseAddress;;
+        u8 beta     @ (betaAddress ^ 0xE682F45B) - parent.baseAddress;
+    if ((debugAddress ^ 0x94859D4B) - parent.baseAddress < std::mem::size())
+        u8 debug    @ (debugAddress ^ 0x94859D4B) - parent.baseAddress;
     if ((retailAddress ^ 0xA8FC57AB) - parent.baseAddress < std::mem::size())
         u8 retail   @ (retailAddress ^ 0xA8FC57AB) - parent.baseAddress;
 };
@@ -301,9 +301,9 @@ struct KernelImageThunk {
 union KernelImageThunkAddress {
     u32 debugAddress [[format("format_debug_kernel_image_thunk_address")]];
     u32 retailAddress [[format("format_retail_kernel_image_thunk_address")]];
-    
-    if ((debugAddress ^ 0xEFB1F152) - parent.baseAddress < std::mem::size())    
-        KernelImageThunk debug    @ (debugAddress ^ 0xEFB1F152) - parent.baseAddress;;
+
+    if ((debugAddress ^ 0xEFB1F152) - parent.baseAddress < std::mem::size())
+        KernelImageThunk debug    @ (debugAddress ^ 0xEFB1F152) - parent.baseAddress;
     if ((retailAddress ^ 0x5B6D40B6) - parent.baseAddress < std::mem::size())
         KernelImageThunk retail   @ (retailAddress ^ 0x5B6D40B6) - parent.baseAddress;
 };
@@ -329,7 +329,7 @@ fn relative_to_base(auto pointer) {
 };
 
 fn relative_to_base_section(auto pointer) {
-    return -parent.parent.baseAddress;
+    return -parent.parent.parent.baseAddress;
 };
 
 bitfield LibraryFlags {
@@ -365,7 +365,7 @@ struct SectionHeader {
     u16 *headSharedPageReferenceCount : u32 [[pointer_base("relative_to_base_section")]];
     u16 *tailSharedPageReferenceCount : u32 [[pointer_base("relative_to_base_section")]];
     u8 sectionDigest[20];
-    
+
     u8 data[rawSize] @ rawAddress [[sealed]];
 };
 
@@ -381,7 +381,7 @@ struct XBEH {
     InitializationFlags initializationFlags;
     EntryPoint entrypoint;
     TLS *tls : u32 [[pointer_base("relative_to_base")]];
-    
+
     type::Size<u32> stackSize;
     u32 peHeapReserve, peHeapCommit, peBaseAddress;
     type::Size<u32> peImageSize;
@@ -399,7 +399,7 @@ struct XBEH {
     u32 logoBitMapAddress, logoBitmapSize;
     u64 unknown1;
     u32 unknown2;
-    
+
     u8 logoBitmap[logoBitmapSize] @ logoBitMapAddress - baseAddress;
 };
 

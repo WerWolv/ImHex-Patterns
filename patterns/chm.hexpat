@@ -1,11 +1,12 @@
 #pragma author WerWolv
 #pragma description Windows HtmlHelp Data (ITSF / CHM)
+#pragma MIME application/vnd.ms-htmlhelp
 
-#include <type/magic.pat>
-#include <type/size.pat>
-#include <type/guid.pat>
-#include <type/leb128.pat>
-#include <std/sys.pat>
+import type.magic;
+import type.size;
+import type.guid;
+import type.leb128;
+import std.sys;
 
 enum WindowsLanguageId : u32 {
     Arabic_SaudiArabia                          = 0x401,
@@ -285,26 +286,26 @@ struct DirectoryIndexEntry {
 
 struct ListingChunk {
     char magic[4];
-    
+
     if (magic == "PMGL") {
         type::Size<u32> freeSpaceLength;
         u32;
         u32 prevChunkNumber, nextChunkNumber;
-        
+
         u16 directoryListingEntryCount @ addressof(this) + parent.directoryChunkSize - 2;
         u16 offsets[(freeSpaceLength - 2) / 2] @ addressof(directoryListingEntryCount) - (freeSpaceLength - 2);
-        
+
         DirectoryListingEntry directories[directoryListingEntryCount];
-        
+
         $ = addressof(directoryListingEntryCount) + sizeof(directoryListingEntryCount);
     } else if (magic == "PMGI") {
         type::Size<u32> freeSpaceLength;
-        
+
         u16 directoryIndexEntryCount @ addressof(this) + parent.directoryChunkSize - 2;
         u16 offsets[(freeSpaceLength - 2) / 2] @ addressof(directoryIndexEntryCount) - (freeSpaceLength - 2);
-        
+
         DirectoryIndexEntry indexes[directoryIndexEntryCount];
-        
+
         $ = addressof(directoryIndexEntryCount) + sizeof(directoryIndexEntryCount);
     } else {
         std::error("Invalid chunk magic!");
@@ -313,7 +314,7 @@ struct ListingChunk {
 
 struct HeaderSection {
     char magic[4];
-    
+
     if (magic == "\xFE\x01\x00\x00") {
         u32;
         type::Size<u64> fileSize;
@@ -337,7 +338,7 @@ struct HeaderSection {
         u32;
         u32;
         u32;
-        
+
         ListingChunk chunk[directoryChunkCount];
     } else {
         std::error("Invalid header section magic!");
@@ -347,22 +348,22 @@ struct HeaderSection {
 struct HeaderSectionTableEntry {
     u64 offset;
     type::Size<u64> size;
-    
+
     HeaderSection headerSection @ offset;
 };
 
 struct NameListEntry {
     type::Size<u16> nameLength;
-    char16 name[nameLength];  
+    char16 name[nameLength];
     padding[2];
 };
 
 struct NameListFile {
     u16 fileLengthWords;
     u16 entriesInFile;
-    
+
     NameListEntry nameList[entriesInFile];
-    
+
     padding[0x2E];
 };
 
@@ -376,7 +377,7 @@ struct SectionData {
     u32;
 };
 
-struct Content {    
+struct Content {
     NameListFile nameListFile;
     SectionData sectionData;
 };
@@ -389,9 +390,9 @@ struct CHM {
     be u32 timeStamp;
     WindowsLanguageId languageId;
     type::GUID guids[2];
-    
+
     HeaderSectionTableEntry headerSectionTable[2];
-    
+
     Content *dataOffset : u64;
 };
 

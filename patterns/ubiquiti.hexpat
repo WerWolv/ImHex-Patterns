@@ -1,9 +1,10 @@
 #pragma description Ubiquiti Firmware (update) image
 
 #pragma endian big
+#pragma magic [ 55 42 4E 54 ] @ 0x00
 
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.mem;
+import std.sys;
 
 // Ubiquiti Firmware related structs
 // More information here: https://dl.ubnt.com/firmwares/XN-fw/v5.6.3/GPL.UBNT.v5.6.3.tar.bz2

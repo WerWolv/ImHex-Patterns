@@ -1,10 +1,10 @@
 #pragma author WerWolv
-#pragma description Binary Value Data Format (.vdf) files
+#pragma description Valve Binary Value Data Format (.vdf)
 
 #pragma eval_depth 0x10000
 
-#include <std/mem.pat>
-#include <std/sys.pat>
+import std.mem;
+import std.sys;
 
 enum Type : u8 {
 	Set = 0x00,
@@ -15,9 +15,9 @@ enum Type : u8 {
 
 struct Entry {
 	Type type;
-	
+
 	char name[];
-	
+
 	if (type == Type::Set) {
 		Entry entries[while (std::mem::read_unsigned($, 1) != Type::EndSet)];
 		Type endSet [[hidden]];

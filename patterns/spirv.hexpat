@@ -1,6 +1,6 @@
-#pragma description SPIR-V header and instructions
+#pragma description Khronos Group SPIR-V
 
-#include <std/mem.pat>
+import std.mem;
 
 enum GeneratorID : u16 {
     Khronos = 0,

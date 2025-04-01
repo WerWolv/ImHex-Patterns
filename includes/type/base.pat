@@ -1,14 +1,14 @@
 #pragma once
 
-#include <std/io.pat>
-#include <std/math.pat>
+import std.io;
+import std.math;
 
 /*!
     Types used to change the base of the displayed integer value.
     Used like `type::Hex<u32> hexNumber;`, `type::Oct<u16> octalNumber;`
 */
 
-namespace type {
+namespace auto type {
     
     /**
         Integer type representing a Hexadecimal value. Displays its value in hexadecimal format.
@@ -34,7 +34,7 @@ namespace type {
     */
     using Bin<T> = T [[format("type::impl::format_bin")]];
 
-	namespace impl {
+    namespace impl {
 
             fn format_number(auto value, str fmt) {
                 bool negative = value < 0;
@@ -50,6 +50,6 @@ namespace type {
             fn format_dec(auto value) { return type::impl::format_number(value, "{}"); };
             fn format_bin(auto value) { return type::impl::format_number(value, "0b{:08b}"); };
 
-	}
+    }
 
 }

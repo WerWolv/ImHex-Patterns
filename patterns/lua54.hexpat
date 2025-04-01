@@ -1,7 +1,8 @@
 #pragma description Lua 5.4 bytecode
+#pragma magic [ 1B 4C 75 61 54 ] @ 0x00
 
-#include <std/io.pat>
-#include <std/mem.pat>
+import std.io;
+import std.mem;
 
 namespace impl {
 
@@ -15,7 +16,7 @@ namespace impl {
         res |= array[sizeof(array)-1] & 0x7f;
         return res;
     };
-    
+
     fn format_Size(auto leb128) {
         u128 res = impl::transform_Size_array(leb128.array);
         return std::format("{} ({:#x})", res, res);
@@ -24,18 +25,18 @@ namespace impl {
     fn transform_Size(auto leb128) {
         return impl::transform_Size_array(leb128.array);
     };
-    
+
     fn format_LuaString(auto string) {
        if (string.size == 0) {
            return "None";
         }
         return std::format("\"{}\"", string.data);
     };
-    
+
     fn format_Constant(auto constant) {
        return constant.data;
     };
-    
+
     fn format_Version(auto ver) {
        return std::format("Ver. {}.{}", ver.major, ver.minor);
     };
@@ -47,7 +48,7 @@ using LuaFunction;
 struct Size {
         u8 array[while(addressof(this) == $ || ((addressof(this)-$ < 9) && (std::mem::read_unsigned($-1, 1) & 0x80 == 0)))] [[hidden]];
 } [[sealed, format("impl::format_Size"), transform("impl::transform_Size")]];
-    
+
 
 bitfield Version {
     minor : 4;
@@ -125,7 +126,6 @@ struct LuaFunction {
     Vector<LuaUpvalue> upvalues;
     Vector<LuaFunction> protos;
     LuaDebugInfo debugInfo;
-
 };
 
 struct LuaFile {

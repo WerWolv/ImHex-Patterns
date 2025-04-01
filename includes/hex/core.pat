@@ -1,12 +1,12 @@
 #pragma once
 
-#include <hex/impl/imhex_check.pat>
+import hex.impl.imhex_check;
 
 /*!
     Core intrinsic functions to interact with the ImHex Hex Editor
 */
 
-namespace hex::core {
+namespace auto hex::core {
 
     /**
         A type representing a selection in the hex editor
@@ -35,6 +35,16 @@ namespace hex::core {
         }
 
         return result;
+    };
+
+    /**
+        Add a file to the Virtual Filesystem
+        @param path The name of the file
+        @param pattern The pattern associated with the file
+    */
+    fn add_virtual_file(str path, auto pattern)
+    {
+        builtin::hex::core::add_virtual_file(path, pattern);
     };
 
 }

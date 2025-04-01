@@ -1,13 +1,13 @@
 #pragma once
 
-#include <std/mem.pat>
+import std.mem;
 
 /*!
     The core library contains intrinsics and "compiler magic" functions that
     get extra help from the runtime to fulfill their purpose.
 */
 
-namespace std::core {
+namespace auto std::core {
 
     /**
         The layout order of each field after byte-endianness has been handled.
@@ -38,27 +38,35 @@ namespace std::core {
     };
 
     /**
-        Returns the first parameter of the attribute of a pattern if it has one
+        Returns the nth parameter of the attribute of a pattern if it has one
         @param pattern The pattern to check
         @param attribute The attribute's name to query
+        @param [index] The parameter index of the attribute to return. Defaults to 0
+    */
+    fn get_attribute_argument(ref auto pattern, str attribute, u32 index = 0) {
+        return builtin::std::core::get_attribute_argument(pattern, attribute, index);
+    };
+
+    /**
+        @warning Removed in 1.27.0
     */
     fn get_attribute_value(ref auto pattern, str attribute) {
-        return builtin::std::core::get_attribute_value(pattern, attribute);
+        builtin::std::error("`std::core::get_attribute_value(pattern, attribute)` has been removed.\nUse `std::core::get_attribute_argument(pattern, attribute, [index])` instead.");
     };
 
 
     /**
-        Sets the current default endianess.
-        Any patterns created following this attribute will be created using the set endianess.
-        @param endian The new default endianess
+        Sets the current default endianness.
+        Any patterns created following this attribute will be created using the set endianness.
+        @param endian The new default endianness
     */
     fn set_endian(std::mem::Endian endian) {
         builtin::std::core::set_endian(u32(endian));
     };
 
     /**
-        Gets the current default endianess.
-        @return The currently set default endianess
+        Gets the current default endianness.
+        @return The currently set default endianness
     */
     fn get_endian() {
         return builtin::std::core::get_endian();
@@ -146,4 +154,39 @@ namespace std::core {
     fn set_display_name(ref auto pattern, str name) {
         builtin::std::core::set_display_name(pattern, name);
     }; 
+
+
+    /**
+        Changes the comment attached to a pattern
+        @param pattern The pattern to modify
+        @param comment The new comment of the pattern
+    */
+    fn set_pattern_comment(ref auto pattern, str comment) {
+        builtin::std::core::set_pattern_comment(pattern, comment);
+    }; 
+
+    /**
+        Executes the function with the given name, passing in all given arguments
+        @param function_name The namespace-prefixed name of the function
+        @param args Arguments to pass to the function
+    */
+    fn execute_function(str function_name, auto ... args) {
+        builtin::std::core::execute_function(function_name, args);
+    };
+
+    /**
+        Sets the pattern color palette for all future created patterns
+        @param args RGBA8 colors as 32 bit integers (0xAABBGGRR)
+    */
+    fn set_pattern_palette_colors(auto ... colors) {
+        builtin::std::core::set_pattern_palette_colors(colors);
+    };
+
+    /**
+        Resets the current pattern palette progress back to zero.
+        This can be useful to force all instances of a type to have the same coloring for its members
+    */
+    fn reset_pattern_palette() {
+        builtin::std::core::reset_pattern_palette();
+    };
 }

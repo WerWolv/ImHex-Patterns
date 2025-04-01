@@ -1,10 +1,11 @@
 #pragma author WerWolv
-#pragma description Nintendo Switch XCI cardridge ROM
+#pragma description Nintendo Switch XCI cartridge ROM
+#pragma magic [ 48 46 53 30 ] @ 0x00
 
-#include <std/core.pat>
+import std.core;
 
-#include <type/magic.pat>
-#include <type/size.pat>
+import type.magic;
+import type.size;
 
 #define PAGE_SIZE 0x200
 
@@ -57,7 +58,7 @@ struct CardHeader {
     u32 selT1Key;
     u32 selKey;
     u32 limArea;
-    
+
     u8 cardHeaderEncryptedData[0x70];
 };
 
@@ -86,15 +87,15 @@ struct PartitionFs {
     padding[4];
     FileEntry fileEntryTable[fileCount];
     String stringTable[while($ < (addressof(fileEntryTable) + sizeof(fileEntryTable) + stringTableSize))];
-    
+
     File files[fileCount];
 };
 
 struct XCI {
     CardHeader header;
-    
+
     PartitionFs x @ header.romAreaStartPageAddress * PAGE_SIZE;
-    
+
 };
 
 XCI xci @ 0x00;
