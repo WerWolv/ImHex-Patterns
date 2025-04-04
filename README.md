@@ -58,6 +58,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DDS | `image/vnd-ms.dds` | [`patterns/dds.hexpat`](patterns/dds.hexpat) | DirectDraw Surface |
 | DEX | | [`patterns/dex.hexpat`](patterns/dex.hexpat) | Dalvik EXecutable Format |
 | DICOM | `application/dicom` | [`patterns/dicom.hexpat`](patterns/dicom.hexpat) | DICOM image format |
+| DLS | | [`patterns/dls.hexpat`](patterns/dls.hexpat) | Downloadable Sounds (DLS) |
 | DMG | | [`patterns/dmg.hexpat`](patterns/dmg.hexpat) | Apple Disk Image Trailer (DMG) |
 | DMP | | [`patterns/dmp64.hexpat`](patterns/dmp64.hexpat) | Windows Kernel Dump(DMP64) |
 | DPAPI_Blob | | [`patterns/dpapblob.hexpat`](patterns/dpapiblob.hexpat) | Data protection API Blob File Format |
