@@ -256,18 +256,18 @@ struct WAVEFORMAT {
     
     if (wfmt == TypewFormatTag::WAVE_FORMAT_PCM) {
         type::PCMWAVEFORMAT fmt;
-    } else if (wFormatTag == TypewFormatTag::WAVE_FORMAT_EXTENSIBLE || wFormatTag == TypewFormatTag::WAVE_FORMAT_IEEE_FLOAT) {
+    } else if (wfmt == TypewFormatTag::WAVE_FORMAT_EXTENSIBLE || wfmt == TypewFormatTag::WAVE_FORMAT_IEEE_FLOAT) {
         type::WAVEFORMATEXTENSIBLE fmt;
-    } else if (wFormatTag == TypewFormatTag::WAVE_FORMAT_ADPCM) {
+    } else if (wfmt == TypewFormatTag::WAVE_FORMAT_ADPCM) {
         type::ADPCMWAVEFORMAT fmt;
-    } else if (wFormatTag == TypewFormatTag::WAVE_FORMAT_IMA_ADPCM) {
+    } else if (wfmt == TypewFormatTag::WAVE_FORMAT_IMA_ADPCM) {
         type::IMAADPCMWAVEFORMAT fmt;
-    } else if (wFormatTag == TypewFormatTag::WAVE_FORMAT_MPEG) {
+    } else if (wfmt == TypewFormatTag::WAVE_FORMAT_MPEG) {
         type::MPEG1WAVEFORMAT fmt;
-    } else if (wFormatTag == TypewFormatTag::WAVE_FORMAT_MPEGLAYER3) {
+    } else if (wfmt == TypewFormatTag::WAVE_FORMAT_MPEGLAYER3) {
         type::MPEGLAYER3WAVEFORMAT fmt;
     } else {
-        std::warning(std::format("Unsupported wFormatTag: 0x{:X}", u16(wFormatTag)));
+        std::warning(std::format("Unsupported wFormatTag: 0x{:X}", u16(wfmt)));
     }
 };
 
