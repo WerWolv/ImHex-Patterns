@@ -3,7 +3,9 @@
 #pragma MIME audio/x-wav
 #pragma MIME audio/wav
 
+import std.core;
 import std.mem;
+import type.mmreg;
 
 struct RiffHeader {
   char ckID[4] [[comment("Container Signature"), name("RIFF Header Signature")]];
@@ -14,106 +16,6 @@ struct RiffHeader {
 struct WaveChunk {
   char chunkId[4];
   u32  chunkSize;
-};
-
-enum WaveFormatType : u16 {
-  Unknown,
-  PCM,
-  MS_ADPCM,
-  IEEEFloatingPoint,
-  ALAW = 6,
-  MULAW,
-  IMA_ADPCM  = 0x11,
-  GSM610     = 0x31,
-  MPEG       = 0x50,
-  MPEGLAYER3 = 0x55,
-};
-
-struct WaveFormat {
-  WaveFormatType formatTag;
-  u16            channels;
-  u32            samplesPerSec [[comment("Sample Frequency")]];
-  u32            avgBytesPerSec [[comment("BPS - Used to estimate buffer size")]];
-  u16            blockAlign;
-};
-
-struct WaveFormatEx {
-  u16 bitsPerSample;
-  u16 extendedDataSize;
-};
-
-struct WaveFormatExDummy {
-  u16 bitsPerSample;
-  u16 extendedDataSize;
-  u8  extendedData[extendedDataSize];
-};
-
-struct WaveFormatPCM {
-  u16 bitsPerSample;
-};
-
-struct WaveMSADPCMCoefSet {
-  s16 coef1;
-  s16 coef2;
-};
-
-struct WaveFormatMSADPCM : WaveFormatEx {
-  u16                samplesPerBlock;
-  u16                numCoef;
-  WaveMSADPCMCoefSet coef[numCoef];
-};
-
-bitfield WaveMPEGLayer {
-  Layer1  : 1;
-  Layer2  : 1;
-  Layer3  : 1;
-  padding : 13;
-};
-
-bitfield WaveMPEGMode {
-  Stereo : 1;
-  JointStereo : 1;
-  DualChannel : 1;
-  SingleChannel : 1;
-  padding : 12;
-};
-
-bitfield WaveMPEGFlags {
-  PrivateBit : 1;
-  Copyright : 1;
-  OriginalHome : 1;
-  ProtectionBit : 1;
-  IdMPEG1 : 1;
-  padding : 11;
-};
-
-struct WaveFormatIEEEFloatingPoint : WaveFormatPCM {
-
-};
-
-struct WaveFormatMPEG : WaveFormatEx {
-  WaveMPEGLayer    headLayersUsed;
-  u32              headBitrate;
-  WaveMPEGMode     headMode;
-  u16              headModeExt;
-  u16              headEmphasis;
-  WaveMPEGFlags    headFlags;
-  u32              PTSLow;
-  u32              PTSHigh;
-};
-
-enum WaveFormatMPEGLayer3Flags : u32 {
-  MPEGLAYER3_FLAG_PADDING_ISO,
-  MPEGLAYER3_FLAG_PADDING_ON,
-  MPEGLAYER3_FLAG_PADDING_OFF
-};
-
-struct WaveFormatMPEGLayer3 : WaveFormatEx {
-  u16                       id;
-  WaveFormatMPEGLayer3Flags flags;
-  u16                       blockSize;
-  u16                       framesPerBlock;
-  u16                       codecDelay;
 };
 
 struct WaveFact {
@@ -196,27 +98,23 @@ struct WavData {
   paddedChunkSize = (chunk.chunkSize + 1) >> 1 << 1;
 
   if (chunk.chunkId == "fmt ") {
-    WaveFormat fmt;
+    u128 start = $;
+    type::TypewFormatTag wfmt = std::mem::read_unsigned($, 2, std::core::get_endian());
 
-    if (fmt.formatTag == WaveFormatType::PCM) {
-      WaveFormatPCM pcmExtraData;
-      padding[paddedChunkSize - sizeof(fmt) - sizeof(pcmExtraData)];
+    if (wfmt == WaveFormatType::PCM) {
+      type::PCMWAVEFORMAT waveformat;
     } else if (fmt.formatTag == WaveFormatType::MS_ADPCM) {
-      WaveFormatMSADPCM msAdpcmExtraData;
-      padding[paddedChunkSize - sizeof(fmt) - sizeof(msAdpcmExtraData)];
+      type::ADPCMWAVEFORMAT waveformat;
     } else if (fmt.formatTag == WaveFormatType::MPEG) {
-      WaveFormatMPEG mpegExtraData;
-      padding[paddedChunkSize - sizeof(fmt) - sizeof(mpegExtraData)];
+      type::MPEG1WAVEFORMAT waveformat;
     } else if (fmt.formatTag == WaveFormatType::MPEGLAYER3) {
-      WaveFormatMPEGLayer3 mpegLayer3ExtraData;
-      padding[paddedChunkSize - sizeof(fmt) - sizeof(mpegLayer3ExtraData)];
+      type::MPEGLAYER3WAVEFORMAT waveformat;
     } else if (fmt.formatTag == WaveFormatType::IEEEFloatingPoint) {
-        WaveFormatIEEEFloatingPoint ieeFloatingPointExtraData;
-        padding[paddedChunkSize - sizeof(fmt) - sizeof(ieeFloatingPointExtraData)];
+      type::WAVEFORMATIEEEFLOATEX waveformat;
     } else {
-      WaveFormatExDummy unknown;
-      padding[paddedChunkSize - sizeof(fmt) - sizeof(unknown)];
+      type::WAVEFORMAT waveformat_unknown;
     }
+    padding[paddedChunkSize - ($ - start)];
   } else if (chunk.chunkId == "data") {
     padding[paddedChunkSize];
   } else if (chunk.chunkId == "fact") {
