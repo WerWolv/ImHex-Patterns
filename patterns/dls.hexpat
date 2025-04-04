@@ -256,6 +256,8 @@ struct WAVEFORMAT {
     
     if (wfmt == TypewFormatTag::WAVE_FORMAT_PCM) {
         type::PCMWAVEFORMAT fmt;
+    } else if (wfmt == TypewFormatTag::WAVE_FORMAT_ALAW || wfmt == TypewFormatTag::WAVE_FORMAT_MULAW) {
+        type::WAVEFORMAT fmt;
     } else if (wfmt == TypewFormatTag::WAVE_FORMAT_EXTENSIBLE || wfmt == TypewFormatTag::WAVE_FORMAT_IEEE_FLOAT) {
         type::WAVEFORMATEXTENSIBLE fmt;
     } else if (wfmt == TypewFormatTag::WAVE_FORMAT_ADPCM) {
@@ -267,6 +269,7 @@ struct WAVEFORMAT {
     } else if (wfmt == TypewFormatTag::WAVE_FORMAT_MPEGLAYER3) {
         type::MPEGLAYER3WAVEFORMAT fmt;
     } else {
+        type::WAVEFORMAT fmt;
         std::warning(std::format("Unsupported wFormatTag: 0x{:X}", u16(wfmt)));
     }
 };
