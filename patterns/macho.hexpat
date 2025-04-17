@@ -367,6 +367,21 @@ struct CommandSegment64 {
         u8 data[fileSize] @ fileOffset [[sealed]];
 };
 
+union lc_str {
+    u32 offset; 
+};
+
+struct Dylib {
+    lc_str name; // always 24
+    u32 timestamp;
+    u32 current_version;
+    u32 compatibility_version;
+};
+
+struct LoadDyLib {
+    Dylib dylib [[inline]];
+};
+
 struct LoadCommand {
     Command command;
     type::Size<u32> commandSize;
@@ -377,6 +392,11 @@ struct LoadCommand {
         CommandSegment data;
     else if (command == Command::Segment64)
         CommandSegment64 data;
+    else if (command == Command::LoadDyLib) {
+        LoadDyLib dylib;
+        std::string::NullString dylib_name;
+        $ += commandSize - dylib.dylib.name.offset - 1 - std::string::length(dylib_name); // null terminated
+    }
     else
         u8 data[commandSize - 8] [[sealed]];
 };
