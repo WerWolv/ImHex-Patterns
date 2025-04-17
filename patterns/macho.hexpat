@@ -4,6 +4,7 @@
 #pragma MIME application/x-mach-binary
 
 import type.size;
+import std.string;
 
 enum Magic : u32 {
     _32BitMagic = 0xFEEDFACE,
@@ -367,8 +368,11 @@ struct CommandSegment64 {
         u8 data[fileSize] @ fileOffset [[sealed]];
 };
 
-union lc_str {
-    u32 offset; 
+struct lc_str { // NB: struct as opposed to it's union def in loader.h
+    u32 offset;
+    // It's important to note that the `ptr` field is not used in the Mach-O file itself.
+    // It is only relevant at runtime when the Mach-O file is loaded into memory.
+    // The Mach-O file uses the `offset` field to locate the string data within the file.
 };
 
 struct Dylib {
@@ -386,19 +390,22 @@ struct LoadCommand {
     Command command;
     type::Size<u32> commandSize;
 
-    if (command == Command::UUID)
-        CommandUUID data;
-    else if (command == Command::Segment)
-        CommandSegment data;
-    else if (command == Command::Segment64)
-        CommandSegment64 data;
-    else if (command == Command::LoadDyLib) {
-        LoadDyLib dylib;
-        std::string::NullString dylib_name;
-        $ += commandSize - dylib.dylib.name.offset - 1 - std::string::length(dylib_name); // null terminated
+    match (command) {
+        (Command::UUID): CommandUUID data;
+        (Command::Segment): CommandSegment data;
+        (Command::Segment64): CommandSegment64 data;
+        (Command::LoadDyLib | Command::IdDyLib | Command::LoadWeakDyLib): {
+            LoadDyLib dylib;
+
+            // always 24 bytes in the struct
+            std::string::NullString dylib_name; 
+                                            
+            // the 1 is the size of the string terminator
+            // not using align here since according to the spec this is computed                                  
+            padding[commandSize - dylib.dylib.name.offset - 1 - std::string::length(dylib_name)];
+        }
+        (_): u8 data[commandSize - 8] [[sealed]];
     }
-    else
-        u8 data[commandSize - 8] [[sealed]];
 };
 
 struct MachO {
