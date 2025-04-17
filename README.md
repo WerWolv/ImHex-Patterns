@@ -118,6 +118,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
 | NTFS | | [`patterns/ntfs.hexpat`](patterns/ntfs.hexpat) | NTFS (NT File System) |
 | OGG | `audio/ogg` | [`patterns/ogg.hexpat`](patterns/ogg.hexpat) | OGG Audio format |
+| ORP / ORS | | [`patterns/orp.hexpat`](patterns/orp.hexpat) | OpenRGB profile format |
 | PAK | | [`patterns/xgspak.hexpat`](patterns/xgspak.hexpat) | Exient XGS Engine Pak files |
 | PCAP | `application/vnd.tcpdump.pcap` | [`patterns/pcap.hexpat`](patterns/pcap.hexpat) | pcap header and packets |
 | PCK | | [`patterns/pck.hexpat`](patterns/pck.hexpat) | Minecraft Legacy Console Edition .pck file |
