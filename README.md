@@ -168,6 +168,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | VEADO | | [`patterns/veado.hexpat`](patterns/veado.hexpat) | veadotube mini avatar file |
 | VGM | | [`patterns/vgm.hexpat`](patterns/vgm.hexpat) | VGM (Video Game Music) sound log |
 | VHDX | | [`patterns/vhdx.hexpat`](patterns/vhdx.hexpat) | Microsoft Hyper-V Virtual Hard Disk format |
+| VOX | | [`patterns/vox.hexpat`](patterns/vox.hexpat) | MagicaVoxel scene description format |
 | WAV  | `audio/x-wav`  | [`patterns/wav.hexpat`](patterns/wav.hexpat)  | RIFF header, WAVE header, PCM header |
 | WAS | | [`patterns\was_oskasoftware.hexpat`](patterns\was_oskasoftware.hexpat) | Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set) file
 | WAD | | [`patterns/wad.hexpat`](patterns/wad.hexpat) | DOOM WAD Archive |
