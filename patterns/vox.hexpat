@@ -4,9 +4,17 @@
 #pragma array_limit 0x100000
 
 import std.io;
+import std.core;
 
 // Input and output variables
+
+// If true, color data will be formatted as normalized floats.
 bool formatColorsAsFloat in;
+
+// If true, chunks will be treated as though they were in a single big array instead of a hierarchy.
+bool readChunksAsLinear in;
+
+bool attemptRecoveryOnChunkSizeMismatch in;
 
 // Pattern definitions
 // https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-file-format-vox.txt
@@ -118,6 +126,7 @@ struct Chunk
     u32 childrenBytes;
     
     // Contents of the chunk
+    s32 cursorPosBeforeContent = $;
     match (id)
     {
         ("MAIN"): {}
@@ -189,23 +198,42 @@ struct Chunk
         }
         ("IMAP"): // Index map
         {
-            u32 paletteIndices[256];
+            // The documentation says this field is i32x256, but it's u8x256 in actual models.
+            u8 paletteIndices[256];
         }
         (_):
         {
-            u8 data[sizeBytes];
+            u8 unknownData[sizeBytes];
             std::warning(std::format("Unknown chunk ID at 0x{:X}: \"{}\"", $, id));
         }
     }
     
-    if (childrenBytes > 0)
+    s32 actualContentSize = ($ - cursorPosBeforeContent);
+    if (actualContentSize != sizeBytes)
+    {
+        str warningTextSecondHalf = std::format("Content size mismatch! Expected: {}. Actual: {}", sizeBytes, actualContentSize);
+        str warningText = std::format("Chunk at 0x{:X} with id {}: {}", addressof(this), id, warningTextSecondHalf);
+        if (attemptRecoveryOnChunkSizeMismatch)
+        {
+            std::warning(warningText);
+        }
+        else
+        {
+            std::error(warningText);
+        }
+        // Limited recovery- reading past EoF is still possible if chunk is nested.
+        // Setting readChunksAsLinear to true can make recovery more robust as the outermost array will be broken out of.
+        break;
+    }
+    
+    if (childrenBytes > 0 && !readChunksAsLinear)
     {
         s32 cursorPosBeforeChildren = $;
         Chunk children[while(true)];
     }
     
     // The node with id MAIN is also the root node.
-    if (id != "MAIN")
+    if (id != "MAIN" && !readChunksAsLinear)
     {
         // We are done parsing the children for this parent if the cursor has advanced parent.childrenBytes bytes since then.
         if ($ - parent.cursorPosBeforeChildren >= parent.childrenBytes)
@@ -221,4 +249,10 @@ fn ChunkFormatter(ref Chunk chunk)
 };
 
 VoxHeader header @ 0 [[inline]];
-Chunk mainChunk @ sizeof(header);
+Chunk mainChunk[readChunksAsLinear ? 0 : 1] @ $ [[inline]];
+Chunk chunks[while(readChunksAsLinear && !std::mem::eof())] @ $;
+
+if (std::core::member_count(mainChunk) > 0)
+{
+    std::core::set_display_name(mainChunk[0], "mainChunk");
+}
