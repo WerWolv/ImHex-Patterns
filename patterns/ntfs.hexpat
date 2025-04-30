@@ -13,39 +13,19 @@ import std.io;
 import std.mem;
 import type.magic;
 
-using le16 = le u16;
-using le32 = le u32;
-using le64 = le u64;
 
-using be16 = be u16;
-using be32 = be u32;
-using be64 = be u64;
+using ntfschar = u16;
 
-using sle16 = le16;
-using sle32 = le32;
-using sle64 = le64;
-
-using sbe16 = be16;
-using sbe32 = be32;
-using sbe64 = be64;
-
-using ntfschar = le16;
-
-using VCN = s64;
-using leVCN = sle64;
-using LCN = s64;
-using leLCN = sle64;
-using LSN = s64;
-using leLSN = sle64;
-
-using MFT_REF = u64;
-using leMFT_REF = le64 ;
+using leVCN = u64;
+using leLCN = u64;
+using leLSN = u64;
+using leMFT_REF = u64;
 
 struct GUID {
-    u32  Data1;
-    u16  Data2;
-    u16  Data3;
-    u8   Data4[8];
+    u32 Data1;
+    u16 Data2;
+    u16 Data3;
+    u8  Data4[8];
 };
 
 bitfield RUNLIST_HEADER {
@@ -60,21 +40,21 @@ struct RUNLIST {
 };
 
 struct BIOS_PARAMETER_BLOCK {
-    le16    bytes_per_sector;
-    u8      sectors_per_cluster;
-    le16    reserved_sectors;
-    u8      fats;
-    le16    root_entries;
-    le16    sectors;
-    u8      media_type;
-    le16    sectors_per_fat;
-    le16    sectors_per_track;
-    le16    heads;
-    le32    hidden_sectors;
-    le32    large_sectors;
+    u16 bytes_per_sector;
+    u8  sectors_per_cluster;
+    u16 reserved_sectors;
+    u8  fats;
+    u16 root_entries;
+    u16 sectors;
+    u8  media_type;
+    u16 sectors_per_fat;
+    u16 sectors_per_track;
+    u16 heads;
+    u32 hidden_sectors;
+    u32 large_sectors;
 };
 
-enum NTFS_RECORD_TYPES : le32 {
+enum NTFS_RECORD_TYPES : u32  {
     magic_FILE  = 0x454c4946,
     magic_INDX  = 0x58444e49,   
     magic_HOLE  = 0x454c4f48,
@@ -87,11 +67,11 @@ enum NTFS_RECORD_TYPES : le32 {
 
 struct NTFS_RECORD {
     NTFS_RECORD_TYPES magic;
-    le16 usa_ofs;
-    le16 usa_count;
+    u16 usa_ofs;
+    u16 usa_count;
 };
 
-enum MFT_RECORD_FLAGS : le16 {
+enum MFT_RECORD_FLAGS : u16 {
     MFT_RECORD_IN_USE           = 0x0001,
     MFT_RECORD_IS_DIRECTORY     = 0x0002,
     MFT_RECORD_IS_4             = 0x0004,
@@ -99,7 +79,7 @@ enum MFT_RECORD_FLAGS : le16 {
     MFT_REC_SPACE_FILLER        = 0xffff,
 };
 
-enum ATTR_TYPES : le32 {
+enum ATTR_TYPES : u32  {
     AT_UNUSED                       = 0,
     AT_STANDARD_INFORMATION         = 0x10,
     AT_ATTRIBUTE_LIST               = 0x20,
@@ -121,7 +101,7 @@ enum ATTR_TYPES : le32 {
     AT_END                          = 0xffffffff,
 };
 
-enum ATTR_DEF_FLAGS : le32 {
+enum ATTR_DEF_FLAGS : u32  {
 	ATTR_DEF_INDEXABLE	    = 0x02,
 	ATTR_DEF_MULTIPLE	    = 0x04,
 	ATTR_DEF_NOT_ZERO	    = 0x08,
@@ -131,7 +111,7 @@ enum ATTR_DEF_FLAGS : le32 {
 	ATTR_DEF_ALWAYS_LOG	    = 0x80,
 };
 
-enum COLLATION_RULES : le32 {
+enum COLLATION_RULES : u32  {
     COLLATION_BINARY                = 0,
     COLLATION_FILE_NAME             = 1,
     COLLATION_UNICODE_STRING        = 2,
@@ -144,14 +124,14 @@ enum COLLATION_RULES : le32 {
 struct ATTR_DEF {
     ntfschar name[0x40];
     ATTR_TYPES type;
-    le32 display_rule;
+    u32 display_rule;
     COLLATION_RULES collation_rule;
     ATTR_DEF_FLAGS flags;
-    sle64 min_size;
-    sle64 max_size;
+    u64 min_size;
+    u64 max_size;
 };
 
-enum ATTR_FLAGS : le16 {
+enum ATTR_FLAGS : u16 {
     ATTR_IS_COMPRESSED      = 0x0001,
     ATTR_COMPRESSION_MASK   = 0x00ff,
     ATTR_IS_ENCRYPTED       = 0x4000,
@@ -162,7 +142,7 @@ enum RESIDENT_ATTR_FLAGS : u8 {
     RESIDENT_ATTR_IS_INDEXED = 0x01
 };
 
-enum FILE_ATTR_FLAGS : le32 {
+enum FILE_ATTR_FLAGS : u32  {
     FILE_ATTR_READONLY              = 0x00000001,
     FILE_ATTR_HIDDEN                = 0x00000002,
     FILE_ATTR_SYSTEM                = 0x00000004,
@@ -192,10 +172,10 @@ enum FILE_NAME_TYPE_FLAGS : u8 {
 };
 
 struct STANDARD_INFORMATION_HEADER {
-    sle64 creation_time;
-    sle64 last_data_change_time;
-    sle64 last_mft_change_time;
-    sle64 last_access_time;
+    u64 creation_time;
+    u64 last_data_change_time;
+    u64 last_mft_change_time;
+    u64 last_access_time;
     FILE_ATTR_FLAGS file_attributes;
 };
 
@@ -206,33 +186,33 @@ struct STANDARD_INFORMATION_OLD {
 
 struct STANDARD_INFORMATION {
     STANDARD_INFORMATION_HEADER header [[inline]];
-    le32 maximum_versions;
-    le32 version_number;
-    le32 class_id;
-    le32 owner_id;
-    le32 security_id;
-    le64 quota_charged;
-    le64 usn;
+    u32 maximum_versions;
+    u32 version_number;
+    u32 class_id;
+    u32 owner_id;
+    u32 security_id;
+    u64 quota_charged;
+    u64 usn;
 };
 
 struct FILE_NAME_ATTR_PACKED {
-    le16 packed_ea_size;
-    le16 reserved;
+    u16 packed_ea_size;
+    u16 reserved;
 };
 
 union FILE_NAME_ATTR_FORM {
     FILE_NAME_ATTR_PACKED packed [[inline]];
-    le32 reparse_point_tag;
+    u32 reparse_point_tag;
 };
 
 struct FILE_NAME_ATTR {
     leMFT_REF parent_directory;
-    sle64 creation_time;
-    sle64 last_data_change_time;
-    sle64 last_mft_change_time;
-    sle64 last_access_time;
-    sle64 allocated_size;
-    sle64 data_size;
+    u64 creation_time;
+    u64 last_data_change_time;
+    u64 last_mft_change_time;
+    u64 last_access_time;
+    u64 allocated_size;
+    u64 data_size;
     FILE_ATTR_FLAGS file_attributes;
     FILE_NAME_ATTR_FORM form [[inline]];
     u8 file_name_length;
@@ -256,7 +236,7 @@ struct OBJECT_ID_ATTR {
     OBJECT_ID_ATTR_FORM form [[inline]];
 };
 
-enum VOLUME_FLAGS : le16 {
+enum VOLUME_FLAGS : u16 {
     VOLUME_IS_DIRTY             = 0x0001,
     VOLUME_RESIZE_LOG_FILE      = 0x0002,
     VOLUME_UPGRADE_ON_MOUNT     = 0x0004,
@@ -269,13 +249,13 @@ enum VOLUME_FLAGS : le16 {
 };
 
 struct VOLUME_INFORMATION {
-    le64    reserved;
-    u8      major_ver;
-    u8      minor_ver;
+    u64 reserved;
+    u8  major_ver;
+    u8  minor_ver;
     VOLUME_FLAGS flags;
 };
 
-enum SECURITY_DESCRIPTOR_CONTROL : le16 {
+enum SECURITY_DESCRIPTOR_CONTROL : u16 {
     SE_OWNER_DEFAULTED          = 0x0001,
     SE_GROUP_DEFAULTED          = 0x0002,
     SE_DACL_PRESENT             = 0x0004,
@@ -338,17 +318,17 @@ enum ACE_FLAGS : u8 {
 struct ACE_HEADER {
     ACE_TYPES type;
     ACE_FLAGS flags;
-    le16 size;
+    u16 size;
 };
 
 struct SID {
-    u8 revision;
-    u8 sub_authority_count;
-    u8 identifier_authority[6];
-    le32 sub_authority[sub_authority_count];
+    u8  revision;
+    u8  sub_authority_count;
+    u8  identifier_authority[6];
+    u32 sub_authority[sub_authority_count];
 };
 
-enum ACCESS_MASK : le32 {
+enum ACCESS_MASK : u32  {
     FILE_READ_DATA              = 0x00000001,
     FILE_LIST_DIRECTORY         = 0x00000001,
     FILE_WRITE_DATA             = 0x00000002,
@@ -389,7 +369,7 @@ using ACCESS_DENIED_ACE = ACCESS_ALLOWED_ACE;
 using SYSTEM_ALARM_ACE  = ACCESS_ALLOWED_ACE;
 using SYSTEM_AUDIT_ACE  = ACCESS_ALLOWED_ACE;
 
-enum OBJECT_ACE_FLAGS : le32 {
+enum OBJECT_ACE_FLAGS : u32  {
     ACE_OBJECT_TYPE_PRESENT             = 1,
     ACE_INHERITED_OBJECT_TYPE_PRESENT   = 2,
 };
@@ -408,11 +388,11 @@ using SYSTEM_ALARM_OBJECT_ACE  = ACCESS_ALLOWED_OBJECT_ACE;
 
 
 struct ACL {
-    u8 revision;
-    u8 alignment1;
-    le16 size;
-    le16 ace_count;
-    le16 alignment2;
+    u8  revision;
+    u8  alignment1;
+    u16 size;
+    u16 ace_count;
+    u16 alignment2;
 
     std::mem::AlignTo<4>;
     padding[size];
@@ -421,13 +401,13 @@ struct ACL {
 
 #define SECURITY_DESCRIPTOR_RELATIVE_SIZE (20)
 struct SECURITY_DESCRIPTOR_RELATIVE {
-    u8 revision;
-    u8 alignment;
-    le16 control; // SECURITY_DESCRIPTOR_CONTROL
-    le32 owner;
-    le32 group;
-    le32 sacl;
-    le32 dacl;
+    u8      revision;
+    u8      alignment;
+    u16     control; // SECURITY_DESCRIPTOR_CONTROL
+    u32     owner;
+    u32     group;
+    u32     sacl;
+    u32     dacl;
 
     if (control & SECURITY_DESCRIPTOR_CONTROL::SE_DACL_PRESENT) {
         if (dacl > SECURITY_DESCRIPTOR_RELATIVE_SIZE) {
@@ -447,43 +427,43 @@ enum INDEX_HEADER_FLAGS : u8 {
 };
 
 struct INDEX_HEADER {
-    le32 entries_offset;
-    le32 index_length;
-    le32 allocated_size;
+    u32 entries_offset;
+    u32 index_length;
+    u32 allocated_size;
     INDEX_HEADER_FLAGS ih_flags;
     u8 reserved[3];
 };
 
 struct REPARSE_INDEX_KEY {
-    le32 reparse_tag;
+    u32 reparse_tag;
     leMFT_REF file_id;
 };
 
 struct SDS_ENTRY {
-    le32 hash;
-    le32 security_id;
-    le64 offset;
-    le32 length;
+    u32 hash;
+    u32 security_id;
+    u64 offset;
+    u32 length;
     SECURITY_DESCRIPTOR_RELATIVE sid;
 };
 
-using SII_INDEX_KEY = le32;
+using SII_INDEX_KEY = u32 ;
 
 struct SDH_INDEX_KEY {
-    le32 hash;
-    le32 security_id;
+    u32  hash;
+    u32  security_id;
 };
 
-enum INDEX_ENTRY_FLAGS : le16 {
+enum INDEX_ENTRY_FLAGS : u16 {
     INDEX_ENTRY_NODE = 1,
     INDEX_ENTRY_END  = 2,
     INDEX_ENTRY_SPACE_FILLER = 0xffff,
 };
 
 struct INDEX_ENTR_HEADER_PTR {
-    le16 data_offset;
-    le16 data_length;
-    le32 reservedV;
+    u16 data_offset;
+    u16 data_length;
+    u32 reservedV;
 };
 
 union INDEX_ENTR_HEADER_REF {
@@ -493,27 +473,17 @@ union INDEX_ENTR_HEADER_REF {
 
 struct INDEX_ENTRY_HEADER {
     INDEX_ENTR_HEADER_REF file_ref;
-    le16 length;
-    le16 key_length;
-    le16 flags; // INDEX_ENTRY_FLAGS
-    le16 reserved;
+    u16 length;
+    u16 key_length;
+    u16 flags; // INDEX_ENTRY_FLAGS
+    u16 reserved;
 };
 
-union INDEX_ENTRY_KEY {
-    FILE_NAME_ATTR file_name;
-    SII_INDEX_KEY sii;
-    SDH_INDEX_KEY sdh;
-    GUID object_id;
-    REPARSE_INDEX_KEY reparse;
-    SID sid;
-    le32 owner_id;
-};
-
-struct INDEX_ENTRY {
+struct INDEX_ENTRY_FILE_NAME {
     INDEX_ENTRY_HEADER header;
 
     if (!(header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END)) {
-        INDEX_ENTRY_KEY key;
+        FILE_NAME_ATTR key;
     }
 
     if (header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_NODE) {
@@ -523,26 +493,111 @@ struct INDEX_ENTRY {
     std::mem::AlignTo<8>;
 };
 
-fn index_get_flags(le64 offset) {
-    INDEX_ENTRY index @ offset;
-    return index.header.flags;
+struct INDEX_ENTRY_SII {
+    INDEX_ENTRY_HEADER header;
+
+    if (!(header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END)) {
+        SII_INDEX_KEY key;
+    }
+
+    if (header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_NODE) {
+        leVCN vcn;
+    }
+
+    std::mem::AlignTo<8>;
+};
+
+struct INDEX_ENTRY_SDH {
+    INDEX_ENTRY_HEADER header;
+
+    if (!(header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END)) {
+        SDH_INDEX_KEY key;
+    }
+
+    if (header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_NODE) {
+        leVCN vcn;
+    }
+
+    std::mem::AlignTo<8>;
+};
+
+struct INDEX_ENTRY_OBJ_ID {
+    INDEX_ENTRY_HEADER header;
+
+    if (!(header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END)) {
+        GUID key;
+    }
+
+    if (header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_NODE) {
+        leVCN vcn;
+    }
+
+    std::mem::AlignTo<8>;
+};
+
+struct INDEX_ENTRY_REPARSE {
+    INDEX_ENTRY_HEADER header;
+
+    if (!(header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END)) {
+        REPARSE_INDEX_KEY key;
+    }
+
+    if (header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_NODE) {
+        leVCN vcn;
+    }
+
+    std::mem::AlignTo<8>;
+};
+
+struct INDEX_ENTRY_SID {
+    INDEX_ENTRY_HEADER header;
+
+    if (!(header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END)) {
+        SID key;
+    }
+
+    if (header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_NODE) {
+        leVCN vcn;
+    }
+
+    std::mem::AlignTo<8>;
+};
+
+struct INDEX_ENTRY_OWNER_ID {
+    INDEX_ENTRY_HEADER header;
+
+    if (!(header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END)) {
+        u64 key;
+    }
+
+    if (header.flags & INDEX_ENTRY_FLAGS::INDEX_ENTRY_NODE) {
+        leVCN vcn;
+    }
+
+    std::mem::AlignTo<8>;
+};
+
+fn index_get_flags(u64 offset) {
+    INDEX_ENTRY_HEADER index_entry_header @ offset;
+    return index_entry_header.flags;
 };
 
 struct INDEX_BLOCK {
     NTFS_RECORD header [[inline]];
     leLSN   lsn;
     leVCN   index_block_vcn;
+    
+    u32 index_head = $;
     INDEX_HEADER index;
 
-    u64 index_delta = 0;
     if (index.entries_offset > sizeof (index)) {
-        index_delta = index.entries_offset - sizeof (index);
-        padding[index_delta];
+        padding[index.entries_offset - sizeof (index)];
     }
 
-    INDEX_ENTRY ents[while(!(index_get_flags($) & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END))];
+    INDEX_ENTRY_FILE_NAME ents[while(!(index_get_flags($) & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END))];
+    INDEX_ENTRY_FILE_NAME ent_end;
 
-    le32 index_used = sizeof (index) + index_delta + sizeof (ents);
+    u32 index_used = $ - index_head;
     if (index.index_length > index_used) {
         padding[index.index_length - index_used];
     }
@@ -551,20 +606,25 @@ struct INDEX_BLOCK {
 struct INDEX_ROOT {
     ATTR_TYPES type;
     COLLATION_RULES collation_rule;
-    le32    index_block_size;
-    s8      clusters_per_index_block;
-    u8      reserved[3];
+    u32 index_block_size;
+    s8  clusters_per_index_block;
+    u8  reserved[3];
+
+    u32 index_head = $;
     INDEX_HEADER index;
 
-    u64 index_delta = 0;
     if (index.entries_offset > sizeof (index)) {
-        index_delta = index.entries_offset - sizeof (index);
-        padding[index_delta];
+        padding[index.entries_offset - sizeof (index)];
     }
 
-    INDEX_ENTRY ents[while(!(index_get_flags($) & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END))];
+    match (type) {
+        (ATTR_TYPES::AT_FILE_NAME): {
+            INDEX_ENTRY_FILE_NAME ents[while(!(index_get_flags($) & INDEX_ENTRY_FLAGS::INDEX_ENTRY_END))];
+            INDEX_ENTRY_FILE_NAME ent_end;
+        }
+    }
 
-    le32 index_used = sizeof (index) + index_delta + sizeof (ents);
+    u32 index_used = $ - index_head;
     if (index.index_length > index_used) {
         padding[index.index_length - index_used];
     }
@@ -572,47 +632,47 @@ struct INDEX_ROOT {
 
 struct RESTART_PAGE_HEADER {
     NTFS_RECORD_TYPES magic;
-    le16 usa_ofs;
-    le16 usa_count;
+    u16 usa_ofs;
+    u16 usa_count;
     leLSN chkdsk_lsn;
-    le32 system_page_size;
-    le32 log_page_size;
-    le16 restart_area_offset;
-    sle16 minor_ver;
-    sle16 major_ver;
-    le16 usn;
+    u32 system_page_size;
+    u32 log_page_size;
+    u16 restart_area_offset;
+    u16 minor_ver;
+    u16 major_ver;
+    u16 usn;
 };
 
-enum RESTART_AREA_FLAGS : le16 {
+enum RESTART_AREA_FLAGS : u16 {
 	RESTART_VOLUME_IS_CLEAN	= 0x0002,
 	RESTART_SPACE_FILLER	= 0xffff,
 };
 
 struct RESTART_AREA {
     leLSN current_lsn;
-    le16 log_clients;
-    le16 client_free_list;
-    le16 client_in_use_list;
+    u16 log_clients;
+    u16 client_free_list;
+    u16 client_in_use_list;
     RESTART_AREA_FLAGS flags;
-    le32 seq_number_bits;
-    le16 restart_area_length;
-    le16 client_array_offset;
-    sle64 file_size;
-    le32 last_lsn_data_length;
-    le16 log_record_header_length;
-    le16 log_page_data_offset;
-    le32 restart_log_open_count;
-    le32 reserved;
+    u32 seq_number_bits;
+    u16 restart_area_length;
+    u16 client_array_offset;
+    u64 file_size;
+    u32 last_lsn_data_length;
+    u16 log_record_header_length;
+    u16 log_page_data_offset;
+    u32 restart_log_open_count;
+    u32 reserved;
 };
 
 struct LOG_CLIENT_RECORD {
     leLSN oldest_lsn;
     leLSN client_restart_lsn;
-    le16 prev_client;
-    le16 next_client;
-    le16 seq_number;
-    u8 reserved[6];
-    le32 client_name_length;
+    u16 prev_client;
+    u16 next_client;
+    u16 seq_number;
+    u8  reserved[6];
+    u32 client_name_length;
     ntfschar client_name[64];
 };
 
@@ -622,17 +682,17 @@ struct LOG_CLIENT_RECORD {
 #define ATTR_RECORD_NONRESIDENT_CMPR_SIZE       (16 + 48 + 8)
 struct ATTR_RECORD {
     ATTR_TYPES type;
-    le32    length;
-    u8      non_resident;
-    u8      name_length;
-    le16    name_offset;
-    le16    flags; // ATTR_FLAGS
-    le16    instance;
+    u32 length;
+    u8  non_resident;
+    u8  name_length;
+    u16 name_offset;
+    u16 flags; // ATTR_FLAGS
+    u16 instance;
 
     u32 name_offset_delta = 0;
     if (!non_resident) {
-        le32 value_length;
-        le16 value_offset;
+        u32 value_length;
+        u16 value_offset;
         RESIDENT_ATTR_FLAGS resident_flags;
         s8 reservedR;
 
@@ -643,15 +703,15 @@ struct ATTR_RECORD {
     } else {
         leVCN   lowest_vcn;
         leVCN   highest_vcn;
-        le16    mapping_pairs_offset;
+        u16     mapping_pairs_offset;
         u8      compression_unit;
         u8      reserved1[5];
-        sle64   allocated_size;
-        sle64   data_size;
-        sle64   initialized_size;
+        u64     allocated_size;
+        u64     data_size;
+        u64     initialized_size;
         
         if (flags & ATTR_FLAGS::ATTR_IS_COMPRESSED) {
-            sle64 compressed_size;
+            u64 compressed_size;
             
             if (name_offset > ATTR_RECORD_NONRESIDENT_CMPR_SIZE) {
                 name_offset_delta = name_offset - ATTR_RECORD_NONRESIDENT_CMPR_SIZE; 
@@ -787,10 +847,7 @@ struct ATTR_RECORD {
                 }
             }
             (ATTR_TYPES::AT_END): {
-                u32 attr_sum = (ATTR_RECORD_RESIDENT_SIZE + name_offset_delta + name_length_bytes + value_offset_delta);
-                if (length > attr_sum) {
-                    padding[length - attr_sum];
-                }
+                // length is no longer valid
             }
         }
     }
@@ -798,7 +855,7 @@ struct ATTR_RECORD {
     std::mem::AlignTo<8>;
 };
 
-fn attr_get_type(le64 offset) {
+fn attr_get_type(u64 offset) {
     ATTR_RECORD attr @ offset;
     return attr.type;
 };
@@ -807,45 +864,46 @@ fn attr_get_type(le64 offset) {
 struct MFT_RECORD {
     NTFS_RECORD header [[inline]];
     leLSN lsn;
-    le16 sequence_number;
-    le16 link_count;
-    le16 attrs_offset;
+    u16 sequence_number;
+    u16 link_count;
+    u16 attrs_offset;
     MFT_RECORD_FLAGS flags;
-    le32 bytes_in_use;
-    le32 bytes_allocated;
+    u32 bytes_in_use;
+    u32 bytes_allocated;
     leMFT_REF base_mft_record;
-    le16 next_attr_instance;
-    le16 reserved;
-    le32 mft_record_number;
+    u16 next_attr_instance;
+    u16 reserved;
+    u32 mft_record_number;
 
     if (header.usa_count > 0) {
         padding[header.usa_ofs - MFT_RECORD_SIZE];
     }
-    le16 update_sequence[header.usa_count];
+    u16 update_sequence[header.usa_count];
 
     std::mem::AlignTo<8>;
     ATTR_RECORD attrs[while(attr_get_type($) != ATTR_TYPES::AT_END)];
+    ATTR_RECORD attr_end;
 };
 
 struct NTFS_BOOT_SECTOR {
-    u8      jump[3];
-    le64    oem_id;
+    u8  jump[3];
+    u64 oem_id;
     BIOS_PARAMETER_BLOCK bpb;
-    u8      physical_drive;
-    u8      current_head;
-    u8      extended_boot_signature;
-    u8      reserved2;
-    sle64   number_of_sectors;
-    sle64   mft_lcn;
-    sle64   mftmirr_lcn;
-    s8      clusters_per_mft_record;
-    u8      reserved0[3];
-    s8      clusters_per_index_record;
-    u8      reserved1[3];
-    le64    volume_serial_number;
-    le32    checksum;
-    u8      bootstrap[426];
-    le16    end_of_sector_marker;
+    u8  physical_drive;
+    u8  current_head;
+    u8  extended_boot_signature;
+    u8  reserved2;
+    u64 number_of_sectors;
+    u64 mft_lcn;
+    u64 mftmirr_lcn;
+    s8  clusters_per_mft_record;
+    u8  reserved0[3];
+    s8  clusters_per_index_record;
+    u8  reserved1[3];
+    u64 volume_serial_number;
+    u32 checksum;
+    u8  bootstrap[426];
+    u16 end_of_sector_marker;
 };
 
 fn mft_get_dat_attr_lcn(MFT_RECORD record, ATTR_TYPES type = ATTR_TYPES::AT_DATA) {
