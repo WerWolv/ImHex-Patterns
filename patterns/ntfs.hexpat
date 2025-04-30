@@ -13,7 +13,6 @@ import std.io;
 import std.mem;
 import type.magic;
 
-
 using ntfschar = u16;
 
 using leVCN = u64;
@@ -54,7 +53,7 @@ struct BIOS_PARAMETER_BLOCK {
     u32 large_sectors;
 };
 
-enum NTFS_RECORD_TYPES : u32  {
+enum NTFS_RECORD_TYPES : u32 {
     magic_FILE  = 0x454c4946,
     magic_INDX  = 0x58444e49,   
     magic_HOLE  = 0x454c4f48,
@@ -79,7 +78,7 @@ enum MFT_RECORD_FLAGS : u16 {
     MFT_REC_SPACE_FILLER        = 0xffff,
 };
 
-enum ATTR_TYPES : u32  {
+enum ATTR_TYPES : u32 {
     AT_UNUSED                       = 0,
     AT_STANDARD_INFORMATION         = 0x10,
     AT_ATTRIBUTE_LIST               = 0x20,
@@ -101,7 +100,7 @@ enum ATTR_TYPES : u32  {
     AT_END                          = 0xffffffff,
 };
 
-enum ATTR_DEF_FLAGS : u32  {
+enum ATTR_DEF_FLAGS : u32 {
 	ATTR_DEF_INDEXABLE	    = 0x02,
 	ATTR_DEF_MULTIPLE	    = 0x04,
 	ATTR_DEF_NOT_ZERO	    = 0x08,
@@ -111,7 +110,7 @@ enum ATTR_DEF_FLAGS : u32  {
 	ATTR_DEF_ALWAYS_LOG	    = 0x80,
 };
 
-enum COLLATION_RULES : u32  {
+enum COLLATION_RULES : u32 {
     COLLATION_BINARY                = 0,
     COLLATION_FILE_NAME             = 1,
     COLLATION_UNICODE_STRING        = 2,
@@ -142,7 +141,7 @@ enum RESIDENT_ATTR_FLAGS : u8 {
     RESIDENT_ATTR_IS_INDEXED = 0x01
 };
 
-enum FILE_ATTR_FLAGS : u32  {
+enum FILE_ATTR_FLAGS : u32 {
     FILE_ATTR_READONLY              = 0x00000001,
     FILE_ATTR_HIDDEN                = 0x00000002,
     FILE_ATTR_SYSTEM                = 0x00000004,
@@ -328,7 +327,7 @@ struct SID {
     u32 sub_authority[sub_authority_count];
 };
 
-enum ACCESS_MASK : u32  {
+enum ACCESS_MASK : u32 {
     FILE_READ_DATA              = 0x00000001,
     FILE_LIST_DIRECTORY         = 0x00000001,
     FILE_WRITE_DATA             = 0x00000002,
@@ -369,7 +368,7 @@ using ACCESS_DENIED_ACE = ACCESS_ALLOWED_ACE;
 using SYSTEM_ALARM_ACE  = ACCESS_ALLOWED_ACE;
 using SYSTEM_AUDIT_ACE  = ACCESS_ALLOWED_ACE;
 
-enum OBJECT_ACE_FLAGS : u32  {
+enum OBJECT_ACE_FLAGS : u32 {
     ACE_OBJECT_TYPE_PRESENT             = 1,
     ACE_INHERITED_OBJECT_TYPE_PRESENT   = 2,
 };
@@ -401,6 +400,8 @@ struct ACL {
 
 #define SECURITY_DESCRIPTOR_RELATIVE_SIZE (20)
 struct SECURITY_DESCRIPTOR_RELATIVE {
+    u32 struct_start = $;
+
     u8      revision;
     u8      alignment;
     u16     control; // SECURITY_DESCRIPTOR_CONTROL
@@ -409,13 +410,39 @@ struct SECURITY_DESCRIPTOR_RELATIVE {
     u32     sacl;
     u32     dacl;
 
-    if (control & SECURITY_DESCRIPTOR_CONTROL::SE_DACL_PRESENT) {
-        if (dacl > SECURITY_DESCRIPTOR_RELATIVE_SIZE) {
-            padding[dacl - SECURITY_DESCRIPTOR_RELATIVE_SIZE];
+    if (owner > 0) {
+        u32 owner_bytes = $ - struct_start;
+        if (owner > owner_bytes) {
+            padding[owner - owner_bytes];
+        }
+
+        SID owner_sid;
+    }
+
+    if (group > 0) {
+        u32 group_bytes = $ - struct_start;
+        if (group > group_bytes) {
+            padding[group - group_bytes];
+        }
+
+        SID group_sid;
+    }
+
+    if (control & SECURITY_DESCRIPTOR_CONTROL::SE_SACL_PRESENT) {
+        u32 sacl_bytes = $ - struct_start;
+        if (sacl > sacl_bytes) {
+            padding[sacl - sacl_bytes];
+            ACL acl;
         }
     }
-    
-    ACL acl;
+
+    if (control & SECURITY_DESCRIPTOR_CONTROL::SE_DACL_PRESENT) {
+        u32 dacl_bytes = $ - struct_start;
+        if (dacl > dacl_bytes) {
+            padding[dacl - dacl_bytes];
+            ACL acl;
+        }
+    } 
 };
 
 enum INDEX_HEADER_FLAGS : u8 {
@@ -961,6 +988,7 @@ MFT_RECORD mft_sec @ nbs.mft_lcn * cluster_size + 9 * mft_rec_size [[name("$Secu
 
 // ============= $UpCase =============
 MFT_RECORD mft_uc @ nbs.mft_lcn * cluster_size + 10 * mft_rec_size [[name("$UpCase")]];
+u8 uc_tbl[1] @  mft_get_dat_attr_lcn(mft_uc) * cluster_size [[name("$UpCase, tabl")]];
 
 // ============= $Extend =============
 MFT_RECORD mft_ext @ nbs.mft_lcn * cluster_size + 11 * mft_rec_size [[name("$Extend")]];
