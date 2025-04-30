@@ -69,8 +69,16 @@ fn FormatString(ref String s)
     return std::format("\"{}\"", s.data);
 };
 
-struct Vec3 { float x, y, z; };
-struct Mat3 { Vec3 r0, r1, r2; };
+struct Vec3 { float v[3]; };
+struct Mat3 { Vec3 r0, r1, r2; } [[format("FormatMat3")]];
+
+fn FormatMat3(ref Mat3 m)
+{
+    return std::format("({}, {}, {}) ({}, {}, {}) ({}, {}, {})", 
+        m.r0.v[0], m.r0.v[1], m.r0.v[2], 
+        m.r1.v[0], m.r1.v[1], m.r1.v[2], 
+        m.r2.v[0], m.r2.v[1], m.r2.v[2]);
+};
 
 bitfield Rotation
 {
@@ -82,19 +90,23 @@ bitfield Rotation
     padding        : 1;
 };
 
-// TODO: RotationToMat3 function
+// Unused, but demonstrates how a 3x3 matrix could be constructed from Rotation.
+fn RotationToMat3(Rotation r)
+{
+    Mat3 mat;
+    mat.r0.v[r.firstRowIndex] = -(r.firstRowSign * 2 - 1);
+    mat.r1.v[r.secondRowIndex] = -(r.secondRowSign * 2 - 1);
+    mat.r2.v[0] = -(r.thirdRowSign * 2.0 - 1) * !(r.firstRowIndex == 0 || r.secondRowIndex == 0);
+    mat.r2.v[1] = -(r.thirdRowSign * 2.0 - 1) * !(r.firstRowIndex == 1 || r.secondRowIndex == 1);
+    mat.r2.v[2] = -(r.thirdRowSign * 2.0 - 1) * !(r.firstRowIndex == 2 || r.secondRowIndex == 2);
+    return mat;
+};
 
 struct KeyValue
 {
     String key;
-    if (key.data == "_r")
-    {
-        Rotation value_r;
-    }
-    else
-    {
-        String value;
-    }
+    // Depending on the key, the value must be parsed as one or more floats or integers.
+    String value;
 } [[format("FormatKeyValue")]];
 
 fn FormatKeyValue(ref KeyValue kv)
