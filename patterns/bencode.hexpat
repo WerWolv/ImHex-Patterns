@@ -38,10 +38,15 @@ namespace bencode {
 		ASCIIDecimal length;
 		char separator [[hidden]];
 		char value[length];
-	} [[sealed, format("bencode::format_string"), transform("bencode::format_string")]];
+	} [[sealed, format("bencode::format_string")]];
 
 	fn format_string(String string) {
-		return string.value;
+		for (u64 i = 0, i < string.length, i = i + 1) {
+			if (!std::ctype::isprint(string.value[i])) {
+				return "Contains non-printable characters";
+			}
+		}
+		return std::format("\"{}\"", string.value);
 	};
 
 	using Bencode;
