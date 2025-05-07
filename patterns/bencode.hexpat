@@ -58,6 +58,9 @@ namespace bencode {
 		if (type == Type::Dictionary) {
 			DictionaryEntry entry[while(std::mem::read_unsigned($, 1) != 'e')];
 			char end;
+		} else if (type == Type::List) {
+			  Value entry[while(std::mem::read_unsigned($, 1) != 'e')];
+			  char end;
 		} else if (type == Type::Integer) {
 			ASCIIDecimal value;
 			char end;
