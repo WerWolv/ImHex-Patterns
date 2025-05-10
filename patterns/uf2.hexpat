@@ -1,5 +1,6 @@
 #pragma author WerWolv
 #pragma description USB Flashing Format (.uf2)
+#pragma magic [ 55 46 32 0A 57 51 5D 9E ] @ 0x00
 
 import std.sys;
 import std.mem;
