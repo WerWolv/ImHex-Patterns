@@ -21,7 +21,7 @@ namespace auto type {
         g : G;
         b : B;
         if (A > 0) a : A;
-    } [[sealed, format("type::impl::format_color"), color(std::format("{0:02X}{1:02X}{2:02X}FF", r, g, b))]];
+    } [[sealed, format("type::impl::format_color"), color(std::format("{0:02X}{1:02X}{2:02X}", r, g, b))]];
 
     /**
         Type representing a generic RGB color with a variable number of bits for each color

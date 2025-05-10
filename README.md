@@ -117,6 +117,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NotepadWindowState | | [`patterns/notepadwindowstate.hexpat`](patterns/notepadwindowstate.hexpat) | Windows 11 Notepad - Window State .bin file |
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
+| NTFS | | [`patterns/ntfs.hexpat`](patterns/ntfs.hexpat) | NTFS (NT File System) |
 | OGG | `audio/ogg` | [`patterns/ogg.hexpat`](patterns/ogg.hexpat) | OGG Audio format |
 | PAK | | [`patterns/xgspak.hexpat`](patterns/xgspak.hexpat) | Exient XGS Engine Pak files |
 | PCAP | `application/vnd.tcpdump.pcap` | [`patterns/pcap.hexpat`](patterns/pcap.hexpat) | pcap header and packets |
@@ -140,6 +141,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | quantized-mesh | | [`patterns/quantized-mesh.hexpat`](patterns/quantized-mesh.hexpat) | Cesium quantized-mesh terrain |
 | RAR | `application/x-rar` | [`patterns/rar.hexpat`](patterns/rar.hexpat) | RAR archive file format |
 | RAS | `image/x-sun-raster` | [`patterns/ras.hexpat`](patterns/ras.hexpat) | RAS image files |
+| RCF 1.2 | | [`patterns/rcf_v1_2.hexpat`](patterns/rcf_v1_2.hexpat) | Radcore Cement Library 1.2 file header |
 | ReFS | | [`patterns/refs.hexpat`](patterns/refs.hexpat) | Microsoft Resilient File System |
 | RGBDS | | [`patterns/rgbds.hexpat`](patterns/rgbds.hexpat) | [RGBDS](https://rgbds.gbdev.io) object file format |
 | RPM | | [`patterns/rpm.hexpat`](patterns/rpm.hexpat) | [RPM](http://ftp.rpm.org/max-rpm/s1-rpm-file-format-rpm-file-format.html) package file format |
@@ -169,6 +171,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | VEADO | | [`patterns/veado.hexpat`](patterns/veado.hexpat) | veadotube mini avatar file |
 | VGM | | [`patterns/vgm.hexpat`](patterns/vgm.hexpat) | VGM (Video Game Music) sound log |
 | VHDX | | [`patterns/vhdx.hexpat`](patterns/vhdx.hexpat) | Microsoft Hyper-V Virtual Hard Disk format |
+| VOX | | [`patterns/vox.hexpat`](patterns/vox.hexpat) | MagicaVoxel scene description format |
 | WAV  | `audio/x-wav`  | [`patterns/wav.hexpat`](patterns/wav.hexpat)  | RIFF header, WAVE header, PCM header |
 | WAS | | [`patterns\was_oskasoftware.hexpat`](patterns\was_oskasoftware.hexpat) | Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set) file
 | WAD | | [`patterns/wad.hexpat`](patterns/wad.hexpat) | DOOM WAD Archive |
@@ -178,6 +181,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | XGT | | [`patterns/xgt.hexpat`](patterns/xgstexture.hexpat) | Exient XGS Engine Texture |
 | Xilinx BIT | | [`patterns/xilinx_bit.hexpat`](patterns/xilinx_bit.hexpat) | Xilinx FPGA Bitstreams |
 | Xilinx Bootgen | `application/x-xilinx-boot-zynqmp` | [`patterns/xilinx_bootgen.hexpat`](patterns/xilinx_bootgen.hexpat) | Xilinx ZynqMP Boot Images |
+| ZIM  | | [`patterns/zim.hexpat`](patterns/zim.hexpat) | [ZIM](https://openzim.org) file format |
 | ZIP  | `application/zip` | [`patterns/zip.hexpat`](patterns/zip.hexpat) | End of Central Directory Header, Central Directory File Headers |
 | ZLIB | `application/zlib` | [`patterns/zlib.hexpat`](patterns/zlib.hexpat) | ZLIB compressed data format |
 | ZSTD | `application/zstd` | [`patterns/zstd.hexpat`](patterns/zstd.hexpat) | Zstandard compressed data format |
