@@ -120,6 +120,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | OGG | `audio/ogg` | [`patterns/ogg.hexpat`](patterns/ogg.hexpat) | OGG Audio format |
 | PAK | | [`patterns/xgspak.hexpat`](patterns/xgspak.hexpat) | Exient XGS Engine Pak files |
 | PCAP | `application/vnd.tcpdump.pcap` | [`patterns/pcap.hexpat`](patterns/pcap.hexpat) | pcap header and packets |
+| PcapNG | `application/vnd.tcpdump.pcap` | [`patterns/pcapng.hexpat`](patterns/pcapng.hexpat) | pcapng header and packets |
 | PCK | | [`patterns/pck.hexpat`](patterns/pck.hexpat) | Minecraft Legacy Console Edition .pck file |
 | PCX | `application/x-pcx` | [`patterns/pcx.hexpat`](patterns/pcx.hexpat) | PCX Image format |
 | PE | `application/x-dosexec` `application/x-msdownload` | [`patterns/pe.hexpat`](patterns/pe.hexpat) | PE header, COFF header, Standard COFF fields and Windows Specific fields |
