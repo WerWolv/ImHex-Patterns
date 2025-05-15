@@ -74,6 +74,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | FFX | | [`patterns/ffx/*`](https://gitlab.com/EvelynTSMG/imhex-ffx-pats) | Various Final Fantasy X files |
 | File System | `application/x-ima` | [`patterns/fs.hexpat`](patterns/fs.hexpat) | Drive File System |
 | FLAC | `audio/flac` | [`patterns/flac.hexpat`](patterns/flac.hexpat) | Free Lossless Audio Codec, FLAC Audio Format |
+| FLC/FLIC | | [`patterns/flc.hexpat`](patterns/flc.hexpat) | FLC/FLIC animation file |
 | Flipper Zero Settings | | [`patterns/flipper_settings.hexpat`](patterns/flipper_settings.hexpat) | Flipper Zero Settings Files |
 | GB | `application/x-gameboy-rom` | [`patterns/gb.hexpat`](patterns/gb.hexpat) | Game Boy ROM |
 | GBA | `application/x-gameboy-advance-rom` | [`patterns/gba.hexpat`](patterns/gba.hexpat) | Game Boy Advance ROM header |
@@ -84,6 +85,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Halo Tag || [`patterns/hinf_tag.hexpat`](patterns/hinf_tag.hexpat) | Halo Infinite Tag Files |
 | Halo Module || [`patterns/hinf_module.hexpat`](patterns/hinf_module.hexpat) | Halo Infinite Module Archive Files |
 | Halo HavokScript || [`patterns/hinf_luas.hexpat`](patterns/hinf_luas.hexpat) | Halo Infinite HavokScript 5.1 Bytecode |
+| HPROF || [`patterns/hprof.hexpat`](patterns/hprof.hexpat) | Java HPROF Profiler Data Format |
 | HSDT || [`patterns/hsdt.hexpat`](patterns/hsdt.hexpat) | HiSilicon device-tree table images |
 | ICO | | [`patterns/ico.hexpat`](patterns/ico.hexpat) | Icon (.ico) or Cursor (.cur) files |
 | ID3 | `audio/mpeg` | [`patterns/id3.hexpat`](patterns/id3.hexpat) | ID3 tags in MP3 files |
@@ -158,6 +160,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | StuffItV5 | `application/x-stuffit` | [`patterns/sit5.hexpat`](patterns/sit5.hexpat) | StuffIt V5 archive |
 | SQLite3 | `application/vnd.sqlite3` | [`patterns/sqlite3.hexpat`](patterns/sqlite3.hexpat) | SQLite3 Database |
 | SWF | `application/x-shockwave-flash` |[`patterns/swf.hexpat`](patterns/swf.hexpat) | Shockwave Flash file format |
+| TA | | [`patterns/optee_ta.hexpat`](patterns/optee_ta.hexpat) | OPTEE Trusted Application Executable |
 | TAR | `application/x-tar` | [`patterns/tar.hexpat`](patterns/tar.hexpat) | Tar file format |
 | TES | | [`patterns/wintec_tes.hexpat`](patterns/wintec_tes.hexpat) | Wintec TES GPS log |
 | Thumbcache | | [`patterns/thumbcache.hexpat`](patterns/thumbcache.hexpat) | Windows thumbcache_*.db |
