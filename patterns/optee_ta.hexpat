@@ -1,3 +1,7 @@
+#pragma author WerWolv
+#pragma description ARM OPTEE Trusted Application
+#pragma endian little
+
 import type.magic;
 import type.size;
 import type.guid;
