@@ -1,3 +1,4 @@
+#pragma description FLC/FLIC animation file
 #pragma endian little
 #pragma magic [12 AF] @ 0x4
 
