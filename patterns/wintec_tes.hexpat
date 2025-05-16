@@ -24,6 +24,7 @@
 #include "std/mem.pat"
 #include "std/string.pat"
 
+using WBTLine;
 using WBTTimestamp;
 
 // helper to format latitude and longitude in a human-readable form
@@ -42,6 +43,11 @@ fn iso8601(WBTTimestamp input) {
     return std::format("20{:02d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}Z",input.year, input.month, input.day, input.hours, input.minutes, input.seconds);
 };
 
+
+// short format for overview in a list
+fn shortString(WBTLine input) {
+    return std::format("{:02d}:{:02d}:{:02d} {:s},{:s}", input.timestamp.hours, input.timestamp.minutes, input.timestamp.seconds, stringDegrees(input.lat), stringDegrees(input.lon));
+};
 
 // This 16 bit field is barely used. Only these two are known.
 bitfield WBTFlags {
@@ -70,7 +76,7 @@ struct WBTLine {
     s32 lat [[color("007FFF"), format("stringDegrees")]];
     s32 lon [[color("7F00FF"), format("stringDegrees")]];
     s16 alt [[color("0000FF")]];
-} [[hex::visualize("coordinates", decimalDegrees(lat), decimalDegrees(lon))]];
+} [[hex::visualize("coordinates", decimalDegrees(lat), decimalDegrees(lon)), format("shortString")]];
 
 
 // parsing that whole file start to finish:
