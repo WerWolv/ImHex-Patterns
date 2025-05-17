@@ -6,6 +6,8 @@ import std.mem;
 import std.string;
 import std.core;
 
+#pragma eval_depth 0
+
 struct BootSector {
     std::mem::Bytes<3> jumpBoot;
     char fileSystemName[8];
@@ -243,11 +245,7 @@ struct DirectoryEntryChain {
         )] @ startingFatRange [[hidden]];
         clusterSize = std::core::member_count(clusters);
     }
-    try {
-        ContinuousDirectoryEntry<clusterIndex, clusterSize> data @ 0;
-    } catch {
-        std::warning(std::format("Error trying to parse ContinuousDirectoryEntry at {:#x} (Cluster index {} with cluster size of {})", startOfClusterHeap + clusterIndex * bytesPerCluster, clusterIndex, clusterSize));
-    }
+    ContinuousDirectoryEntry<clusterIndex, clusterSize> data @ 0;
     try {
         auto nextClusterIndex = clusters[clusterSize - 1];
         if (nextClusterIndex != 0xffffffff && nextClusterIndex != 0) {
