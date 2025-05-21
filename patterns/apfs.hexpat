@@ -1306,7 +1306,7 @@ fn omap_node_lookup(paddr_t off, u64 block_size, oid_t oid, xid_t xid) {
         s64 mid = 0;
         s64 idx = 0;
         while (beg <= end) {
-            mid = (beg + end) / 2;
+            mid = beg + (end - beg) / 2;
 
             omap_key_t key = node.btn_toc[mid].key;
             if (oid > key.ok_oid) {
@@ -1357,7 +1357,7 @@ fn fstree_inode_lookup(
         s64 mid = 0;
         s64 current = 0;
         while (beg <= end) {
-            mid = (beg + end) / 2;
+            mid = beg + (end - beg) / 2;
             u64 entry_key @ addressof (node.btn_toc[mid].key);
             if ((entry_key & OBJ_ID_MASK) > (inode_key & OBJ_ID_MASK)) {
                 end -= 1;
