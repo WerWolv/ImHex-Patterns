@@ -1295,41 +1295,47 @@ fn keybag_is_encrypted(media_keybag_t keybag) {
 };
 
 fn omap_node_lookup(paddr_t off, u64 block_size, oid_t oid, xid_t xid) {
-    btree_node_phys_t<block_size, 0> node @ off;
-
-    if (node.btn_nkeys <= 0) {
-        return 0;
-    }
-
-    s64 beg = 0;
-    s64 end = node.btn_nkeys - 1;
-    s64 mid = 0;
-    s64 idx = 0;
-    while (beg <= end) {
-        mid = (beg + end) / 2;
-
-        omap_key_t key = node.btn_toc[mid].key;
-        if (oid > key.ok_oid) {
-            beg += 1;
-        } else if (oid < key.ok_oid) {
-            end -= 1;
-        } else if (xid > key.ok_xid) {
-            beg += 1;
-            idx = mid;
-        } else if (xid < key.ok_xid) {
-            end -= 1;
-            idx = mid;
-        } else {
-            idx = mid;
-            break;
+    while (true) {
+        btree_node_phys_t<block_size, 0> node @ off;
+        if (node.btn_nkeys <= 0) {
+            return 0;
         }
-    }
 
-    omap_key_t key = node.btn_toc[idx].key;
-    if (key.ok_oid == oid) {
-        return node.btn_toc[idx].val.ov_paddr;
-    } else {
-        return 0;
+        s64 beg = 0;
+        s64 end = node.btn_nkeys - 1;
+        s64 mid = 0;
+        s64 idx = 0;
+        while (beg <= end) {
+            mid = (beg + end) / 2;
+
+            omap_key_t key = node.btn_toc[mid].key;
+            if (oid > key.ok_oid) {
+                beg += 1;
+            } else if (oid < key.ok_oid) {
+                end -= 1;
+            } else if (xid > key.ok_xid) {
+                beg += 1;
+                idx = mid;
+            } else if (xid < key.ok_xid) {
+                end -= 1;
+                idx = mid;
+            } else {
+                idx = mid;
+                break;
+            }
+        }
+
+        if (node.btn_level > 0) {
+            off = node.btn_toc[current].node_oid * block_size;
+            continue;
+        }
+
+        omap_key_t key = node.btn_toc[idx].key;
+        if (key.ok_oid == oid) {
+            return node.btn_toc[idx].val.ov_paddr;
+        } else {
+            return 0;
+        }
     }
 };
 
@@ -1413,6 +1419,14 @@ btree_node_phys_t<superblock.nx_block_size, volume.apfs_incompatible_features> v
     superblock.nx_block_size,
     volume.apfs_root_tree_oid,
     volume.apfs_o.o_xid) * superblock.nx_block_size;
+j_inode_val_t volume_root_folder @ fstree_inode_lookup(
+    addressof (volume_root_tree),
+    addressof (volume_object_map_tree),
+    superblock.nx_block_size,
+    ROOT_DIR_INO_NUM,
+    volume.apfs_incompatible_features,
+    volume.apfs_o.o_xid
+);
 
 btree_node_phys_t<superblock.nx_block_size, 0> volume_extentref_tree @ volume.apfs_extentref_tree_oid * superblock.nx_block_size;
 btree_node_phys_t<superblock.nx_block_size, 0> volume_snapshot_tree @ volume.apfs_snap_meta_tree_oid * superblock.nx_block_size;
