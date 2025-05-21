@@ -1326,7 +1326,7 @@ fn omap_node_lookup(paddr_t off, u64 block_size, oid_t oid, xid_t xid) {
         }
 
         if (node.btn_level > 0) {
-            off = node.btn_toc[current].node_oid * block_size;
+            off = node.btn_toc[idx].node_oid * block_size;
             continue;
         }
 
