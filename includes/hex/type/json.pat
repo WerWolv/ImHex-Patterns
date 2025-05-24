@@ -13,7 +13,7 @@ namespace auto hex::type {
         @tparam Size size of the string
     */
     struct Json<auto Size> {
-        char __data[Size] [[hidden]];
+        char __data[Size] [[hidden, no_unique_address]];
         builtin::hex::dec::Json<__data> json [[merge]];
     };
 
@@ -22,7 +22,7 @@ namespace auto hex::type {
         @tparam Size size of the data
     */
     struct Bson<auto Size> {
-        u8 __data[Size] [[hidden]];
+        u8 __data[Size] [[hidden, no_unique_address]];
         builtin::hex::dec::Bson<__data> bson [[merge]];
     };
 
@@ -31,7 +31,7 @@ namespace auto hex::type {
         @tparam Size size of the data
     */
     struct Cbor<auto Size> {
-        u8 __data[Size] [[hidden]];
+        u8 __data[Size] [[hidden, no_unique_address]];
         builtin::hex::dec::Cbor<__data> cbor [[merge]];
     };
 
@@ -40,7 +40,7 @@ namespace auto hex::type {
         @tparam Size size of the data
     */
     struct Bjdata<auto Size> {
-        u8 __data[Size] [[hidden]];
+        u8 __data[Size] [[hidden, no_unique_address]];
         builtin::hex::dec::Bjdata<__data> bjdata [[merge]];
     };
 
@@ -49,7 +49,7 @@ namespace auto hex::type {
         @tparam Size size of the data
     */
     struct Msgpack<auto Size> {
-        u8 __data[Size] [[hidden]];
+        u8 __data[Size] [[hidden, no_unique_address]];
         builtin::hex::dec::Msgpack<__data> msgpack [[merge]];
     };
 
@@ -58,7 +58,7 @@ namespace auto hex::type {
         @tparam Size size of the data
     */
     struct Ubjson<auto Size> {
-        u8 __data[Size] [[hidden]];
+        u8 __data[Size] [[hidden, no_unique_address]];
         builtin::hex::dec::Ubjson<__data> ubjson [[merge]];
     };
     
