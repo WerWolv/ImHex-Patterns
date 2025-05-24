@@ -96,29 +96,32 @@ struct VLQPointerToArray<T, auto size> {
 
 using MetaDataStandardResourceFormatID;
 
-fn inferResourceSize(u64 addr, MetaDataStandardResourceFormatID resfmt) {
+// TODO: `ref` seems nonsense, but without it resfmt will not be passed correctly
+fn inferResourceSize(u64 addr, ref MetaDataStandardResourceFormatID resfmt) {
+    // std::print("2. 0x{:x} {} {} 0x{:x}", $, resfmt, u8(resfmt), addressof(resfmt));
     u64 filesize = 0;
+    // std::print("3. 0x{:x} {} {} 0x{:x}", $, resfmt, u8(resfmt), addressof(resfmt));
     if (resfmt == MetaDataStandardResourceFormatID::SMF0
      || resfmt == MetaDataStandardResourceFormatID::SMF1) {
-        if (std::mem::read_string(ptr, 4) != "MThd") {
+        if (std::mem::read_string(addr, 4) != "MThd") {
             std::warning("A SMF resource does not seem to be a SMF file");
             std::error();
         }
-        filesize += 8 + std::mem::read_unsigned(ptr+4, 4, std::mem::Endian::Big);
-        u16 ntrks = std::mem::read_unsigned(ptr+10, 2, std::mem::Endian::Big);
+        filesize += 8 + std::mem::read_unsigned(addr+4, 4, std::mem::Endian::Big);
+        u16 ntrks = std::mem::read_unsigned(addr+10, 2, std::mem::Endian::Big);
         for (u16 i = 0, i < ntrks, i += 1) {
-            if (std::mem::read_string(ptr+filesize, 4) != "MTrk") {
+            if (std::mem::read_string(addr+filesize, 4) != "MTrk") {
                 std::warning("A SMF resource does not seem to be a SMF file (when reading its tracks)");
                 std::error();
             }
-            filesize += 8 + std::mem::read_unsigned(ptr+filesize+4, 4, std::mem::Endian::Big);
+            filesize += 8 + std::mem::read_unsigned(addr+filesize+4, 4, std::mem::Endian::Big);
         }
     } else if (std::core::is_valid_enum(resfmt)) { // If it is not SMF, it is DLS
-        if (std::mem::read_string(ptr, 4) != "RIFF") {
+        if (std::mem::read_string(addr, 4) != "RIFF") {
             std::warning("A DLS resource does not seem to be a RIFF file");
             std::error();
         }
-        fileSize = 4 + std::mem::read_unsigned(ptr+4, 4, std::mem::Endian::Little);
+        filesize = 4 + std::mem::read_unsigned(addr+4, 4, std::mem::Endian::Little);
     } else {
         std::warning("Invalid MetaDataStandardResourceFormatID found");
         std::error();
@@ -407,29 +410,36 @@ fn unpackData(auto unpackerEntries, auto pattern, std::mem::Section dest) {
 using Node;
 using NodeWithPadding;
 
-fn getResourceFormat(ref Node node) {
-    if (node.header.itemCount != 0) {
-        std::error("Cannot fetch resource format from a folder node");
-    }
-    if (node.content.typeID == ReferenceTypeID::InFileNode) {
-        return getResourceFormat(node.content.pointerToFileNode.deref);
-    }
-    for (u32 i = 0, i < node.header.nodeMetadata.size, i += 1) {
-        if (node.header.nodeMetadata.items[i].fieldSpecifier.fieldID == MetaDataStandardFieldID::ResourceFormat) {
-            if (node.header.nodeMetadata.items[i].fieldContents.formatTypeID == StandardTypeID::Standard) {
-                return node.header.nodeMetadata.items[i].fieldContents.standardResourceFormatID;
-            }
-            return node.header.nodeMetadata.items[i].fieldContents.resourceFormatID;
-        }
-    }
-};
-
 struct NodeHeader {
     VLQ nodeSize;
     VLQ itemCount;
     VLQ headerSize;
     NodeMetaData nodeMetadata;
     NodeUnpackers nodeUnpackers;
+};
+
+fn getResourceFormatIncomplete(ref NodeHeader header, ReferenceTypeID typeID, auto pointerToFileNode) {
+    if (header.itemCount != 0) {
+        std::error("Cannot fetch resource format from a folder node");
+    }
+    if (typeID == ReferenceTypeID::InFileNode) {
+        return getResourceFormat(pointerToFileNode.deref);
+    }
+    for (u32 i = 0, i < header.nodeMetadata.size, i += 1) {
+        if (header.nodeMetadata.items[i].fieldSpecifier.fieldID == MetaDataStandardFieldID::ResourceFormat) {
+            if (header.nodeMetadata.items[i].fieldContents.formatTypeID == StandardTypeID::Standard) {
+                return header.nodeMetadata.items[i].fieldContents.standardResourceFormatID;
+            }
+            return header.nodeMetadata.items[i].fieldContents.resourceFormatID;
+        }
+    }
+};
+
+fn getResourceFormat(ref Node node) {
+    if (node.content.typeID == ReferenceTypeID::InFileNode) {
+        return getResourceFormat(node.header, node.content.typeID, node.content.pointerToFileNode);
+    }
+    return getResourceFormat(node.header, node.content.typeID, 0);
 };
 
 struct NodeContents {
@@ -459,12 +469,13 @@ struct NodeContents {
                 }
             }
         } else if (typeID == ReferenceTypeID::InFileResource) {
+            VLQ ptr [[hidden, no_unique_address]];
             try {
-                VLQ ptr [[hidden, no_unique_address]];
-                auto resfmt = getResourceFormat(parent);
+                MetaDataStandardResourceFormatID resfmt = getResourceFormatIncomplete(parent.header, typeID, 0);
+                // std::print("1. 0x{:x} {} {} 0x{:x}", $, resfmt, u8(resfmt), addressof(resfmt));
                 VLQPointerToArray<char, inferResourceSize(ptr, resfmt)> pointerToData;
             } catch {
-                std::warning(std::format("Failed to deduce size of InFileResource at 0x{:x}", $));
+                std::warning(std::format("Failed to deduce size of InFileResource at 0x{:x} pointing to 0x{:x}", addressof(this), ptr));
                 if (extendIFRtoEOF) {
                     std::warning("The resource will be extended to the EOF.");
                 } else {
@@ -539,8 +550,15 @@ fn fetchData(ref Node node) {
         return pattern;
     }
     if (node.content.typeID == ReferenceTypeID::InFileResource) {
-        u8 pattern[sizeof(node.content.pointerToData.deref)] @ addressof(node.content.pointerToData.deref) in 0;
-        return pattern;
+        try {
+            u8 pattern[sizeof(node.content.pointerToData.deref)] @ addressof(node.content.pointerToData.deref) in 0;
+            return pattern;
+        } catch {
+            std::mem::Section errsec = std::mem::create_section("");
+            std::mem::copy_value_to_section(std::format("Failed to deref InFileResource at 0x{:x} pointing to 0x{:x}", addressof(node.content), node.content.pointerToData.addr), errsec, 0);
+            u8 errmsg[std::mem::get_section_size(errsec)] @ 0x00 in errsec;
+            return errmsg;
+        }
     }
     if (node.content.typeID == ReferenceTypeID::InFileNode) {
         return fetchData(node.content.pointerToFileNode.deref);
