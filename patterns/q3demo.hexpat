@@ -1,13 +1,16 @@
 #pragma description Quake 3 Engine demo
 
-#define FINAL_DEMO_MESSAGE_LENGTH -1
+#pragma array_limit 2147483647
+#pragma pattern_limit 2147483647
 
+#define FINAL_DEMO_MESSAGE_NUMBER -1
+#define FINAL_DEMO_MESSAGE_LENGTH -1
 import type.magic;
 
 struct Message {
     s32 messageNum;
     s32 len;
-    if(len != FINAL_DEMO_MESSAGE_LENGTH) u8 data[len];
+    if(len != FINAL_DEMO_MESSAGE_LENGTH || messageNum != FINAL_DEMO_MESSAGE_NUMBER) u8 data[len];
 };
 
 struct Q3Demo {
