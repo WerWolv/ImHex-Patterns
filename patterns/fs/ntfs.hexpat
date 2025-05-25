@@ -25,7 +25,7 @@ struct GUID {
     u16 Data2;
     u16 Data3;
     u8  Data4[8];
-};
+} [[static]];
 
 bitfield RUNLIST_HEADER {
     unsigned offset : 4;
@@ -36,6 +36,9 @@ struct RUNLIST {
     RUNLIST_HEADER header;
     u8 count[header.length];
     u8 lcn[header.offset];
+    
+    if (header.length == 0)
+        break;
 };
 
 struct BIOS_PARAMETER_BLOCK {
@@ -101,13 +104,13 @@ enum ATTR_TYPES : u32 {
 };
 
 enum ATTR_DEF_FLAGS : u32 {
-	ATTR_DEF_INDEXABLE	    = 0x02,
-	ATTR_DEF_MULTIPLE	    = 0x04,
-	ATTR_DEF_NOT_ZERO	    = 0x08,
-	ATTR_DEF_INDEXED_UNIQUE	= 0x10,
-	ATTR_DEF_NAMED_UNIQUE	= 0x20,
-	ATTR_DEF_RESIDENT	    = 0x40,
-	ATTR_DEF_ALWAYS_LOG	    = 0x80,
+    ATTR_DEF_INDEXABLE      = 0x02,
+    ATTR_DEF_MULTIPLE       = 0x04,
+    ATTR_DEF_NOT_ZERO       = 0x08,
+    ATTR_DEF_INDEXED_UNIQUE = 0x10,
+    ATTR_DEF_NAMED_UNIQUE   = 0x20,
+    ATTR_DEF_RESIDENT       = 0x40,
+    ATTR_DEF_ALWAYS_LOG     = 0x80,
 };
 
 enum COLLATION_RULES : u32 {
@@ -176,12 +179,12 @@ struct STANDARD_INFORMATION_HEADER {
     u64 last_mft_change_time;
     u64 last_access_time;
     FILE_ATTR_FLAGS file_attributes;
-};
+} [[static]];
 
 struct STANDARD_INFORMATION_OLD {
     STANDARD_INFORMATION_HEADER header [[inline]];
     u8 reserved12[12];
-};
+} [[static]];
 
 struct STANDARD_INFORMATION {
     STANDARD_INFORMATION_HEADER header [[inline]];
@@ -192,17 +195,17 @@ struct STANDARD_INFORMATION {
     u32 security_id;
     u64 quota_charged;
     u64 usn;
-};
+} [[static]];
 
 struct FILE_NAME_ATTR_PACKED {
     u16 packed_ea_size;
     u16 reserved;
-};
+} [[static]];
 
 union FILE_NAME_ATTR_FORM {
     FILE_NAME_ATTR_PACKED packed [[inline]];
     u32 reparse_point_tag;
-};
+} [[static]];
 
 struct FILE_NAME_ATTR {
     leMFT_REF parent_directory;
@@ -252,7 +255,7 @@ struct VOLUME_INFORMATION {
     u8  major_ver;
     u8  minor_ver;
     VOLUME_FLAGS flags;
-};
+} [[static]];
 
 enum SECURITY_DESCRIPTOR_CONTROL : u16 {
     SE_OWNER_DEFAULTED          = 0x0001,
@@ -671,8 +674,8 @@ struct RESTART_PAGE_HEADER {
 };
 
 enum RESTART_AREA_FLAGS : u16 {
-	RESTART_VOLUME_IS_CLEAN	= 0x0002,
-	RESTART_SPACE_FILLER	= 0xffff,
+    RESTART_VOLUME_IS_CLEAN = 0x0002,
+    RESTART_SPACE_FILLER    = 0xffff,
 };
 
 struct RESTART_AREA {
@@ -768,7 +771,7 @@ struct ATTR_RECORD {
             }
         }
 
-        RUNLIST runlist[];
+        RUNLIST runlist[while(true)];
     } else {
         u32 value_offset_delta = 0;
         if (value_offset > (ATTR_RECORD_RESIDENT_SIZE + name_offset_delta + name_length_bytes)) {
@@ -988,7 +991,7 @@ MFT_RECORD mft_sec @ nbs.mft_lcn * cluster_size + 9 * mft_rec_size [[name("$Secu
 
 // ============= $UpCase =============
 MFT_RECORD mft_uc @ nbs.mft_lcn * cluster_size + 10 * mft_rec_size [[name("$UpCase")]];
-u8 uc_tbl[1] @  mft_get_dat_attr_lcn(mft_uc) * cluster_size [[name("$UpCase, tabl")]];
+u8 uc_tbl[1] @ mft_get_dat_attr_lcn(mft_uc) * cluster_size [[name("$UpCase, tabl")]];
 
 // ============= $Extend =============
 MFT_RECORD mft_ext @ nbs.mft_lcn * cluster_size + 11 * mft_rec_size [[name("$Extend")]];
