@@ -117,7 +117,10 @@ namespace fmt {
     };
 
     fn const_ref(u2 index) {
-        cp_info info = file.constant_pool[index-1];
+        return fmt::format_info_const_ref(index, file.constant_pool[index-1]);
+    };
+
+    fn format_info_const_ref(u2 index, ref auto info) {
         match(info.tag) {
             (1): return info.bytes;
             (3): return std::format("{:d} [{:d}]", index, info.bytes);
@@ -140,7 +143,10 @@ namespace fmt {
     };
 
     fn const_ref_top(u2 index) {
-        cp_info info = file.constant_pool[index-1];
+        return fmt::format_info_const_ref_top(index, file.constant_pool[index-1]);
+    };
+
+    fn format_info_const_ref_top(u2 index, ref auto info) {
         match(info.tag) {
             (1): return std::format("{:d} [{:s}]", index, info.bytes);
             (_): return fmt::const_ref(index);
