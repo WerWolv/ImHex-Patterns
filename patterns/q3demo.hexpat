@@ -8,8 +8,8 @@
 import type.magic;
 
 struct Message {
-    s32 messageNum;
-    s32 len;
+    le s32 messageNum;
+    le s32 len;
     if(len != FINAL_DEMO_MESSAGE_LENGTH || messageNum != FINAL_DEMO_MESSAGE_NUMBER) u8 data[len];
 };
 
