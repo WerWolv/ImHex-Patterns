@@ -19,24 +19,56 @@ struct Message {
     if(len != FINAL_DEMO_MESSAGE_LENGTH || messageNum != FINAL_DEMO_MESSAGE_NUMBER) {
         u8 data[len];
         s32 bitindex = 0;
-        s32 reliableAcknowledge = 0 [[export]];
-        u16 huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
-        reliableAcknowledge |= (huffy & 0xFF);
-        huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
-        reliableAcknowledge |= (huffy & 0xFF) << 8;
-        huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
-        reliableAcknowledge |= (huffy & 0xFF) << 16;
-        huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
-        reliableAcknowledge |= (huffy & 0xFF) << 24;
-        huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
-        s8 firstCmd = huffy & 0xFF [[export]];
+        if(len>=10){ // should usually be true unless corrupted
+            s32 reliableAcknowledge = 0 [[export]];
+            u16 huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
+            reliableAcknowledge |= (huffy & 0xFF);
+            huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
+            reliableAcknowledge |= (huffy & 0xFF) << 8;
+            huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
+            reliableAcknowledge |= (huffy & 0xFF) << 16;
+            huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
+            reliableAcknowledge |= (huffy & 0xFF) << 24;
+            huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
+            s8 firstCmd = huffy & 0xFF [[export,format("format::firstCmd_name")]];
+            if(firstCmd == 7){ // snapshot
+                s32 serverTime = -1 [[export]];
+                if((len-(bitindex >> 3)) >= 8){
+                    serverTime = 0;
+                    huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
+                    serverTime |= (huffy & 0xFF);
+                    huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
+                    serverTime |= (huffy & 0xFF) << 8;
+                    huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
+                    serverTime |= (huffy & 0xFF) << 16;
+                    huffy = huffdecode[GETINT]; bitindex += (huffy>>8);
+                    serverTime |= (huffy & 0xFF) << 24;
+                }
+            }
+            
+        }
     }
-}[[format("format::message_name")]];
+} [[format("format::message_name")]];
 
 namespace format {
     fn message_name(ref Message value) {
-        if(value.firstCmd == 2) return "Gamestate";
-        return "Message";
+        if(value.len == FINAL_DEMO_MESSAGE_LENGTH && value.messageNum == FINAL_DEMO_MESSAGE_NUMBER) return  std::string::to_string(value.messageNum) + ": " + "Demo End Message";
+        if(value.len < 10) return  std::string::to_string(value.messageNum) + ": Len < 10";
+        if(value.firstCmd == 7) return  std::string::to_string(value.messageNum) + ": Snapshot (" +std::string::to_string(value.serverTime)+ ")";
+        return std::string::to_string(value.messageNum) + ": " + format::cmd_name(value.firstCmd);
+    };
+    
+    fn firstCmd_name(s8 value) {
+        return std::string::to_string(value) + ": " + format::cmd_name(value);
+    };
+    fn cmd_name(s8 value) {
+        if(value == 0) return "Bad";
+        if(value == 1) return "NOP";
+        if(value == 2) return "Gamestate";
+        if(value == 5) return "Servercommand (probably with Snapshot)";
+        if(value == 6) return "Download";
+        if(value == 7) return "Snapshot";
+        return "Can't detect type";
     };
 }
 
