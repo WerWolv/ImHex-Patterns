@@ -5,7 +5,7 @@
 
 #define FINAL_DEMO_MESSAGE_NUMBER -1
 #define FINAL_DEMO_MESSAGE_LENGTH -1
-#define GETINT ((data[bitindex >> 3] | (data[(bitindex >> 3)+1]<<8)  | (data[1]<<16)  | (data[1]<<32)) >> (bitindex & 7)) & 0x7FF
+#define GETINT ((data[bitindex >> 3] | (data[(bitindex >> 3)+1]<<8)  | (data[(bitindex >> 3)+2]<<16)  | (data[(bitindex >> 3)+3]<<32)) >> (bitindex & 7)) & 0x7FF
 
 import type.magic;
 
