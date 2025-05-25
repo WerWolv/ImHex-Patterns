@@ -50,14 +50,12 @@ fn readCsString(ref auto data, s32 len, s32 bitindex){
     
     while(true){
         ret = readbits(data,len,8,bitindex);DECODERET
-        std::print(value);
         if(value != 3){
          break;
         }
         // configstring
         ret = readbits(data,len,16,bitindex);DECODERET
         u16 csNum = value;
-        std::print(csNum);
         
         while(true){
             ret = readbits(data,len,8,bitindex);DECODERET
@@ -68,11 +66,11 @@ fn readCsString(ref auto data, s32 len, s32 bitindex){
             char c = val;
             test+=std::string::to_string(c);
         }
-        std::print(test);
         return test;
     }
     return test;
 };
+
 fn measureCsString(ref auto data, s32 len, s32 bitindex){
     s32 value = 0;
     u64 ret = 0;
@@ -96,6 +94,28 @@ fn measureCsString(ref auto data, s32 len, s32 bitindex){
         return bitindex;
     }
     return bitindex;
+};
+
+
+fn readString(ref auto data, s32 len, s32 bitindex){
+    s32 value = 0;
+    u64 ret = 0;
+    str test = "";
+    
+    while(true){
+        
+        while(true){
+            ret = readbits(data,len,8,bitindex);DECODERET
+            s8 val = value;
+            if(val <= 0){
+                break;
+            }
+            char c = val;
+            test+=std::string::to_string(c);
+        }
+        return test;
+    }
+    return test;
 };
 
 struct Message {
@@ -128,6 +148,12 @@ struct Message {
                 str CS_SERVERINFO = readCsString(data,len,bitindex) [[export]];
                 bitindex = nextBitindex;
                 str CS_SYSTEMINFO = readCsString(data,len,bitindex) [[export]];
+                
+            } else if(firstCmd == 5){
+                
+                ret = readbits(data,len,32,bitindex);DECODERET
+                s32 firstCommandSequence = value [[export]];
+                str firstCommand = readString(data,len,bitindex) [[export]];
                 
             }
             
