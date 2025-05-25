@@ -73,6 +73,30 @@ fn readCsString(ref auto data, s32 len, s32 bitindex){
     }
     return test;
 };
+fn measureCsString(ref auto data, s32 len, s32 bitindex){
+    s32 value = 0;
+    u64 ret = 0;
+    
+    while(true){
+        ret = readbits(data,len,8,bitindex);DECODERET
+        if(value != 3){
+         break;
+        }
+        // configstring
+        ret = readbits(data,len,16,bitindex);DECODERET
+        u16 csNum = value;
+        
+        while(true){
+            ret = readbits(data,len,8,bitindex);DECODERET
+            s8 val = value;
+            if(val <= 0){
+                break;
+            }
+        }
+        return bitindex;
+    }
+    return bitindex;
+};
 
 struct Message {
     le s32 messageNum;
@@ -99,7 +123,12 @@ struct Message {
             } else if(firstCmd == 2){
                 ret = readbits(data,len,32,bitindex);DECODERET
                 s32 serverTime = value [[export]];
+                
+                s32 nextBitindex = measureCsString(data,len,bitindex); // silly to do the calc twice but sadly we can't return both a string and an integer, rip
                 str CS_SERVERINFO = readCsString(data,len,bitindex) [[export]];
+                bitindex = nextBitindex;
+                str CS_SYSTEMINFO = readCsString(data,len,bitindex) [[export]];
+                
             }
             
         } else{
