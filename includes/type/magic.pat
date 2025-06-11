@@ -11,7 +11,7 @@ namespace auto type
 {
 
     /**
-        Escapes all bytes in a string to only contain printable characters. All non-printable bytes will be transformed to sequences in the form form \xFF
+        Escapes all bytes in a string to only contain printable characters. All non-printable bytes will be transformed to sequences in the \xFF form
         @param value Byte array to escape
         @return Escaped string
     */
