@@ -77,6 +77,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | File System | `application/x-ima` | [`patterns/fs/pattern.hexpat`](patterns/fs/pattern.hexpat) | Drive File System |
 | FLAC | `audio/flac` | [`patterns/flac.hexpat`](patterns/flac.hexpat) | Free Lossless Audio Codec, FLAC Audio Format |
 | FLC/FLIC | | [`patterns/flc.hexpat`](patterns/flc.hexpat) | FLC/FLIC animation file |
+| FLV | | [`patterns/flv.hexpat`](patterns/flv.hexpat) | FLv animation file |
 | Flipper Zero Settings | | [`patterns/flipper_settings.hexpat`](patterns/flipper_settings.hexpat) | Flipper Zero Settings Files |
 | GB | `application/x-gameboy-rom` | [`patterns/gb.hexpat`](patterns/gb.hexpat) | Game Boy ROM |
 | GBA | `application/x-gameboy-advance-rom` | [`patterns/gba.hexpat`](patterns/gba.hexpat) | Game Boy Advance ROM header |
@@ -145,6 +146,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | PYC | `application/x-bytecode.python` | [`patterns/pyc.hexpat`](patterns/pyc.hexpat) | Python bytecode files |
 | QBCL | | [`patterns/qbcl.hexpat`](patterns/qbcl.hexpat) | Qubicle voxel scene project file |
 | QOI | `image/qoi` | [`patterns/qoi.hexpat`](patterns/qoi.hexpat) | QOI image files |
+| Quake 3 engine demo | | [`patterns/q3demo.hexpat`](patterns/q3demo.hexpat) | Demos/replays of most Quake 3 engine games |
 | quantized-mesh | | [`patterns/quantized-mesh.hexpat`](patterns/quantized-mesh.hexpat) | Cesium quantized-mesh terrain |
 | RAR | `application/x-rar` | [`patterns/rar.hexpat`](patterns/rar.hexpat) | RAR archive file format |
 | RAS | `image/x-sun-raster` | [`patterns/ras.hexpat`](patterns/ras.hexpat) | RAS image files |
