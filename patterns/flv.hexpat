@@ -216,6 +216,9 @@ struct FLVTag: BaseTag{
 	}
 } [[name(std::format("FLVTag({})", TagType))]];
 
+struct FLV {
+   FLVHeader flvheader;
+   FLVTag flvtag[while(!std::mem::eof())];
+};
 
-FLVHeader flvheader @ 00;
-FLVTag flvtag[while(!std::mem::eof())] @ $ ;
+FLV flv @ 0x00 [[inline]];
