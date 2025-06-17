@@ -171,46 +171,48 @@ struct PaletteChunk {
 
 struct AudioTrack<auto trackIndex> {
     u32 length;
-    if (header.AudioRate[trackIndex].isCompressed) {
+    if (parent.parent.header.AudioRate[trackIndex].isCompressed) {
         u32 decompressedSize;
     }
     u8 trackData[length - ($ - addressof(this))];
 };
 
-u32 frame_index = 0;
 struct FramesData {
-    u32 size = sizes[frame_index].size;
-    if (frameTypes[frame_index].ContainsPaletteRecord) {
+    u32 frame_index = std::core::array_index();
+    u32 size = parent.sizes[frame_index].size;
+    if (parent.frameTypes[frame_index].ContainsPaletteRecord) {
         PaletteChunk palette;
     }
-    if (frameTypes[frame_index].ContainsAudioTrack0) {
+    if (parent.frameTypes[frame_index].ContainsAudioTrack0) {
         AudioTrack<0> audioTrack0;
     }
-    if (frameTypes[frame_index].ContainsAudioTrack1) {
+    if (parent.frameTypes[frame_index].ContainsAudioTrack1) {
         AudioTrack<1> audioTrack1;
     }
-    if (frameTypes[frame_index].ContainsAudioTrack2) {
+    if (parent.frameTypes[frame_index].ContainsAudioTrack2) {
         AudioTrack<2> audioTrack2;
     }
-    if (frameTypes[frame_index].ContainsAudioTrack3) {
+    if (parent.frameTypes[frame_index].ContainsAudioTrack3) {
         AudioTrack<3> audioTrack3;
     }
-    if (frameTypes[frame_index].ContainsAudioTrack4) {
+    if (parent.frameTypes[frame_index].ContainsAudioTrack4) {
         AudioTrack<4> audioTrack4;
     }
-    if (frameTypes[frame_index].ContainsAudioTrack5) {
+    if (parent.frameTypes[frame_index].ContainsAudioTrack5) {
         AudioTrack<5> audioTrack5;
     }
-    if (frameTypes[frame_index].ContainsAudioTrack6) {
+    if (parent.frameTypes[frame_index].ContainsAudioTrack6) {
         AudioTrack<6> audioTrack6;
     }
     u8 video[size - ($ - addressof(this))];
-
-    frame_index = frame_index + 1;
 };
 
-Header header @ $;
-Size sizes[header.FrameCount] @ $;
-FrameType frameTypes[header.FrameCount] @ $;
-u8 trees[header.TreesSize] @ $;
-FramesData frames[while(frame_index < header.FrameCount)] @ $;
+struct SMK {
+    Header header;
+    Size sizes[header.FrameCount];
+    FrameType frameTypes[header.FrameCount] ;
+    u8 trees[header.TreesSize];
+    FramesData frames[header.FrameCount];
+};
+
+SMK smk @ 0x00 [[inline]];
