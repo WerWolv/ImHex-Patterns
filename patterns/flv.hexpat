@@ -35,16 +35,10 @@ enum FLV_TAG_TYPE : u8 {
   FLV_TAG_TYPE_VIDEO = 9,
   FLV_TAG_TYPE_META = 18
 };
-
 #define FLV_AUDIO_CODECID_MASK 0xf0
-
 #define FLV_VIDEO_CODECID_MASK    0x0f
 #define FLV_VIDEO_FRAMETYPE_MASK  0x70
 #define FLV_VIDEO_FRAMETYPE_OFFSET   4
-
-
-
-
 //  type = (avio_r8(s->pb) & 0x1F);
 //  dts  = avio_rb24(s->pb);
 //  dts |= (unsigned)avio_r8(s->pb) << 24;
@@ -74,9 +68,7 @@ enum AMFDataType:u8 {
     AMF_DATA_TYPE_LONG_STRING = 0x0c,
     AMF_DATA_TYPE_UNSUPPORTED = 0x0d,
 };
-fn amf_get_string(){
 
-};
 #define TYPE_ONTEXTDATA 1
 #define TYPE_ONCAPTION 2
 #define TYPE_ONCAPTIONINFO 3
