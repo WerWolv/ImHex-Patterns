@@ -144,7 +144,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | PYC | `application/x-bytecode.python` | [`patterns/pyc.hexpat`](patterns/pyc.hexpat) | Python bytecode files |
 | QBCL | | [`patterns/qbcl.hexpat`](patterns/qbcl.hexpat) | Qubicle voxel scene project file |
 | QOI | `image/qoi` | [`patterns/qoi.hexpat`](patterns/qoi.hexpat) | QOI image files |
-| DM_68, DM_\*\* | | [`patterns/q3demo.hexpat`](patterns/q3demo.hexpat) | Demos/replays of most Quake 3 engine games |
+| Quake 3 engine demo | | [`patterns/q3demo.hexpat`](patterns/q3demo.hexpat) | Demos/replays of most Quake 3 engine games |
 | quantized-mesh | | [`patterns/quantized-mesh.hexpat`](patterns/quantized-mesh.hexpat) | Cesium quantized-mesh terrain |
 | RAR | `application/x-rar` | [`patterns/rar.hexpat`](patterns/rar.hexpat) | RAR archive file format |
 | RAS | `image/x-sun-raster` | [`patterns/ras.hexpat`](patterns/ras.hexpat) | RAS image files |
