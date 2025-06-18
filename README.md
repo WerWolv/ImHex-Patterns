@@ -77,6 +77,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | File System | `application/x-ima` | [`patterns/fs/pattern.hexpat`](patterns/fs/pattern.hexpat) | Drive File System |
 | FLAC | `audio/flac` | [`patterns/flac.hexpat`](patterns/flac.hexpat) | Free Lossless Audio Codec, FLAC Audio Format |
 | FLC/FLIC | | [`patterns/flc.hexpat`](patterns/flc.hexpat) | FLC/FLIC animation file |
+| FLV | | [`patterns/flv.hexpat`](patterns/flv.hexpat) | FLv animation file |
 | Flipper Zero Settings | | [`patterns/flipper_settings.hexpat`](patterns/flipper_settings.hexpat) | Flipper Zero Settings Files |
 | GB | `application/x-gameboy-rom` | [`patterns/gb.hexpat`](patterns/gb.hexpat) | Game Boy ROM |
 | GBA | `application/x-gameboy-advance-rom` | [`patterns/gba.hexpat`](patterns/gba.hexpat) | Game Boy Advance ROM header |
@@ -130,6 +131,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | PCK | | [`patterns/pck.hexpat`](patterns/pck.hexpat) | Minecraft Legacy Console Edition .pck file |
 | PCX | `application/x-pcx` | [`patterns/pcx.hexpat`](patterns/pcx.hexpat) | PCX Image format |
 | PE | `application/x-dosexec` `application/x-msdownload` | [`patterns/pe.hexpat`](patterns/pe.hexpat) | PE header, COFF header, Standard COFF fields and Windows Specific fields |
+| PEF | | [`patterns/pef.hexpat`](patterns/pef.hexpat) | Preffered Executable Format executable (for Mac OS 7.1.2 - Mac OS 10.4 / BeOS) |
 | PEX | | [`patterns/pex.hexpat`](patterns/pex.hexpat) | Bethesda Papyrus executable compiled script file |
 | PP | | [`patterns/selinuxpp.hexpat`](patterns/selinuxpp.pat) | SE Linux package |
 | PFS0 | | [`patterns/pfs0.hexpat`](patterns/pfs0.hexpat) | Nintendo Switch PFS0 archive (NSP files) |
@@ -144,6 +146,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | PYC | `application/x-bytecode.python` | [`patterns/pyc.hexpat`](patterns/pyc.hexpat) | Python bytecode files |
 | QBCL | | [`patterns/qbcl.hexpat`](patterns/qbcl.hexpat) | Qubicle voxel scene project file |
 | QOI | `image/qoi` | [`patterns/qoi.hexpat`](patterns/qoi.hexpat) | QOI image files |
+| Quake 3 engine demo | | [`patterns/q3demo.hexpat`](patterns/q3demo.hexpat) | Demos/replays of most Quake 3 engine games |
 | quantized-mesh | | [`patterns/quantized-mesh.hexpat`](patterns/quantized-mesh.hexpat) | Cesium quantized-mesh terrain |
 | RAR | `application/x-rar` | [`patterns/rar.hexpat`](patterns/rar.hexpat) | RAR archive file format |
 | RAS | `image/x-sun-raster` | [`patterns/ras.hexpat`](patterns/ras.hexpat) | RAS image files |
@@ -154,6 +157,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Shell Link | `application/x-ms-shortcut` | [`patterns/lnk.hexpat`](patterns/lnk.hexpat) | Windows Shell Link file format |
 | shp | | [`patterns/shp.hexpat`](patterns/shp.hexpat) | ESRI shape file |
 | shx | | [`patterns/shx.hexpat`](patterns/shx.hexpat) | ESRI index file |
+| smk | | [`patterns/smk.hexpat`](patterns/smk.hexpat) | Smacker video file |
 | sup | | [`patterns/sup.hexpat`](patterns/sup.hexpat) | PGS Subtitle |
 | SPIRV | | [`patterns/spirv.hexpat`](patterns/spirv.hexpat) | SPIR-V header and instructions |
 | STDF | | [`patterns/stdfv4.hexpat`](patterns/stdfv4.hexpat) | Standard test data format for IC testers |
