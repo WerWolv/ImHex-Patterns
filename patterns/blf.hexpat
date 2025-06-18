@@ -1,4 +1,5 @@
 
+
 // Pattern for binary logging files (Vector BLF)
 // References used for writing this:
 // https://python-can.readthedocs.io/en/stable/_modules/can/io/blf.html
@@ -379,19 +380,18 @@ enum timestamp_status : u8 {
     user = 0x10,
 };
 
-struct obj_v1_header {
+struct obj_header_ext {
     object_flags flags;
-    u16 client_index;
-    u16 object_version;
-    u64 timestamp;
-};
-struct obj_v2_header {
-    object_flags flags;
-    timestamp_status timestamp_status;
-    padding[1];
+    if (parent.header.header_version == 1) 
+        u16 client_index;
+    else if (parent.header.header_version == 2) {
+        timestamp_status timestamp_status;
+        padding[1];
+    }
     u16 object_version;
     u64 object_timestamp;
-    u64 original_timestamp;
+    if (parent.header.header_version == 2)
+        u64 original_timestamp;
 };
 
 struct obj_header {
@@ -412,10 +412,7 @@ struct obj_struct {
         // Log containers seem to never include additional V1 or V2 headers
         log_container log [[inline]];
     } else {
-        if (header.header_version == 1)
-            obj_v1_header v1_header [[inline]];
-        else if (header.header_version == 2)
-            obj_v2_header v2_header [[inline]];
+        obj_header_ext ext_header [[inline]];
 
         match(header.object_type) {
             (object_type::can_message): {
@@ -533,3 +530,4 @@ struct file_layout {
 file_layout file @ 0x00;
 
 std::assert_warn(std::mem::size() == file.header.file_length, "file size mismatch");
+
