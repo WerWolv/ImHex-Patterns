@@ -56,10 +56,15 @@ enum gltf_chunk_type_t : u32 {
 struct gltf_chunk_t {
     u32 length;             /**< Length of this chunk. */
     gltf_chunk_type_t type [[format("gltf_format")]]; /**< Type of the chunk. JSON or BIN expected. */
+#ifndef __IMHEX__
+    u8 data[length];        /**< The chunk data. */
+#endif
+#ifdef __IMHEX__
     match (type) {
         (gltf_chunk_type_t::JSON): hex::type::Json<length> json;
         (gltf_chunk_type_t::BIN): u8 data[length];
     }      /**< The chunk data. */
+#endif
 };
 
 fn gltf_format(gltf_chunk_type_t x)
@@ -73,74 +78,54 @@ fn gltf_format(gltf_chunk_type_t x)
 u64 json_offset = 0;
 u64 json_length = 0;
 
-struct StrideType<InnerType, auto Stride> {
+struct stride_type_t<InnerType, auto Stride> {
     InnerType value [[inline]];
     if (Stride > 0) {
         padding[Stride - sizeof(value)];
     }
 };
 
-struct Scalar<ComponentType> {
+struct scalar_t<ComponentType> {
     ComponentType scalar;
 } [[static, sealed]];
 
-struct Vec2<ComponentType> {
+struct vec2_t<ComponentType> {
     ComponentType x;
     ComponentType y;
 } [[static]];
 
-struct Vec3<ComponentType> {
+struct vec3_t<ComponentType> {
     ComponentType x;
     ComponentType y;
     ComponentType z;
 } [[static]];
 
-struct Vec4<ComponentType> {
+struct vec4_t<ComponentType> {
     ComponentType x;
     ComponentType y;
     ComponentType z;
     ComponentType w;
 } [[static]];
 
-struct Mat2<ComponentType> {
-    ComponentType a11;
-    ComponentType a21;
-    ComponentType a12;
-    ComponentType a22;
+struct mat2_t<ComponentType> {
+    ComponentType a11, a21;
+    ComponentType a12, a22;
 } [[static]];
 
-struct Mat3<ComponentType> {
-    ComponentType a11;
-    ComponentType a21;
-    ComponentType a31;
-    ComponentType a12;
-    ComponentType a22;
-    ComponentType a32;
-    ComponentType a13;
-    ComponentType a23;
-    ComponentType a33;
+struct mat3_t<ComponentType> {
+    ComponentType a11, a21, a31;
+    ComponentType a12, a22, a32;
+    ComponentType a13, a23, a33;
 } [[static]];
 
-struct Mat4<ComponentType> {
-    ComponentType a11;
-    ComponentType a21;
-    ComponentType a31;
-    ComponentType a41;
-    ComponentType a12;
-    ComponentType a22;
-    ComponentType a32;
-    ComponentType a42;
-    ComponentType a13;
-    ComponentType a23;
-    ComponentType a33;
-    ComponentType a43;
-    ComponentType a14;
-    ComponentType a24;
-    ComponentType a34;
-    ComponentType a44;
+struct mat4_t<ComponentType> {
+    ComponentType a11, a21, a31, a41;
+    ComponentType a12, a22, a32, a42;
+    ComponentType a13, a23, a33, a43;
+    ComponentType a14, a24, a34, a44;
 } [[static]];
 
-enum ComponentType : u64 {
+enum component_types_t : u64 {
     BYTE = 5120,
     UNSIGNED_BYTE = 5121,
     SHORT = 5122,
@@ -149,78 +134,80 @@ enum ComponentType : u64 {
     FLOAT = 5126,
 };
 
-struct Accessor<auto Offset> {
+fn mem_cnt(auto value) {
+    return std::core::member_count(value);
+};
+
+fn has_mem(auto value, str member) {
+    return std::core::has_member(value, member);
+};
+
+struct accessor_t<auto Offset> {
     hex::type::Json<json_length> Json @ json_offset;
-    hex::type::Json<json_length> Json2 @ json_offset;
-    hex::type::Json<json_length> Json3 @ json_offset;
     u64 accessor_index = std::core::array_index();
     u64 view_index = Json.accessors[accessor_index].bufferView [[export]];
     u64 view_offset = Json.bufferViews[view_index].byteOffset [[export]];
-    if (std::core::has_member(Json2.bufferViews[view_index], "byteStride")) {
+    if (has_mem(Json.bufferViews[view_index], "byteStride")) {
         u64 byte_stride = Json.bufferViews[view_index].byteStride [[export]];
     } else {
         u64 byte_stride = 0 [[export]];
     }
-    if (std::core::has_member(Json3.accessors[accessor_index], "byteOffset")) {
+    if (has_mem(Json.accessors[accessor_index], "byteOffset")) {
         u64 accessor_offset = Json.accessors[accessor_index].byteOffset [[export]];
     } else {
         u64 accessor_offset = 0 [[export]];
     }
     view_offset = view_offset + accessor_offset;
     u64 count_elements = Json.accessors[accessor_index].count;
-    ComponentType component_type = Json.accessors[accessor_index].componentType [[export]];
+    component_types_t component_type = Json.accessors[accessor_index].componentType [[export]];
 
     match (Json.accessors[accessor_index].type, component_type) {
-        ("SCALAR", ComponentType::BYTE): StrideType<Scalar<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("SCALAR", ComponentType::UNSIGNED_BYTE): StrideType<Scalar<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("SCALAR", ComponentType::SHORT): StrideType<Scalar<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("SCALAR", ComponentType::UNSIGNED_SHORT): StrideType<Scalar<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("SCALAR", ComponentType::UNSIGNED_INT): StrideType<Scalar<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("SCALAR", ComponentType::FLOAT): StrideType<Scalar<float>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC2", ComponentType::FLOAT): StrideType<Vec2<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC2", ComponentType::UNSIGNED_INT): StrideType<Vec2<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC2", ComponentType::UNSIGNED_SHORT): StrideType<Vec2<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC2", ComponentType::SHORT): StrideType<Vec2<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC2", ComponentType::UNSIGNED_BYTE): StrideType<Vec2<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC2", ComponentType::BYTE): StrideType<Vec2<float>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC3", ComponentType::FLOAT): StrideType<Vec3<float>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC3", ComponentType::UNSIGNED_INT): StrideType<Vec3<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC3", ComponentType::UNSIGNED_SHORT): StrideType<Vec3<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC3", ComponentType::SHORT): StrideType<Vec3<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC3", ComponentType::UNSIGNED_BYTE): StrideType<Vec3<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC3", ComponentType::BYTE): StrideType<Vec3<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC4", ComponentType::FLOAT): StrideType<Vec4<float>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC4", ComponentType::UNSIGNED_INT): StrideType<Vec4<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC4", ComponentType::UNSIGNED_SHORT): StrideType<Vec4<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC4", ComponentType::SHORT): StrideType<Vec4<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC4", ComponentType::UNSIGNED_BYTE): StrideType<Vec4<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("VEC4", ComponentType::BYTE): StrideType<Vec4<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT2", ComponentType::FLOAT): StrideType<Mat2<float>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT2", ComponentType::UNSIGNED_INT): StrideType<Mat2<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT2", ComponentType::UNSIGNED_SHORT): StrideType<Mat2<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT2", ComponentType::SHORT): StrideType<Mat2<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT2", ComponentType::UNSIGNED_BYTE): StrideType<Mat2<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT2", ComponentType::BYTE): StrideType<Mat2<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT3", ComponentType::FLOAT): StrideType<Mat3<float>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT3", ComponentType::UNSIGNED_INT): StrideType<Mat3<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT3", ComponentType::UNSIGNED_SHORT): StrideType<Mat3<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT3", ComponentType::SHORT): StrideType<Mat3<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT3", ComponentType::UNSIGNED_BYTE): StrideType<Mat3<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT3", ComponentType::BYTE): StrideType<Mat3<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT4", ComponentType::FLOAT): StrideType<Mat4<float>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT4", ComponentType::UNSIGNED_INT): StrideType<Mat4<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT4", ComponentType::UNSIGNED_SHORT): StrideType<Mat4<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT4", ComponentType::SHORT): StrideType<Mat4<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT4", ComponentType::UNSIGNED_BYTE): StrideType<Mat4<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
-        ("MAT4", ComponentType::BYTE): StrideType<Mat4<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("SCALAR", component_types_t::BYTE): stride_type_t<scalar_t<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("SCALAR", component_types_t::UNSIGNED_BYTE): stride_type_t<scalar_t<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("SCALAR", component_types_t::SHORT): stride_type_t<scalar_t<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("SCALAR", component_types_t::UNSIGNED_SHORT): stride_type_t<scalar_t<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("SCALAR", component_types_t::UNSIGNED_INT): stride_type_t<scalar_t<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("SCALAR", component_types_t::FLOAT): stride_type_t<scalar_t<float>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC2", component_types_t::FLOAT): stride_type_t<vec2_t<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC2", component_types_t::UNSIGNED_INT): stride_type_t<vec2_t<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC2", component_types_t::UNSIGNED_SHORT): stride_type_t<vec2_t<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC2", component_types_t::SHORT): stride_type_t<vec2_t<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC2", component_types_t::UNSIGNED_BYTE): stride_type_t<vec2_t<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC2", component_types_t::BYTE): stride_type_t<vec2_t<float>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC3", component_types_t::FLOAT): stride_type_t<vec3_t<float>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC3", component_types_t::UNSIGNED_INT): stride_type_t<vec3_t<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC3", component_types_t::UNSIGNED_SHORT): stride_type_t<vec3_t<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC3", component_types_t::SHORT): stride_type_t<vec3_t<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC3", component_types_t::UNSIGNED_BYTE): stride_type_t<vec3_t<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC3", component_types_t::BYTE): stride_type_t<vec3_t<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC4", component_types_t::FLOAT): stride_type_t<vec4_t<float>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC4", component_types_t::UNSIGNED_INT): stride_type_t<vec4_t<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC4", component_types_t::UNSIGNED_SHORT): stride_type_t<vec4_t<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC4", component_types_t::SHORT): stride_type_t<vec4_t<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC4", component_types_t::UNSIGNED_BYTE): stride_type_t<vec4_t<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("VEC4", component_types_t::BYTE): stride_type_t<vec4_t<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT2", component_types_t::FLOAT): stride_type_t<mat2_t<float>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT2", component_types_t::UNSIGNED_INT): stride_type_t<mat2_t<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT2", component_types_t::UNSIGNED_SHORT): stride_type_t<mat2_t<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT2", component_types_t::SHORT): stride_type_t<mat2_t<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT2", component_types_t::UNSIGNED_BYTE): stride_type_t<mat2_t<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT2", component_types_t::BYTE): stride_type_t<mat2_t<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT3", component_types_t::FLOAT): stride_type_t<mat3_t<float>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT3", component_types_t::UNSIGNED_INT): stride_type_t<mat3_t<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT3", component_types_t::UNSIGNED_SHORT): stride_type_t<mat3_t<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT3", component_types_t::SHORT): stride_type_t<mat3_t<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT3", component_types_t::UNSIGNED_BYTE): stride_type_t<mat3_t<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT3", component_types_t::BYTE): stride_type_t<mat3_t<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT4", component_types_t::FLOAT): stride_type_t<mat4_t<float>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT4", component_types_t::UNSIGNED_INT): stride_type_t<mat4_t<u32>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT4", component_types_t::UNSIGNED_SHORT): stride_type_t<mat4_t<u16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT4", component_types_t::SHORT): stride_type_t<mat4_t<s16>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT4", component_types_t::UNSIGNED_BYTE): stride_type_t<mat4_t<u8>, byte_stride> content[count_elements] @ view_offset + Offset;
+        ("MAT4", component_types_t::BYTE): stride_type_t<mat4_t<s8>, byte_stride> content[count_elements] @ view_offset + Offset;
     }
 };
 
-fn mem_cnt(auto value) {
-    return std::core::member_count(value);
-};
-
-struct ImageBuffer<auto Offset> {
+struct image_buffer_t<auto Offset> {
     hex::type::Json<json_length> Json @ json_offset;
     u64 image_index = std::core::array_index();
     u64 buffer_view_index = Json.images[image_index].bufferView;
@@ -229,7 +216,7 @@ struct ImageBuffer<auto Offset> {
     u8 image[byte_length] @ Offset + byte_offset;
 } [[hex::visualize("image", image)]];
 
-struct BufferView<auto Offset> {
+struct buffer_view_t<auto Offset> {
     hex::type::Json<json_length> Json @ json_offset;
     u64 buffer_view_index = std::core::array_index();
     u64 byte_offset = Json.bufferViews[buffer_view_index].byteOffset;
@@ -237,7 +224,7 @@ struct BufferView<auto Offset> {
     u8 data[byte_length] @ Offset + byte_offset;
 };
 
-struct Glb {
+struct glb_file_t {
     gltf_magic_t magic;
     gltf_chunk_t json_chunk;
     gltf_chunk_t chunks[while(!std::mem::eof())];
@@ -247,15 +234,16 @@ struct Glb {
 
     std::assert_warn(std::mem::size() == magic.length, "file size mismatch");
 
+#ifdef __IMHEX__
     if (std::core::member_count(chunks) == 1) {
         u128 bin_chunk = addressof(chunks[0].data);
-        hex::type::Json<json_length> Json @ json_offset;
-        if (std::core::has_member(Json, "images")) {
-            ImageBuffer<bin_chunk> images[mem_cnt(json_chunk.json.images)];
+        if (has_mem(json_chunk.json, "images")) {
+            image_buffer_t<bin_chunk> images[mem_cnt(json_chunk.json.images)];
         }
-        BufferView<bin_chunk> buffer_views[mem_cnt(json_chunk.json.bufferViews)];
-        Accessor<bin_chunk> accessors[mem_cnt(json_chunk.json.accessors)];
+        buffer_view_t<bin_chunk> buffer_views[mem_cnt(json_chunk.json.bufferViews)];
+        accessor_t<bin_chunk> accessors[mem_cnt(json_chunk.json.accessors)];
     }
+#endif
 };
 
-Glb glb @ 0x00;
+glb_file_t glb @ 0x00;
