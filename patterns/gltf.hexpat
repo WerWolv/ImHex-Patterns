@@ -77,8 +77,7 @@ fn gltf_format(gltf_chunk_type_t x)
     return "";
 };
 
-struct stride_type_t<InnerType, auto component_type_, auto Stride> {
-    auto component_type = component_type_;
+struct stride_type_t<InnerType, auto Stride> {
     InnerType value [[inline]];
     if (Stride > 0) {
         padding[Stride - sizeof(value)];
@@ -157,15 +156,6 @@ struct mat4_t<auto component_type> {
     component_type_t<component_type> a14, a24, a34, a44;
 } [[static]];
 
-enum component_types_t : u64 {
-    BYTE = 5120,
-    UNSIGNED_BYTE = 5121,
-    SHORT = 5122,
-    UNSIGNED_SHORT = 5123,
-    UNSIGNED_INT = 5125,
-    FLOAT = 5126,
-};
-
 fn mem_cnt(auto value) {
     return std::core::member_count(value);
 };
@@ -194,14 +184,18 @@ struct accessor_t {
     str element_type = glb.json_chunk.json.accessors[accessor_index].type [[export]];
 
     match (element_type) {
-        ("SCALAR"): stride_type_t<scalar_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC2"): stride_type_t<vec2_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC3"): stride_type_t<vec3_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC4"): stride_type_t<vec4_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT2"): stride_type_t<mat2_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT3"): stride_type_t<mat3_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT4"): stride_type_t<mat4_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
+        ("SCALAR"): stride_type_t<scalar_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("VEC2"): stride_type_t<vec2_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("VEC3"): stride_type_t<vec3_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("VEC4"): stride_type_t<vec4_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("MAT2"): stride_type_t<mat2_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("MAT3"): stride_type_t<mat3_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("MAT4"): stride_type_t<mat4_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
     }
+} [[format("accessor_format")]];
+
+fn accessor_format(accessor_t accessor) {
+    return std::format("{}<{}>[{}]", accessor.element_type, accessor.component_type, accessor.count_elements);
 };
 
 struct image_buffer_t {
@@ -209,14 +203,14 @@ struct image_buffer_t {
     u64 buffer_view_index = glb.json_chunk.json.images[image_index].bufferView;
     u64 byte_offset = glb.json_chunk.json.bufferViews[buffer_view_index].byteOffset;
     u64 byte_length = glb.json_chunk.json.bufferViews[buffer_view_index].byteLength;
-    u8 image[byte_length] @ addressof(glb.chunks[0]) + byte_offset;
+    u8 image[byte_length] @ addressof(glb.chunks[0].data) + byte_offset;
 } [[hex::visualize("image", image)]];
 
 struct buffer_view_t {
     u64 buffer_view_index = std::core::array_index();
     u64 byte_offset = glb.json_chunk.json.bufferViews[buffer_view_index].byteOffset;
     u64 byte_length = glb.json_chunk.json.bufferViews[buffer_view_index].byteLength;
-    u8 data[byte_length] @ addressof(glb.chunks[0]) + byte_offset;
+    u8 data[byte_length] @ addressof(glb.chunks[0].data) + byte_offset;
 };
 
 struct glb_file_t {
