@@ -77,51 +77,84 @@ fn gltf_format(gltf_chunk_type_t x)
     return "";
 };
 
-struct stride_type_t<InnerType, auto Stride> {
+struct stride_type_t<InnerType, auto component_type_, auto Stride> {
+    auto component_type = component_type_;
     InnerType value [[inline]];
     if (Stride > 0) {
         padding[Stride - sizeof(value)];
     }
 };
 
-struct scalar_t<ComponentType> {
-    ComponentType scalar;
-} [[static, sealed]];
+enum component_types_t : u64 {
+    BYTE = 5120,
+    UNSIGNED_BYTE = 5121,
+    SHORT = 5122,
+    UNSIGNED_SHORT = 5123,
+    UNSIGNED_INT = 5125,
+    FLOAT = 5126,
+};
 
-struct vec2_t<ComponentType> {
-    ComponentType x;
-    ComponentType y;
+fn component_type_format(component_types_t component_type)
+{
+     if (component_type == component_types_t::BYTE) return "s8";
+else if (component_type == component_types_t::UNSIGNED_BYTE) return "u8";
+else if (component_type == component_types_t::SHORT) return "s16";
+else if (component_type == component_types_t::UNSIGNED_SHORT) return "u16";
+else if (component_type == component_types_t::UNSIGNED_INT) return "u32";
+else if (component_type == component_types_t::FLOAT) return "float";
+
+    return std::format("{}", component_type);
+};
+
+struct component_type_t<auto component_type> {
+    match (component_type) {
+        (component_types_t::BYTE): s8 value;
+        (component_types_t::UNSIGNED_BYTE): u8 value;
+        (component_types_t::SHORT): s16 value;
+        (component_types_t::UNSIGNED_SHORT): u16 value;
+        (component_types_t::UNSIGNED_INT): u32 value;
+        (component_types_t::FLOAT): float value;
+    }
+};
+
+struct scalar_t<auto component_type> {
+    component_type_t<component_type> scalar [[inline]];
 } [[static]];
 
-struct vec3_t<ComponentType> {
-    ComponentType x;
-    ComponentType y;
-    ComponentType z;
+struct vec2_t<auto component_type> {
+    component_type_t<component_type> x;
+    component_type_t<component_type> y;
 } [[static]];
 
-struct vec4_t<ComponentType> {
-    ComponentType x;
-    ComponentType y;
-    ComponentType z;
-    ComponentType w;
+struct vec3_t<auto component_type> {
+    component_type_t<component_type> x;
+    component_type_t<component_type> y;
+    component_type_t<component_type> z;
 } [[static]];
 
-struct mat2_t<ComponentType> {
-    ComponentType a11, a21;
-    ComponentType a12, a22;
+struct vec4_t<auto component_type> {
+    component_type_t<component_type> x;
+    component_type_t<component_type> y;
+    component_type_t<component_type> z;
+    component_type_t<component_type> w;
 } [[static]];
 
-struct mat3_t<ComponentType> {
-    ComponentType a11, a21, a31;
-    ComponentType a12, a22, a32;
-    ComponentType a13, a23, a33;
+struct mat2_t<auto component_type> {
+    component_type_t<component_type> a11, a21;
+    component_type_t<component_type> a12, a22;
 } [[static]];
 
-struct mat4_t<ComponentType> {
-    ComponentType a11, a21, a31, a41;
-    ComponentType a12, a22, a32, a42;
-    ComponentType a13, a23, a33, a43;
-    ComponentType a14, a24, a34, a44;
+struct mat3_t<auto component_type> {
+    component_type_t<component_type> a11, a21, a31;
+    component_type_t<component_type> a12, a22, a32;
+    component_type_t<component_type> a13, a23, a33;
+} [[static]];
+
+struct mat4_t<auto component_type> {
+    component_type_t<component_type> a11, a21, a31, a41;
+    component_type_t<component_type> a12, a22, a32, a42;
+    component_type_t<component_type> a13, a23, a33, a43;
+    component_type_t<component_type> a14, a24, a34, a44;
 } [[static]];
 
 enum component_types_t : u64 {
@@ -160,49 +193,14 @@ struct accessor_t {
     component_types_t component_type = glb.json_chunk.json.accessors[accessor_index].componentType [[export]];
     str element_type = glb.json_chunk.json.accessors[accessor_index].type [[export]];
 
-    match (element_type, component_type) {
-        ("SCALAR", component_types_t::BYTE): stride_type_t<scalar_t<s8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("SCALAR", component_types_t::UNSIGNED_BYTE): stride_type_t<scalar_t<u8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("SCALAR", component_types_t::SHORT): stride_type_t<scalar_t<s16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("SCALAR", component_types_t::UNSIGNED_SHORT): stride_type_t<scalar_t<u16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("SCALAR", component_types_t::UNSIGNED_INT): stride_type_t<scalar_t<u32>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("SCALAR", component_types_t::FLOAT): stride_type_t<scalar_t<float>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC2", component_types_t::FLOAT): stride_type_t<vec2_t<s8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC2", component_types_t::UNSIGNED_INT): stride_type_t<vec2_t<u8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC2", component_types_t::UNSIGNED_SHORT): stride_type_t<vec2_t<s16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC2", component_types_t::SHORT): stride_type_t<vec2_t<u16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC2", component_types_t::UNSIGNED_BYTE): stride_type_t<vec2_t<u32>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC2", component_types_t::BYTE): stride_type_t<vec2_t<float>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC3", component_types_t::FLOAT): stride_type_t<vec3_t<float>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC3", component_types_t::UNSIGNED_INT): stride_type_t<vec3_t<u32>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC3", component_types_t::UNSIGNED_SHORT): stride_type_t<vec3_t<u16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC3", component_types_t::SHORT): stride_type_t<vec3_t<s16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC3", component_types_t::UNSIGNED_BYTE): stride_type_t<vec3_t<u8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC3", component_types_t::BYTE): stride_type_t<vec3_t<s8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC4", component_types_t::FLOAT): stride_type_t<vec4_t<float>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC4", component_types_t::UNSIGNED_INT): stride_type_t<vec4_t<u32>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC4", component_types_t::UNSIGNED_SHORT): stride_type_t<vec4_t<u16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC4", component_types_t::SHORT): stride_type_t<vec4_t<s16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC4", component_types_t::UNSIGNED_BYTE): stride_type_t<vec4_t<u8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("VEC4", component_types_t::BYTE): stride_type_t<vec4_t<s8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT2", component_types_t::FLOAT): stride_type_t<mat2_t<float>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT2", component_types_t::UNSIGNED_INT): stride_type_t<mat2_t<u32>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT2", component_types_t::UNSIGNED_SHORT): stride_type_t<mat2_t<u16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT2", component_types_t::SHORT): stride_type_t<mat2_t<s16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT2", component_types_t::UNSIGNED_BYTE): stride_type_t<mat2_t<u8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT2", component_types_t::BYTE): stride_type_t<mat2_t<s8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT3", component_types_t::FLOAT): stride_type_t<mat3_t<float>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT3", component_types_t::UNSIGNED_INT): stride_type_t<mat3_t<u32>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT3", component_types_t::UNSIGNED_SHORT): stride_type_t<mat3_t<u16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT3", component_types_t::SHORT): stride_type_t<mat3_t<s16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT3", component_types_t::UNSIGNED_BYTE): stride_type_t<mat3_t<u8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT3", component_types_t::BYTE): stride_type_t<mat3_t<s8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT4", component_types_t::FLOAT): stride_type_t<mat4_t<float>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT4", component_types_t::UNSIGNED_INT): stride_type_t<mat4_t<u32>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT4", component_types_t::UNSIGNED_SHORT): stride_type_t<mat4_t<u16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT4", component_types_t::SHORT): stride_type_t<mat4_t<s16>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT4", component_types_t::UNSIGNED_BYTE): stride_type_t<mat4_t<u8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
-        ("MAT4", component_types_t::BYTE): stride_type_t<mat4_t<s8>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
+    match (element_type) {
+        ("SCALAR"): stride_type_t<scalar_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
+        ("VEC2"): stride_type_t<vec2_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
+        ("VEC3"): stride_type_t<vec3_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
+        ("VEC4"): stride_type_t<vec4_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
+        ("MAT2"): stride_type_t<mat2_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
+        ("MAT3"): stride_type_t<mat3_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
+        ("MAT4"): stride_type_t<mat4_t<component_type>, component_type, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0]);
     }
 };
 
@@ -234,7 +232,6 @@ glb_file_t glb @ 0x00;
 #ifdef __IMHEX__
 struct glb_objects_t {
     if (std::core::member_count(glb.chunks) == 1) {
-        u128 bin_chunk = addressof(glb.chunks[0].data);
         if (has_mem(glb.json_chunk.json, "images")) {
             image_buffer_t images[mem_cnt(glb.json_chunk.json.images)];
         }
