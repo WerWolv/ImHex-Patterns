@@ -1,4 +1,6 @@
 #pragma description Devil May Cry 3 HD .mod 3D model file
+#pragma MIME 3d-model/capcom.dmc3-hd-mod
+
 // author = haru233, many thanks to AxCut
 // ImHex Hex Pattern File for Capcom's Devil May Cry 3 HD .mod files
 
