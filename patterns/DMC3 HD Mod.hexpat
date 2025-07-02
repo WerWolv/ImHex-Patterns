@@ -4,6 +4,7 @@
 // author = haru233, many thanks to AxCut
 // ImHex Hex Pattern File for Capcom's Devil May Cry 3 HD .mod files
 
+
 import std.core;
 
 
@@ -44,7 +45,7 @@ struct Normals {
 
 
 struct UVs {
-    float uv[2];
+    s16 uv[2];
 };
 
 struct BoneIndices {
@@ -119,6 +120,7 @@ struct Transform {
     float y;
     float z;
     float length; // sqrt(x*x + y*y + z*z)
+    u8 unknown[16];
 };
 
 struct Skeleton{
