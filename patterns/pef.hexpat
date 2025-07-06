@@ -1,11 +1,11 @@
-#pragma author Dominik Tamiollo
+#pragma author domin568
 #pragma description Preffered Executable Format executable (for Mac OS 7.1.2 - Mac OS 10.4 / BeOS)
 #pragma endian big
 #pragma pattern_limit 1000000
-#pragma magic [4A 6F 79 21] @ 0x00
 
 import std.core;
 import std.sys;
+import std.math;
 
 struct PEFContainerHeader 
 {
@@ -435,7 +435,7 @@ u32 relocBegin = loaderOffset + loaderHeader.relocInstrOffset;
 u32 relocSize = loaderOffset + loaderHeader.loaderStringsOffset - relocBegin;
 RelocInstruction relocationInstructions[while(($-relocBegin) < relocSize)] @ relocBegin;
 
-u32 exportSlotNum = 2 * loaderHeader.exportHashTablePower; // 2 ^ loaderHeader.exportHashTablePower
+u32 exportSlotNum = std::math::pow(2, loaderHeader.exportHashTablePower);
 u32 exportDataOffset = loaderOffset + loaderHeader.exportHashOffset;
 u32 exportSymbolKeysOffset = exportDataOffset + sizeof(PEFExportedSymbolHashSlot) * exportSlotNum;
 u32 exportedSymbolsOffset = exportSymbolKeysOffset + sizeof(PEFExportedSymbolKey) * loaderHeader.exportedSymbolCount;
