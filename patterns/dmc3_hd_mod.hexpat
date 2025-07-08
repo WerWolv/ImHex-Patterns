@@ -11,25 +11,25 @@ import std.core;
 struct ModelHeader {
     char ID[4];
     float Version;
-    u8 padding0[8];
+    padding[8];
     u8 objectCount;
     u8 boneCount;
     u8 numberTextures;
-    u8 unknown1;
-    u32 unknown2;
-    u64 unknown3;
+    u8;
+    u32;
+    u64;
     u64 skeletonOffset;
-    u8 padding1[24];
+    padding[24];
 };
 
-struct Object {
+struct ObjectInfo {
     u8 meshCount;
-    u8 unknown;
+    u8;
     u16 numberVertices;
-    u8 padding0[4];
+    padding[4];
     u64 meshOffset;
     u32 flags;
-    u8 padding1[28];
+    padding[28];
     float X, Y, Z;           
     float radius;
 };
@@ -59,16 +59,16 @@ struct Weights {
 struct MeshSCM {
     u16 numberVertices;
     u16 textureIndex;
-    u8 padding0[12];
+    padding[12];
     u64 VerticesPositionsOffset;
     u64 NormalsPositionsOffset;
     u64 UVsPositionsOffset;
 
-    u8 padding2[16];
+    padding[16];
     u64 unknownOffset;
 
-    u64 unknown;
-    u8 padding3[8];
+    u64;
+    padding[8];
     
     Positions positions[numberVertices] @VerticesPositionsOffset;
     Normals normals[numberVertices] @NormalsPositionsOffset;
@@ -80,17 +80,17 @@ struct MeshSCM {
 struct Mesh {
     u16 numberVertices;
     u16 textureIndex;
-    u8 padding0[12];
+    padding[12];
     u64 VerticesPositionsOffset;
     u64 NormalsPositionsOffset;
     u64 UVsPositionsOffset;
 
     u64 BoneIndicesOffset;
     u64 WeightsOffset;
-    u8 padding1[8];
+    padding[8];
 
-    u64 unknown;
-    u8 padding3[8];
+    u64;
+    padding[8];
     
     Positions positions[numberVertices] @VerticesPositionsOffset;
     Normals normals[numberVertices] @NormalsPositionsOffset;
@@ -112,7 +112,7 @@ struct HierarchyOrder {
 };
 
 struct Unknown {
-    u8 unknown;
+    u8;
 };
 
 struct Transform {
@@ -120,7 +120,7 @@ struct Transform {
     float y;
     float z;
     float length; // sqrt(x*x + y*y + z*z)
-    u8 unknown[16];
+    padding[16];
 };
 
 struct Skeleton{
@@ -135,24 +135,24 @@ struct Skeleton{
 
 
 ModelHeader modelheader @ 0x00;
-Object objects[modelheader.objectCount] @ 0x40;
+ObjectInfo objects_info[modelheader.objectCount] @ 0x40;
 
 u32 objectOffset;
 
-struct IthMesh {
+struct Object {
    u64 i = std::core::array_index();
    if (modelheader.ID == "SCM ") {
-        objectOffset = objects[0].meshOffset;
-        MeshSCM meshscm[objects[i].meshCount] @ objects[i].meshOffset;
+        objectOffset = objects_info[0].meshOffset;
+        MeshSCM meshscm[objects_info[i].meshCount] @ objects_info[i].meshOffset;
         
         
     } else {
-        objectOffset = objects[0].meshOffset;
-        Mesh mesh[objects[i].meshCount] @ objects[i].meshOffset;
+        objectOffset = objects_info[0].meshOffset;
+        Mesh mesh[objects_info[i].meshCount] @ objects_info[i].meshOffset;
     }
 };
 
-IthMesh meshes[modelheader.objectCount] @objectOffset;
+Object objects[modelheader.objectCount] @objectOffset;
 
 Skeleton skeleton @modelheader.skeletonOffset;
 
