@@ -293,8 +293,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Catppuccin Frappe | [`themes/catppuccin-frappe.json`](themes/catppuccin-frappe.json) | Catppuccin Frappe Flavor (Dark Theme) |
 | Catppuccin Macchiato | [`themes/catppuccin-macchiato.json`](themes/catppuccin-macchiato.json) | Catppuccin Macchiato Flavor (Dark Theme) |
 | Catppuccin Mocha | [`themes/catppuccin-mocha.json`](themes/catppuccin-mocha.json) | Catppuccin Mocha Flavor (Dark Theme) |
-| Theme Lion | [`themes/theme_lion.json`](themes/catppuccin-mocha.json) | Semantic CLion inspired theme (Dark Theme) |
-| Retina Dark | [`themes/retina_dark.json`](themes/catppuccin-mocha.json) | Semantic theme based on Dark Theme |
+| Theme Lion | [`themes/theme_lion.json`](themes/theme_lion.json) | Semantic CLion inspired theme (Dark Theme) |
+| Retina Dark | [`themes/retina_dark.json`](themes/retina_dark.json) | Semantic theme based on Dark Theme |
 
 ### Disassemblers
 
