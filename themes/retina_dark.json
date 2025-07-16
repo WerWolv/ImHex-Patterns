@@ -1,5 +1,5 @@
 {
-    "base": "RetinaDark",
+    "base": "Dark",
     "colors": {
         "imgui": {
             "border": "#6D6D7F7F",
