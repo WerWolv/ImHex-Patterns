@@ -22,7 +22,7 @@ jobs:
     - name: 🧰 Checkout
       uses: actions/checkout@v4
       with:
-        repository: WerWolv/ImHex-Patterns
+        repository: ${{ github.repository_owner }}/ImHex-Patterns
         submodules: recursive
 
     - name: ⬇️ Install dependencies
