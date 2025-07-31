@@ -2,8 +2,6 @@
 #pragma description Oska Software DeskMates FAS (Frames and Sequences) (Oska DeskMate 1.03 and 2.06)
 #pragma endian little
 
-import std.math;
-
 enum Compression : u32 {
     BI_RGB,
     BI_RLE8,
@@ -52,7 +50,7 @@ struct BitmapInfoHeader { // bog-standard BitmapInfoHeaderV1
 struct BitmapInfo {
     BitmapInfoHeader header;
     le u32 colorMap[header.biClrUsed == 0 ?
-        std::math::pow(2, header.biBitCount) : header.biClrUsed];
+        1 << header.biBitCount : header.biClrUsed];
 };
 
 struct AnimSequence {
@@ -61,9 +59,9 @@ struct AnimSequence {
 };
 
 struct SeqHeader {
-    le u32       size;
-    le u32       count;
-    le u32       strPointers[count*2];
+    le u32 size;
+    le u32 count;
+    le u32 strPointers[count*2];
 };
 
 struct Frame {
