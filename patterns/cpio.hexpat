@@ -19,7 +19,7 @@ namespace old_binary {
     };
 
     fn format_time(u32 value) {
-        return std::time::format(std::time::to_utc(swap_32bit(value)));
+        return std::time::format(std::time::to_utc(old_binary::swap_32bit(value)));
     };
 
     using SwappedU32 = u32 [[transform("old_binary::swap_32bit"), format("old_binary::swap_32bit")]];

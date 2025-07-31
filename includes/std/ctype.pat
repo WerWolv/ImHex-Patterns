@@ -85,7 +85,7 @@ namespace auto std::ctype {
         @return True if `c` is part of this range, false otherwise
     */
     fn isprint(char c) {
-        return c >= '0' && c <= '~';
+        return c >= ' ' && c <= '~';
     };
 
     /**

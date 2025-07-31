@@ -396,7 +396,9 @@ struct ExportsTable {
 	if (directoryTable.ordinalTableRVA > relativeVirtualDifference()) {
 		u16 exportOrdinalTable[directoryTable.namePointersAmount] @ directoryTable.ordinalTableRVA - relativeVirtualDifference();
 	}
-	char imageName[] @ directoryTable.imageNameRVA - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
+	if (directoryTable.imageNameRVA > relativeVirtualDifference()) {
+		char imageName[] @ directoryTable.imageNameRVA - relativeVirtualDifference() [[format("formatNullTerminatedString")]];
+	}
 	$ = addressof(this)+coffHeader.optionalHeader.directories[0].size;
 };
 

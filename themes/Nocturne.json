@@ -1,0 +1,345 @@
+{
+    "base": "Dark",
+    "name": "Nocturne",
+    "image_theme": "dark",
+    "authors": "JeanxPereira",
+    "description": "minimal dark theme based on Dracula but more darker",
+    "colors": {
+        "imgui": {
+            "border": "#3B3B487F",
+            "border-shadow": "#00000000",
+            "button": "#BB96F688",
+            "button-active": "#BB96F6FF",
+            "button-hovered": "#BB96F6FF",
+            "check-mark": "#BB96F6FF",
+            "child-background": "#00000000",
+            "docking-empty-background": "#0F0F0FEF",
+            "docking-preview": "#4296F9B2",
+            "drag-drop-target": "#FFFF00E5",
+            "frame-background": "#BB96F633",
+            "frame-background-active": "#BB96F687",
+            "frame-background-hovered": "#BB96F674",
+            "header": "#BB96F66B",
+            "header-active": "#BB96F6FF",
+            "header-hovered": "#B18DEAD0",
+            "menu-bar-background": "#1C1C1CFF",
+            "modal-window-dim-background": "#CCCCCC30",
+            "nav-highlight": "#BB96F6FF",
+            "nav-windowing-background": "#CCCCCC33",
+            "nav-windowing-highlight": "#FFFFFFB2",
+            "plot-histogram": "#E5B200FF",
+            "plot-histogram-hovered": "#FF9900FF",
+            "plot-lines": "#9B9B9BFF",
+            "plot-lines-hovered": "#FF6D59FF",
+            "popup-background": "#141414FF",
+            "resize-grip": "#BB96F660",
+            "resize-grip-active": "#BB96F6EF",
+            "resize-grip-hovered": "#C2A0F7D3",
+            "scrollbar-background": "#05050587",
+            "scrollbar-grab": "#313131FF",
+            "scrollbar-grab-active": "#828282FF",
+            "scrollbar-grab-hovered": "#686868FF",
+            "separator": "#3B3B487F",
+            "separator-active": "#BB96F6FF",
+            "separator-hovered": "#BB96F6D0",
+            "slider-grab": "#BB96F6FF",
+            "slider-grab-active": "#BB96F6FF",
+            "tab": "#4B405CCB",
+            "tab-active": "#BB96F6AE",
+            "tab-hovered": "#C5A5FACC",
+            "tab-unfocused": "#36313FFF",
+            "tab-unfocused-active": "#BB96F69B",
+            "table-border-light": "#323235FF",
+            "table-border-strong": "#26262BFF",
+            "table-header-background": "#303033FF",
+            "table-row-background": "#00000000",
+            "table-row-background-alt": "#FFFFFF0F",
+            "text": "#EAEAEAFF",
+            "text-disabled": "#7F7F7FFF",
+            "text-selected-background": "#BB96F675",
+            "title-background": "#232323FF",
+            "title-background-active": "#232323FF",
+            "title-background-collapse": "#232323FF",
+            "window-background": "#111111FF",
+            "window-shadow": "#000000FF"
+        },
+        "imhex": {
+            "IEEE-tool-exp": "#5D7F5DFF",
+            "IEEE-tool-mantissa": "#7F5D5DFF",
+            "IEEE-tool-sign": "#5D5D7FFF",
+            "achievement-unlocked": "#F1C40FFF",
+            "advanced-encoding-ascii": "#06539BFF",
+            "advanced-encoding-multi": "#F1C40FFF",
+            "advanced-encoding-single": "#E74C3CFF",
+            "advanced-encoding-unknown": "#E74C3CFF",
+            "blur-background": "#00000000",
+            "desc-button": "#141414FF",
+            "desc-button-active": "#3C3C3CFF",
+            "desc-button-hovered": "#282828FF",
+            "diff-added": "#388B42FF",
+            "diff-changed": "#F1C40FFF",
+            "diff-removed": "#E74C3CFF",
+            "find-highlight": "#672A78FF",
+            "highlight": "#4DC69BFF",
+            "logger-debug": "#388B42FF",
+            "logger-error": "#E74C3CFF",
+            "logger-fatal": "#672A78FF",
+            "logger-info": "#06539BFF",
+            "logger-warning": "#F1C40FFF",
+            "patches": "#E74C3CFF",
+            "pattern-selected": "#3683CBFF",
+            "toolbar-blue": "#267BC9FF",
+            "toolbar-brown": "#DBB377FF",
+            "toolbar-gray": "#E6E6E6FF",
+            "toolbar-green": "#59B364FF",
+            "toolbar-purple": "#672A78FF",
+            "toolbar-red": "#E74C3CFF",
+            "toolbar-yellow": "#F1C40FFF"
+        },
+        "imnodes": {
+            "box-selector": "#BB96F655",
+            "box-selector-outline": "#BB96F6B6",
+            "grid-background": "#282832C8",
+            "grid-line": "#C8C8C828",
+            "grid-line-primary": "#F0F0F03C",
+            "link": "#BB96F6C2",
+            "link-hovered": "#CEB3FAFF",
+            "link-selected": "#BB96F6FF",
+            "mini-map-background": "#19191996",
+            "mini-map-background-hovered": "#191919C8",
+            "mini-map-canvas": "#C8C8C819",
+            "mini-map-canvas-outline": "#C8C8C8C8",
+            "mini-map-link": "#BB96F6BF",
+            "mini-map-link-selected": "#BB96F6FF",
+            "mini-map-node-background": "#C8C8C864",
+            "mini-map-node-background-hovered": "#C8C8C8FF",
+            "mini-map-node-background-selected": "#C8C8C8FF",
+            "mini-map-node-outline": "#C8C8C864",
+            "mini-map-outline": "#96969664",
+            "mini-map-outline-hovered": "#969696C8",
+            "node-background": "#323232FF",
+            "node-background-hovered": "#4B4B4BFF",
+            "node-background-selected": "#4B4B4BFF",
+            "node-outline": "#646464FF",
+            "pin": "#F5CB25FF",
+            "pin-hovered": "#FA8335FF",
+            "title-bar": "#7F61AFFF",
+            "title-bar-hovered": "#B98EFFFF",
+            "title-bar-selected": "#CAADF8FF"
+        },
+        "implot": {
+            "axis-bg": "#00000000",
+            "axis-bg-active": "#00000000",
+            "axis-bg-hovered": "#00000000",
+            "axis-grid": "#FFFFFF3F",
+            "axis-text": "#FFFFFFFF",
+            "axis-tick": "#00000000",
+            "crosshairs": "#FFFFFF7F",
+            "error-bar": "#00000000",
+            "fill": "#00000000",
+            "frame-bg": "#FFFFFF11",
+            "inlay-text": "#FFFFFFFF",
+            "legend-bg": "#141414EF",
+            "legend-border": "#6D6D7F7F",
+            "legend-text": "#FFFFFFFF",
+            "line": "#00000000",
+            "marker-fill": "#00000000",
+            "marker-outline": "#00000000",
+            "plot-bg": "#0000007F",
+            "plot-border": "#6D6D7F7F",
+            "selection": "#FF9900FF",
+            "title-text": "#FFFFFFFF"
+        },
+        "text-editor": {
+            "background": "#111111FF",
+            "breakpoint": "#FF200040",
+            "char-literal": "#E0A070FF",
+            "comment": "#6473A2FF",
+            "current-line-edge": "#303030FF",
+            "current-line-fill": "#00000040",
+            "current-line-fill-inactive": "#80808040",
+            "cursor": "#E0E0E0FF",
+            "default": "#7F7F7FFF",
+            "doc-comment": "#206020FF",
+            "error-marker": "#D83545FF",
+            "doc-global-comment": "#2B9C89FF",
+            "identifier": "#AFAFAFFF",
+            "keyword": "#F87AC4FF",
+            "known-identifier": "#6CF982FF",
+            "line-number": "#585858FF",
+            "multi-line-comment": "#206040FF",
+            "number": "#BD93F9FF",
+            "preproc-identifier": "#A040C0FF",
+            "preprocessor": "#202020FF",
+            "preprocessor-deactivated": "#4F4F4F45",
+            "punctuation": "#FFFFFFFF",
+            "selection": "#23313DFF",
+            "string": "#F1F892FF"
+        }
+    },
+    "styles": {
+        "imgui": {
+            "alpha": 1.0,
+            "button-text-align": [
+                0.5,
+                0.5
+            ],
+            "cell-padding": [
+                4.0,
+                2.0
+            ],
+            "child-border-size": 1.0,
+            "child-rounding": 0.0,
+            "disabled-alpha": 0.6000000238418579,
+            "frame-border-size": 0.0,
+            "frame-padding": [
+                4.0,
+                3.0
+            ],
+            "frame-rounding": 0.0,
+            "grab-min-size": 12.0,
+            "grab-rounding": 0.0,
+            "indent-spacing": 10.0,
+            "item-inner-spacing": [
+                4.0,
+                4.0
+            ],
+            "item-spacing": [
+                8.0,
+                4.0
+            ],
+            "popup-border-size": 1.0,
+            "popup-rounding": 0.0,
+            "scrollbar-rounding": 9.0,
+            "scrollbar-size": 14.0,
+            "selectable-text-align": [
+                0.0,
+                0.0
+            ],
+            "tab-rounding": 4.0,
+            "window-border-size": 1.0,
+            "window-min-size": [
+                32.0,
+                32.0
+            ],
+            "window-padding": [
+                8.0,
+                8.0
+            ],
+            "window-rounding": 0.0,
+            "window-shadow-angle": 0.0,
+            "window-shadow-offset": 0.0,
+            "window-shadow-size": 64.0,
+            "window-title-align": [
+                0.0,
+                0.5
+            ]
+        },
+        "imhex": {
+            "popup-alpha": 0.6499999761581421,
+            "window-blur": 0.0
+        },
+        "imnodes": {
+            "grid-spacing": 24.0,
+            "link-hover-distance": 10.0,
+            "link-line-segments-per-length": 0.10000000149011612,
+            "link-thickness": 3.0,
+            "mini-map-offset": [
+                4.0,
+                4.0
+            ],
+            "mini-map-padding": [
+                8.0,
+                8.0
+            ],
+            "node-border-thickness": 1.0,
+            "node-corner-rounding": 4.0,
+            "node-padding": [
+                8.0,
+                8.0
+            ],
+            "pin-circle-radius": 4.0,
+            "pin-hover-radius": 10.0,
+            "pin-line-thickness": 1.0,
+            "pin-offset": 0.0,
+            "pin-quad-side-length": 7.0,
+            "pin-triangle-side-length": 9.5
+        },
+        "implot": {
+            "annotation-padding": [
+                2.0,
+                2.0
+            ],
+            "digital-bit-gap": 4.0,
+            "digital-bit-height": 8.0,
+            "error-bar-size": 5.0,
+            "error-bar-weight": 1.5,
+            "fill-alpha": 1.0,
+            "fit-padding": [
+                0.0,
+                0.0
+            ],
+            "label-padding": [
+                5.0,
+                5.0
+            ],
+            "legend-inner-padding": [
+                5.0,
+                5.0
+            ],
+            "legend-padding": [
+                10.0,
+                10.0
+            ],
+            "legend-spacing": [
+                5.0,
+                0.0
+            ],
+            "line-weight": 1.0,
+            "major-grid-size": [
+                1.0,
+                1.0
+            ],
+            "major-tick-len": [
+                10.0,
+                10.0
+            ],
+            "major-tick-size": [
+                1.0,
+                1.0
+            ],
+            "marker-size": 4.0,
+            "marker-weight": 1.0,
+            "minor-alpha": 0.25,
+            "minor-grid-size": [
+                1.0,
+                1.0
+            ],
+            "minor-tick-len": [
+                5.0,
+                5.0
+            ],
+            "minor-tick-size": [
+                1.0,
+                1.0
+            ],
+            "mouse-pos-padding": [
+                10.0,
+                10.0
+            ],
+            "plot-border-size": 1.0,
+            "plot-default-size": [
+                400.0,
+                300.0
+            ],
+            "plot-min-size": [
+                200.0,
+                150.0
+            ],
+            "plot-padding": [
+                10.0,
+                10.0
+            ]
+        }
+    }
+}

@@ -6,7 +6,28 @@
 #include <wolv/utils/string.hpp>
 #include <cstdlib>
 
+#include <pl/patterns/pattern.hpp>
+
 #define EXIT_SKIP 77
+
+bool validatePatternValues(pl::ptrn::Pattern *pattern) {
+    auto value = pattern->getFormattedValue();
+    if (!pattern->hasValidFormattedValue()) {
+        fmt::print("Invalid formatted value \"{}\" of pattern \"{}\"\n", value, pattern->getDisplayName());
+        return false;
+    }
+
+    for (const auto &[address, child] : pattern->getChildren()) {
+        if (pattern == child)
+            continue;
+
+        child->setOffset(address);
+        if (!validatePatternValues(child))
+            return false;
+    }
+
+    return true;
+}
 
 int main(int argc, char **argv) {
     // Any number of arguments other than 5 are invalid
@@ -86,6 +107,17 @@ int main(int argc, char **argv) {
             }
 
             return EXIT_FAILURE;
+        }
+
+        for (const auto &pattern : runtime.getPatterns()) {
+            if (!validatePatternValues(pattern.get()))
+                return EXIT_FAILURE;
+        }
+        for (const auto &[id, section] : runtime.getSections()) {
+            for (const auto &pattern : runtime.getPatterns(id)) {
+                if (!validatePatternValues(pattern.get()))
+                    return EXIT_FAILURE;
+            }
         }
     } else {
         // Parse the file
