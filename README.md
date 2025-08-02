@@ -198,6 +198,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ZLIB | `application/zlib` | [`patterns/zlib.hexpat`](patterns/zlib.hexpat) | ZLIB compressed data format |
 | ZSTD | `application/zstd` | [`patterns/zstd.hexpat`](patterns/zstd.hexpat) | Zstandard compressed data format |
 | MOD | `3d-model/mod` | [`patterns/DMC3HD-Mod.hexpat`](patterns/dmc3_hd_mod.hexpat) | 3D Model files used in Devil May Cry 3 HD Collection |
+| CBM BASIC | | [`commodore_basic.hexpat`](patterns/commodore_basic.hexpat) | Commodore BASIC |
 
 ### Scripts
 
