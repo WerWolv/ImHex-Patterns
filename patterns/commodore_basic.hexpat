@@ -1,4 +1,4 @@
-#pragma description C64 Basic program
+#pragma description Commodore BASIC
 
 import std.io;
 import std.mem;
