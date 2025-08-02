@@ -155,4 +155,4 @@ struct Line
     u8 eol [[color("00ffff")]];
 };
 
-Line Lines[65536] @ 2;
+Line Lines[while(!std::mem::eof())] @ 2;
