@@ -1,4 +1,5 @@
 #pragma description Commodore BASIC
+#pragma author Stephen Hewitt
 
 import std.io;
 import std.mem;
