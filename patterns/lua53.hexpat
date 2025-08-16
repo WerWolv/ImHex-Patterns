@@ -44,8 +44,15 @@ struct LuaBinaryHeader {
 struct LuaString {
     u8 size;
     if (size > 0) {
-        char data[size-1];
+        if (size == 0xff) {
+          u64 sizeReal;
+          char data[sizeReal-1];
+        } else {
+          char data[size-1];
+        }
     }
+    
+    
 }[[format("impl::format_LuaString")]];
 
 struct LuaConstant {
