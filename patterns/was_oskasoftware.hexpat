@@ -7,8 +7,8 @@ import type.size;
 struct Sound {
     char name[];
     u32 length;
-    u8 data[length];
-};
+    u8 data[length] [[sealed]];
+} [[name(name), hex::visualize("sound", data, 1, 8000)]];
 
 struct Header {
     type::Size<u32> size;
