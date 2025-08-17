@@ -47,9 +47,9 @@ namespace auto std::ptr {
     Example:
     A struct field called `p_myInfo` which is a nullable 64-bit pointer to an
     element of type `MyInfoTy` would be written as:
-    ```
+    ```rust
     struct MyStruct {
-      std::ptr::NullablePtr<MyInfoTy, u64> p_myInfo;
+        std::ptr::NullablePtr<MyInfoTy, u64> p_myInfo;
     }
     ```
     */

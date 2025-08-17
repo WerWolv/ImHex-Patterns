@@ -393,8 +393,12 @@ enum CompressionType: u8 {
     Gzip = 0x2
 };
 
-enum EncryptionType : u8 {
-    // Experimental
+enum EncryptionType : u32 {
+	TLS            = 0x544c534b, /* TLS Key Log */
+	SSH            = 0x5353484b, /* SSH Key Log */
+	WIREGUARD      = 0x57474b4c, /* WireGuard Key Log */
+	ZIGBEE_NWK_KEY = 0x5a4e574b, /* Zigbee NWK Key */
+	ZIGBEE_APS_KEY = 0x5a415053 /* Zigbee APS Key */
 };
 
 enum FixedLengthType : u8 {
@@ -410,12 +414,16 @@ struct CompressionBlock{
     u32 block_len2[[name("BlockLen2")]];  
 };
 
-// Experimental
 struct EncryptionBlock{
     BlockType block_type[[name("BlockType")]]; 
     u32 block_len1[[name("BlockLen1")]];  
     EncryptionType comp_type [[name("Encryption")]];
-    char data[block_len1];
+    u32 secrets_len[[name("SecretsLength")]];  
+    char data[secrets_len];
+    padding[-$ & 3];
+    // https://ietf-opsawg-wg.github.io/draft-ietf-opsawg-pcap/draft-ietf-opsawg-pcapng.html#section-4.7-6.6.1
+    // No DSB-specific options are currently defined
+    // Option options;
     u32 block_len2[[name("BlockLen2")]];  
 };
 
@@ -504,6 +512,12 @@ struct PCAPng{
             le CustomBlock CBN;
         } else {
             be CustomBlock CBN;
+        }
+    } else if (block_type == BlockType::Decryption) {
+        if (order == PcapOrder::Little) {
+            le EncryptionBlock DSB;
+        } else {
+            be EncryptionBlock DSB;
         }
     } else {
         std::print("Unknown BlockType at offset {:#x}\n", $);
