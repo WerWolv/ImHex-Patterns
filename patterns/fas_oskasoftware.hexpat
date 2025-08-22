@@ -1,25 +1,25 @@
 #pragma author DmitriLeon2000
-#pragma description Oska Software DeskMates FAS (Frames and Sequences) file
+#pragma description Oska Software DeskMates FAS (Frames and Sequences)
 #pragma endian little
 
 enum Compression : u32 {
-	BI_RGB,
-	BI_RLE8,
-	BI_RLE4,
-	BI_BITFIELDS,
-	BI_JPEG,
-	BI_PNG,
-	BI_ALPHABITFIELDS,
-	BI_CMYK,
-	BI_CMYKRLE8,
-	BI_CMYKRLE4,
+    BI_RGB,
+    BI_RLE8,
+    BI_RLE4,
+    BI_BITFIELDS,
+    BI_JPEG,
+    BI_PNG,
+    BI_ALPHABITFIELDS,
+    BI_CMYK,
+    BI_CMYKRLE8,
+    BI_CMYKRLE4,
 };
 
 struct Colors {
-	u8 blue;
-	u8 green;
-	u8 red;
-	u8 reserved;
+    u8 blue;
+    u8 green;
+    u8 red;
+    u8 reserved;
 };
 
 struct FASHeader {
@@ -69,7 +69,7 @@ struct SeqHeader {
 };
 
 struct Bitmap {
-    u8 byte[fas.fasHeader.version >= 3 ? fas.fasHeader.frameSize + (fas.frameSizeHigh << 16) : fas.fasHeader.frameSize];
+    u8 byte[parent.fasHeader.version >= 3 ? parent.fasHeader.frameSize + (parent.frameSizeHigh << 16) : parent.fasHeader.frameSize] [[sealed]];
 };
 
 struct FramesHeader {
@@ -105,7 +105,7 @@ struct FAS {
         u8 filenameChecksum; // a checksum for a filename in ASCII
     AnimSequence sequences[seqHeader.count];
     FramesHeader framesHeader;
+    Bitmap framesBitmap[framesHeader.count];
 };
 
 FAS fas @ 0x00;
-Bitmap framesBitmap[fas.framesHeader.count] @ $;
