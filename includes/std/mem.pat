@@ -6,23 +6,6 @@
 
 namespace auto std::mem {
 
-    namespace impl {
-
-        struct MagicSearchImpl<auto Magic, T> {
-            s128 address = builtin::std::mem::find_string_in_range(0, $, builtin::std::mem::size(), Magic);
-            if (address < 0)
-                break;
-
-            $ = address;
-            try {
-                T data [[inline]];
-            } catch {
-                T data;
-            }
-        };
-
-    }
-
     /**
         A Handle for a custom Section
      */
@@ -93,8 +76,8 @@ namespace auto std::mem {
         @return The address of the sequence
     */
     fn find_sequence(u128 occurrence_index, auto ... bytes) {
-        const u128 address = builtin::std::mem::base_address();
-        return builtin::std::mem::find_sequence_in_range(occurrence_index, address, address + builtin::std::mem::size(), bytes);
+        const u128 address = std::mem::base_address();
+        return builtin::std::mem::find_sequence_in_range(occurrence_index, address, address + std::mem::size(), bytes);
     };
 
     /**
@@ -117,8 +100,8 @@ namespace auto std::mem {
         @return The address of the sequence
     */
     fn find_string(u128 occurrence_index, str string) {
-        const u128 address = builtin::std::mem::base_address();
-        return builtin::std::mem::find_string_in_range(occurrence_index, address, address + builtin::std::mem::size(), string);
+        const u128 address = std::mem::base_address();
+        return builtin::std::mem::find_string_in_range(occurrence_index, address, address + std::mem::size(), string);
     };
 
     /**
@@ -285,6 +268,19 @@ namespace auto std::mem {
 
         fn format_bytes(auto bytes) {
             return "";
+        };
+
+        struct MagicSearchImpl<auto Magic, T> {
+            s128 address = builtin::std::mem::find_string_in_range(0, $, std::mem::size(), Magic);
+            if (address < 0)
+                break;
+
+            $ = address;
+            try {
+                T data [[inline]];
+            } catch {
+                T data;
+            }
         };
 
     }
