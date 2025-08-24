@@ -227,16 +227,6 @@ namespace auto std::mem {
         return builtin::std::mem::current_bit_offset();
     };
 
-
-    /**
-        Searches for a sequence of bytes and places the given type at that address
-        @tparam Magic The magic sequence to search for
-        @tparam T The type to place at the address
-    */
-    struct MagicSearch<auto Magic, T> {
-        std::mem::impl::MagicSearchImpl<Magic, T> impl[while(!std::mem::eof())] [[inline]];
-    };
-
     /**
         Reinterprets a value as a different one
         @tparam From The type to reinterpret from
@@ -284,5 +274,14 @@ namespace auto std::mem {
         };
 
     }
+
+    /**
+        Searches for a sequence of bytes and places the given type at that address
+        @tparam Magic The magic sequence to search for
+        @tparam T The type to place at the address
+    */
+    struct MagicSearch<auto Magic, T> {
+        std::mem::impl::MagicSearchImpl<Magic, T> impl[while(!std::mem::eof())] [[inline]];
+    };
 
 }
