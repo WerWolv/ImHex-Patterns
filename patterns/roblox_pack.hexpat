@@ -13,12 +13,12 @@ struct Header {
 
 struct FileIndex {
     char name[0x40];
-    u8 unknown[0x10] [[hidden]];
-    u32  startAddress;
+    u128 md5Hash;
+    u32  offset;
     u32  size;
-    u64  unknown_2 [[hidden]];
+    u64  reserved;
     
-    u8 file[size] @ startAddress;
+    u8 file[size] @ offset;
     
     #ifdef __IMHEX__
     hex::core::add_virtual_file(name, file);
