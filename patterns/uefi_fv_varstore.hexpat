@@ -31,7 +31,7 @@
  */
 
 #pragma author Marc Jones
-#pragma UEFI Firmware Volume Variable Store
+#pragma description UEFI Firmware Volume Variable Store
 // #pragma debug
 
 import std.core;
