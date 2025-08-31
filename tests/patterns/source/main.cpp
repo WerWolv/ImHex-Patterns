@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
         }
 
         runtime.setDangerousFunctionCallHandler([]{ return true; });
-        runtime.setIncludePaths({ includePath });
+        runtime.setIncludePaths({ includePath, patternFilePath.parent_path() });
         runtime.addPragma("MIME", DummyPragmaHandler);
         runtime.addPragma("description", DescPragmaHandler);
         runtime.addDefine("__PL_UNIT_TESTS__");
