@@ -32,6 +32,9 @@ import std.math;
 #pragma endian little
 #include <std/mem.pat>
 
+#pragma description Apple IIgs Super Hi-Res (SHR) + PaintWorks Animation (ANI)
+#pragma author hasseily
+
 
 // ------------------------------ Constants ------------------------------
 
