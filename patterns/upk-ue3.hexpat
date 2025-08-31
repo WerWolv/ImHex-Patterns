@@ -1,5 +1,6 @@
 #pragma description Unreal Engine 3 UPK
 #pragma endian little
+#pragma magic [ c1 83 2a 9e ] @ 0x00
 
 import std.io;
 

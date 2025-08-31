@@ -1,6 +1,6 @@
 {
-    "base": "Nocturne (Dark)",
-    "name": "Nocture",
+    "base": "Dark",
+    "name": "Nocturne",
     "image_theme": "dark",
     "authors": "JeanxPereira",
     "description": "minimal dark theme based on Dracula but more darker",
@@ -162,7 +162,7 @@
             "default": "#7F7F7FFF",
             "doc-comment": "#206020FF",
             "error-marker": "#D83545FF",
-            "global-doc-comment": "#2B9C89FF",
+            "doc-global-comment": "#2B9C89FF",
             "identifier": "#AFAFAFFF",
             "keyword": "#F87AC4FF",
             "known-identifier": "#6CF982FF",

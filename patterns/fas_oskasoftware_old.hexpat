@@ -1,25 +1,25 @@
 #pragma author DmitriLeon2000
-#pragma description Oska Software DeskMates FAS (Frames and Sequences) file (Oska DeskMate versions 1.3 and 2.06)
+#pragma description Oska Software DeskMates FAS (Frames and Sequences) (Oska DeskMate 1.03 and 2.06)
 #pragma endian little
 
 enum Compression : u32 {
-	BI_RGB,
-	BI_RLE8,
-	BI_RLE4,
-	BI_BITFIELDS,
-	BI_JPEG,
-	BI_PNG,
-	BI_ALPHABITFIELDS,
-	BI_CMYK,
-	BI_CMYKRLE8,
-	BI_CMYKRLE4,
+    BI_RGB,
+    BI_RLE8,
+    BI_RLE4,
+    BI_BITFIELDS,
+    BI_JPEG,
+    BI_PNG,
+    BI_ALPHABITFIELDS,
+    BI_CMYK,
+    BI_CMYKRLE8,
+    BI_CMYKRLE4,
 };
 
 struct Colors {
-	u8 blue;
-	u8 green;
-	u8 red;
-	u8 reserved;
+    u8 blue;
+    u8 green;
+    u8 red;
+    u8 reserved;
 };
 
 struct FASHeader {
@@ -59,14 +59,14 @@ struct AnimSequence {
 };
 
 struct SeqHeader {
-    le u32       size;
-    le u32       count;
-    le u32       strPointers[count*2];
+    le u32 size;
+    le u32 count;
+    le u32 strPointers[count*2];
 };
 
 struct Frame {
-    u8 colorBitmap[fas.fasHeader.frameSizeColor];
-    u8 maskBitmap[fas.fasHeader.frameSizeMask];
+    u8 colorBitmap[parent.fasHeader.frameSizeColor] [[sealed]];
+    u8 maskBitmap[parent.fasHeader.frameSizeMask] [[sealed]];
 };
 
 struct FramesHeader {
@@ -80,8 +80,7 @@ struct FAS {
     SeqHeader seqHeader;
     AnimSequence sequences[seqHeader.count];
     FramesHeader framesHeader;
+    Frame frames[framesHeader.count];
 };
 
-
 FAS fas @ 0x00;
-Frame frames[fas.framesHeader.count] @ $;

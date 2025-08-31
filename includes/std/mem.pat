@@ -6,27 +6,12 @@
 
 namespace auto std::mem {
 
-    namespace impl {
-
-        struct MagicSearchImpl<auto Magic, T> {
-            s128 address = builtin::std::mem::find_string_in_range(0, $, builtin::std::mem::size(), Magic);
-            if (address < 0)
-                break;
-
-            $ = address;
-            try {
-                T data [[inline]];
-            } catch {
-                T data;
-            }
-        };
-
-    }
-
     /**
         A Handle for a custom Section
      */
     using Section = u128;
+    const u64 SectionMain = 0;
+    const u64 SectionCurrent = 0xFFFF'FFFF'FFFF'FFFF;
 
     /**
         The endianness of a value
@@ -72,16 +57,16 @@ namespace auto std::mem {
         Gets the base address of the data
         @return The base address of the memory
      */
-    fn base_address() {
-        return builtin::std::mem::base_address();
+    fn base_address(u64 section = SectionCurrent) {
+        return builtin::std::mem::base_address(section);
     };
 
     /**
         Gets the size of the data
         @return The size of the memory
      */
-    fn size() {
-        return builtin::std::mem::size();
+    fn size(u64 section = SectionCurrent) {
+        return builtin::std::mem::size(section);
     };
 
     /**
@@ -91,8 +76,8 @@ namespace auto std::mem {
         @return The address of the sequence
     */
     fn find_sequence(u128 occurrence_index, auto ... bytes) {
-        const u128 address = builtin::std::mem::base_address();
-        return builtin::std::mem::find_sequence_in_range(occurrence_index, address, address + builtin::std::mem::size(), bytes);
+        const u128 address = std::mem::base_address();
+        return builtin::std::mem::find_sequence_in_range(occurrence_index, address, address + std::mem::size(), bytes);
     };
 
     /**
@@ -115,8 +100,8 @@ namespace auto std::mem {
         @return The address of the sequence
     */
     fn find_string(u128 occurrence_index, str string) {
-        const u128 address = builtin::std::mem::base_address();
-        return builtin::std::mem::find_string_in_range(occurrence_index, address, address + builtin::std::mem::size(), string);
+        const u128 address = std::mem::base_address();
+        return builtin::std::mem::find_string_in_range(occurrence_index, address, address + std::mem::size(), string);
     };
 
     /**
@@ -138,8 +123,8 @@ namespace auto std::mem {
         @param [endian] The endianness of the value to read. Defaults to native
         @return The value read
     */
-    fn read_unsigned(u128 address, u8 size, Endian endian = Endian::Native) {
-        return builtin::std::mem::read_unsigned(address, size, u32(endian));
+    fn read_unsigned(u128 address, u8 size, Endian endian = Endian::Native, Section section = SectionCurrent) {
+        return builtin::std::mem::read_unsigned(address, size, u32(endian), section);
     };
 
     /**
@@ -149,8 +134,8 @@ namespace auto std::mem {
         @param [endian] The endianness of the value to read. Defaults to native
         @return The value read
     */
-    fn read_signed(u128 address, u8 size, Endian endian = Endian::Native) {
-        return builtin::std::mem::read_signed(address, size, u32(endian));
+    fn read_signed(u128 address, u8 size, Endian endian = Endian::Native, Section section = SectionCurrent) {
+        return builtin::std::mem::read_signed(address, size, u32(endian), section);
     };
 
     /**
@@ -159,8 +144,8 @@ namespace auto std::mem {
         @param size The size of the value to read
         @return The value read
     */
-    fn read_string(u128 address, u128 size) {
-        return builtin::std::mem::read_string(address, size);
+    fn read_string(u128 address, u128 size, Section section = SectionCurrent) {
+        return builtin::std::mem::read_string(address, size, section);
     };
 
     /**
@@ -242,16 +227,6 @@ namespace auto std::mem {
         return builtin::std::mem::current_bit_offset();
     };
 
-
-    /**
-        Searches for a sequence of bytes and places the given type at that address
-        @tparam Magic The magic sequence to search for
-        @tparam T The type to place at the address
-    */
-    struct MagicSearch<auto Magic, T> {
-        std::mem::impl::MagicSearchImpl<Magic, T> impl[while(!std::mem::eof())] [[inline]];
-    };
-
     /**
         Reinterprets a value as a different one
         @tparam From The type to reinterpret from
@@ -285,6 +260,28 @@ namespace auto std::mem {
             return "";
         };
 
+        struct MagicSearchImpl<auto Magic, T> {
+            s128 address = builtin::std::mem::find_string_in_range(0, $, std::mem::size(), Magic);
+            if (address < 0)
+                break;
+
+            $ = address;
+            try {
+                T data [[inline]];
+            } catch {
+                T data;
+            }
+        };
+
     }
+
+    /**
+        Searches for a sequence of bytes and places the given type at that address
+        @tparam Magic The magic sequence to search for
+        @tparam T The type to place at the address
+    */
+    struct MagicSearch<auto Magic, T> {
+        std::mem::impl::MagicSearchImpl<Magic, T> impl[while(!std::mem::eof())] [[inline]];
+    };
 
 }

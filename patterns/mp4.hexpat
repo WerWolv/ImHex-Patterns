@@ -424,7 +424,7 @@ struct MovieBox : BaseBox {
 };
 
 struct MediaDataBox : BaseBox {
-    u8 data[while($ < endOffset)] [[sealed]];
+    std::mem::Bytes<boxSize - sizeof(size) - sizeof(type)> data;
 };
 
 struct Box {
