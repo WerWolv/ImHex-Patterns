@@ -28,7 +28,7 @@ struct ICONDIR {
 };
 
 struct BMPData {
-    u8 data[sizeof(parent.data)] [[hidden, no_unique_address]];
+    u8 data[sizeof(parent.raw_data)] [[hidden, no_unique_address]];
     std::mem::Section section = std::mem::create_section("BMP Image " + std::string::to_string(addressof(this)));
     std::mem::set_section_size(section, sizeof(data) + 14);
     u8 headerData[14] @ 0x00 in section [[hidden]];
@@ -43,7 +43,7 @@ struct BMPData {
 };
 
 struct ImageData {
-    std::mem::Bytes<parent.image_data_size> data [[no_unique_address]];
+    std::mem::Bytes<parent.image_data_size> raw_data [[no_unique_address]];
     be u64 png_magic [[hidden, no_unique_address]];
     if (png_magic == 0x89504e470d0a1a0a) {
         PNG png_image @ $ [[inline, highlight_hidden]];
