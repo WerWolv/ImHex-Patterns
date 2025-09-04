@@ -19,9 +19,9 @@ struct PascalString {
 };
 
 struct BitmapData {
-    u8 bfType[2];
-    u32 bfSize;
-    u8 bfData[bfSize-6] [[sealed]];
+    u8 type[2];
+    u32 size;
+    u8 data[size-6] [[sealed]];
 };
 
 enum BackgroundType : s32 {
