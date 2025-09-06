@@ -10,8 +10,6 @@ namespace auto std::mem {
         A Handle for a custom Section
      */
     using Section = u128;
-    const u64 SectionMain = 0;
-    const u64 SectionCurrent = 0xFFFF'FFFF'FFFF'FFFF;
 
     /**
         The endianness of a value
@@ -57,16 +55,16 @@ namespace auto std::mem {
         Gets the base address of the data
         @return The base address of the memory
      */
-    fn base_address(u64 section = SectionCurrent) {
-        return builtin::std::mem::base_address(section);
+    fn base_address() {
+        return builtin::std::mem::base_address();
     };
 
     /**
         Gets the size of the data
         @return The size of the memory
      */
-    fn size(u64 section = SectionCurrent) {
-        return builtin::std::mem::size(section);
+    fn size() {
+        return builtin::std::mem::size();
     };
 
     /**
@@ -123,8 +121,8 @@ namespace auto std::mem {
         @param [endian] The endianness of the value to read. Defaults to native
         @return The value read
     */
-    fn read_unsigned(u128 address, u8 size, Endian endian = Endian::Native, Section section = SectionCurrent) {
-        return builtin::std::mem::read_unsigned(address, size, u32(endian), section);
+    fn read_unsigned(u128 address, u8 size, Endian endian = Endian::Native) {
+        return builtin::std::mem::read_unsigned(address, size, u32(endian));
     };
 
     /**
@@ -134,8 +132,8 @@ namespace auto std::mem {
         @param [endian] The endianness of the value to read. Defaults to native
         @return The value read
     */
-    fn read_signed(u128 address, u8 size, Endian endian = Endian::Native, Section section = SectionCurrent) {
-        return builtin::std::mem::read_signed(address, size, u32(endian), section);
+    fn read_signed(u128 address, u8 size, Endian endian = Endian::Native) {
+        return builtin::std::mem::read_signed(address, size, u32(endian));
     };
 
     /**
@@ -144,8 +142,8 @@ namespace auto std::mem {
         @param size The size of the value to read
         @return The value read
     */
-    fn read_string(u128 address, u128 size, Section section = SectionCurrent) {
-        return builtin::std::mem::read_string(address, size, section);
+    fn read_string(u128 address, u128 size) {
+        return builtin::std::mem::read_string(address, size);
     };
 
     /**
