@@ -540,4 +540,4 @@ struct ext4_group_descriptors {
     }
 };
 
-ext4_group_descriptors group_descs @ block_to_address(2);
+ext4_group_descriptors group_descs @ block_to_address(super_block.s_first_data_block + 1);
