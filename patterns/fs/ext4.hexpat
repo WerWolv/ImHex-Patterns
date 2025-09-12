@@ -8,7 +8,7 @@
 
 #pragma endian little
 #pragma magic [53 EF] @ 0x438
-#pragma pattern_limit 0x90000
+#pragma pattern_limit 0x80000000
 
 import type.time;
 import type.size;
