@@ -2,7 +2,7 @@
 #pragma MIME archives/forge
 
 // author = haru233, many thanks to AxCut
-// ImHex Hex Pattern File for Assassin's Creed: Unity's Compressed .data files
+// ImHex Hex Pattern File for Assassin's Creed: Unity's .forge files
 
 import std.core;
 
