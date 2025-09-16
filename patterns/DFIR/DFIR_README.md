@@ -1,14 +1,10 @@
 ImHex Pattern Files - Digital Forensics:
+
   - [ImHex-DFIR-Patterns](https://github.com/Xtreme-Liberty/ImHex-DFIR-Patterns)
 
 Enhanced features of the stock Disk/Filesystem pattern files for forensic review of disk content.
   - [ImHex](https://github.com/WerWolv/ImHex)
   - [ImHex Patterns](https://github.com/WerWolv/ImHex-Patterns)
-
-Install:
-  - Create a new folder called "DFIR"
-  - Add these updated pattern files to "DFIR"
-[Folder_Structure (screenshot)](https://github.com/Xtreme-Liberty/ImHex-DFIR-Patterns/blob/main/screenshots/1-Folder_Structure.png)
 
 Use:
   - Open a physical disk via Raw Provider (read-only)
