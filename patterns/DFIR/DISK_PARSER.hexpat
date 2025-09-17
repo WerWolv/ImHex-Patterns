@@ -1,9 +1,7 @@
 #pragma author Formula Zero One Technologies
-#pragma description Disk / Volume / Filesystem Structures (MBR, GPT, FAT32, exFAT, NTFS)
+#pragma description DFIR_DISK_PARSER_v2.0
 #pragma MIME application/x-ima
 #pragma endian little
-#pragma loop_limit 16000
-
 
 // -----------------------------------------------------------------------------
 // CREDIT
@@ -12,9 +10,6 @@
 // -----------------------------------------------------------------------------
 // TODO
 // -----------------------------------------------------------------------------
-// Auto apply pattern?...
-// EXTENDED PARTITION and logical volumes in the container
-// Other File Systems for GPT Entries
 // Refine File System Detection/Match
 // -----------------------------------------------------------------------------
 // IMPORTS
@@ -28,6 +23,7 @@ import type.time;
 import type.base;
 import hex.provider;
 
+// WORKING IMPORTS
 import * from DFIR.FAT32 as FAT32Pat;
 import * from DFIR.exFAT as EXFATPat;
 import * from DFIR.NTFS as NTFSPat;
@@ -36,8 +32,13 @@ import * from DFIR.NTFS as NTFSPat;
 // DISABLED IMPORTS
 // REFS - UNTESTED
 // EXT4 - GROUP DESC ERRORS
+// APFS - PARTIALLY WORKS
+	// Comment out "using uuid_t = type::GUID"
+		// Replace all instances of "uuid_t" with "type::GUID"
+	// Comment out line 1456-EOF 
 // JPEG/PNG - OFFSET ERRORS
 // ------------------------------------
+//import * from fs.apfs as APFSPat;
 //import * from fs.ext4 as EXT4Pat;
 //import * from fs.refs as REFSPat;
 //import * from jpeg as JPEGPat;
@@ -318,9 +319,12 @@ struct GPT_PartitionEntry {
             else if (gpt_exfat_magic == "EXFAT   ") 
                 EXFATPat EXFAT_VOL @ GPTpartitionOffset;        	
 	    }
+	    // --------- DISABLED -----------------
 	    // EXT4 PATTERN WAS INOP WHEN TESTED
 	    //(GUIDPartLabel::LINUX_FILE_SYSTEM):
-	    	//EXT4Pat EXT4_VOL @ 0x100400;
+	    	//EXT4Pat EXT4_VOL @ GPTpartitionOffset;
+	    //(GUIDPartLabel::APPLE_APFS_CONT):
+	    //	APFSPat APFS_VOL @ GPTpartitionOffset;
 	}
 } [[name(std::format("GPT_ENTRY [{}]", std::core::array_index()))]];
 
@@ -360,7 +364,7 @@ union MBRPartitionUnion {
 };
 
 struct PartitionTableEntry {
-    // Standard partition fields
+    // partition table fields
     PartitionStatus ActiveFlag;
     CHS_Decoder Starting_CHS;
     MBRPartitionUnion Type;
@@ -405,7 +409,6 @@ struct PartitionTableEntry {
             PartitionTableEntry EXTENDED_PARTITION[2] @ partitionOffset + 446;
             
             has_ext = parent_has_ext;
-            
         }
         (PartitionTypeCode::GPT_DISK_STD | PartitionTypeCode::GPT_DISK_SYS): 
             // Set global flag
