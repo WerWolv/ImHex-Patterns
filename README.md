@@ -61,6 +61,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DDS | `image/vnd-ms.dds` | [`patterns/dds.hexpat`](patterns/dds.hexpat) | DirectDraw Surface |
 | DEX | | [`patterns/dex.hexpat`](patterns/dex.hexpat) | Dalvik EXecutable Format |
 | DICOM | `application/dicom` | [`patterns/dicom.hexpat`](patterns/dicom.hexpat) | DICOM image format |
+| DISK_PARSER (DFIR) | `application/x-ima` | ['patterns/DFIR/DISK_PARSER.hexpat'](patterns/DFIR/DISK_PARSER.hexpat) | Recursive Disk/Volume/Filesystem parsing |
 | DMG | | [`patterns/dmg.hexpat`](patterns/dmg.hexpat) | Apple Disk Image Trailer (DMG) |
 | DMP | | [`patterns/dmp64.hexpat`](patterns/dmp64.hexpat) | Windows Kernel Dump(DMP64) |
 | DOTNET_BinaryFormatter | | [`patterns/dotnet_binaryformatter.hexpat`](patterns/dotnet_binaryformatter.hexpat) | .NET BinaryFormatter |
@@ -72,9 +73,11 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ELF  | `application/x-executable` | [`patterns/elf.hexpat`](patterns/elf.hexpat) | ELF header in elf binaries |
 | EVTX | `application/x-ms-evtx` | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
 | EXFAT | | [`patterns/fs/exfat.hexpat`](patterns/fs/exfat.hexpat) | Extensible File Allocation Table (exFAT) |
+| EXFAT (DFIR) | | ['patterns/DFIR/exFAT.hexpat'](patterns/DFIR/exFAT.hexpat) | Imported by DISK_PARSER.hexpat |
 | EXT4 | | [`patterns/fs/ext4.hexpat`](patterns/fs/ext4.hexpat) | Ext4 File System |
 | FAS | | [`patterns/fas_oskasoftware.hexpat`](patterns/fas_oskasoftware.hexpat) [`patterns/fas_oskasoftware_old.hexpat`](patterns/fas_oskasoftware_old.hexpat) (Old versions of Oska DeskMate) | Oska Software DeskMates FAS (Frames and Sequences) file |
 | FAT32 | | [`patterns/fs/fat32.hexpat`](patterns/fs/fat32.hexpat) | FAT32 File System |
+| FAT32 (DFIR) | | ['patterns/DFIR/FAT32.hexpat'](patterns/DFIR/FAT32.hexpat) | Imported by DISK_PARSER.hexpat |
 | FBX | | [`patterns/fbx.hexpat`](patterns/fbx.hexpat) | Kaydara FBX Binary |
 | FDT | | [`patterns/fdt.hexpat`](patterns/fdt.hexpat) | Flat Linux Device Tree blob |
 | FFX | | [`patterns/ffx/*`](https://gitlab.com/EvelynTSMG/imhex-ffx-pats) | Various Final Fantasy X files |
@@ -127,6 +130,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
 | NTFS | | [`patterns/fs/ntfs.hexpat`](patterns/fs/ntfs.hexpat) | NTFS (NT File System) |
+| NTFS (DFIR) | | ['patterns/DFIR/NTFS.hexpat'](patterns/DFIR/NTFS.hexpat) | Imported by DISK_PARSER.hexpat |
 | OGG | `audio/ogg` | [`patterns/ogg.hexpat`](patterns/ogg.hexpat) | OGG Audio format |
 | ORP / ORS | | [`patterns/orp.hexpat`](patterns/orp.hexpat) | OpenRGB profile format |
 | PACK | | [`patterns/roblox_pack.hexpat`](patterns/roblox_pack.hexpat) | Roblox shader archive format |
