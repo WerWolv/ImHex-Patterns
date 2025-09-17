@@ -1,5 +1,5 @@
 #pragma author Formula Zero One Technologies
-#pragma description exFAT Filesystem Structures
+#pragma description exFAT Filesystem (exFAT_v2.0)
 #pragma MIME application/x-ima
 #pragma endian little
 
@@ -54,7 +54,6 @@ const bool VOLUME_REPORT = true;
 
 u64 allocated_file_count;
 u64 rdc;
-u32 entry_size = 32; 
 
 // --------------------------
 // exFAT DIRECTORY ENTRY HELPER
@@ -168,6 +167,7 @@ struct AllocationBitmap_Entry {
     u8 Reserved_1[18];
     u32 FirstCluster						[[comment("FIRST LOGICAL CLUSTER NUMBER")]];
     u64 DataLength							[[comment("DATA SIZE")]];
+	u8 FILE_DATA[DataLength] @ temp_root_location + (FirstCluster - exFAT_VBR.root_dir_cluster) * bytesPerCluster	[[comment("POINTER TO THE CLUSTER CONTENT")]];
 };
 
 // x82 / x02 = UpCase Table Entry
@@ -178,6 +178,7 @@ struct UpCaseTable_Entry {
     u8 Reserved_2[12];
     u32 FirstCluster						[[comment("FIRST LOGICAL CLUSTER NUMBER")]];
     u64 DataLength							[[comment("DATA SIZE")]];
+	u8 FILE_DATA[DataLength] @ temp_root_location + (FirstCluster - exFAT_VBR.root_dir_cluster) * bytesPerCluster	[[comment("POINTER TO THE CLUSTER CONTENT")]];
 };
 
 // x85 / x05 = File Info Entry
@@ -248,9 +249,13 @@ struct RootDir {
         }
         (EntryType::ACTIVE_ALLOCATION_BITMAP_ENTRY | EntryType::INACTIVE_ALLOCATION_BITMAP_ENTRY):{
     		AllocationBitmap_Entry ALLOCATION_BITMAP_ENTRY @ $ - 32;
+			u64 bitmap_cluster = ALLOCATION_BITMAP_ENTRY.FirstCluster;
+		    char dolla_BITMAP_label[4] @ FAT1_start_offset + (bitmap_cluster * 4) [[name(std::format("$Bitmap"))]];	
         }
         (EntryType::ACTIVE_UPCASE_TABLE_ENTRY | EntryType::INACTIVE_UPCASE_TABLE_ENTRY):{
             UpCaseTable_Entry UPCASE_TABLE_ENTRY @ $ - 32;
+			u64 upcase_cluster = UPCASE_TABLE_ENTRY.FirstCluster;
+			char dolla_UPCASE_label[4] @ FAT1_start_offset + (upcase_cluster * 4) [[name(std::format("$UpCase"))]];
         }
         (EntryType::ACTIVE_FILE_INFO_ENTRY | EntryType::INACTIVE_FILE_INFO_ENTRY):{
             FileInfo_Entry FILE_INFO_ENTRY @ $ - 32;
@@ -398,17 +403,7 @@ struct FAT_Header {
 	Media_Descriptor mediaDescriptor		[[comment("0xF8=FIXED DISK | 0xF0=REMOVABLE")]];;
 	u8 exFAT_FAT_HEADER[7]					[[comment("8 BYTES TOTAL: 4 BYTES REPRESENT PSUEDO CLUSTER 0 (SYSTEM)  | 4 BYTES REPRESENT PSUEDO CLUSTER 1 (SYSTEM)(EOF)")]];
 
-    char dolla_BITMAP_label[4] @ $ [[
-    	name(std::format(
-    		"$Bitmap"
-    	))
-    ]];	
-
-    char dolla_UPCASE_label[4] @ $ + 4 [[
-    	name(std::format(
-    		"$UpCase"
-    	))
-    ]];	
+	//Bitmap and UpCase overlays handled in RootDir parser
 
     char root_dir_label[4] @ $ + ((rdc - 2) * 4)  [[
     	name(std::format(
