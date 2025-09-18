@@ -1,3 +1,4 @@
+#pragma author gmestanley
 #pragma description Microsoft DOS NE executable
 #pragma MIME application/x-ms-ne-executable
 
