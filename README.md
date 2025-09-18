@@ -198,8 +198,11 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ZLIB | `application/zlib` | [`patterns/zlib.hexpat`](patterns/zlib.hexpat) | ZLIB compressed data format |
 | ZSTD | `application/zstd` | [`patterns/zstd.hexpat`](patterns/zstd.hexpat) | Zstandard compressed data format |
 | MOD | `3d-model/mod` | [`patterns/DMC3HD-Mod.hexpat`](patterns/dmc3_hd_mod.hexpat) | 3D Model files used in Devil May Cry 3 HD Collection |
-| DATA | `archives/data` | [`patterns/acu_data_compressed.hexpat`](patterns/acu_data_compressed.hexpat) | Compressed .data archive files (found inside .forge archives) used in Assassin's Creed: Unity |
 | FORGE | `archives/forge` | [`patterns/acu_forge.hexpat`](patterns/acu_forge.hexpat) | .forge archive files used in Assassin's Creed: Unity |
+| DATA | `archives/acu_data_compressed` | [`patterns/acu_data_compressed.hexpat`](patterns/acu_data_compressed.hexpat) | Compressed .data archive files (found inside .forge archives) used in Assassin's Creed: Unity |
+| DATA | `archives/acu_data_decompressed` | [`patterns/acu_data_decompressed.hexpat`](patterns/acu_data_decompressed.hexpat) | Decompressed .data archive files (found inside .forge archives) used in Assassin's Creed: Unity |
+
+
 
 ### Scripts
 
