@@ -3,10 +3,9 @@
 #pragma MIME image/ktx
 #pragma magic [ AB 4B 54 58 20 31 31 BB 0D 0A 1A 0A ] @ 0x00
 
-#include "std/mem.pat"
-#include "type/magic.pat"
-
 import std.io;
+import std.mem;
+import type.magic;
 
 enum GLType : u32 {
     compressed = 0x0,
