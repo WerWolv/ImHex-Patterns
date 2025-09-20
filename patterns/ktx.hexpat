@@ -1,5 +1,5 @@
 #pragma author Lexi Mayfield
-#pragma description Khronos TeXture
+#pragma description Khronos TeXture 1.0
 #pragma MIME image/ktx
 #pragma magic [ AB 4B 54 58 20 31 31 BB 0D 0A 1A 0A ] @ 0x00
 
