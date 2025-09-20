@@ -8,7 +8,7 @@
 
 #pragma endian little
 #pragma magic [53 EF] @ 0x438
-#pragma pattern_limit 0x90000
+#pragma pattern_limit 0x80000000
 
 import type.time;
 import type.size;
@@ -540,4 +540,4 @@ struct ext4_group_descriptors {
     }
 };
 
-ext4_group_descriptors group_descs @ block_to_address(2);
+ext4_group_descriptors group_descs @ block_to_address(super_block.s_first_data_block + 1);
