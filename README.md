@@ -142,6 +142,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | PP | | [`patterns/selinuxpp.hexpat`](patterns/selinuxpp.pat) | SE Linux package |
 | PFS0 | | [`patterns/pfs0.hexpat`](patterns/pfs0.hexpat) | Nintendo Switch PFS0 archive (NSP files) |
 | PF | | [`patterns/pf.hexpat`](patterns/pf.hexpat) | Microsoft uncompressed prefetch files (.pf) |
+| Pickle | | [`patterns/pickle.hexpat`](patterns/pickle.hexpat) | Python Pickle Protocol |
 | PIF | `image/pif` | [`patterns/pif.hexpat`](patterns/pif.hexpat) | PIF Image Format |
 | PKM | | [`patterns/pkm.hexpat`](patterns/pkm.hexpat) | PKM texture format |
 | PNG  | `image/png` | [`patterns/png.hexpat`](patterns/png.hexpat) | PNG image files |
