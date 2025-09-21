@@ -47,10 +47,14 @@ struct ImageData {
     be u64 png_magic [[hidden, no_unique_address]];
     if (png_magic == 0x89504e470d0a1a0a) {
         PNG png_image @ $ [[inline, highlight_hidden]];
-    } else {
+    } 
+    
+    // TODO: Sections currently can't be properly accessed accross imported types
+    // TODO: Uncomment this again once that's been fixed
+    /*else {
         BMPData data [[hidden]];
         BMP bmp_image @ addressof(this) - 14 [[inline, highlight_hidden]];
-    }
+    }*/
 };
 
 struct ICONDIRENTRY {
