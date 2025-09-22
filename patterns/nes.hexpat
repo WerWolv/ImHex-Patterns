@@ -243,16 +243,18 @@ struct OfficialHeader {
     u8 complementaryChecksum [[hex::spec_name("Checksum for characterChecksum~makerID")]];
 };
 
+u24 calculatedPRGROMSize = 16384 * ((0x0100 * $[9] & 0x0F) * ($[7] & 12 == 8) + header.prgROMSizeBy16KiBs);
+
 fn hasOfficialHeader() {
     u8 sum;
     for (u8 i = 0, i < 8, i += 1) {
-        sum += $[(16384 * ((0x0100*header.nes2Attributes.romSize.extraPRGROMSize)*($[7] & 12==8))+header.prgROMSizeBy16KiBs - 14)+i];
+        sum += $[(calculatedPRGROMSize - 14) + i];
     }
     return !sum;
 };
 
 struct PRGROM {
-    u8 data[16384 * (((0x0100*header.nes2Attributes.romSize.extraPRGROMSize)*($[7] & 12==8)) + header.prgROMSizeBy16KiBs) - 26 * hasOfficialHeader() - 6];
+    u8 data[calculatedPRGROMSize - 26 * hasOfficialHeader() - 6];
     if (hasOfficialHeader())
         OfficialHeader officialHeader;
     u16 nmi;
@@ -261,4 +263,4 @@ struct PRGROM {
 };
 
 PRGROM prgROM @ 0x10 + sizeof(trainer);
-u8 chrROM[8192 * (((0x0100*header.nes2Attributes.romSize.extraCHRROMSize)*($[7] & 12==8)) + header.chrROMSizeBy8KiBs)] @ addressof(prgROM) + 16384 * header.prgROMSizeBy16KiBs;
+u8 chrROM[8192 * ((0x0100 * $[9] >> 4) * ($[7] & 12 == 8) + header.chrROMSizeBy8KiBs)] @ addressof(prgROM) + 16384 * header.prgROMSizeBy16KiBs;
