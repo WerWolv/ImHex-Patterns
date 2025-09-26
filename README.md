@@ -63,7 +63,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DICOM | `application/dicom` | [`patterns/dicom.hexpat`](patterns/dicom.hexpat) | DICOM image format |
 | DMG | | [`patterns/dmg.hexpat`](patterns/dmg.hexpat) | Apple Disk Image Trailer (DMG) |
 | DMP | | [`patterns/dmp64.hexpat`](patterns/dmp64.hexpat) | Windows Kernel Dump(DMP64) |
-| DOS | `application/x-dosexec` `application/x-msdownload` `application/x-dosexecapplication/zip` `application/vnd.microsoft.portable-executable` |  [`patterns/dos.hexpat`](patterns/dos.hexpat) | 16 bit real-mode DOS EXE files |
+| DOS | `application/x-dosexec` `application/x-msdownload` `application/x-dosexecapplication/zip` `application/vnd.microsoft.portable-executable` |  [`patterns/dos.hexpat`](patterns/dos.hexpat) | 16-bit real mode DOS EXE files |
 | DOTNET_BinaryFormatter | | [`patterns/dotnet_binaryformatter.hexpat`](patterns/dotnet_binaryformatter.hexpat) | .NET BinaryFormatter |
 | DPAPI_Blob | | [`patterns/dpapblob.hexpat`](patterns/dpapiblob.hexpat) | Data protection API Blob File Format |
 | DPAPI_MasterKey | | [`patterns/dpapimasterkey.hexpat`](patterns/dpapimasterkey.hexpat) | Data protection API MasterKey |
