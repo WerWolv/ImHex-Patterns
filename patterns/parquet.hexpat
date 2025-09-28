@@ -215,10 +215,10 @@ struct CompactList {
     
     match (element_type) {
         (TCompactType::CT_BOOLEAN_TRUE): {
-            bool value[size];
+            bool value = true [[export]];
         }
         (TCompactType::CT_BOOLEAN_FALSE): {
-            bool value[size];
+            bool value = false [[export]];
         }
         (TCompactType::CT_BYTE): {
             s8 value[size];
