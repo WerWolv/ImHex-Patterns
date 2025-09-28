@@ -714,10 +714,18 @@ struct ColumnChunk<auto End> {
 };
 
 struct ColumnChunkPlacer {
-    s64 column_offset_list_cur @ std::core::array_index() * sizeof(s64) in column_offset_list;
-    s64 column_offset_list_next @ (std::core::array_index() + 1) * sizeof(s64) in column_offset_list;
+    auto i = std::core::array_index();
+    s64 column_offset_list_cur @ i * sizeof(s64) in column_offset_list;
+    
+    //std::print("i + 1: {}, size: {}", i + 1, column_offset_list_size);
+    if ((i + 1) < column_offset_list_size) {
+        s64 column_offset_list_next @ (i + 1) * sizeof(s64) in column_offset_list;
+    } else {
+        s64 column_offset_list_next = parent.footer_begin;
+    }
+    
     ColumnChunk<column_offset_list_next> column_chunk @ column_offset_list_cur; 
-} [[inline]];
+};
 
 struct ParquetFile {
     char header_magic[4];
