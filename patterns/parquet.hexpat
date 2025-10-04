@@ -20,6 +20,7 @@ https://raw.githubusercontent.com/apache/parquet-format/refs/heads/master/src/ma
 import std.mem;
 import std.sys;
 import std.core;
+import type.leb128;
 
 s16 last_field_id = 0;
 std::mem::Section last_field_id_stack = 
@@ -75,43 +76,7 @@ enum TCompactType : u8 {
     CT_EXTENDED         = 0x0F
 };
 
-// Variable-length integer structures that advance cursor properly
-struct VarInt {
-    u8 bytes[while(std::mem::read_unsigned($,1) & 0x80 != 0)];
-    u8 final_byte;
-    
-    u64 value = decode_varint(addressof(bytes)) [[export]];
-} [[format("varint_format")]];
-
-fn varint_format(VarInt vi) {
-    return std::format("VarInt: {}", vi.value);
-};
-
-// Variable-length integer decoding (ZigZag + VarInt)
-fn decode_varint(auto ptr) {
-    u64 result = 0;
-    u8 shift = 0;
-    u8 byte_val;
-    
-    while (true) {
-        byte_val = std::mem::read_unsigned(ptr, 1);
-        ptr = ptr + 1;
-        
-        result |= (u64(byte_val & 0x7F) << shift);
-        shift += 7;
-        
-        if ((byte_val & 0x80) == 0) {
-            break;
-        }
-        
-        if (shift >= 64) {
-            std::error("VarInt too large");
-            break;
-        }
-    }
-    
-    return result;
-};
+using VarInt = type::LEB128;
 
 // ZigZag decode for signed integers
 fn zigzag_decode_32(u32 n) {
@@ -138,7 +103,7 @@ struct ThriftFieldHeader {
     // If delta is 0, field ID follows as varint
     if (field_id_delta == 0) {
         VarInt field_id_varint;
-        s16 field_id = s16(zigzag_decode_32(u32(field_id_varint.value))) [[export]];
+        s16 field_id = s16(zigzag_decode_32(u32(field_id_varint))) [[export]];
         last_field_id = field_id;
     } else {
         // Field ID is previous_field_id + delta
@@ -160,8 +125,7 @@ fn field_header_format(ThriftFieldHeader header) {
 
 // Variable-length string/binary
 struct CompactBinary {
-    VarInt length_varint;
-    u32 length = u32(length_varint.value) [[export]];
+    VarInt length;
     char data[length];
 } [[format("compact_binary_format")]];
 
@@ -172,7 +136,7 @@ fn compact_binary_format(CompactBinary bin) {
 // Variable-length integer types
 struct CompactI32 {
     VarInt raw_varint;
-    s32 value = zigzag_decode_32(u32(raw_varint.value)) [[export]];
+    s32 value = zigzag_decode_32(u32(raw_varint)) [[export]];
 } [[format("compact_i32_format")]];
 
 fn compact_i32_format(CompactI32 val) {
@@ -181,7 +145,7 @@ fn compact_i32_format(CompactI32 val) {
 
 struct CompactI64 {
     VarInt raw_varint;
-    s64 value = zigzag_decode_64(raw_varint.value) [[export]];
+    s64 value = zigzag_decode_64(raw_varint) [[export]];
 } [[format("compact_i64_format")]];
 
 fn compact_i64_format(CompactI64 val) {
@@ -208,7 +172,7 @@ struct CompactList {
     u32 size = 0 [[export]];
     if (size_info == 0x0F) {
         VarInt size_varint;
-        size = u32(size_varint.value);
+        size = u32(size_varint);
     } else {
         size = size_info;
     }
@@ -724,7 +688,7 @@ struct ColumnChunkPlacer {
         s64 column_offset_list_next = parent.footer_begin;
     }
     
-    ColumnChunk<column_offset_list_next> column_chunk @ column_offset_list_cur; 
+    ColumnChunk<column_offset_list_next> column_chunk @ column_offset_list_cur;
 };
 
 struct ParquetFile {
