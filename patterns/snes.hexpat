@@ -1,5 +1,5 @@
 #pragma author gmestanley
-#pragma description SNES ROM header
+#pragma description Super Nintendo Entertainment System ROM header
 #pragma sources snes.nesdev.org/wiki/ROM_header CPU_vectors en.wikibooks.org/wiki/Super_NES_Programming/SNES_memory_map
 
 import std.string;
