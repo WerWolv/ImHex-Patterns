@@ -145,7 +145,7 @@ struct NES2Attributes {
     }
     MiscellaneousROMs miscellaneousROMs;
     DefaultExpansionDevice defaultExpansionDevice;
-};
+} [[inline]];
 
 fn renderEOF(str string) {
     return "\"NES<EOF>\"";
@@ -243,7 +243,7 @@ struct OfficialHeader {
     u8 complementaryChecksum [[hex::spec_name("Checksum for characterChecksum~makerID")]];
 };
 
-u24 calculatedPRGROMSize = 16384 * ((0x0100 * $[9] & 0x0F) * ($[7] & 12 == 8) + header.prgROMSizeBy16KiBs);
+u24 calculatedPRGROMSize = 16384 * ((0x0100 * ($[9] & 0x0F)) * ($[7] & 12 == 8) + header.prgROMSizeBy16KiBs);
 
 fn hasOfficialHeader() {
     u8 sum;
@@ -263,4 +263,145 @@ struct PRGROM {
 };
 
 PRGROM prgROM @ 0x10 + sizeof(trainer);
-u8 chrROM[8192 * ((0x0100 * $[9] >> 4) * ($[7] & 12 == 8) + header.chrROMSizeBy8KiBs)] @ addressof(prgROM) + 16384 * header.prgROMSizeBy16KiBs;
+u8 chrROM[8192 * ((0x0100 * ($[9] >> 4)) * ($[7] & 12 == 8) + header.chrROMSizeBy8KiBs)] @ addressof(prgROM) + 16384 * header.prgROMSizeBy16KiBs;
+
+fn identifyMapper(u16 mapperValue, u8 submapperValue) {
+    str mapper;
+    str submapper;
+    str designation;
+    match (mapperValue) {
+        (0): mapper = "NROM";
+        (1): mapper = "MMC1B";
+        (2): mapper = "UxROM";
+        (3): mapper = "CNROM-32";
+        (4): mapper = "MMC3";
+        (5): mapper = "MMC5";
+        (6): mapper = "Front Fareast Magic Card 1/2M RAM Cartridge";
+        (7): mapper = "AxROM";
+        (8): mapper = "Front Fareast Magic Card 1/2M RAM Cartridge (Initial latch-based banking mode 4)";
+        (9): mapper = "MMC2";
+        (10): mapper = "MMC4";
+        (11): mapper = "Color Dreams";
+        (12): mapper = "(See submapper)";
+        (13): mapper = "CPROM";
+        (14): mapper = "SL-1632";
+        (15): mapper = "K-102xx";
+        (16): mapper = "Bandai FCG boards";
+        (17): mapper = "Front Fareast Super Magic Card RAM cartridge";
+        (18): mapper = "SS88006 (Jaleco)";
+        (19): mapper = "Namco 129/163";
+        (20): mapper = "Famicom Disk System";
+        (21): mapper = "VRC4a/VRC4c";
+        (22): mapper = "VRC2a";
+        (23): mapper = "VRC4e or VRC2b + VRC4f";
+        (24): mapper = "VRC6a";
+        (25): mapper = "VRC4d or VRC2c + VRC4b";
+        (26): mapper = "VRC6b";
+        (27): mapper = "World Hero";
+        (28): mapper = "Action 53";
+        (29): mapper = "RET-CUFROM";
+        (30): mapper = "UNROM 512";
+        (31): mapper = "NSF";
+        (32): mapper = "G-101";
+        (33): mapper = "TC0190";
+        (34): mapper = "(See submapper)";
+        (35): mapper = "J.Y. Company (8KiB WRAM)";
+        (36): mapper = "01-22000-400";
+        (37): mapper = "SMB+Tetris+NWC";
+        (38): mapper = "Crime Busters";
+        (39): mapper = "Study & Game 32-in-1";
+        (40): mapper = "NTDEC 27xx";
+        (41): mapper = "Caltron 6-in-1";
+        (42): mapper = "FDS -> NES Hacks";
+        (43): mapper = "TONY-I/YS-612";
+        (44): mapper = "Super Big 7-in-1";
+        (45): mapper = "GA23C";
+        (46): mapper = "Rumble Station";
+        (47): mapper = "Super Spike V'Ball + NWC";
+        (48): mapper = "TC0690";
+        (49): mapper = "Super HIK 4-in-1";
+        (50): mapper = "761214";
+        (51): mapper = "11-in-1 Ball Games";
+        (52): mapper = "Realtec 8213";
+        (53): mapper = "Supervision 16-in-1";
+        (54): mapper = "Novel Diamond 9999999-in-1";
+        (55): mapper = "QFJ";
+        (56): mapper = "KS202";
+        (57): mapper = "GK";
+        (58): mapper = "WQ";
+        (59): mapper = "T3H53";
+        (60): mapper = "Reset-based NROM-128 4-in-1";
+        (61): mapper = "(See submapper)";
+        (62): mapper = "Super 700-in-1";
+        (63): mapper = "(See submapper)";
+        (64): mapper = "RAMBO-1";
+        (65): mapper = "H3001";
+        (66): mapper = "GxROM";
+        (67): mapper = "Sunsoft-3";
+        (68): mapper = "Sunsoft-4";
+        (69): mapper = "Sunsoft FME-7/Sunsoft 5A/Sunsoft 5B";
+        (70): mapper = "Family Trainer Mat";
+        (71): mapper = "Camerica";
+        (72): mapper = "JF-17";
+        (73): mapper = "VRC3";
+        (74): mapper = "860908C";
+        (75): mapper = "VRC1";
+        (76): mapper = "NAMCOT-3446";
+        (77): mapper = "Napoleon Senki";
+        (78): mapper = "74HC161/32";
+        (79): mapper = "NINA-003/NINA-006";
+        (80): mapper = "X1-005";
+        (81): mapper = "N715021";
+        (82): mapper = "X1-017";
+    }
+    if (mapperValue == 3) {
+        match (submapperValue) {
+            (0): submapper = "Bus conflict";
+            (1): submapper = "No bus conflicts";
+            (2): submapper = "AND-type bus conflicts";
+        }
+    }
+    else if (mapperValue == 4) designation = "TxROM";
+    else if (mapperValue == 12) {
+        match (submapperValue) {
+            (0): submapper = "SL-5020B (Gouder)";
+            (1): submapper = "Front Fareast Magic Card 4M RAM Cartridge";
+        }
+    }
+    else if (mapperValue == 16) {
+        match (submapperValue) {
+            (0): submapper = "FCG-1/2 or LZ93D50";
+            (4): submapper = "FCG-1/2";
+            (5): submapper = "LZ93D50";
+        }
+    }
+    else if (mapperValue == 34) {
+        match (submapperValue) {
+            (0): submapper = "NINA-001/NINA-002";
+            (1): submapper = "BNROM";
+        }
+    }
+    else if (mapperValue == 40) {
+        match (submapperValue) {
+            (0): submapper = "NTDEC 2722";
+            (1): submapper = "NTDEC 2752";
+        }
+    }
+    else if (mapperValue == 61) {
+        match (submapperValue) {
+            (0): submapper = "NTDEC 0324";
+            (1): submapper = "NTDEC BS-N032";
+            (_): submapper = "GS-2017";
+        }
+    }
+    else if (mapperValue == 63) {
+        match (submapperValue) {
+            (0): submapper = "TH2291-3";
+            (1): submapper = "82AB";
+        }
+    }
+    std::print("Mapper: " + mapper + "(" + std::string::to_string(mapperValue) + ")");
+    if (submapper) std::print("Submapper: " + submapper + "(" + std::string::to_string(submapperValue) + ")");
+    if (designation) std::print("Designation: " + designation);
+};
+identifyMapper(0x0100 * ($[8] & 0x0F) + 0x10 * ($[7] & 0x0F) + header.flags.lowerMapperNybble, $[8] >> 4);
