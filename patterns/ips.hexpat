@@ -23,7 +23,7 @@ struct IPS {
 	char signature[5];
 	Hunk hunks[while($ < std::mem::size() - (3 + 3 * (std::mem::read_string(std::mem::size()-3, 3) != "EOF")))];
 	char eof[3];
-	u24 truncatedSize[3+(std::mem::read_string(std::mem::size()-3, 3) != "EOF")>3];
+	u24 truncatedSize[3+(std::mem::read_string(std::mem::size()-3, 3) != "EOF")];
 };
 
 IPS ips @ 0x00;
