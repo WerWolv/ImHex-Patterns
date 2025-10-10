@@ -5,7 +5,6 @@
 #pragma endian big
 
 import std.mem;
-import std.string;
 
 struct Hunk {
 	u24 offset;
