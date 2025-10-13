@@ -1,8 +1,10 @@
 #pragma author DexrnZacAttack
 #pragma description APE audio metadata
 #pragma magic [ 41 50 45 54 41 47 45 58 ] @ 0x00
+#pragma version 1.0.1
 
 import std.core;
+import std.sys;
 
 namespace APE {
     enum ItemType : u8 {
@@ -34,6 +36,9 @@ namespace APE {
 
     struct Block {
         char signature[8];
+        if (signature != "APETAGEX")
+            std::error("Signature does not match \"APETAGEX\"");
+        
         u32 version;
         u32 tagSize;
         u32 itemCount;
@@ -49,4 +54,6 @@ namespace APE {
     };
 }
 
-APE::File ape @ 0x00;
+#ifndef APE_USE_LIB
+    APE::File ape @ 0x00;
+#endif
