@@ -29,6 +29,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ADTS | `audio/x-hx-aac-adts` | [`patterns/adts.hexpat`](patterns/adts.hexpat) | ADTS/AAC audio files |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
 | ANI | `application/x-navi-animation` | [`patterns/ani.hexpat`](patterns/ani.hexpat) | Windows Animated Cursor file |
+| APFS | | [`patterns/fs/apfs.hexpat`](patterns/fs/apfs.hexpat) | Apple File Ssytem (APFS) |
 | AppleSingle | `application/applefile` | [`patterns/apple_single_double.hexpat`](patterns/apple_single_double.hexpat) | AppleSingle Dual Fork file |
 | AppleDouble | `multipart/appledouble` | [`patterns/apple_single_double.hexpat`](patterns/apple_single_double.hexpat) | AppleDouble Resource Fork/Finder Metadata file |
 | AR | `application/x-archive` | [`patterns/ar.hexpat`](patterns/ar.hexpat) | Static library archive files |
