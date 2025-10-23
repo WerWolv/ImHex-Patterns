@@ -513,7 +513,7 @@ bitfield apfs_incompatible_features_t {
     padding : 57;
 } [[bitfield_order(std::core::BitfieldOrder::LeastToMostSignificant, 64)]];
 
-apfs_incompatible_features_t apfs_incompatible_features_null = 0;
+apfs_incompatible_features_t apfs_incompatible_features_null;
 
 #define APFS_MAGIC "BSPA"
 #define APFS_MAGIC_LE "APSB"
