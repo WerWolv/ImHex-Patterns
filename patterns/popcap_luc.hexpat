@@ -83,7 +83,8 @@ struct PLConst {
         (cType::Float): double val;
         (cType::Int): s32 val;
         (cType::Str): PLStr val;
-        (cType::Nil): continue;
+        // theres definitely a better way to handle the Nil case        
+        (cType::Nil): u8 val = 0;
         (_): std::error("unknown cType given");
     }
 } [[format("fmtConst"), sealed]];
