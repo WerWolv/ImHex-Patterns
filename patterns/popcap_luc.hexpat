@@ -20,8 +20,7 @@ struct PLHeader {
 
     // *technically* this is a part of the first top level chunk, though
     // it is essentially just a part of the header since it only appears there.
-   u32 filenameSize [[hidden]];
-   char16 filename[filenameSize] [[name("Filename")]];
+   PLStr filename [[name("Source Name")]];
 };
 
 
