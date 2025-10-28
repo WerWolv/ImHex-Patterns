@@ -201,7 +201,9 @@ enum Device : u16 {
     KindleScribe2Unknown_3X5                     = 0xFE5,
     KindleScribe2Unknown_41D                     = 0x102D,
     KindleScribe2Unknown_41E                     = 0x102E,
+    KindleColorSoftUnknown_455                   = 0x10A5,
     KindleColorSoftUnknown_456                   = 0x10A6,
+    KindleColorSoftUnknown_4EP                   = 0x11D7,
     KindleBasic5Unknown_A89                      = 0x2909,
     KindlePW3Unknown_TTT                         = 0x6F7B,
 };
