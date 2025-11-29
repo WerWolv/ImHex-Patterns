@@ -130,4 +130,4 @@ struct LuaFunction {
     }
 };
 
-LuaFunction toplevelFunction @ 0x15; // Lua header size is always same size
+LuaFunction toplevelFunction @ sizeof(header);; // Lua header size is not always the same
