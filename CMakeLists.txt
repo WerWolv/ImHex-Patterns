@@ -16,10 +16,22 @@ endif()
 if(NOT TARGET libpl)
     include(FetchContent)
 
+    if (NOT DEFINED DIMHEX_PATTERNS_LIBPL_GIT_REPO OR DIMHEX_PATTERNS_LIBPL_GIT_REPO STREQUAL "")
+        set(LIBPL_GIT_REPO "https://github.com/WerWolv/PatternLanguage")
+    else()
+        set(LIBPL_GIT_REPO ${DIMHEX_PATTERNS_LIBPL_GIT_REPO})
+    endif()
+
+    if (NOT DEFINED IMHEX_PATTERNS_LIBPL_GIT_HASH OR IMHEX_PATTERNS_LIBPL_GIT_HASH STREQUAL "")
+        set(LIBPL_GIT_TAG "master")
+    else()
+        set(LIBPL_GIT_TAG ${IMHEX_PATTERNS_LIBPL_GIT_HASH})
+    endif()
+
     FetchContent_Declare(
         pattern_language
-        GIT_REPOSITORY      https://github.com/WerWolv/PatternLanguage
-        GIT_TAG             master
+        GIT_REPOSITORY      ${LIBPL_GIT_REPO}
+        GIT_TAG             ${LIBPL_GIT_TAG}
     )
 
     FetchContent_MakeAvailable(pattern_language)

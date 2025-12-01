@@ -8,6 +8,11 @@ on:
   repository_dispatch:
     types: [run_tests]
   workflow_call:
+    inputs:
+      pattern_language_git_repo:
+        type: string
+      pattern_language_git_hash:
+        type: string
 
 jobs:
   tests:
@@ -63,6 +68,8 @@ jobs:
           -DIMHEX_PATTERNS_ENABLE_UNIT_TESTS=ON           \
           -DLIBPL_ENABLE_TESTS=OFF                        \
           -DLIBPL_ENABLE_CLI=OFF                          \
+          -DIMHEX_PATTERNS_LIBPL_GIT_REPO="${{ inputs.pattern_language_git_repo }}" \
+          -DIMHEX_PATTERNS_LIBPL_GIT_HASH="${{ inputs.pattern_language_git_hash }}" \
           -G Ninja                                        \
           ..
         ninja unit_tests
