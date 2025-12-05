@@ -29,6 +29,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ADTS | `audio/x-hx-aac-adts` | [`patterns/adts.hexpat`](patterns/adts.hexpat) | ADTS/AAC audio files |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
 | ANI | `application/x-navi-animation` | [`patterns/ani.hexpat`](patterns/ani.hexpat) | Windows Animated Cursor file |
+| AppleSingle | `application/applefile` | [`patterns/apple_single_double.hexpat`](patterns/apple_single_double.hexpat) | AppleSingle Dual Fork file |
+| AppleDouble | `multipart/appledouble` | [`patterns/apple_single_double.hexpat`](patterns/apple_single_double.hexpat) | AppleDouble Resource Fork/Finder Metadata file |
 | AR | `application/x-archive` | [`patterns/ar.hexpat`](patterns/ar.hexpat) | Static library archive files |
 | ARC | | [`patterns/arc.hexpat`](patterns/arc.hexpat) | Minecraft Legacy Console Edition ARC files |
 | ARIA2 | | [`patterns/aria2.hexpat`](patterns/aria2.hexpat) | ARIA2 Download Manager Control files |
@@ -51,6 +53,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | CCVXL | | [`patterns/ccvxl.hexpat`](patterns/ccvxl.hexpat) | Command and Conquer Voxel Model |
 | CCPAL | | [`patterns/ccpal.hexpat`](patterns/ccpal.hexpat) | Command and Conquer Voxel Palette |
 | CDA | | [`patterns/cda.hexpat`](patterns/cda.hexpat) | Compact Disc Audio track |
+| CHD | | [`patterns/chd.hexpat`](patterns/chd.hexpat) | MAME Compressed Hunks of Data file |
 | CHM | `application/vnd.ms-htmlhelp` | [`patterns/chm.hexpat`](patterns/chm.hexpat) | Windows HtmlHelp Data (ITSF / CHM) |
 | COFF | `application/x-coff` | [`patterns/coff.hexpat`](patterns/coff.hexpat) | Common Object File Format (COFF) executable |
 | CPIO | `application/x-cpio` | [`patterns/cpio.hexpat`](patterns/cpio.hexpat) | Old Binary CPIO Format |
@@ -62,12 +65,15 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DICOM | `application/dicom` | [`patterns/dicom.hexpat`](patterns/dicom.hexpat) | DICOM image format |
 | DMG | | [`patterns/dmg.hexpat`](patterns/dmg.hexpat) | Apple Disk Image Trailer (DMG) |
 | DMP | | [`patterns/dmp64.hexpat`](patterns/dmp64.hexpat) | Windows Kernel Dump(DMP64) |
+| DOS | `application/x-dosexec` |  [`patterns/dos.hexpat`](patterns/dos.hexpat) | 16-bit real mode DOS EXE files |
+| DOTNET_BinaryFormatter | | [`patterns/dotnet_binaryformatter.hexpat`](patterns/dotnet_binaryformatter.hexpat) | .NET BinaryFormatter |
 | DPAPI_Blob | | [`patterns/dpapblob.hexpat`](patterns/dpapiblob.hexpat) | Data protection API Blob File Format |
 | DPAPI_MasterKey | | [`patterns/dpapimasterkey.hexpat`](patterns/dpapimasterkey.hexpat) | Data protection API MasterKey |
 | DS_Store | | [`patterns/dsstore.hexpat`](patterns/dsstore.hexpat) | .DS_Store file format |
 | DTA | | [`patterns/max_v104.hexpat`](patterns/max_v104.hexpat) | Mechanized Assault and Exploration v1.04 (strategy game) save file format |
 | DTED | | [`patterns/dted.hexpat`](patterns/dted.hexpat) | Digital Terrain Elevation Data (DTED) |
 | ELF  | `application/x-executable` | [`patterns/elf.hexpat`](patterns/elf.hexpat) | ELF header in elf binaries |
+| ESP32 Image | | [`patterns/esp32_image.hexpat`](patterns/esp32_image.hexpat) | Firmware image format for the ESP32 chip family |
 | EVTX | `application/x-ms-evtx` | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
 | EXFAT | | [`patterns/fs/exfat.hexpat`](patterns/fs/exfat.hexpat) | Extensible File Allocation Table (exFAT) |
 | EXT4 | | [`patterns/fs/ext4.hexpat`](patterns/fs/ext4.hexpat) | Ext4 File System |
@@ -101,7 +107,9 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ISO | `application/x-iso9660-image` | [`patterns/iso.hexpat`](patterns/iso.hexpat) | ISO 9660 file system |
 | Java Class | `application/x-java-applet` | [`patterns/java_class.hexpat`](patterns/java_class.hexpat) | Java Class files |
 | JPEG | `image/jpeg` | [`patterns/jpeg.hexpat`](patterns/jpeg.hexpat) | JPEG Image Format |
+| KTX | `image/ktx` | [`patterns/ktx.hexpat`](patterns/ktx.hexpat) | Khronos TeXture 1.0 |
 | LOC | | [`patterns/loc.hexpat`](patterns/loc.hexpat) | Minecraft Legacy Console Edition Language file |
+| LUC | | [`patterns/popcap_luc.hexpat`](patterns/popcap_luc.hexpat) | PopCap's proprietary Lua bytecode |
 | Lua 5.1 | | [`patterns/lua51.hexpat`](patterns/lua51.hexpat) | Lua 5.1 bytecode |
 | Lua 5.2 | | [`patterns/lua52.hexpat`](patterns/lua52.hexpat) | Lua 5.2 bytecode |
 | Lua 5.3 | | [`patterns/lua53.hexpat`](patterns/lua53.hexpat) | Lua 5.3 bytecode |
@@ -119,14 +127,18 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NBT | | [`patterns/nbt.hexpat`](patterns/nbt.hexpat) | Minecraft NBT format |
 | NDS | `application/x-nintendo-ds-rom` | [`patterns/nds.hexpat`](patterns/nds.hexpat) | DS Cartridge Header |
 | NE | `application/x-ms-ne-executable` | [`patterns/ne.hexpat`](patterns/ne.hexpat) | NE header and Standard NE fields |
-| nes | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | .nes file format |
+| nes | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | Nintendo Entertainment System ROM |
+| NSF | | [`patterns/nsf.hexpat`](patterns/nsf.hexpat) | NES Sound Format |
+| NSFe | | [`patterns/nsfe.hexpat`](patterns/nsfe.hexpat) | NES Sound Format extended |
 | NotepadCache | | [`patterns/notepad-cache.hexpat`](patterns/notepad-cache.hexpat) | Windows Notepad Cache |
+| NotepadStateFile | | [`patterns/notepad-state.hexpat`](patterns/notepad-state.hexpat) | Windows Notepad .bin State files |
 | NotepadWindowState | | [`patterns/notepadwindowstate.hexpat`](patterns/notepadwindowstate.hexpat) | Windows 11 Notepad - Window State .bin file |
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
 | NTFS | | [`patterns/fs/ntfs.hexpat`](patterns/fs/ntfs.hexpat) | NTFS (NT File System) |
 | OGG | `audio/ogg` | [`patterns/ogg.hexpat`](patterns/ogg.hexpat) | OGG Audio format |
 | ORP / ORS | | [`patterns/orp.hexpat`](patterns/orp.hexpat) | OpenRGB profile format |
+| PACK | | [`patterns/roblox_pack.hexpat`](patterns/roblox_pack.hexpat) | Roblox shader archive format |
 | PAK | | [`patterns/xgspak.hexpat`](patterns/xgspak.hexpat) | Exient XGS Engine Pak files |
 | PCAP | `application/vnd.tcpdump.pcap` | [`patterns/pcap.hexpat`](patterns/pcap.hexpat) | pcap header and packets |
 | PcapNG | `application/vnd.tcpdump.pcap` | [`patterns/pcapng.hexpat`](patterns/pcapng.hexpat) | pcapng header and packets |
@@ -138,6 +150,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | PP | | [`patterns/selinuxpp.hexpat`](patterns/selinuxpp.pat) | SE Linux package |
 | PFS0 | | [`patterns/pfs0.hexpat`](patterns/pfs0.hexpat) | Nintendo Switch PFS0 archive (NSP files) |
 | PF | | [`patterns/pf.hexpat`](patterns/pf.hexpat) | Microsoft uncompressed prefetch files (.pf) |
+| Pickle | | [`patterns/pickle.hexpat`](patterns/pickle.hexpat) | Python Pickle Protocol |
 | PIF | `image/pif` | [`patterns/pif.hexpat`](patterns/pif.hexpat) | PIF Image Format |
 | PKM | | [`patterns/pkm.hexpat`](patterns/pkm.hexpat) | PKM texture format |
 | PNG  | `image/png` | [`patterns/png.hexpat`](patterns/png.hexpat) | PNG image files |
@@ -156,10 +169,13 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ReFS | | [`patterns/refs.hexpat`](patterns/fs/refs.hexpat) | Microsoft Resilient File System |
 | RGBDS | | [`patterns/rgbds.hexpat`](patterns/rgbds.hexpat) | [RGBDS](https://rgbds.gbdev.io) object file format |
 | RPM | | [`patterns/rpm.hexpat`](patterns/rpm.hexpat) | [RPM](http://ftp.rpm.org/max-rpm/s1-rpm-file-format-rpm-file-format.html) package file format |
+| SDB | | [`patterns/sdb.hexpat`](patterns/sdb.hexpat) | [Shim DataBase](https://learn.microsoft.com/en-us/windows/win32/devnotes/application-compatibility-database) file format |
 | Shell Link | `application/x-ms-shortcut` | [`patterns/lnk.hexpat`](patterns/lnk.hexpat) | Windows Shell Link file format |
 | shp | | [`patterns/shp.hexpat`](patterns/shp.hexpat) | ESRI shape file |
+| SHR | | [`patterns/SHR.hexpat`](patterns/SHR.hexpat) | Apple IIgs Super Hi-Res (SHR) + PaintWorks Animation (ANI) |
 | shx | | [`patterns/shx.hexpat`](patterns/shx.hexpat) | ESRI index file |
 | smk | | [`patterns/smk.hexpat`](patterns/smk.hexpat) | Smacker video file |
+| SNES | | [`patterns/snes.hexpat`](patterns/snes.hexpat) | Super Nintendo Entertainment System ROM header |
 | sup | | [`patterns/sup.hexpat`](patterns/sup.hexpat) | PGS Subtitle |
 | SPIRV | | [`patterns/spirv.hexpat`](patterns/spirv.hexpat) | SPIR-V header and instructions |
 | STDF | | [`patterns/stdfv4.hexpat`](patterns/stdfv4.hexpat) | Standard test data format for IC testers |
@@ -169,6 +185,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | SWF | `application/x-shockwave-flash` |[`patterns/swf.hexpat`](patterns/swf.hexpat) | Shockwave Flash file format |
 | TA | | [`patterns/optee_ta.hexpat`](patterns/optee_ta.hexpat) | OPTEE Trusted Application Executable |
 | TAR | `application/x-tar` | [`patterns/tar.hexpat`](patterns/tar.hexpat) | Tar file format |
+| TARC | | [`patterns/tarc.hexpat`](patterns/tarc.hexpat) | KEX Engine TARC file format |
 | TES | | [`patterns/wintec_tes.hexpat`](patterns/wintec_tes.hexpat) | Wintec TES GPS log |
 | Thumbcache | | [`patterns/thumbcache.hexpat`](patterns/thumbcache.hexpat) | Windows thumbcache_*.db |
 | TIFF | `image/tiff` | [`patterns/tiff.hexpat`](patterns/tiff.hexpat) | Tag Image File Format |
@@ -178,7 +195,9 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | UPK | | [`patterns/upk-ue3.hexpat`](patterns/upk-ue3.hexpat) | Unreal Engine 3 UPK file |
 | UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat)` | UEFI structs for parsing efivars |
 | UEFI Boot Entry | | [`patterns/uefi_boot_entry.hexpat`](patterns/uefi_boot_entry.hexpat) | UEFI Boot Entry (Load option) |
+| UEFI Variable Store | | [`patterns/uefi_fv_varstore.hexpat`](patterns/uefi_fv_varstore.hexpat) | UEFI Firmware Volume Variable Store |
 | UF2 | | [`patterns/uf2.hexpat`](patterns/uf2.hexpat) | [USB Flashing Format](https://github.com/microsoft/uf2) |
+| Unity Asset Bundle | | [`patterns/unity-asset-bundle.hexpat`](patterns/unity-asset-bundle.hexpat) | Unity Asset Bundle |
 | Valve VPK | | [`patterns/valve_vpk.hexpat`](valve_vpk.hexpat) | Valve Package File |
 | VBMeta | | [`patterns/vbmeta.hexpat`](patterns/vbmeta.hexpat) | Android VBMeta image |
 | VDF | | [`patterns/vdf.hexpat`](patterns/vdf.hexpat) | Binary Value Data Format (.vdf) files |
@@ -187,7 +206,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | VHDX | | [`patterns/vhdx.hexpat`](patterns/vhdx.hexpat) | Microsoft Hyper-V Virtual Hard Disk format |
 | VOX | | [`patterns/vox.hexpat`](patterns/vox.hexpat) | MagicaVoxel scene description format |
 | WAV  | `audio/x-wav`  | [`patterns/wav.hexpat`](patterns/wav.hexpat)  | RIFF header, WAVE header, PCM header |
-| WAS | | [`patterns\was_oskasoftware.hexpat`](patterns\was_oskasoftware.hexpat) | Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set) file
+| WAS | | [`patterns/was_oskasoftware.hexpat`](patterns/was_oskasoftware.hexpat) | Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set) file
 | WAD | | [`patterns/wad.hexpat`](patterns/wad.hexpat) | DOOM WAD Archive |
 | WebP | `image/webp` | [`patterns/webp.hexpat`](patterns/webp.hexpat) | Google WebP image |
 | XBEH | `audio/x-xbox-executable` | [`patterns/xbeh.hexpat`](patterns/xbeh.hexpat) | Xbox executable |
@@ -199,6 +218,9 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ZIP  | `application/zip` | [`patterns/zip.hexpat`](patterns/zip.hexpat) | End of Central Directory Header, Central Directory File Headers |
 | ZLIB | `application/zlib` | [`patterns/zlib.hexpat`](patterns/zlib.hexpat) | ZLIB compressed data format |
 | ZSTD | `application/zstd` | [`patterns/zstd.hexpat`](patterns/zstd.hexpat) | Zstandard compressed data format |
+| MOD | `3d-model/mod` | [`patterns/DMC3HD-Mod.hexpat`](patterns/dmc3_hd_mod.hexpat) | 3D Model files used in Devil May Cry 3 HD Collection |
+| CBM BASIC | | [`commodore_basic.hexpat`](patterns/commodore_basic.hexpat) | Commodore BASIC |
+| Terminfo | `application/x-terminfo` and `application/x-terminfo2` | [`patterns/terminfo.hexpat`](patterns/terminfo.hexpat) | Compiled *(legacy and extended)* term info entry |
 
 
 
@@ -296,6 +318,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Catppuccin Frappe | [`themes/catppuccin-frappe.json`](themes/catppuccin-frappe.json) | Catppuccin Frappe Flavor (Dark Theme) |
 | Catppuccin Macchiato | [`themes/catppuccin-macchiato.json`](themes/catppuccin-macchiato.json) | Catppuccin Macchiato Flavor (Dark Theme) |
 | Catppuccin Mocha | [`themes/catppuccin-mocha.json`](themes/catppuccin-mocha.json) | Catppuccin Mocha Flavor (Dark Theme) |
+| Theme Lion | [`themes/theme_lion.json`](themes/theme_lion.json) | Semantic CLion inspired theme (Dark Theme) |
+| Retina Dark | [`themes/retina_dark.json`](themes/retina_dark.json) | Semantic theme based on Dark Theme |
 
 ### Disassemblers
 

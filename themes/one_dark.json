@@ -158,7 +158,7 @@
             "default": "#DADADAFF",
             "doc-comment": "#206858FF",
             "error-marker": "#C01A2BFF",
-            "global-doc-comment": "#208070FF",
+            "doc-global-comment": "#208070FF",
             "identifier": "#E4E4E4FB",
             "keyword": "#C46DE6FF",
             "known-identifier": "#C46DE6FF",

@@ -145,6 +145,7 @@ struct Segment {
             u16 length;
             if (marker == Marker::APP0) {
                 APP0 data;
+                u8 xtra_data[length - sizeof(length) - sizeof(data)];
             } else if (marker == Marker::APP14) {
                 APP14 data;
             } else if (marker == Marker::COM) {
