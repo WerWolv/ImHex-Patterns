@@ -2,6 +2,7 @@
 tests/cmake*/
 tests/build*/
 build/
+cmake-build-*/
 
 .vscode/
 .devcontainer/

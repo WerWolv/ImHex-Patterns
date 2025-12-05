@@ -118,10 +118,15 @@ fn readString(ref auto data, s32 len, s32 bitindex){
     return test;
 };
 
+bool corrupted = false;
+
 struct Message {
     le s32 messageNum;
     le s32 len;
-    if(len != FINAL_DEMO_MESSAGE_LENGTH || messageNum != FINAL_DEMO_MESSAGE_NUMBER) {
+    if(len+$ > std::mem::size()){
+        corrupted = true;
+    }
+    if(!corrupted  && (len != FINAL_DEMO_MESSAGE_LENGTH || messageNum != FINAL_DEMO_MESSAGE_NUMBER)) {
         u8 data[len];
         if( len>=10){ // should usually be true unless corrupted
             
@@ -189,7 +194,7 @@ namespace format {
 }
 
 struct Q3Demo {
-    Message messages[while(!std::mem::eof())];
+    Message messages[while(!std::mem::eof() && !corrupted)];
 };
 
 
