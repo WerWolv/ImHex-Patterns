@@ -29,6 +29,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ADTS | `audio/x-hx-aac-adts` | [`patterns/adts.hexpat`](patterns/adts.hexpat) | ADTS/AAC audio files |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
 | ANI | `application/x-navi-animation` | [`patterns/ani.hexpat`](patterns/ani.hexpat) | Windows Animated Cursor file |
+| APFS | | [`patterns/fs/apfs.hexpat`](patterns/fs/apfs.hexpat) | Apple File Ssytem (APFS) |
 | AppleSingle | `application/applefile` | [`patterns/apple_single_double.hexpat`](patterns/apple_single_double.hexpat) | AppleSingle Dual Fork file |
 | AppleDouble | `multipart/appledouble` | [`patterns/apple_single_double.hexpat`](patterns/apple_single_double.hexpat) | AppleDouble Resource Fork/Finder Metadata file |
 | AR | `application/x-archive` | [`patterns/ar.hexpat`](patterns/ar.hexpat) | Static library archive files |
@@ -61,8 +62,10 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DDS | `image/vnd-ms.dds` | [`patterns/dds.hexpat`](patterns/dds.hexpat) | DirectDraw Surface |
 | DEX | | [`patterns/dex.hexpat`](patterns/dex.hexpat) | Dalvik EXecutable Format |
 | DICOM | `application/dicom` | [`patterns/dicom.hexpat`](patterns/dicom.hexpat) | DICOM image format |
+| DISK_PARSER (DFIR) | `application/x-ima` | [`patterns/DFIR/DISK_PARSER.hexpat`](patterns/DFIR/DISK_PARSER.hexpat) | Recursive Disk/Volume/Filesystem parsing |
 | DMG | | [`patterns/dmg.hexpat`](patterns/dmg.hexpat) | Apple Disk Image Trailer (DMG) |
 | DMP | | [`patterns/dmp64.hexpat`](patterns/dmp64.hexpat) | Windows Kernel Dump(DMP64) |
+| DOS | `application/x-dosexec` |  [`patterns/dos.hexpat`](patterns/dos.hexpat) | 16-bit real mode DOS EXE files |
 | DOTNET_BinaryFormatter | | [`patterns/dotnet_binaryformatter.hexpat`](patterns/dotnet_binaryformatter.hexpat) | .NET BinaryFormatter |
 | DPAPI_Blob | | [`patterns/dpapblob.hexpat`](patterns/dpapiblob.hexpat) | Data protection API Blob File Format |
 | DPAPI_MasterKey | | [`patterns/dpapimasterkey.hexpat`](patterns/dpapimasterkey.hexpat) | Data protection API MasterKey |
@@ -73,9 +76,11 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ESP32 Image | | [`patterns/esp32_image.hexpat`](patterns/esp32_image.hexpat) | Firmware image format for the ESP32 chip family |
 | EVTX | `application/x-ms-evtx` | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
 | EXFAT | | [`patterns/fs/exfat.hexpat`](patterns/fs/exfat.hexpat) | Extensible File Allocation Table (exFAT) |
+| EXFAT (DFIR) | | [`patterns/DFIR/exFAT.hexpat`](patterns/DFIR/exFAT.hexpat) | Imported by DISK_PARSER.hexpat |
 | EXT4 | | [`patterns/fs/ext4.hexpat`](patterns/fs/ext4.hexpat) | Ext4 File System |
 | FAS | | [`patterns/fas_oskasoftware.hexpat`](patterns/fas_oskasoftware.hexpat) [`patterns/fas_oskasoftware_old.hexpat`](patterns/fas_oskasoftware_old.hexpat) (Old versions of Oska DeskMate) | Oska Software DeskMates FAS (Frames and Sequences) file |
 | FAT32 | | [`patterns/fs/fat32.hexpat`](patterns/fs/fat32.hexpat) | FAT32 File System |
+| FAT32 (DFIR) | | [`patterns/DFIR/FAT32.hexpat`](patterns/DFIR/FAT32.hexpat) | Imported by DISK_PARSER.hexpat |
 | FBX | | [`patterns/fbx.hexpat`](patterns/fbx.hexpat) | Kaydara FBX Binary |
 | FDT | | [`patterns/fdt.hexpat`](patterns/fdt.hexpat) | Flat Linux Device Tree blob |
 | FFX | | [`patterns/ffx/*`](https://gitlab.com/EvelynTSMG/imhex-ffx-pats) | Various Final Fantasy X files |
@@ -104,7 +109,9 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ISO | `application/x-iso9660-image` | [`patterns/iso.hexpat`](patterns/iso.hexpat) | ISO 9660 file system |
 | Java Class | `application/x-java-applet` | [`patterns/java_class.hexpat`](patterns/java_class.hexpat) | Java Class files |
 | JPEG | `image/jpeg` | [`patterns/jpeg.hexpat`](patterns/jpeg.hexpat) | JPEG Image Format |
+| KTX | `image/ktx` | [`patterns/ktx.hexpat`](patterns/ktx.hexpat) | Khronos TeXture 1.0 |
 | LOC | | [`patterns/loc.hexpat`](patterns/loc.hexpat) | Minecraft Legacy Console Edition Language file |
+| Lua 4.0 | | [`patterns/lua40.hexpat`](patterns/lua40.hexpat) | Lua 4.0 bytecode |
 | LUC | | [`patterns/popcap_luc.hexpat`](patterns/popcap_luc.hexpat) | PopCap's proprietary Lua bytecode |
 | Lua 5.1 | | [`patterns/lua51.hexpat`](patterns/lua51.hexpat) | Lua 5.1 bytecode |
 | Lua 5.2 | | [`patterns/lua52.hexpat`](patterns/lua52.hexpat) | Lua 5.2 bytecode |
@@ -132,6 +139,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
 | NTFS | | [`patterns/fs/ntfs.hexpat`](patterns/fs/ntfs.hexpat) | NTFS (NT File System) |
+| NTFS (DFIR) | | [`patterns/DFIR/NTFS.hexpat`](patterns/DFIR/NTFS.hexpat) | Imported by DISK_PARSER.hexpat |
 | OGG | `audio/ogg` | [`patterns/ogg.hexpat`](patterns/ogg.hexpat) | OGG Audio format |
 | ORP / ORS | | [`patterns/orp.hexpat`](patterns/orp.hexpat) | OpenRGB profile format |
 | PACK | | [`patterns/roblox_pack.hexpat`](patterns/roblox_pack.hexpat) | Roblox shader archive format |
