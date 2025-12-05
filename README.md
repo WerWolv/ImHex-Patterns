@@ -63,6 +63,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DICOM | `application/dicom` | [`patterns/dicom.hexpat`](patterns/dicom.hexpat) | DICOM image format |
 | DMG | | [`patterns/dmg.hexpat`](patterns/dmg.hexpat) | Apple Disk Image Trailer (DMG) |
 | DMP | | [`patterns/dmp64.hexpat`](patterns/dmp64.hexpat) | Windows Kernel Dump(DMP64) |
+| DOS | `application/x-dosexec` |  [`patterns/dos.hexpat`](patterns/dos.hexpat) | 16-bit real mode DOS EXE files |
 | DOTNET_BinaryFormatter | | [`patterns/dotnet_binaryformatter.hexpat`](patterns/dotnet_binaryformatter.hexpat) | .NET BinaryFormatter |
 | DPAPI_Blob | | [`patterns/dpapblob.hexpat`](patterns/dpapiblob.hexpat) | Data protection API Blob File Format |
 | DPAPI_MasterKey | | [`patterns/dpapimasterkey.hexpat`](patterns/dpapimasterkey.hexpat) | Data protection API MasterKey |
@@ -104,7 +105,9 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ISO | `application/x-iso9660-image` | [`patterns/iso.hexpat`](patterns/iso.hexpat) | ISO 9660 file system |
 | Java Class | `application/x-java-applet` | [`patterns/java_class.hexpat`](patterns/java_class.hexpat) | Java Class files |
 | JPEG | `image/jpeg` | [`patterns/jpeg.hexpat`](patterns/jpeg.hexpat) | JPEG Image Format |
+| KTX | `image/ktx` | [`patterns/ktx.hexpat`](patterns/ktx.hexpat) | Khronos TeXture 1.0 |
 | LOC | | [`patterns/loc.hexpat`](patterns/loc.hexpat) | Minecraft Legacy Console Edition Language file |
+| LUC | | [`patterns/popcap_luc.hexpat`](patterns/popcap_luc.hexpat) | PopCap's proprietary Lua bytecode |
 | Lua 5.1 | | [`patterns/lua51.hexpat`](patterns/lua51.hexpat) | Lua 5.1 bytecode |
 | Lua 5.2 | | [`patterns/lua52.hexpat`](patterns/lua52.hexpat) | Lua 5.2 bytecode |
 | Lua 5.3 | | [`patterns/lua53.hexpat`](patterns/lua53.hexpat) | Lua 5.3 bytecode |
@@ -122,8 +125,11 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NBT | | [`patterns/nbt.hexpat`](patterns/nbt.hexpat) | Minecraft NBT format |
 | NDS | `application/x-nintendo-ds-rom` | [`patterns/nds.hexpat`](patterns/nds.hexpat) | DS Cartridge Header |
 | NE | `application/x-ms-ne-executable` | [`patterns/ne.hexpat`](patterns/ne.hexpat) | NE header and Standard NE fields |
-| nes | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | .nes file format |
+| nes | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | Nintendo Entertainment System ROM |
+| NSF | | [`patterns/nsf.hexpat`](patterns/nsf.hexpat) | NES Sound Format |
+| NSFe | | [`patterns/nsfe.hexpat`](patterns/nsfe.hexpat) | NES Sound Format extended |
 | NotepadCache | | [`patterns/notepad-cache.hexpat`](patterns/notepad-cache.hexpat) | Windows Notepad Cache |
+| NotepadStateFile | | [`patterns/notepad-state.hexpat`](patterns/notepad-state.hexpat) | Windows Notepad .bin State files |
 | NotepadWindowState | | [`patterns/notepadwindowstate.hexpat`](patterns/notepadwindowstate.hexpat) | Windows 11 Notepad - Window State .bin file |
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
@@ -167,6 +173,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | SHR | | [`patterns/SHR.hexpat`](patterns/SHR.hexpat) | Apple IIgs Super Hi-Res (SHR) + PaintWorks Animation (ANI) |
 | shx | | [`patterns/shx.hexpat`](patterns/shx.hexpat) | ESRI index file |
 | smk | | [`patterns/smk.hexpat`](patterns/smk.hexpat) | Smacker video file |
+| SNES | | [`patterns/snes.hexpat`](patterns/snes.hexpat) | Super Nintendo Entertainment System ROM header |
 | sup | | [`patterns/sup.hexpat`](patterns/sup.hexpat) | PGS Subtitle |
 | SPIRV | | [`patterns/spirv.hexpat`](patterns/spirv.hexpat) | SPIR-V header and instructions |
 | STDF | | [`patterns/stdfv4.hexpat`](patterns/stdfv4.hexpat) | Standard test data format for IC testers |
@@ -188,6 +195,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | UEFI Boot Entry | | [`patterns/uefi_boot_entry.hexpat`](patterns/uefi_boot_entry.hexpat) | UEFI Boot Entry (Load option) |
 | UEFI Variable Store | | [`patterns/uefi_fv_varstore.hexpat`](patterns/uefi_fv_varstore.hexpat) | UEFI Firmware Volume Variable Store |
 | UF2 | | [`patterns/uf2.hexpat`](patterns/uf2.hexpat) | [USB Flashing Format](https://github.com/microsoft/uf2) |
+| Unity Asset Bundle | | [`patterns/unity-asset-bundle.hexpat`](patterns/unity-asset-bundle.hexpat) | Unity Asset Bundle |
 | Valve VPK | | [`patterns/valve_vpk.hexpat`](valve_vpk.hexpat) | Valve Package File |
 | VBMeta | | [`patterns/vbmeta.hexpat`](patterns/vbmeta.hexpat) | Android VBMeta image |
 | VDF | | [`patterns/vdf.hexpat`](patterns/vdf.hexpat) | Binary Value Data Format (.vdf) files |
