@@ -124,6 +124,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NE | `application/x-ms-ne-executable` | [`patterns/ne.hexpat`](patterns/ne.hexpat) | NE header and Standard NE fields |
 | nes | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | .nes file format |
 | NotepadCache | | [`patterns/notepad-cache.hexpat`](patterns/notepad-cache.hexpat) | Windows Notepad Cache |
+| NotepadStateFile | | [`patterns/notepad-state.hexpat`](patterns/notepad-state.hexpat) | Windows Notepad .bin State files |
 | NotepadWindowState | | [`patterns/notepadwindowstate.hexpat`](patterns/notepadwindowstate.hexpat) | Windows 11 Notepad - Window State .bin file |
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
