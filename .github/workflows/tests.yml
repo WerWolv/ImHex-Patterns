@@ -82,9 +82,9 @@ jobs:
     - name: 📎 Validate JSON Files
       run: |
         cd constants
-        for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
+        for file in ./[!_]*; do jsonschema -i $file _schema.json; done
         cd ..
 
         cd tips
-        for file in ./[!_schema.json]*; do jsonschema -i $file _schema.json; done
+        for file in ./[!_]*; do jsonschema -i $file _schema.json; done
         cd ..
