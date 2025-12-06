@@ -7,8 +7,7 @@ import type.bcd;
 /// Source: https://merthsoft.com/linkguide/ti83+/fformat.html
 
 struct Header {
-    type::Magic<"**TI83F*">;
-    char mysteryBytes[3];
+    type::Magic<"**TI83F*\x1A\x0A\x00">;
     char comment[0x2A];
     le u16 datasize;
 } [[static]];
@@ -64,11 +63,12 @@ struct Variable {
 
 struct TIReal {
     bitfield Flags {
-        padding : 1
-        isUndefined : 1
-        padding : 2
-        isComplex : 2
-        isModified : 1
+        padding : 1;
+        bool isUndefined : 1;
+        bool isComplex : 1;
+        padding : 1;
+        padding : 2;
+        bool isModified : 1;
         padding : 1
     };
     flags Flags;
@@ -92,24 +92,119 @@ struct TIMatrix {
     TIReal content[col][row];
 };
 
-enum TIToken {
-    //TODO
+struct TIToken {
+    u8 firstByte [[hidden, no_unique_address]];
+    match (firstByte) {
+        (0x5D ... 0x63 | 0xAA | 0x7E | 0xBB): {
+            char16;
+        },
+        (_): {
+            char;
+        }  
+    }
 };
 
 /// Used for Yvar, Str and Prgm
 struct TITokens {
     le u16 count;
-    TIToken content[count];
+    TIToken content[count] [[inline]];
+};
+
+enum TISequenceMode {
+    Web = 0x80 & 0x01,
+    uv  = 0x80 & 0x04,
+    vw  = 0x80 & 0x08,
+    uw  = 0x80 & 0x10
+};
+
+bitfield TIModeSet {
+    bool ExprOff : 1;
+    padding : 7;
+    TISequenceMode sequenceMode;
+    bool Dot : 1;
+    bool Simul : 1;
+    bool GridOn : 1;
+    bool PolarGC : 1;
+    bool CoordOff : 1;
+    bool AxesOff : 1;
+    bool LabelOn : 1;
+    padding : 1;
+};
+
+enum TIGraphStyle {
+    Solid = 0,
+    Thick = 1,
+    ShadeAbove = 2,
+    ShadeBelow = 3,
+    Trace = 4,
+    Animate = 5,
+    DottedLine = 6
+};
+
+enum TIGraphMode {
+    Function = 0x10,
+    Parametric = 0x40,
+    Polar = 0x20,
+    Sequence = 0x80
+};
+
+struct TIFunction {
+    u8 flags;
+    TITokens content;
 };
 
 struct TIGDB {
-    //TODO
+    le u16 length;
+    padding[1];
+    TIGraphMode mode;
+    TIModeSet settings;
+    TIReal Xmin;
+    TIReal Xmax;
+    TIReal Xscl;
+    TIReal Ymin;
+    TIReal Ymax;
+    TIReal Yscl;
+    match (mode) {
+        (TIGraphMode::Function): {
+            TIReal Xres;
+            TIGraphStyle styles[10];
+            TIFunction functions[10];
+        },
+        (TIGraphMode::Parametric): {
+            TIReal Tmin;
+            TIReal Tmax;
+            TIReal Tstep;
+            TIGraphStyle styles[6];
+            TIFunction functions[2][6];
+        },
+        (TIGraphMode::Polar): {
+            TIReal THETAmin;
+            TIReal THETAmax;
+            TIReal THETAstep;
+            TIGraphStyle styles[6];
+            TIFunction functions[6];
+        },
+        (TIGraphMode::Sequence): {
+            TIReal PlotStart;
+            TIReal nMax;
+            TIReal uOfnMinFirst;
+            TIReal vOfnMinFirst;
+            TIReal nMin;
+            TIReal uOfnMinSecond;
+            TIReal vOfnMinSecond;
+            TIReal wOfnMinFirst;
+            TIReal PlotStep;
+            TIReal wOfnMinSecond;
+            TIGraphStyle styles[3];
+            TIFunction functions[3];
+        }
+    }
 };
 
 struct TIWindowSet {
     le u16 magic;
-    if (magic == 0xD0) { u8 mystery; }
-    u8 mystery;
+    if (magic == 0xD0) { padding[1]; } // currently used windowset
+    padding[1];
     TIReal Xmin;
     TIReal Xmax;
     TIReal Xscl;
