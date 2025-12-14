@@ -435,7 +435,7 @@ u8 OFFICIAL_HEADER_SIZE = 26;
 u8 VECTORS_SIZE = 6;
 
 struct PRGROM {
-	u8 data[calculatedPRGROMSize - 26 * hasOfficialHeader() - 6];
+	u8 data[calculatedPRGROMSize - OFFICIAL_HEADER_SIZE * hasOfficialHeader() - VECTORS_SIZE];
 	if (hasOfficialHeader())
 		OfficialHeader officialHeader;
 	u16 nmi;
