@@ -44,16 +44,26 @@ bitfield iNESFlags7 {
 	higherMapperNybble : 4;
 };
 
+enum OldTVSystemByte : u8 {
+	NTSC,
+	PAL
+};
+
+fn formatOldTVSystemByte(u8 value) {
+	OldTVSystemByte enumValue = value;
+	return value;
+};
+
 bitfield iNESFlags9 {
-	tvSystem : 1 [[comment("0 = NTSC, 1 = PAL")]];
+	tvSystem : 1 [[format("formatOldTVSystemByte")]];
 	padding : 7;
 };
 
 fn formatDualTVSystem(u8 bits) {
 	match (bits) {
-	(0): return "NTSC";
-	(2): return "PAL";
-	(1 || 3): return "Dual Compatible";
+		(0): return "NTSC";
+		(2): return "PAL";
+		(1 || 3): return "Dual Compatible";
 	}
 };
 
@@ -76,7 +86,7 @@ bitfield ROMSize {
 
 bitfield PRGRAMSize {
 	prgRAMShiftCount : 4;
-	eepromShiftCount : 4 [[comment("EEPROM = Non-volatile PRG RAM")]];
+	eepromShiftCount : 4 [[comment("EEPROM = Non-volatile PRG RAM, or NVPRGRAM")]];
 };
 
 bitfield CHRRAMSize {
@@ -92,11 +102,11 @@ enum TimingList : u8 {
 };
 
 fn Timing(u8 value) {
-	TimingList type = value;
-	return type;
+	TimingList enumValue = value;
+	return enumValue;
 };
 
-bitfield Timing {   
+bitfield Timing {
 	processorTiming : 2 [[format("Timing")]];
 	padding : 6;
 };
@@ -129,7 +139,7 @@ bitfield ExtendedConsoleTypeByte {
 	padding : 4;
 };
 
-bitfield MiscellaneousROMs {
+bitfield MiscellaneousROMsHeaderByte {
 	numberOfMiscellaneousROMs : 2;
 	padding : 6;
 };
@@ -153,12 +163,12 @@ struct NES2Attributes {
 	else {
 		padding[1];
 	}
-	MiscellaneousROMs miscellaneousROMs;
+	MiscellaneousROMsHeaderByte miscellaneousROMs;
 	DefaultExpansionDevice defaultExpansionDevice;
 } [[inline]];
 
 fn renderEOF(str string) {
-	return "\"" + std::string::substr(string, 0, 3) + "<EOF>\"";
+	return "\"NES<EOF>\"";
 };
 
 struct Header {
@@ -180,6 +190,11 @@ struct Header {
 
 Header header @ 0x00;
 
+u8 FULL_HIGHER_NYBBLE = 0b1111;
+u8 FILLED_NES2_FLAGS = 0b1100;
+u8 SET_NES2_FLAGS = 0b1000;
+u16 mapperValue = (0x0100 * ($[0x08] & FULL_HIGHER_NYBBLE)) * ($[7] & FILLED_NES2_FLAGS == SET_NES2_FLAGS)
++ (0x10 * ($[0x07] >> 4)) * (!$[7] & FILLED_NES2_FLAGS) + header.flags.lowerMapperNybble;
 fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 	str mapper;
 	str submapper;
@@ -281,6 +296,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(187): mapper = "Kǎ Shèng A98402";
 		(256): mapper = "V.R. Technology OneBus";
 		(426): mapper = "V.R. Technology OneBus [Serial ROM in GPIO]";
+		(355): mapper = "Jùjīng 3D-BLOCK";
 		(594): mapper = "Rinco FSG2";
 		(595): mapper = "NES-4MROM-512";
 	}
@@ -341,8 +357,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 	if (submapper) std::print("Submapper: " + submapper + " (" + std::string::to_string(submapperValue) + ")");
 	if (designation) std::print("Designation: " + designation);
 };
-u8 FULL_LOWER_MAPPER_NYBBLE = 0b00001111;
-identifyMapper(0x0100 * ($[0x08] & FULL_LOWER_MAPPER_NYBBLE) + 0x10 * ($[0x07] >> 4) + header.flags.lowerMapperNybble, $[0x08] >> 4);
+identifyMapper(mapperValue, $[0x08] >> 4);
 
 u8 trainer[512*header.flags.trainerOf512Bytes] @ 0x10;
 
@@ -417,11 +432,8 @@ struct OfficialHeader {
 	u8 complementaryChecksum [[hex::spec_name("Checksum for characterChecksum~makerID")]];
 };
 
-u16 PRGROM_SEGMENT_SIZE = 16384;
-u8 FILLED_NES2_FLAGS = 0b00001100;
-u8 SET_NES2_FLAGS = 0b00001000;
-
-u24 calculatedPRGROMSize = PRGROM_SEGMENT_SIZE * ((0x0100 * ($[0x09] & FULL_LOWER_MAPPER_NYBBLE)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS) + header.prgROMSizeBy16KiBs);
+u16 PRGROM_MINIMUM_SIZE = 16384;
+u24 calculatedPRGROMSize = PRGROM_MINIMUM_SIZE * ((0x0100 * ($[0x09] & FULL_HIGHER_NYBBLE)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS) + header.prgROMSizeBy16KiBs);
 
 fn hasOfficialHeader() {
 	u8 sum;
@@ -444,8 +456,23 @@ struct PRGROM {
 };
 PRGROM prgROM @ 0x10 + sizeof(trainer);
 
-u16 CHRROM_SEGMENT_SIZE = 8192;
-u24 calculatedCHRROMSize = CHRROM_SEGMENT_SIZE * ((0x0100 * ($[0x09] >> 4)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS) + header.chrROMSizeBy8KiBs);
+u16 CHRROM_MINIMUM_SIZE = 8192;
+u24 calculatedCHRROMSize = CHRROM_MINIMUM_SIZE * ((0x0100 * ($[0x09] >> 4)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS) + header.chrROMSizeBy8KiBs);
 u8 chrROM[calculatedCHRROMSize] @ addressof(prgROM) + calculatedPRGROMSize;
 
-u8 miscellaneousROMs[256*$[0x0E]] @ addressof(prgROM) + calculatedPRGROMSize;
+u8 LOWER_TWO_DIGITS = 0b11;
+struct MiscellaneousROMs {
+	if ($[0x07] & LOWER_TWO_DIGITS == ConsoleType::PlayChoice10) {
+		u8 instructionsROM[8192] [[hex::spec_name("INST-ROM")]];
+		u8 decryptionDataPROM[16];
+		u8 decryptionCounterOutPROM[16];
+	}
+	else if ($[0x0D] == ExtendedConsoleType::VT3xx) {
+		u8 embeddedROM[4096];
+	}
+	else if (mapperValue == 355) {
+		u8 antiCloningROM[1024];
+	}
+};
+
+MiscellaneousROMs miscellaneousROMs[$[0x0E] & LOWER_TWO_DIGITS > 0] @ addressof(prgROM) + calculatedPRGROMSize;
