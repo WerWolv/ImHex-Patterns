@@ -180,7 +180,7 @@ struct Header {
 		iNESFlags7 inesFlags7;
 		if (inesFlags7.nes2Format)
 			NES2Attributes nes2Attributes;
-		else if ($[0x07] & 12 == 0 && !std::mem::read_unsigned($, 4)) {
+		else if ($[0x07] & 12 == 0 && !std::mem::read_unsigned(0x0C, 4)) {
 			u8 prgRAMSizeBy8KiBs;
 			iNESFlags9 inesFlags9;
 			iNESFlags10 inesFlags10;
@@ -190,11 +190,12 @@ struct Header {
 
 Header header @ 0x00;
 
-u8 FULL_HIGHER_NYBBLE = 0b1111;
+u8 FILLED_HIGHER_NYBBLE = 0b1111;
 u8 FILLED_NES2_FLAGS = 0b1100;
 u8 SET_NES2_FLAGS = 0b1000;
-u16 mapperValue = (0x0100 * ($[0x08] & FULL_HIGHER_NYBBLE)) * ($[7] & FILLED_NES2_FLAGS == SET_NES2_FLAGS)
-+ (0x10 * ($[0x07] >> 4)) * (!$[7] & FILLED_NES2_FLAGS) + header.flags.lowerMapperNybble;
+u16 mapperValue = (0x0100 * ($[0x08] & FILLED_HIGHER_NYBBLE)) * ($[7] & FILLED_NES2_FLAGS == SET_NES2_FLAGS)
++ (0x10 * ($[0x07] >> 4)) * ($[7] & FILLED_NES2_FLAGS != 0b100)
++ header.flags.lowerMapperNybble;
 fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 	str mapper;
 	str submapper;
@@ -295,8 +296,9 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(92): mapper = "Jaleco JF-17 [16 KiB PRG ROM]";
 		(187): mapper = "Kǎ Shèng A98402";
 		(256): mapper = "V.R. Technology OneBus";
-		(426): mapper = "V.R. Technology OneBus [Serial ROM in GPIO]";
 		(355): mapper = "Jùjīng 3D-BLOCK";
+		(424): mapper = "Lexibook Retro TV Game Console";
+		(426): mapper = "V.R. Technology OneBus [Serial ROM in GPIO]";
 		(594): mapper = "Rinco FSG2";
 		(595): mapper = "NES-4MROM-512";
 	}
@@ -433,7 +435,9 @@ struct OfficialHeader {
 };
 
 u16 PRGROM_MINIMUM_SIZE = 16384;
-u24 calculatedPRGROMSize = PRGROM_MINIMUM_SIZE * ((0x0100 * ($[0x09] & FULL_HIGHER_NYBBLE)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS) + header.prgROMSizeBy16KiBs);
+u8 LOWER_TWO_DIGITS = 0b11;
+u32 calculatedPRGROMSize = (std::mem::size()-16-(4096*($[0x0E]&LOWER_TWO_DIGITS))) * ($[0x09]&FILLED_HIGHER_NYBBLE==0x0F)
++ (PRGROM_MINIMUM_SIZE * ((0x0100 * ($[0x09] & FILLED_HIGHER_NYBBLE)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS)) + header.prgROMSizeBy16KiBs) * ($[0x09]&FILLED_HIGHER_NYBBLE!=0x0F);
 
 fn hasOfficialHeader() {
 	u8 sum;
@@ -460,7 +464,6 @@ u16 CHRROM_MINIMUM_SIZE = 8192;
 u24 calculatedCHRROMSize = CHRROM_MINIMUM_SIZE * ((0x0100 * ($[0x09] >> 4)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS) + header.chrROMSizeBy8KiBs);
 u8 chrROM[calculatedCHRROMSize] @ addressof(prgROM) + calculatedPRGROMSize;
 
-u8 LOWER_TWO_DIGITS = 0b11;
 struct MiscellaneousROMs {
 	if ($[0x07] & LOWER_TWO_DIGITS == ConsoleType::PlayChoice10) {
 		u8 instructionsROM[8192] [[hex::spec_name("INST-ROM")]];
@@ -475,4 +478,4 @@ struct MiscellaneousROMs {
 	}
 };
 
-MiscellaneousROMs miscellaneousROMs[$[0x0E] & LOWER_TWO_DIGITS > 0] @ addressof(prgROM) + calculatedPRGROMSize;
+MiscellaneousROMs miscellaneousROMs[$[0x0E] & LOWER_TWO_DIGITS > 0] @ addressof(prgROM) + calculatedPRGROMSize + calculatedCHRROMSize;
