@@ -252,7 +252,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(48): mapper = "Taito TC0690";
 		(49): mapper = "Super HIK 4-in-1";
 		(50): mapper = "N-32 [Super Mario Bros. 2 (J)]";
-		(51): mapper = "11-in-1 Ball Games";
+		(51): mapper = "[See submapper]";
 		(52): mapper = "Realtec 8213";
 		(53): mapper = "Supervision 16-in-1";
 			(54): mapper = "Novel Diamond 9999999-in-1 [DEPRECATED]";
