@@ -437,7 +437,7 @@ struct OfficialHeader {
 u16 PRGROM_MINIMUM_SIZE = 16384;
 u8 LOWER_TWO_DIGITS = 0b11;
 u32 calculatedPRGROMSize = (std::mem::size()-16-(4096*($[0x0E]&LOWER_TWO_DIGITS))) * ($[0x09]&FILLED_HIGHER_NYBBLE==0x0F)
-+ (PRGROM_MINIMUM_SIZE * ((0x0100 * ($[0x09] & FILLED_HIGHER_NYBBLE)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS)) + header.prgROMSizeBy16KiBs) * ($[0x09]&FILLED_HIGHER_NYBBLE!=0x0F);
++ (PRGROM_MINIMUM_SIZE * ((0x0100 * ($[0x09] & FILLED_HIGHER_NYBBLE)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS) + header.prgROMSizeBy16KiBs)) * ($[0x09]&FILLED_HIGHER_NYBBLE!=0x0F);
 
 fn hasOfficialHeader() {
 	u8 sum;
