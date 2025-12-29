@@ -1,6 +1,8 @@
-#pragma pattern_name Agilent/Rigol Waveform
+#pragma author kenkit
+#pragma description Agilent/Rigol Waveform
 #pragma file_extension bin
 #pragma magic [ 41 47, 52 47 ] @ 0x00 // Matches "AG" or "RG" at offset 0
+
 
 #include <std/mem.pat>
 
