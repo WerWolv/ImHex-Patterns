@@ -17,16 +17,31 @@ struct AliasEntry {
 struct ResourceView {
     u32 i = std::core::array_index();
 
-    u16 id = parent.entries[i].id;
-    u32 start = parent.entries[i].offset;
-    u32 end = parent.entries[i + 1].offset;
+    u16 id     = parent.entries[i].id;
+    u32 start  = parent.entries[i].offset;
+    u32 end    = parent.entries[i + 1].offset;
     u32 length = (end >= start) ? (end - start) : 0;
 
     u8 data[length] @ start;
     // Brotli compression header
-    if (start > 2 && data[0] == 0x1e && data[1] == 0x9b) {
+    if (length > 2 && data[0] == 0x1e && data[1] == 0x9b) {
         // TODO: If brotli decompression is added to ImHex, add it here.
     }
+};
+
+struct AliasResourceView {
+    u32 i = std::core::array_index();
+    
+    u16 id = parent.aliases[i].id;
+    u16 idx = parent.aliases[i].index;
+
+    bool valid = (idx < parent.resource_count);
+    u32 start  = valid ? parent.entries[idx].offset : 0;
+    u32 end    = valid ? parent.entries[idx + 1].offset : 0;
+    u32 length = (valid && end >= start) ? (end - start) : 0;
+
+    u8 data[length] @ start;
+
 };
 
 struct Pak {
@@ -46,6 +61,7 @@ struct Pak {
         IndexEntry entries[resource_count + 1];
         AliasEntry aliases[alias_count];
         ResourceView resources[resource_count];
+        AliasResourceView alias_resources[alias_count];
     } else {
         std::error("Unsupported pak version");
     }
