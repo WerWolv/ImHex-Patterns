@@ -23,8 +23,11 @@ struct ResourceView {
     u32 length = (end >= start) ? (end - start) : 0;
 
     u8 data[length] @ start;
-    // Brotli compression header
-    if (length > 2 && data[0] == 0x1e && data[1] == 0x9b) {
+    
+    bool is_brotli = (length > 8 && data[0] == 0x1e && data[1] == 0x9b);
+    if (is_brotli) {
+        u8 magic[2] @ start;
+        u48 decompressed_size @ start + 2;
         // TODO: If brotli decompression is added to ImHex, add it here.
     }
 };
