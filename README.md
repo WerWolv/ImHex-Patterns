@@ -120,6 +120,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | LOC | | [`patterns/loc.hexpat`](patterns/loc.hexpat) | Minecraft Legacy Console Edition Language file |
 | Lua 4.0 | | [`patterns/lua40.hexpat`](patterns/lua40.hexpat) | Lua 4.0 bytecode |
 | LUC | | [`patterns/popcap_luc.hexpat`](patterns/popcap_luc.hexpat) | PopCap's proprietary Lua bytecode |
+| Lua 5.0 | | [`patterns/lua50.hexpat`](patterns/lua50.hexpat) | Lua 5.0 bytecode |
 | Lua 5.1 | | [`patterns/lua51.hexpat`](patterns/lua51.hexpat) | Lua 5.1 bytecode |
 | Lua 5.2 | | [`patterns/lua52.hexpat`](patterns/lua52.hexpat) | Lua 5.2 bytecode |
 | Lua 5.3 | | [`patterns/lua53.hexpat`](patterns/lua53.hexpat) | Lua 5.3 bytecode |
