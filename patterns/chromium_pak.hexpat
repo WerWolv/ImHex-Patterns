@@ -24,6 +24,7 @@ struct ResourceView {
 
     u8 data[length] @ start;
     
+    // pak_util.py implies that this may also be gzip with a header of 0x1f 0x8b
     bool is_brotli = (length > 8 && data[0] == 0x1e && data[1] == 0x9b);
     if (is_brotli) {
         u8 magic[2] @ start;
@@ -70,4 +71,5 @@ struct Pak {
     }
 };
 
+// Some pack files are stored gzipped and need to be gunzipped first
 Pak pak @ 0x00;
