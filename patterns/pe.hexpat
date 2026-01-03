@@ -47,10 +47,10 @@ struct DOSHeader {
     u16 initialCSValue [[hex::spec_name("e_cs")]];
     u16 relocationsTablePointer [[hex::spec_name("e_lfarlc")]];
     u16 overlayNumber [[hex::spec_name("e_ovno")]];
-    u16 reservedWords[4] [[hex::spec_name("e_res")]];
+    padding[8];
     u16 oemIdentifier [[hex::spec_name("e_oemid")]];
     u16 oemInformation [[hex::spec_name("e_oeminfo")]];
-    u16 otherReservedWords[10] [[hex::spec_name("e_res2")]];
+    padding[20];
     u32 coffHeaderPointer [[hex::spec_name("e_lfanew")]];
 };
 
@@ -1115,7 +1115,7 @@ struct Section {
 } [[name(sectionsTable[currentSectionIndex-1].name)]];
 
 Section sections[coffHeader.numberOfSections] @ coffHeader.optionalHeader.sizeOfHeaders * !sectionsTable[0].sizeOfRawData
-                                                + sectionsTable[0].ptrRawData * sectionsTable[0].sizeOfRawData>0;
+                                                + sectionsTable[0].ptrRawData * (sectionsTable[0].sizeOfRawData>0);
 
 // Symbol & String Tables
 enum SectionNumberType : s16 {
