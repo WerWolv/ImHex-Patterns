@@ -48,16 +48,22 @@ struct AliasResourceView {
 
 };
 
+enum PakEncoding : u8 {
+    binary = 0,
+    utf8 = 1,
+    utf16 = 2
+};
+
 struct Pak {
     u32 version;
     if (version == 4) {
         u32 resource_count;
-        u8 encoding;
+        PakEncoding encoding;
 
         IndexEntry entries[resource_count + 1];
         ResourceView resources[resource_count];
     } else if (version == 5) {
-        u8 encoding;
+        PakEncoding encoding;
         padding[3];
         u16 resource_count;
         u16 alias_count;
