@@ -95,8 +95,9 @@ int main(int argc, char **argv) {
         // Execute pattern
         fmt::println("Executing pattern {} using test file {}", patternName, wolv::util::toUTF8String(testFilePath.filename()));
 
-        if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
-            fmt::println("Error when executing pattern!");
+        auto exitCode = runtime.executeString(patternFile.readString(), "<Source Code>");
+        if (exitCode != 0) {
+            fmt::println("Non-zero exit code returned from execution. (Exit Code: {})!", exitCode);
 
             if (const auto &compileErrors = runtime.getCompileErrors(); !compileErrors.empty()) {
                 for (const auto &error : compileErrors) {
@@ -106,7 +107,7 @@ int main(int argc, char **argv) {
                 fmt::println("{}:{}  {}", evalError->line, evalError->column, evalError->message);
             }
 
-            return EXIT_FAILURE;
+            return exitCode;
         }
 
         for (const auto &pattern : runtime.getPatterns()) {

@@ -57,8 +57,11 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | CDA | | [`patterns/cda.hexpat`](patterns/cda.hexpat) | Compact Disc Audio track |
 | CHD | | [`patterns/chd.hexpat`](patterns/chd.hexpat) | MAME Compressed Hunks of Data file |
 | CHM | `application/vnd.ms-htmlhelp` | [`patterns/chm.hexpat`](patterns/chm.hexpat) | Windows HtmlHelp Data (ITSF / CHM) |
+| Chromium Pak | | [`patterns/chromium_pak.hexpat`](patterns/chromium_pak.hexpat) | Chromium pak file |
 | COFF | `application/x-coff` | [`patterns/coff.hexpat`](patterns/coff.hexpat) | Common Object File Format (COFF) executable |
 | CPIO | `application/x-cpio` | [`patterns/cpio.hexpat`](patterns/cpio.hexpat) | Old Binary CPIO Format |
+| CPIO | | [`patterns/cpio_portable_ascii.hexpat`](patterns/cpio_portable_ascii.hexpat) | Portable ASCII CPIO Format |
+| CPIO | | [`patterns/cpio_new_ascii.hexpat`](patterns/cpio_new_ascii.hexpat) | "New" ASCII CPIO Format |
 | CrashLvl | | [`patterns/Crashlvl.hexpat`](patterns/Crashlvl.hexpat) | Crash Bandicoot - Back in Time (fan game) User created level format |
 | CREDHIST | | [`patterns/credhist.hexpat`](patterns/credhist.hexpat) | CREDHIST Format |
 | DDS | `image/vnd-ms.dds` | [`patterns/dds.hexpat`](patterns/dds.hexpat) | DirectDraw Surface |
