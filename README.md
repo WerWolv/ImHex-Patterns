@@ -263,6 +263,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 
 | Name | Path | Description |
 |------|------|-------------|
+| Arma 3 | [`magic/arma3_magic`](magic/arma3_magic) | Identifies Arma 3 binary formats |
 | Nintendo Switch | [`magic/nintendo_switch_magic`](magic/nintendo_switch_magic) | Identifies common file types used on the Nintendo Switch |
 | Portable Executable | [`magic/portable_executable_magic`](magic/portable_executable_magic) | Identifies PE files used on Windows
 

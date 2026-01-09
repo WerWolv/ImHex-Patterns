@@ -1,0 +1,15 @@
+# A libmagic database containing definitions for files used by the Arma 3 game by Bohemia Interactive
+
+# Arma 3 PAA image
+0x02	string		GGAT	Arma 3 PAA image file
+!:mime image/x.a3-paa
+!:ext paa
+>0		leshort		0xff01	DXT1 compression
+>0		leshort		0xff02	DXT2 compression
+>0		leshort		0xff03	DXT3 compression
+>0		leshort		0xff04	DXT4 compression
+>0		leshort		0xff05	DXT5 compression
+>0		leshort		0x4444	RGBA4 format
+>0		leshort		0x1555	RGBA5 format
+>0		leshort		0x8888	RGBA8 format
+>0		leshort		0x8080	Grayscale format
