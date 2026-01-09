@@ -66,7 +66,7 @@ struct Tagg {
 
 struct Palette {
     u16 length;
-    BGR8 BGR_Palette[length];
+    BGR8 colors[length];
 };
 
 struct Mipmap {
