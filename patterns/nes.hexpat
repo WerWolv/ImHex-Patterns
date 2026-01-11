@@ -124,7 +124,7 @@ enum ExtendedConsoleType : ConsoleType {
 	VT03,
 	VT09,
 	VT32,
-	VT3xx,
+	VT36x,
 	UM6578,
 	FamicomNetworkSystem
 };
@@ -143,9 +143,33 @@ bitfield MiscellaneousROMsHeaderByte {
 	numberOfMiscellaneousROMs : 2;
 	padding : 6;
 };
-	
+
+enum DefaultExpansionDeviceType : u8 {
+	Unspecified,
+	StandardControllers,
+	FourScoreorSatellite,
+	FamicomFourPlayersAdapter,
+	VsSystem1P4016h,
+	VsSystem1P4017h,
+	MAMEPinballJapan,
+	VsZapper,
+	Zapper,
+	TwoZappers,
+	BandaiHyperShotLightgun,
+	PowerPadSideA,
+	PowerPadSideB,
+	FamilyTrainerSideA,
+	FamilyTrainerSideB,
+	Multicart = 0x2A
+};
+
+fn formatDefaultExpansionDevice(u8 value) {
+	DefaultExpansionDeviceType enumValue = value;
+	return enumValue;
+};
+
 bitfield DefaultExpansionDevice {
-	defaultExpansionDevice : 6;
+	defaultExpansionDevice : 6 [[format("formatDefaultExpansionDevice")]];
 };
 
 struct NES2Attributes {
@@ -171,16 +195,17 @@ fn renderEOF(str string) {
 	return "\"NES<EOF>\"";
 };
 
+u8 FILLED_NES2_FLAGS = 0b1100;
 struct Header {
 	char identifier[4] [[format("renderEOF")]];
 	u8 prgROMSizeBy16KiBs;
 	u8 chrROMSizeBy8KiBs;
 	Flags flags;
-	if ($[0x07] & 12 != 4) {
+	if ($[0x07] & FILLED_NES2_FLAGS != 0b100) {
 		iNESFlags7 inesFlags7;
 		if (inesFlags7.nes2Format)
 			NES2Attributes nes2Attributes;
-		else if ($[0x07] & 12 == 0 && !std::mem::read_unsigned(0x0C, 4)) {
+		else if ($[0x07] & FILLED_NES2_FLAGS == 0 && !std::mem::read_unsigned(0x0C, 4)) {
 			u8 prgRAMSizeBy8KiBs;
 			iNESFlags9 inesFlags9;
 			iNESFlags10 inesFlags10;
@@ -191,10 +216,9 @@ struct Header {
 Header header @ 0x00;
 
 u8 FILLED_HIGHER_NYBBLE = 0b1111;
-u8 FILLED_NES2_FLAGS = 0b1100;
 u8 SET_NES2_FLAGS = 0b1000;
 u16 mapperValue = (0x0100 * ($[0x08] & FILLED_HIGHER_NYBBLE)) * ($[7] & FILLED_NES2_FLAGS == SET_NES2_FLAGS)
-+ (0x10 * ($[0x07] >> 4)) * ($[7] & FILLED_NES2_FLAGS != 0b100)
++ (0x10 * ($[0x07] >> 4)) * ($[0x07] & FILLED_NES2_FLAGS != 0b100)
 + header.flags.lowerMapperNybble;
 fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 	str mapper;
@@ -202,7 +226,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 	str designation;
 	match (mapperValue) {
 		(0): mapper = "No mapper";
-		(1): mapper = "MMC1B";
+		(1): mapper = "Nintendo MMC1B";
 		(2): mapper = "UxROM";
 		(3): mapper = "CNROM-32";
 		(4): mapper = "MMC3";
@@ -229,7 +253,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(25): mapper = "Konami VRC4d or VRC2c + VRC4b";
 		(26): mapper = "Konami VRC6b";
 		(27): mapper = "World Hero";
-		(28): mapper = "Action 53, homebrew";
+		(28): mapper = "InfiniteNESLives' Action 53";
 		(29): mapper = "RET-CUFROM";
 		(30): mapper = "UNROM 512";
 		(31): mapper = "NSF";
@@ -246,8 +270,8 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(42): mapper = "FDS -> NES Hacks";
 		(43): mapper = "TONY-I/YS-612";
 		(44): mapper = "Super Big 7-in-1";
-		(45): mapper = "GA23C";
-		(46): mapper = "Lite Star Rumble Station";
+		(45): mapper = "GA23C"; //TC3294 according to NintendulatorNRS
+		(46): mapper = "Lite Star's Rumble Station";
 		(47): mapper = "Nintendo Super Spike V'Ball + NWC";
 		(48): mapper = "Taito TC0690";
 		(49): mapper = "Super HIK 4-in-1";
@@ -294,18 +318,40 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(90): mapper = "J.Y. Company ASIC [ROM nametables & extended mirroring]";
 		(91): mapper = "J.Y. Company clone boards";
 		(92): mapper = "Jaleco JF-17 [16 KiB PRG ROM]";
+		(124): mapper = "Super Game Mega Type III";
+		(126): mapper = "TEC9719";
+		(132): mapper = "TXC 05-00002-010";
+		(173): mapper = "C&E 05-00002-010";
 		(187): mapper = "Kǎ Shèng A98402";
 		(256): mapper = "V.R. Technology OneBus";
+		(269): mapper = "Nice Code Games Xplosion 121-in-1";
 		(355): mapper = "Jùjīng 3D-BLOCK";
+		(419): mapper = "Taikee TK-8007 MCU";
+		(422): mapper = "ING-022";
+		(423): mapper = "Lexibook Compact Cyber Arcade";
 		(424): mapper = "Lexibook Retro TV Game Console";
+		(425): mapper = "Cube Tech Handheld";
 		(426): mapper = "V.R. Technology OneBus [Serial ROM in GPIO]";
+		(534): mapper = "ING003C";
 		(594): mapper = "Rinco FSG2";
 		(595): mapper = "NES-4MROM-512";
 	}
 	match (mapperValue) {
 		(0): designation = "NROM";
 		(1): designation = "SxROM";
-		(4): designation = "TxROM";
+		(4): {
+			if (header.prgROMSizeBy16KiBs >= 8 && header.chrROMSizeBy8KiBs >= 16) {
+				if (($[0x08] != 1 && ($[0x07] & FILLED_NES2_FLAGS == 0 && !std::mem::read_unsigned(0x0C, 4))) || 
+				($[0x0A]&FILLED_HIGHER_NYBBLE!=7 && ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS)))
+					designation = "TLROM [128~512 KiBs PRG ROM]";
+				else {
+					if (header.flags.batterybackedPRGRAM) designation = "TKROM [128~512 KiBs PRG ROM, 8 KiB PRG RAM]";
+					else designation = "TSROM [128~512 KiBs PRG ROM, 8 KiB PRG RAM, no battery]";
+				}
+			}
+			else if (header.prgROMSizeBy16KiBs == 4) designation = "TBROM [64 KiBs PRG ROM]";
+			else designation = "TxROM";
+		}
 	}
 	if (mapperValue == 3) {
 		match (submapperValue) {
@@ -313,7 +359,6 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 			(1): submapper = "No bus conflicts";
 			(2): submapper = "AND-type bus conflicts";
 		}
-	}
 	else if (mapperValue == 12) {
 		match (submapperValue) {
 			(0): submapper = "Supertone SL-5020B";
@@ -354,6 +399,22 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 			(0): submapper = "NTDEC TH2xxx-x";
 			(1): submapper = "82-in-1";
 		}
+	}
+	else if (mapperValue == 256 || mapperValue == 419) {
+		match (submapperValue) {
+			(0): submapper = "Normal";
+			(1): submapper = "Waixing VT03";
+			(2): submapper = "Nice Code VT02";
+			(3): submapper = "Hummer Technology";
+			(4): submapper = "Nice Code VT03";
+			(5): submapper = "Waixing VT02";
+			(11): submapper = "Vibes";
+			(12): submapper = "Cheertone";
+			(13): submapper = "Cube Tech";
+            (14): submapper = "Unknown developer (Publisher: Karaoto)";
+			(15): submapper = "JungleTac Fuzhou";
+		}
+		submapper += " wiring";
 	}
 	std::print("Mapper: " + mapper + " (" + std::string::to_string(mapperValue) + ")");
 	if (submapper) std::print("Submapper: " + submapper + " (" + std::string::to_string(submapperValue) + ")");
@@ -422,7 +483,7 @@ enum EncodingType : u8 {
 
 fn titleLength(u8 value) { return value+1; };
 
-struct OfficialHeader {
+struct Footer {
 	char title[16] [[hex::spec_name("Title Registration Area")]];
 	u16 programChecksum;
 	u16 characterChecksum;
@@ -431,7 +492,7 @@ struct OfficialHeader {
 	EncodingType encodingType [[hex::spec_name("Registration Characters Type Distinction")]];
 	u8 titleLength [[hex::spec_name("Registration Characters Count"), transform("titleLength")]];
 	u8 licenseeID [[hex::spec_name("Maker Code")]];
-	u8 complementaryChecksum [[hex::spec_name("Checksum for characterChecksum~makerID")]];
+	u8 complementaryChecksum [[hex::spec_name("Checksum for Character Checksum~Maker Code")]];
 };
 
 u16 PRGROM_MINIMUM_SIZE = 16384;
@@ -439,7 +500,7 @@ u8 LOWER_TWO_DIGITS = 0b11;
 u32 calculatedPRGROMSize = (std::mem::size()-16-(4096*($[0x0E]&LOWER_TWO_DIGITS))) * ($[0x09]&FILLED_HIGHER_NYBBLE==0x0F)
 + (PRGROM_MINIMUM_SIZE * ((0x0100 * ($[0x09] & FILLED_HIGHER_NYBBLE)) * ($[0x07] & FILLED_NES2_FLAGS == SET_NES2_FLAGS) + header.prgROMSizeBy16KiBs)) * ($[0x09]&FILLED_HIGHER_NYBBLE!=0x0F);
 
-fn hasOfficialHeader() {
+fn hasFooter() {
 	u8 sum;
 	for (u8 i = 0, i < 8, i += 1) {
 		sum += $[(calculatedPRGROMSize - 14) + i];
@@ -447,13 +508,13 @@ fn hasOfficialHeader() {
 	return !sum;
 };
 
-u8 OFFICIAL_HEADER_SIZE = 26;
+u8 FOOTER_SIZE = 26;
 u8 VECTORS_SIZE = 6;
 
 struct PRGROM {
-	u8 data[calculatedPRGROMSize - OFFICIAL_HEADER_SIZE * hasOfficialHeader() - VECTORS_SIZE];
-	if (hasOfficialHeader())
-		OfficialHeader officialHeader;
+	u8 data[calculatedPRGROMSize - FOOTER_SIZE * hasFooter() - VECTORS_SIZE];
+	if (hasFooter())
+		Footer footer;
 	u16 nmi;
 	u16 resetVector [[comment("Entry Point")]];
 	u16 externalIRQ;
@@ -470,8 +531,8 @@ struct MiscellaneousROMs {
 		u8 decryptionDataPROM[16];
 		u8 decryptionCounterOutPROM[16];
 	}
-	else if ($[0x0D] == ExtendedConsoleType::VT3xx) {
-		u8 embeddedROM[4096];
+	else if ($[0x0D] == ExtendedConsoleType::VT369) {
+		u8 embeddedROM[std::mem::size()-calculatedCHRROMSize-calculatedPRGROMSize-sizeof(trainer)-0x10];
 	}
 	else if (mapperValue == 355) {
 		u8 antiCloningROM[1024];
