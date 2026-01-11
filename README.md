@@ -36,6 +36,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ARC | | [`patterns/arc.hexpat`](patterns/arc.hexpat) | Minecraft Legacy Console Edition ARC files |
 | ARIA2 | | [`patterns/aria2.hexpat`](patterns/aria2.hexpat) | ARIA2 Download Manager Control files |
 | ARM VTOR | | [`patterns/arm_cm_vtor.hexpat`](patterns/arm_cm_vtor.hexpat) | ARM Cortex M Vector Table Layout |
+| Arma 3 PAA | | [`patterns/a3_paa.hexpat`](patterns/a3_paa.hexpat) | Arma 3 PAA texture file |
 | Assassin's Creed: Unity | | [`patterns/AC Unity`](patterns/Assassin's Creed: Unity) | Assassin's Creed: Unity archive files -- .forge & .data (compressed and decompressed) -- |
 | Bastion | | [`patterns/bastion/*`](https://gitlab.com/EvelynTSMG/imhex-bastion-pats) | Various [Bastion](https://en.wikipedia.org/wiki/Bastion_(video_game)) files |
 | BeyondCompare BCSS | | [`patterns/bcss.hexpat`](patterns/bcss.hexpat) | BeyondCompare Snapshot (BCSS) file |
@@ -266,6 +267,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 
 | Name | Path | Description |
 |------|------|-------------|
+| Arma 3 | [`magic/arma3_magic`](magic/arma3_magic) | Identifies Arma 3 binary formats |
 | Nintendo Switch | [`magic/nintendo_switch_magic`](magic/nintendo_switch_magic) | Identifies common file types used on the Nintendo Switch |
 | Portable Executable | [`magic/portable_executable_magic`](magic/portable_executable_magic) | Identifies PE files used on Windows
 
