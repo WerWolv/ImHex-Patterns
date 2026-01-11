@@ -1,5 +1,6 @@
 #pragma author gmestanley
 #pragma description GameBoy ROM file GBX footer
+#pragma source hhug.me/gbx/1.0
 
 import gb;
 
