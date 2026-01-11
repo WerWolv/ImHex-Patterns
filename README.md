@@ -189,6 +189,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | smk | | [`patterns/smk.hexpat`](patterns/smk.hexpat) | Smacker video file |
 | SNES | | [`patterns/snes.hexpat`](patterns/snes.hexpat) | Super Nintendo Entertainment System ROM header |
 | sup | | [`patterns/sup.hexpat`](patterns/sup.hexpat) | PGS Subtitle |
+| SPC | | [`patterns/spc.hexpat`](patterns/spc.hexpat) | Super Nintendo Entertainment System SPC-700 dump file |
 | SPIRV | | [`patterns/spirv.hexpat`](patterns/spirv.hexpat) | SPIR-V header and instructions |
 | STDF | | [`patterns/stdfv4.hexpat`](patterns/stdfv4.hexpat) | Standard test data format for IC testers |
 | STL | `model/stl` | [`patterns/stl.hexpat`](patterns/stl.hexpat) | STL 3D Model format |
