@@ -97,6 +97,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Flipper Zero Settings | | [`patterns/flipper_settings.hexpat`](patterns/flipper_settings.hexpat) | Flipper Zero Settings Files |
 | GB | `application/x-gameboy-rom` | [`patterns/gb.hexpat`](patterns/gb.hexpat) | Game Boy ROM |
 | GBA | `application/x-gameboy-advance-rom` | [`patterns/gba.hexpat`](patterns/gba.hexpat) | Game Boy Advance ROM header |
+| GBX | | [`patterns/gbx.hexpat`](patterns/gbx.hexpat) | GameBoy ROM file GBX footer |
+| Gen | | [`patterns/gen.hexpat`](patterns/gen.hexpat) | Sega Genesis/MegaDrive ROM |
 | GGUF | | [`patterns/gguf.hexpat`](patterns/gguf.hexpat) | GGML Inference Models |
 | GIF | `image/gif` | [`patterns/gif.hexpat`](patterns/gif.hexpat) | GIF image files |
 | GLTF | `model/gltf-binary` | [`patterns/gltf.hexpat`](patterns/gltf.hexpat) | GL Transmission Format binary 3D model file |
@@ -136,6 +138,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | MSSCMP | | [`patterns/msscmp.hexpat`](patterns/msscmp.hexpat) | Miles Sound System Compressed Archive |
 | NACP | | [`patterns/nacp.hexpat`](patterns/nacp.hexpat) | Nintendo Switch NACP files |
 | NBT | | [`patterns/nbt.hexpat`](patterns/nbt.hexpat) | Minecraft NBT format |
+| N64 | | [`patterns/n64.hexpat`](patterns/n64.hexpat) | Nintendo 64 ROM header |
 | NDS | `application/x-nintendo-ds-rom` | [`patterns/nds.hexpat`](patterns/nds.hexpat) | DS Cartridge Header |
 | NE | `application/x-ms-ne-executable` | [`patterns/ne.hexpat`](patterns/ne.hexpat) | NE header and Standard NE fields |
 | nes | | [`patterns/nes.hexpat`](patterns/nes.hexpat) | Nintendo Entertainment System ROM |
