@@ -359,6 +359,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 			(1): submapper = "No bus conflicts";
 			(2): submapper = "AND-type bus conflicts";
 		}
+	}
 	else if (mapperValue == 12) {
 		match (submapperValue) {
 			(0): submapper = "Supertone SL-5020B";
