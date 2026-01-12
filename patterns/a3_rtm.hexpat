@@ -58,31 +58,31 @@ struct RTM {
     std::assert_warn(std::mem::eof(), "Data ended before EOF");
 };
 
-fn formatLascii(lascii value) {
+fn formatLascii(ref lascii value) {
     return std::format("\"{:s}\"", value);
 };
 
-fn formatProperty(Property prop) {
-    return std::format("\"{0:s}\" = \"{1:s}\" @ {2:.4f}", prop.name.data, prop.value.data, prop.phase);
+fn formatProperty(ref Property prop) {
+    return std::format("\"{0:s}\" = \"{1:s}\" @ {2:.4f}", prop.name, prop.value, prop.phase);
 };
 
-fn transformBone(Bone value) {
+fn transformBone(ref Bone value) {
     return std::string::to_string(value.name);
 };
 
-fn formatBone(Bone value) {
+fn formatBone(ref Bone value) {
     return std::format("\"{0:s}\"", value);
 };
 
-fn formatTransform(Transform transform) {
+fn formatTransform(ref Transform transform) {
     return std::format("\"{0:s}\" transform", transform.bone);
 };
 
-fn formatFrame(Frame frame) {
+fn formatFrame(ref Frame frame) {
     return std::format("frame @ {0:.4f}", frame.phase);
 };
 
-fn formatVector(Vector vec) {
+fn formatVector(ref Vector vec) {
     return std::format("[{0:.2f}, {1:.2f}, {2:.2f}]", vec.x, vec.y, vec.z);
 };
 
