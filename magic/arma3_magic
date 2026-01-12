@@ -18,3 +18,8 @@
 0		string		RTM_	Arma 3 RTM animation file (plain)
 !:mime application/x.a3-rtm
 !:ext rtm
+
+# Arma 3 binarized RTM animation
+0		string		BMTR	Arma 3 binarized RTM animation file
+!:mime application/x.a3-bmtr
+!:ext rtm

@@ -38,6 +38,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ARM VTOR | | [`patterns/arm_cm_vtor.hexpat`](patterns/arm_cm_vtor.hexpat) | ARM Cortex M Vector Table Layout |
 | Arma 3 PAA | `image/x.a3-paa` | [`patterns/a3_paa.hexpat`](patterns/a3_paa.hexpat) | Arma 3 PAA texture file |
 | Arma 3 RTM | `application/x.a3-rtm` | [`patterns/a3_rtm.hexpat`](patterns/a3_rtm.hexpat) | Arma 3 RTM animation file (plain) |
+| Arma 3 RTM (binarized) | `application/x.a3-bmtr` | [`patterns/a3_bmtr.hexpat`](patterns/a3_bmtr.hexpat) | Arma 3 RTM animation file (binarized) |
 | Assassin's Creed: Unity | | [`patterns/AC Unity`](patterns/Assassin's Creed: Unity) | Assassin's Creed: Unity archive files -- .forge & .data (compressed and decompressed) -- |
 | Bastion | | [`patterns/bastion/*`](https://gitlab.com/EvelynTSMG/imhex-bastion-pats) | Various [Bastion](https://en.wikipedia.org/wiki/Bastion_(video_game)) files |
 | BeyondCompare BCSS | | [`patterns/bcss.hexpat`](patterns/bcss.hexpat) | BeyondCompare Snapshot (BCSS) file |
