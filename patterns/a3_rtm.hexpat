@@ -5,6 +5,10 @@
 
 #pragma MIME application/x.a3-rtm
 
+fn get_data_description() {
+    return "Plain RTM animation files are used in animation authoring for Arma 3.\nThey can be created and edited in Object Builder.\nBone transformations are stored as absolute transformation matrices.\nPlain RTMs must be converted to their \"binarized\" versions by an appropriate PBO packing tool for use in game.";
+};
+
 import std.mem;
 import std.sys;
 import std.string;
