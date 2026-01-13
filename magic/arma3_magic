@@ -23,3 +23,8 @@
 0		string		BMTR	Arma 3 binarized RTM animation file
 !:mime application/x.a3-bmtr
 !:ext rtm
+
+# Arma 3 texture index
+0		string		0DHT	Arma 3 texture index file
+!:mime application/x.a3-texheaders
+!:ext bin
