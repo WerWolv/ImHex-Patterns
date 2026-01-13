@@ -36,10 +36,10 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ARC | | [`patterns/arc.hexpat`](patterns/arc.hexpat) | Minecraft Legacy Console Edition ARC files |
 | ARIA2 | | [`patterns/aria2.hexpat`](patterns/aria2.hexpat) | ARIA2 Download Manager Control files |
 | ARM VTOR | | [`patterns/arm_cm_vtor.hexpat`](patterns/arm_cm_vtor.hexpat) | ARM Cortex M Vector Table Layout |
-| Arma 3 PAA | `image/x.a3-paa` | [`patterns/a3_paa.hexpat`](patterns/a3_paa.hexpat) | Arma 3 PAA texture file |
-| Arma 3 RTM | `application/x.a3-rtm` | [`patterns/a3_rtm.hexpat`](patterns/a3_rtm.hexpat) | Arma 3 RTM animation file (plain) |
-| Arma 3 RTM (binarized) | `application/x.a3-bmtr` | [`patterns/a3_bmtr.hexpat`](patterns/a3_bmtr.hexpat) | Arma 3 RTM animation file (binarized) |
-| Arma 3 texHeaders.bin | `application/x.a3-texheaders` | [`patterns/a3_texheaders.hexpat`](patterns/a3_texheaders.hexpat) | Arma 3 texture index file |
+| Arma 3 PAA | `image/x.a3-paa` | [`patterns/a3/a3_paa.hexpat`](patterns/a3/a3_paa.hexpat) | Arma 3 PAA texture file |
+| Arma 3 RTM | `application/x.a3-rtm` | [`patterns/a3/a3_rtm.hexpat`](patterns/a3/a3_rtm.hexpat) | Arma 3 RTM animation file (plain) |
+| Arma 3 RTM (binarized) | `application/x.a3-bmtr` | [`patterns/a3/a3_bmtr.hexpat`](patterns/a3/a3_bmtr.hexpat) | Arma 3 RTM animation file (binarized) |
+| Arma 3 texHeaders.bin | `application/x.a3-texheaders` | [`patterns/a3/a3_texheaders.hexpat`](patterns/a3/a3_texheaders.hexpat) | Arma 3 texture index file |
 | Assassin's Creed: Unity | | [`patterns/AC Unity`](patterns/Assassin's Creed: Unity) | Assassin's Creed: Unity archive files -- .forge & .data (compressed and decompressed) -- |
 | Bastion | | [`patterns/bastion/*`](https://gitlab.com/EvelynTSMG/imhex-bastion-pats) | Various [Bastion](https://en.wikipedia.org/wiki/Bastion_(video_game)) files |
 | BeyondCompare BCSS | | [`patterns/bcss.hexpat`](patterns/bcss.hexpat) | BeyondCompare Snapshot (BCSS) file |
