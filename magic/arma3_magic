@@ -13,3 +13,13 @@
 >0		leshort		0x1555	RGBA5 format
 >0		leshort		0x8888	RGBA8 format
 >0		leshort		0x8080	Grayscale format
+
+# Arma 3 RTM animation
+0		string		RTM_	Arma 3 RTM animation file (plain)
+!:mime application/x.a3-rtm
+!:ext rtm
+
+# Arma 3 binarized RTM animation
+0		string		BMTR	Arma 3 binarized RTM animation file
+!:mime application/x.a3-bmtr
+!:ext rtm
