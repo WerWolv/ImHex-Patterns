@@ -20,11 +20,22 @@
 !:ext rtm
 
 # Arma 3 binarized RTM animation
-0		string		BMTR	Arma 3 binarized RTM animation file
+0		string		BMTR	Arma 3 RTM animation file (binarized)
 !:mime application/x.a3-bmtr
 !:ext rtm
 
 # Arma 3 texture index
 0		string		0DHT	Arma 3 texture index file
 !:mime application/x.a3-texheaders
+!:ext bin
+
+# Arma 3 MLOD P3D model
+0		string		MLOD	Arma 3 P3D model file (MLOD)
+!:mime model/x.a3-p3d-mlod
+!:ext p3d
+>0x0c	string		P3DM	P3DM LOD type
+
+# Arma 3 binarized config
+0x01    string      raP     Arma 3 binary configuration file
+!:mime application/x.a3-rap
 !:ext bin
