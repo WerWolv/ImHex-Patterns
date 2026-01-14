@@ -36,6 +36,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ARC | | [`patterns/arc.hexpat`](patterns/arc.hexpat) | Minecraft Legacy Console Edition ARC files |
 | ARIA2 | | [`patterns/aria2.hexpat`](patterns/aria2.hexpat) | ARIA2 Download Manager Control files |
 | ARM VTOR | | [`patterns/arm_cm_vtor.hexpat`](patterns/arm_cm_vtor.hexpat) | ARM Cortex M Vector Table Layout |
+| Arma 3 P3D (MLOD) | `model/x.a3-p3d-mlod` | [`patterns/a3/a3_p3d_mlod.hexpat`](patterns/a3/a3_p3d_mlod.hexpat) | Arma 3 P3D model file (MLOD) |
 | Arma 3 PAA | `image/x.a3-paa` | [`patterns/a3/a3_paa.hexpat`](patterns/a3/a3_paa.hexpat) | Arma 3 PAA texture file |
 | Arma 3 RTM | `application/x.a3-rtm` | [`patterns/a3/a3_rtm.hexpat`](patterns/a3/a3_rtm.hexpat) | Arma 3 RTM animation file (plain) |
 | Arma 3 RTM (binarized) | `application/x.a3-bmtr` | [`patterns/a3/a3_bmtr.hexpat`](patterns/a3/a3_bmtr.hexpat) | Arma 3 RTM animation file (binarized) |
