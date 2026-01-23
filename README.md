@@ -23,6 +23,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 
 | Name | MIME | Path | Description |
 |------|------|------|-------------|
+| $I | | [`patterns/ifile.hexpat`](patterns/ifile.hexpat) | Windows Recycling Bin $I file |
 | 3DS | | [`patterns/3ds.hexpat`](patterns/3ds.hexpat) | Autodesk 3DS Max Model file |
 | 7Z | | [`patterns/7z.hexpat`](patterns/7z.hexpat) | 7z File Format |
 | ADTFDAT | | [`patterns/adtfdat.hexpat`](patterns/adtfdat.hexpat) | [ADTFDAT files](https://digitalwerk.gitlab.io/solutions/adtf_content/adtf_base/adtf_file_library) |
