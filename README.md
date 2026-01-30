@@ -81,6 +81,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DS_Store | | [`patterns/dsstore.hexpat`](patterns/dsstore.hexpat) | .DS_Store file format |
 | DTA | | [`patterns/max_v104.hexpat`](patterns/max_v104.hexpat) | Mechanized Assault and Exploration v1.04 (strategy game) save file format |
 | DTED | | [`patterns/dted.hexpat`](patterns/dted.hexpat) | Digital Terrain Elevation Data (DTED) |
+| EBU STL | `application/x-ebu-stl` | [`patterns/ebu_stl.hexpat`](patterns/ebu_stl.hexpat) | EBU STL broadcast subtitle format |
 | ELF  | `application/x-executable` | [`patterns/elf.hexpat`](patterns/elf.hexpat) | ELF header in elf binaries |
 | ESP32 Image | | [`patterns/esp32_image.hexpat`](patterns/esp32_image.hexpat) | Firmware image format for the ESP32 chip family |
 | EVTX | `application/x-ms-evtx` | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
