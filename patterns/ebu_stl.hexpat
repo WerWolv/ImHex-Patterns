@@ -1,5 +1,5 @@
 #pragma description EBU STL Subtitle File Format (EBU Tech 3264)
-#pragma endian little
+#pragma endian big
 #pragma MIME application/x-ebu-stl
 
 import std.io;
