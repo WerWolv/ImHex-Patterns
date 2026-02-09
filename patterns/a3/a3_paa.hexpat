@@ -5,6 +5,10 @@
 
 #pragma MIME image/x.a3-paa
 
+fn get_data_description() {
+    return "PAA texture files are the proprietary image format used for textures in Arma 3.\nSimilar to most other formats used in game engines, the PAA stores not only a single resolution, but a series of precomputed mipmaps.\nPAA supports multiple pixel encoding formats, such as DXT1, DXT5, RGBA5551, grayscale, and others. Mipmap data in DXT encoded files is optionally compressed with the LZO1X algorithm. All other types are unconditionally LZSS compressed.";
+};
+
 import type.color;
 import std.mem;
 import std.sys;
@@ -50,6 +54,12 @@ enum Swizzle: u8 {
     BLANK_BLACK = 9
 };
 
+enum Compression: u8 {
+    NONE = 0,
+    LZO1X = 1,
+    LZSS = 2
+};
+
 struct Tagg {    
     char signature[8];
     u32 length;
@@ -73,14 +83,25 @@ struct Mipmap {
     u16 width_and_lzo [[format("format_width_lzo")]];
     u16 height;
     
-    u16 width = width_and_lzo & 0x7FFF;
+    u16 width = width_and_lzo;
+    Compression compression = Compression::NONE;
+    if ((u32(parent.format) & 0xFF00) == 0xFF00) {
+        width = width_and_lzo & 0x7FFF;
+        compression = width_and_lzo & 0x8000 ? Compression::LZO1X : Compression::NONE;
+    } else {
+        compression = Compression::LZSS;
+    }
     
     if (width == 0 && height == 0) {
         break;
     }
     
     u24 size;
-    u8 data[size];
+    match (compression) {
+        (Compression::NONE): u8 encoded_data[size];
+        (Compression::LZO1X): u8 lzo_compressed_data[size];
+        (Compression::LZSS): u8 lzss_compressed_data[size];
+    }
 } [[format("format_resolution")]];
 
 struct PAA {
@@ -100,7 +121,7 @@ fn format_resolution(ref auto mip) {
 fn format_width_lzo(u16 value) {
     u16 width = value & 0x7FFF;
     if (value & 0x8000) {
-        return std::format("{0:d} (+LZO)", width);
+        return std::format("{0:d} (+LZO flag)", width);
     } else {
         return std::format("{0:d}", width);
     }
