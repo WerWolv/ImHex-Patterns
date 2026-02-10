@@ -98,12 +98,13 @@ int main(int argc, char **argv) {
     if (missingComments)
         return EXIT_FAILURE;
 
-    if (!runtime.executeString(patternFile.readString(), "<Source Code>")) {
+    auto exitCode = runtime.executeString(patternFile.readString(), "<Source Code>");
+    if (exitCode != 0) {
         if (const auto &evalError = runtime.getEvalError(); evalError.has_value()) {
             fmt::println("{}:{}  {}", evalError->line, evalError->column, evalError->message);
         }
 
-        return EXIT_FAILURE;
+        return exitCode;
     }
 
     if (!runtime.getPatterns().empty()) {

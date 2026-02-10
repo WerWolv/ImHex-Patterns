@@ -473,9 +473,37 @@ bitfield SYMINFO_FLG {
     padding     : 10;
 };
 
+enum STT : u32 {
+    STT_NOTYPE     = 0,  /* Symbol type is unspecified */
+    STT_OBJECT     = 1,  /* Symbol is a data object */
+    STT_FUNC       = 2,  /* Symbol is a code object */
+    STT_SECTION    = 3,  /* Symbol associated with a section */
+    STT_FILE       = 4,  /* Symbol's name is file name */
+    STT_COMMON     = 5,  /* Symbol is a common data object */
+    STT_TLS        = 6,  /* Symbol is thread-local data object */
+    STT_NUM        = 7,  /* Number of defined types. */
+    STT_LOOS       = 10, /* Start of OS-specific */
+    STT_GNU_IFUNC  = 10, /* Symbol is indirect code object */
+    STT_HIOS       = 12, /* End of OS-specific */
+    STT_LOPROC     = 13, /* Start of processor-specific */
+    STT_HIPROC     = 15, /* End of processor-specific */
+};
+
+enum STB : u32 {
+    STB_LOCAL       = 0,  /* Local symbol */
+    STB_GLOBAL      = 1,  /* Global symbol */
+    STB_WEAK        = 2,  /* Weak symbol */
+    STB_NUM         = 3,  /* Number of defined types. */
+    STB_LOOS        = 10, /* Start of OS-specific */
+    STB_GNU_UNIQUE  = 10, /* Unique symbol. */
+    STB_HIOS        = 12, /* End of OS-specific */
+    STB_LOPROC      = 13, /* Start of processor-specific */
+    STB_HIPROC      = 15, /* End of processor-specific */
+};
+
 bitfield ST {
-    ST_BIND : 4;
-    ST_TYPE : 4;
+    STB ST_BIND : 4;
+    STT ST_TYPE : 4;
 } [[bitfield_order(BitfieldOrder::MostToLeastSignificant, 8)]];
 
 bitfield SHF {

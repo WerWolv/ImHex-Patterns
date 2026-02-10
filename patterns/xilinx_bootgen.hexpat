@@ -213,7 +213,7 @@ namespace zynqmp {
 
         u64 destination_execution_address;
         u64 destination_load_address;
-        NullableWordPtr<std::Array<u8,parent.encrypted_partition_data_word_length*4>, u32> actual_partition_word_offset;
+        NullableWordPtr<std::Array<u8, encrypted_partition_data_word_length * 4>, u32> actual_partition_word_offset;
 
         PartitionAttributeBits attributes;
         u32 section_count;

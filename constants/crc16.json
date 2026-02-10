@@ -2,118 +2,95 @@
     "name": "CRC16 Constants",
     "values": [
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-16/CCITT-FALSE Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "8005",
+            "value": "80 05",
             "name": "CRC-16/ARC Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-16/AUG-CCITT Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "8005",
+            "value": "80 05",
             "name": "CRC-16/BUYPASS Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "C867",
+            "value": "C8 67",
             "name": "CRC-16/CDMA2000 Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "8005",
+            "value": "80 05",
             "name": "CRC-16/DDS-110 Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "0589",
+            "value": "05 89",
             "name": "CRC-16/DECT-R Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "0589",
+            "value": "05 89",
             "name": "CRC-16/DECT-X Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "3D65",
+            "value": "3D 65",
             "name": "CRC-16/DNP Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "3D65",
+            "value": "3D 65",
             "name": "CRC-16/EN-13757 Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-16/GENIBUS Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "8005",
+            "value": "80 05",
             "name": "CRC-16/MAXIM Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-16/MCRF4XX Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-16/RIELLO Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "8BB7",
+            "value": "8B B7",
             "name": "CRC-16/T10-DIF Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "A097",
+            "value": "A0 97",
             "name": "CRC-16/TELEDISK Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-16/TMS37157 Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "8005",
+            "value": "80 05",
             "name": "CRC-16/USB Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-A Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-16/KERMIT Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "8005",
+            "value": "80 05",
             "name": "CRC-16/MODBUS Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-16/X-25 Polynomial"
         },
         {
-            "type": "int16be",
-            "value": "1021",
+            "value": "10 21",
             "name": "CRC-16/XMODEM Polynomial"
         }
     ]

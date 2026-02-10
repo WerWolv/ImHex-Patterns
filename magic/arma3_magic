@@ -1,0 +1,41 @@
+# A libmagic database containing definitions for files used by the Arma 3 game by Bohemia Interactive
+
+# Arma 3 PAA image
+0x02	string		GGAT	Arma 3 PAA image file
+!:mime image/x.a3-paa
+!:ext paa
+>0		leshort		0xff01	DXT1 compression
+>0		leshort		0xff02	DXT2 compression
+>0		leshort		0xff03	DXT3 compression
+>0		leshort		0xff04	DXT4 compression
+>0		leshort		0xff05	DXT5 compression
+>0		leshort		0x4444	RGBA4 format
+>0		leshort		0x1555	RGBA5 format
+>0		leshort		0x8888	RGBA8 format
+>0		leshort		0x8080	Grayscale format
+
+# Arma 3 RTM animation
+0		string		RTM_	Arma 3 RTM animation file (plain)
+!:mime application/x.a3-rtm
+!:ext rtm
+
+# Arma 3 binarized RTM animation
+0		string		BMTR	Arma 3 RTM animation file (binarized)
+!:mime application/x.a3-bmtr
+!:ext rtm
+
+# Arma 3 texture index
+0		string		0DHT	Arma 3 texture index file
+!:mime application/x.a3-texheaders
+!:ext bin
+
+# Arma 3 MLOD P3D model
+0		string		MLOD	Arma 3 P3D model file (MLOD)
+!:mime model/x.a3-p3d-mlod
+!:ext p3d
+>0x0c	string		P3DM	P3DM LOD type
+
+# Arma 3 binarized config
+0x01    string      raP     Arma 3 binary configuration file
+!:mime application/x.a3-rap
+!:ext bin

@@ -1,3 +1,5 @@
+#pragma once
+
 import std.string;
 import std.sys;
 import std.io;

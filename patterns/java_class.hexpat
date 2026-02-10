@@ -450,6 +450,15 @@ enum major_version : u2 {
     Java_SE_15           = 59,
     Java_SE_16           = 60,
     Java_SE_17           = 61,
+    Java_SE_18           = 62,
+    Java_SE_19           = 63,
+    Java_SE_20           = 64,
+    Java_SE_21           = 65,
+    Java_SE_22           = 66,
+    Java_SE_23           = 67,
+    Java_SE_24           = 68,
+    Java_SE_25           = 69,
+    Java_SE_26           = 70,
 };
 
 bitfield access_flags_method  {
