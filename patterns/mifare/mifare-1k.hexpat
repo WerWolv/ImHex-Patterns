@@ -1,3 +1,4 @@
+#pragma author Bananz0
 #pragma description MIFARE Classic EV1 1K (MF1S50yyX/V1), ISO/IEC 14443-3 Type A
 #pragma MIME application/x-mifare-classic
 #pragma endian little
@@ -160,19 +161,7 @@ MifareClassic1K card @ 0x00;
 
 validate_uid_bcc(card);
 validate_sak(card);
-validate_access_bits(0,  card.sector0.trailer);
-validate_access_bits(1,  card.sectors[0].trailer);
-validate_access_bits(2,  card.sectors[1].trailer);
-validate_access_bits(3,  card.sectors[2].trailer);
-validate_access_bits(4,  card.sectors[3].trailer);
-validate_access_bits(5,  card.sectors[4].trailer);
-validate_access_bits(6,  card.sectors[5].trailer);
-validate_access_bits(7,  card.sectors[6].trailer);
-validate_access_bits(8,  card.sectors[7].trailer);
-validate_access_bits(9,  card.sectors[8].trailer);
-validate_access_bits(10, card.sectors[9].trailer);
-validate_access_bits(11, card.sectors[10].trailer);
-validate_access_bits(12, card.sectors[11].trailer);
-validate_access_bits(13, card.sectors[12].trailer);
-validate_access_bits(14, card.sectors[13].trailer);
-validate_access_bits(15, card.sectors[14].trailer);
+validate_access_bits(0, card.sector0.trailer);
+for (u8 i = 1, i < 16, i += 1) {
+    validate_access_bits(i, card.sectors[i - 1].trailer);
+}

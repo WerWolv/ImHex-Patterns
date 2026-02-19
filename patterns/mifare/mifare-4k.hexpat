@@ -1,3 +1,4 @@
+#pragma author Bananz0
 #pragma description MIFARE Classic EV1 4K (MF1S70yyX/V1), ISO/IEC 14443-3 Type A
 #pragma MIME application/x-mifare-classic
 #pragma endian little
@@ -179,43 +180,10 @@ MifareClassic4K card @ 0x00;
 
 validate_uid_bcc(card);
 validate_sak(card);
-validate_access_bits(0,  card.sector0.trailer);
-validate_access_bits(1,  card.smallSectors[0].trailer);
-validate_access_bits(2,  card.smallSectors[1].trailer);
-validate_access_bits(3,  card.smallSectors[2].trailer);
-validate_access_bits(4,  card.smallSectors[3].trailer);
-validate_access_bits(5,  card.smallSectors[4].trailer);
-validate_access_bits(6,  card.smallSectors[5].trailer);
-validate_access_bits(7,  card.smallSectors[6].trailer);
-validate_access_bits(8,  card.smallSectors[7].trailer);
-validate_access_bits(9,  card.smallSectors[8].trailer);
-validate_access_bits(10, card.smallSectors[9].trailer);
-validate_access_bits(11, card.smallSectors[10].trailer);
-validate_access_bits(12, card.smallSectors[11].trailer);
-validate_access_bits(13, card.smallSectors[12].trailer);
-validate_access_bits(14, card.smallSectors[13].trailer);
-validate_access_bits(15, card.smallSectors[14].trailer);
-validate_access_bits(16, card.smallSectors[15].trailer);
-validate_access_bits(17, card.smallSectors[16].trailer);
-validate_access_bits(18, card.smallSectors[17].trailer);
-validate_access_bits(19, card.smallSectors[18].trailer);
-validate_access_bits(20, card.smallSectors[19].trailer);
-validate_access_bits(21, card.smallSectors[20].trailer);
-validate_access_bits(22, card.smallSectors[21].trailer);
-validate_access_bits(23, card.smallSectors[22].trailer);
-validate_access_bits(24, card.smallSectors[23].trailer);
-validate_access_bits(25, card.smallSectors[24].trailer);
-validate_access_bits(26, card.smallSectors[25].trailer);
-validate_access_bits(27, card.smallSectors[26].trailer);
-validate_access_bits(28, card.smallSectors[27].trailer);
-validate_access_bits(29, card.smallSectors[28].trailer);
-validate_access_bits(30, card.smallSectors[29].trailer);
-validate_access_bits(31, card.smallSectors[30].trailer);
-validate_access_bits(32, card.largeSectors[0].trailer);
-validate_access_bits(33, card.largeSectors[1].trailer);
-validate_access_bits(34, card.largeSectors[2].trailer);
-validate_access_bits(35, card.largeSectors[3].trailer);
-validate_access_bits(36, card.largeSectors[4].trailer);
-validate_access_bits(37, card.largeSectors[5].trailer);
-validate_access_bits(38, card.largeSectors[6].trailer);
-validate_access_bits(39, card.largeSectors[7].trailer);
+validate_access_bits(0, card.sector0.trailer);
+for (u8 i = 1, i <= 31, i += 1) {
+    validate_access_bits(i, card.smallSectors[i - 1].trailer);
+}
+for (u8 j = 0, j < 8, j += 1) {
+    validate_access_bits(j + 32, card.largeSectors[j].trailer);
+}
