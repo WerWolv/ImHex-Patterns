@@ -135,6 +135,40 @@ enum SectionContribSubstreamHeaderVersion: u32 {
     V2 = 0xeffe0000 + 20140516,
 };
 
+enum ImageFileMachine: u16 {
+    UNKNOWN = 0x0000,
+    TARGET_HOST = 0x0001,
+    I386 = 0x014c,
+    R3000 = 0x0162,
+    R4000 = 0x0166,
+    R10000 = 0x0168,
+    WCEMIPSV2 = 0x0169,
+    ALPHA = 0x0184,
+    SH3 = 0x01a2,
+    SH3DSP = 0x01a3,
+    SH3E = 0x01a4,
+    SH4 = 0x01a6,
+    SH5 = 0x01a8,
+    ARM = 0x01c0,
+    THUMB = 0x01c2,
+    ARMNT = 0x01c4,
+    AM33 = 0x01d3,
+    POWERPC = 0x01f0,
+    POWERPCFP = 0x01f1,
+    IA64 = 0x0200,
+    MIPS16 = 0x0266,
+    ALPHA64 = 0x0284,
+    MIPSFPU = 0x0366,
+    MIPSFPU16 = 0x0466,
+    TRICORE = 0x0520,
+    CEF = 0x0cef,
+    EBC = 0x0ebc,
+    AMD64 = 0x8664,
+    M32R = 0x9041,
+    ARM64 = 0xaa64,
+    CEE = 0xc0ee,
+};
+
 struct MsfFileHeader<auto version> {
     if (version == MsfVersion::SmallMsf) {
         type::Magic<"Microsoft C/C++ program database 2.00\x0d\x0a\x1a\x4a\x47\x00\x00"> magic;
@@ -312,7 +346,7 @@ struct DbiStreamHeader {
     s32 optional_debug_header_size;
     s32 edit_and_continue_size;
     u16 flags;
-    u16 machine;
+    ImageFileMachine machine;
     padding[4];
 };
 
