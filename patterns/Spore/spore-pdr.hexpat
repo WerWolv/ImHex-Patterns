@@ -82,11 +82,34 @@ union version_t {
     else u32 number;
 } [[sealed]];
 
+// Platform type (from "PlatformType" enum)
+enum platform_t: s32 {
+    NONE, // Likely unused?
+    GENERIC,
+    WINDOWS, // The only known platform type so far
+    XENON, // Xbox 360?
+    PS3,
+    REVOLUTION // Wii?
+};
+
+// Fancy platform names
+fn parse_platform(auto platform) {
+    match (platform) {
+        (0): return "None";
+        (1): return "Generic";
+        (2): return "Windows";
+        (3): return "Xenon";
+        (4): return "PlayStation 3";
+        (5): return "Revolution";
+    }
+    return "Unknown";
+};
+
 // .pdr header
 struct header_t {
     char signature[4] [[name("Signature"), comment("EAPd signature/magic")]];
     version_t version [[format("parse_version"), name("Version"), comment("EAPd Binary Patch version")]];
-    u32 platform [[name("Platform"), comment("Platform, 2 = PC; it's believed that Xbox 360 and PS3 are also supported")]];
+    platform_t platform [[format("parse_platform"), name("Platform"), comment("EAPd Binary Patch platform type")]];
     u32 length [[name("Length"), comment("Full length, including signature and header")]];
     u32 patch_count [[name("Patch Count"), comment("Number of EAPd patches stored inside a Binary Patch")]];
     u32 sample_count [[name("Sample Count"), comment("Number of SNR/SNS audio samples stored inside a Binary Patch")]];
@@ -136,7 +159,7 @@ struct EAPdResource {
     header_t header [[name("Header"), comment("EAPd Resource Header")]];
     u32 version = parse_version(header.version);
     u32 platform = header.platform;
-    std::assert(platform == 2, std::format("Unsupported EAPd Binary Patch platform ({}): only PC (2) is supported for now", version));
+    std::assert(platform == 2, std::format("Unsupported EAPd Binary Patch platform ({}): only Windows (2) is supported for now", version));
     match (version) {
         (1): {
             asset_v1_t<pd> patches[header.patch_count] [[name("Patches"), comment("Pd Patches")]];
