@@ -109,8 +109,8 @@ fn parse_platform(auto platform) {
 struct header_t {
     char signature[4] [[name("Signature"), comment("EAPd signature/magic")]];
     version_t version [[format("parse_version"), name("Version"), comment("EAPd Binary Patch version")]];
-    platform_t platform [[format("parse_platform"), name("Platform"), comment("EAPd Binary Patch platform type")]];
-    u32 length [[name("Length"), comment("Full length, including signature and header")]];
+    platform_t platform [[format("parse_platform"), name("Platform"), comment("EAPd Binary Patch platform type"), color("a0a0a0")]];
+    u32 length [[name("Length"), comment("Full length, including signature and header"), color("a000a0")]];
     u32 patch_count [[name("Patch Count"), comment("Number of EAPd patches stored inside a Binary Patch")]];
     u32 sample_count [[name("Sample Count"), comment("Number of SNR/SNS audio samples stored inside a Binary Patch")]];
 };
@@ -118,7 +118,8 @@ struct header_t {
 // Join the asset name and hash, treating it as a file extension
 fn get_asset_name(ref auto asset) {
     try {
-        return parse_string(asset.name) + "." + parse_string(asset.hash);
+		if (parse_string(asset.hash) != "") return parse_string(asset.name) + "." + parse_string(asset.hash);
+		else return parse_string(asset.name);
     }
     catch {
         return parse_string(asset.name);
@@ -158,7 +159,7 @@ struct asset_v3_t {
 struct EAPdResource {
     header_t header [[name("Header"), comment("EAPd Resource Header")]];
     u32 version = parse_version(header.version);
-    u32 platform = header.platform;
+    s32 platform = header.platform;
     std::assert(platform == 2, std::format("Unsupported EAPd Binary Patch platform ({}): only Windows (2) is supported for now", version));
     match (version) {
         (1): {
