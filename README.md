@@ -112,6 +112,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Gold Box Games: Executable | | [`patterns/GoldBox/GB_EXE.hexpat`](patterns/GoldBox/GB_EXE.hexpat) | Gold Box Game Executables |
 | Gold Box Games: Item Base | | [`patterns/GoldBox/GB_ITM-Base.hexpat`](patterns/GoldBox/GB_ITM-Base.hexpat) | Gold Box Game Item Base files |
 | Gold Box Games: Item Record | | [`patterns/GoldBox/GB_ITM-Record.hexpat`](patterns/GoldBox/GB_ITM-Record.hexpat) | Gold Box Game Item Record files |
+| Gold Box Games: Map | | [`patterns/GoldBox/GB_GEO.hexpat`](patterns/GoldBox/GB_GEO.hexpat) | Gold Box Game Map files |
 | Gold Box Games: Vault | | [`patterns/GoldBox/GB_VLT.hexpat`](patterns/GoldBox/GB_VLT.hexpat) | Gold Box Game Vault files |
 | GZIP | `application/gzip` | [`patterns/gzip.hexpat`](patterns/gzip.hexpat) | GZip compressed data format |
 | Halo Tag || [`patterns/hinf_tag.hexpat`](patterns/hinf_tag.hexpat) | Halo Infinite Tag Files |
