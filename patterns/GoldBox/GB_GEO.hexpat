@@ -1226,50 +1226,68 @@ fn GetEventNameLong (u8 EventID, u8 EventTypeID) {
         EventName += " Event @ Unknown";
     }
     else {
-        match (EVHierarchy[HierarchyID].RelationTypeID) {
-             (0):   EventName += " Event @ Unknown";
-             (1):   EventName += std::format(" - Zone {:d} Rest Event", EVHierarchy[HierarchyID].ZoneID);
-             (2):   EventName += std::format(" - Step Event {:d}", EVHierarchy[HierarchyID].ZoneID);
-             (3):   EventName += std::format(" - Map Event @ {}", GetCoordinates(EVHierarchy[HierarchyID].CellID, Width));
-         // All Types - Alt 1 - Normal Chain
-             (4):   EventName += std::format(" - {:03d} Normal Chain Event", EVHierarchy[HierarchyID].ParentID);
-         // QuestStage - Alt 2 - Accept
-             (5):   EventName += std::format(" - {:03d} Accept Event", EVHierarchy[HierarchyID].ParentID);
-         // Encounter - Alt 2 - Combat
-             (6):   EventName += std::format(" - {:03d} Combat Event", EVHierarchy[HierarchyID].ParentID);
-         // Temple - Alt 2 - Donation
-             (7):   EventName += std::format(" - {:03d} Made Donation Event", EVHierarchy[HierarchyID].ParentID);
-         // Tavern - Alt 3 - Drinks
-             (8):   EventName += std::format(" - {:03d} Drunk Enough Event", EVHierarchy[HierarchyID].ParentID);
-         // Encounter - Alt 4 - Escape
-             (9):   EventName += std::format(" - {:03d} Separate Event", EVHierarchy[HierarchyID].ParentID);
-         // Chain - Alt 2 - Event
-            (10):   EventName += std::format(" - {:03d} Branch", EVHierarchy[HierarchyID].ParentID);
-        // Question_Button/List - Alt 2 - Label/Answer
-            (11):   EventName += std::format(" - {:03d} {} One", EVHierarchy[HierarchyID].ParentID, EventTypeID == 10 ? "Button" : "Choice");
-        // Question_Button/List - Alt 3 - Label/Answer
-            (12):   EventName += std::format(" - {:03d} {} Two", EVHierarchy[HierarchyID].ParentID, EventTypeID == 10 ? "Button" : "Choice");
-        // Question_Button/List - Alt 4 - Label/Answer
-            (13):   EventName += std::format(" - {:03d} {} Three", EVHierarchy[HierarchyID].ParentID, EventTypeID == 10 ? "Button" : "Choice");
-        // Question_Button/List - Alt 5 - Label/Answer
-            (14):   EventName += std::format(" - {:03d} {} Four", EVHierarchy[HierarchyID].ParentID, EventTypeID == 10 ? "Button" : "Choice");
-        // Question_Button/List - Alt 6 - Label/Answer
-            (15):   EventName += std::format(" - {:03d} {} Five", EVHierarchy[HierarchyID].ParentID, EventTypeID == 10 ? "Button" : "Choice");
-        // WhoTries/Pays & EnterPassword - Alt 3 - Failure
-            (16):   EventName += std::format(" - {:03d} Failed Event", EVHierarchy[HierarchyID].ParentID);
-         // Tavern - Alt 2 - Fight
-            (17):   EventName += std::format(" - {:03d} Tavern Fight Event", EVHierarchy[HierarchyID].ParentID);
-        // Question_YesNo - Alt 3 - No
-            (18):   EventName += std::format(" - {:03d} \"No\" Event", EVHierarchy[HierarchyID].ParentID);
-        // QuestStage - Alt 3 - Reject
-            (19):   EventName += std::format(" - {:03d} Reject Event", EVHierarchy[HierarchyID].ParentID);
-        // WhoTries/Pays & EnterPassword - Alt 2 - Success
-            (20):   EventName += std::format(" - {:03d} {} Event", EVHierarchy[HierarchyID].ParentID, EventTypeID == 18 ? "Made It" : EventTypeID == 19 ? "Paid" : "Got Password");
+        match (EVHierarchy[HierarchyID].ParentTypeID, EVHierarchy[HierarchyID].AltID) {
+            (0,_):   EventName += " Event @ Unknown";
+        // All Types - Alt 1 - Normal Chain
+            (1 ... 27|32 ... 38,1): EventName += std::format(" - {:03d} Normal Chain Event", EVHierarchy[HierarchyID].ParentID);
+        // Tavern - Alt 2 - Fight
+            (7,2):                  EventName += std::format(" - {:03d} Tavern Fight Event", EVHierarchy[HierarchyID].ParentID);
+        // Tavern - Alt 3 - Drinks
+            (7,3):                  EventName += std::format(" - {:03d} Drunk Enough Event", EVHierarchy[HierarchyID].ParentID);
+        // Temple - Alt 2 - Donation
+            (9,2):                  EventName += std::format(" - {:03d} Made Donation Event", EVHierarchy[HierarchyID].ParentID);
+        // Question_Button - Alt 2 - Label
+            (10,2):                 EventName += std::format(" - {:03d} Button One", EVHierarchy[HierarchyID].ParentID);
+        // Question_Button - Alt 3 - Label
+            (10,3):                 EventName += std::format(" - {:03d} Button Two", EVHierarchy[HierarchyID].ParentID);
+        // Question_Button - Alt 4 - Label
+            (10,4):                 EventName += std::format(" - {:03d} Button Three", EVHierarchy[HierarchyID].ParentID);
+        // Question_Button - Alt 5 - Label
+            (10,5):                 EventName += std::format(" - {:03d} Button Four", EVHierarchy[HierarchyID].ParentID);
+        // Question_Button - Alt 6 - Label
+            (10,6):                 EventName += std::format(" - {:03d} Button Five", EVHierarchy[HierarchyID].ParentID);
         // Encounter - Alt 3 - Talk
-            (21):   EventName += std::format(" - {:03d} Talk Event", EVHierarchy[HierarchyID].ParentID);
+            (15,3):                 EventName += std::format(" - {:03d} Talk Event", EVHierarchy[HierarchyID].ParentID);
+        // Encounter - Alt 4 - Escape
+            (15,4):                 EventName += std::format(" - {:03d} Separate Event", EVHierarchy[HierarchyID].ParentID);
+        // WhoTries - Alt 2 - Success
+            (18,2):                 EventName += std::format(" - {:03d} Made It Event", EVHierarchy[HierarchyID].ParentID);
+        // WhoTries/Pays & EnterPassword - Alt 3 - Failure
+            (18|19|20,3):           EventName += std::format(" - {:03d} Failed Event", EVHierarchy[HierarchyID].ParentID);
+        // WhoPays - Alt 2 - Success
+            (19,2):                 EventName += std::format(" - {:03d} Paid Event", EVHierarchy[HierarchyID].ParentID);
+        // EnterPassword - Alt 2 - Success
+            (20,2):                 EventName += std::format(" - {:03d} Got Password Event", EVHierarchy[HierarchyID].ParentID);
+        // Question_List - Alt 2 - Answer
+            (21,2):                 EventName += std::format(" - {:03d} Choice One", EVHierarchy[HierarchyID].ParentID);
+        // Question_List - Alt 3 - Answer
+            (21,3):                 EventName += std::format(" - {:03d} Choice Two", EVHierarchy[HierarchyID].ParentID);
+        // Question_List - Alt 4 - Answer
+            (21,4):                 EventName += std::format(" - {:03d} Choice Three", EVHierarchy[HierarchyID].ParentID);
+        // Question_List - Alt 5 - Answer
+            (21,5):                 EventName += std::format(" - {:03d} Choice Four", EVHierarchy[HierarchyID].ParentID);
+        // Question_List - Alt 6 - Answer
+            (21,6):                 EventName += std::format(" - {:03d} Choice Five", EVHierarchy[HierarchyID].ParentID);
+        // Encounter - Alt 2 - Combat
+            (21,2):                 EventName += std::format(" - {:03d} Combat Event", EVHierarchy[HierarchyID].ParentID);
+        // Chain - Alt 2 - Event
+            (23,2):                 EventName += std::format(" - {:03d} Branch", EVHierarchy[HierarchyID].ParentID);
+        // QuestStage - Alt 2 - Accept
+            (35,2):                 EventName += std::format(" - {:03d} Accept Event", EVHierarchy[HierarchyID].ParentID);
+        // QuestStage - Alt 3 - Reject
+            (35,3):                 EventName += std::format(" - {:03d} Reject Event", EVHierarchy[HierarchyID].ParentID);
         // Question_YesNo - Alt 2 - Yes
-            (22):   EventName += std::format(" - {:03d} \"Yes\" Event", EVHierarchy[HierarchyID].ParentID);
-            (_):    EventName += " Invalid";
+            (36,2):                 EventName += std::format(" - {:03d} \"Yes\" Event", EVHierarchy[HierarchyID].ParentID);
+        // Question_YesNo - Alt 3 - No
+            (36,3):                 EventName += std::format(" - {:03d} \"No\" Event", EVHierarchy[HierarchyID].ParentID);
+        // Rest Events
+            (101,0):                EventName += std::format(" - Zone {:d} Rest Event", EVHierarchy[HierarchyID].ZoneID);
+        // Step Events
+            (102,0):                EventName += std::format(" - Step Event {:d}", EVHierarchy[HierarchyID].ZoneID);
+        // Map Events
+            (103,0):                EventName += std::format(" - Map Event @ {}", GetCoordinates(EVHierarchy[HierarchyID].CellID, Width));
+        // Invalid - _Shouldn't_ hit this
+            (_,_):    EventName += " Invalid";
         }
     }
     return EventName;
@@ -1366,12 +1384,12 @@ fn GetString(u16 StringID) {
 };
 
 // Helper function to more easily add hierarchy records to EventHierarchy
-fn SetEventHierarchy (u8 EventID, u8 ZoneID, u16 CellID, u8 ParentID, u8 RelationTypeID, u8 AltID) {
+fn SetEventHierarchy (u8 EventID, u8 ZoneID, u16 CellID, u8 ParentID, u8 ParentTypeID, u8 AltID) {
     EVHierarchy[CurrentHierarchy].EventID = EventID;
     EVHierarchy[CurrentHierarchy].ZoneID = ZoneID;
     EVHierarchy[CurrentHierarchy].CellID = CellID;
     EVHierarchy[CurrentHierarchy].ParentID = ParentID + (ZoneID + CellID > 0 ? 0 : 1);
-    EVHierarchy[CurrentHierarchy].RelationTypeID = RelationTypeID;
+    EVHierarchy[CurrentHierarchy].ParentTypeID = ParentTypeID;
     EVHierarchy[CurrentHierarchy].AltID = AltID;
     CurrentHierarchy += 1;
     if (LastEventID < EventID) {
@@ -1635,7 +1653,7 @@ struct HDR {
     char ModuleName[16] [[name("Module Name"),format("std::string::to_string")]];
     HDR_ZONE_NAME ZoneName[8] [[name("Zone Names")]];
     MONSTERLIST SummonedMonster [[name("Summoned Monster")]];
-    u8 TurnUndeadModifier [[name("Turn Undead Modifier")]];
+    u8 TurnUndeadModifier [[name("Undead Are More Difficult To Turn By")]];
     ART_COMBAT_OVERLAND CombatArt_Overland[8] [[name(std::format("Overland Combat Art{}", IsOverland ? "" : " (Unused)"))]];
     HDR_ZONE_MESSAGE ZoneMessage[8] [[name(std::format("Zone Messages{}", IsOverland ? "" : " (Unused)"))]];
     IMG_PIC_SMALL CampPicture [[name("Camp Picture")]];
@@ -1712,7 +1730,7 @@ struct EVENTHIERARCHY {
     u8 ZoneID [[name("Rest Zone/Step Event")]];
     u16 CellID [[name("Map Cell ID")]];
     u8 ParentID [[name("Parent Event ID")]];
-    u8 RelationTypeID [[name("Relation Type ID"),comment("This is an arbitarily defined (made up) value to easily store the event\'s relation to its parent")]];
+    u8 ParentTypeID [[name("Parent Type ID"),comment("The Event\'s parent event type\nNote: Map/Rest/Step events do not have a type and an ID was arbitrarily (made up) for them")]];
     u8 AltID [[name("Alternate Chain Number")]];   // Is set but not currently used
 } [[comment("This section is not a real data section in the file\nIt exists to help build the event\'s path and chain type")]];
 
@@ -1733,10 +1751,10 @@ for (u8 ZoneID = 0, ZoneID < ZoneCount, ZoneID = ZoneID + 1) {
     u8 StepEventID @ ZoneOffset + 32;
   // Add to EventHierarchy if set
     if (RestEventID > 0) {
-        SetEventHierarchy(RestEventID,ZoneID + 1,0,0,1,0);
+        SetEventHierarchy(RestEventID,ZoneID + 1,0,0,101,0);
     }
     if (StepEventID > 0) {
-        SetEventHierarchy(StepEventID,ZoneID + 1,0,0,2,0);
+        SetEventHierarchy(StepEventID,ZoneID + 1,0,0,102,0);
     }
 
   // Increment to next Zone
@@ -1751,7 +1769,7 @@ u16 CellCount = (GameID == 10 ? Width * Height : 0);
 for (u16 CellID = 0, CellID < CellCount, CellID = CellID + 1) {
      u8 CellEventID @ CellOffset;
      if (CellEventID > 0) {
-        SetEventHierarchy(CellEventID,0,CellID,0,3,0);
+        SetEventHierarchy(CellEventID,0,CellID,0,103,0);
      }
 
      CellOffset += 6;
@@ -1778,17 +1796,17 @@ for (u8 EventID = 0, EventID < 100, EventID = EventID + 1) {
             u8 FightID @ EventOffset + 18;
             u8 DrunkID @ EventOffset + 19;
             if (FightID > 0) {
-                SetEventHierarchy(FightID,0,0,EventID,17,2);
+                SetEventHierarchy(FightID,0,0,EventID,EventTypeID,2);
             }
             if (DrunkID > 0) {
-                SetEventHierarchy(DrunkID,0,0,EventID,8,3);
+                SetEventHierarchy(DrunkID,0,0,EventID,EventTypeID,3);
             }
         }
     // Temple - Donation Event
         else if (EventTypeID == 9) {
             u8 DonationID @ EventOffset + 12;
             if (DonationID > 0) {
-                SetEventHierarchy(DonationID,0,0,EventID,7,2);
+                SetEventHierarchy(DonationID,0,0,EventID,EventTypeID,2);
             }
         }
     // Question_Button/List - Events 1-5
@@ -1800,19 +1818,19 @@ for (u8 EventID = 0, EventID < 100, EventID = EventID + 1) {
             u8 EventID4 @ EventOffset + 13;
             u8 EventID5 @ EventOffset + 14;
             if (EventID1 > 0) {
-                SetEventHierarchy(EventID1,0,0,EventID,11,2);
+                SetEventHierarchy(EventID1,0,0,EventID,EventTypeID,2);
             }
             if (EventID2 > 0) {
-                SetEventHierarchy(EventID2,0,0,EventID,12,3);
+                SetEventHierarchy(EventID2,0,0,EventID,EventTypeID,3);
             }
             if (EventID3 > 0) {
-                SetEventHierarchy(EventID3,0,0,EventID,13,4);
+                SetEventHierarchy(EventID3,0,0,EventID,EventTypeID,4);
             }
             if (EventID4 > 0) {
-                SetEventHierarchy(EventID4,0,0,EventID,14,5);
+                SetEventHierarchy(EventID4,0,0,EventID,EventTypeID,5);
             }
             if (EventID5 > 0) {
-                SetEventHierarchy(EventID5,0,0,EventID,15,6);
+                SetEventHierarchy(EventID5,0,0,EventID,EventTypeID,6);
             }
         }
     // Encounter - Combat/Talk/Escape Events
@@ -1821,13 +1839,13 @@ for (u8 EventID = 0, EventID < 100, EventID = EventID + 1) {
             u8 TalkID @ EventOffset + 18;
             u8 EscapeID @ EventOffset + 19;
             if (CombatID > 0) {
-                SetEventHierarchy(CombatID,0,0,EventID,6,2);
+                SetEventHierarchy(CombatID,0,0,EventID,EventTypeID,2);
             }
             if (TalkID > 0) {
-                SetEventHierarchy(TalkID,0,0,EventID,21,3);
+                SetEventHierarchy(TalkID,0,0,EventID,EventTypeID,3);
             }
             if (EscapeID > 0) {
-                SetEventHierarchy(EscapeID,0,0,EventID,9,4);
+                SetEventHierarchy(EscapeID,0,0,EventID,EventTypeID,4);
             }
         }
     // WhoTries/Pays & EnterPassword - Failure/Success Events
@@ -1835,17 +1853,17 @@ for (u8 EventID = 0, EventID < 100, EventID = EventID + 1) {
             u8 FailureID @ EventOffset + 15;
             u8 SuccessID @ EventOffset + 16;
             if (FailureID > 0) {
-                SetEventHierarchy(FailureID,0,0,EventID,16,3);
+                SetEventHierarchy(FailureID,0,0,EventID,EventTypeID,3);
             }
             if (SuccessID > 0) {
-                SetEventHierarchy(SuccessID,0,0,EventID,20,2);
+                SetEventHierarchy(SuccessID,0,0,EventID,EventTypeID,2);
             }
         }
     // Chain - Event0
         else if (EventTypeID == 23) {
             u8 EventID0 @ EventOffset + 8;
             if (EventID0 > 0) {
-                SetEventHierarchy(EventID0,0,0,EventID,10,2);
+                SetEventHierarchy(EventID0,0,0,EventID,EventTypeID,2);
             }
         }
     // QuestStage - Accept/Reject Events
@@ -1853,10 +1871,10 @@ for (u8 EventID = 0, EventID < 100, EventID = EventID + 1) {
             u8 AcceptID @ EventOffset + 10;
             u8 RejectID @ EventOffset + 11;
             if (AcceptID > 0) {
-                SetEventHierarchy(AcceptID,0,0,EventID,5,2);
+                SetEventHierarchy(AcceptID,0,0,EventID,EventTypeID,2);
             }
             if (RejectID > 0) {
-                SetEventHierarchy(RejectID,0,0,EventID,19,3);
+                SetEventHierarchy(RejectID,0,0,EventID,EventTypeID,3);
             }
         }
     // Question_YesNo - Yes/No Events
@@ -1864,10 +1882,10 @@ for (u8 EventID = 0, EventID < 100, EventID = EventID + 1) {
             u8 YesID @ EventOffset + 8;
             u8 NoID @ EventOffset + 9;
             if (YesID > 0) {
-                SetEventHierarchy(YesID,0,0,EventID,22,2);
+                SetEventHierarchy(YesID,0,0,EventID,EventTypeID,2);
             }
             if (NoID > 0) {
-                SetEventHierarchy(NoID,0,0,EventID,18,3);
+                SetEventHierarchy(NoID,0,0,EventID,EventTypeID,3);
             }
         }
     }
@@ -2445,7 +2463,7 @@ bitfield EVENT_01_33<auto EventTypeID> {
         }
         (5): {
             bool West : 1 [[name("Monsters are West of Party"),comment("This value is part of an enumeration list in the UI not easily replicated here\nCombination of this and other directional flag are used to set all directions monsters are placed\n\"In Front\" when all values are false")]];
-            TURNUNDEADMODIFIER TurnUndeadModifier : 2 [[name("Turn Undead Difficulty")]];
+            TURNUNDEADMODIFIER TurnUndeadModifier : 2 [[name("Additional Difficulty in Turning Undead")]];
         }
     }
     MONSTERLIST MonsterType : 8 [[name(std::format("Monster {:d} Type", std::core::array_index() + 1))]];
