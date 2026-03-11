@@ -2,6 +2,11 @@
 #pragma description TIC-80 Cartridge
 #include <std/mem.pat>
 
+/*!
+    The pattern for the .tic TIC-80 cart format.
+    Adapted from https://github.com/nesbox/TIC-80/wiki/.tic-File-Format
+*/
+
 enum TypeValue : u8 {
     CHUNK_TILES = 1,
     CHUNK_SPRITES = 2,
