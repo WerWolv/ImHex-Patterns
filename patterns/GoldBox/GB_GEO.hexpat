@@ -1388,7 +1388,7 @@ fn SetEventHierarchy (u8 EventID, u8 ZoneID, u16 CellID, u8 ParentID, u8 ParentT
     EVHierarchy[CurrentHierarchy].EventID = EventID;
     EVHierarchy[CurrentHierarchy].ZoneID = ZoneID;
     EVHierarchy[CurrentHierarchy].CellID = CellID;
-    EVHierarchy[CurrentHierarchy].ParentID = ParentID + (ZoneID + CellID > 0 ? 0 : 1);
+    EVHierarchy[CurrentHierarchy].ParentID = ParentID + (ParentTypeID > 100  ? 0 : 1);
     EVHierarchy[CurrentHierarchy].ParentTypeID = ParentTypeID;
     EVHierarchy[CurrentHierarchy].AltID = AltID;
     CurrentHierarchy += 1;
@@ -1638,8 +1638,8 @@ struct HDR_ZONE_MESSAGE {
 struct HDR {
     char FOURCC[4] [[tree_hidden]];
     be u32 SectionSize [[tree_hidden]];
-    u8 Unknown_00;
-    u8 Unknown_01;
+    u8 Unknown_00 [[tree_hidden]];
+    u8 Unknown_01 [[tree_hidden]];
     u8 Height;
     u8 Width;
     ART_WALLSLOT WallSlot[3] [[name(std::format("Wall Art{}", IsOverland ? " (Unused)" : ""))]];
@@ -1787,7 +1787,7 @@ for (u8 EventID = 0, EventID < 100, EventID = EventID + 1) {
 
     // Get direct chains
         if (ChainID > 0) {
-            SetEventHierarchy(ChainID,0,0,EventID,4,1);
+            SetEventHierarchy(ChainID,0,0,EventID,EventTypeID,1);
         }
 
     // Get child events
