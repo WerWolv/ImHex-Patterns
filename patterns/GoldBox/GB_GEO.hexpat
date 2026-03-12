@@ -1246,6 +1246,8 @@ fn GetEventNameLong (u8 EventID, u8 EventTypeID) {
             (10,5):                 EventName += std::format(" - {:03d} Button Four", EVHierarchy[HierarchyID].ParentID);
         // Question_Button - Alt 6 - Label
             (10,6):                 EventName += std::format(" - {:03d} Button Five", EVHierarchy[HierarchyID].ParentID);
+        // Encounter - Alt 2 - Combat
+            (15,2):                 EventName += std::format(" - {:03d} Combat Event", EVHierarchy[HierarchyID].ParentID);
         // Encounter - Alt 3 - Talk
             (15,3):                 EventName += std::format(" - {:03d} Talk Event", EVHierarchy[HierarchyID].ParentID);
         // Encounter - Alt 4 - Escape
@@ -1268,8 +1270,6 @@ fn GetEventNameLong (u8 EventID, u8 EventTypeID) {
             (21,5):                 EventName += std::format(" - {:03d} Choice Four", EVHierarchy[HierarchyID].ParentID);
         // Question_List - Alt 6 - Answer
             (21,6):                 EventName += std::format(" - {:03d} Choice Five", EVHierarchy[HierarchyID].ParentID);
-        // Encounter - Alt 2 - Combat
-            (21,2):                 EventName += std::format(" - {:03d} Combat Event", EVHierarchy[HierarchyID].ParentID);
         // Chain - Alt 2 - Event
             (23,2):                 EventName += std::format(" - {:03d} Branch", EVHierarchy[HierarchyID].ParentID);
         // QuestStage - Alt 2 - Accept
