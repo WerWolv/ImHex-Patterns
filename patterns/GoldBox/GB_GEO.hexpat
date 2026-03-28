@@ -1383,6 +1383,15 @@ fn GetString(u16 StringID) {
     return String;
 };
 
+// Display Before Step 1/2 in GuidedTour stores the value -1 so adjusting returned value
+fn MinusOneRead (u8 Input) {
+    return Input + 1;
+};
+// and saved values
+fn MinusOneWrite (u8 Input) {
+    return (Input == 0 ? 0 : Input - 1);
+};
+
 // Helper function to more easily add hierarchy records to EventHierarchy
 fn SetEventHierarchy (u8 EventID, u8 ZoneID, u16 CellID, u8 ParentID, u8 ParentTypeID, u8 AltID) {
     EVHierarchy[CurrentHierarchy].EventID = EventID;
@@ -2299,11 +2308,7 @@ bitfield EVENT_BYTE_07<auto EventTypeID> {
             bool Text4_Highlight : 1 [[name("Text 4: Highlight")]];
             bool Text5_Highlight : 1 [[name("Text 5: Highlight")]];
         }
-    // GiveTreasure/CombatTreasure
-        (3|25): {
-            padding : 7;
-            bool IsIdentified : 1 [[name("Items are Identified")]];
-        }
+    // GiveTreasure/CombatTreasure (3/25) handled separately
     // Damage
         (4): {
             padding : 2;
@@ -2311,11 +2316,11 @@ bitfield EVENT_BYTE_07<auto EventTypeID> {
             SAVETHROW SaveThrow : 2 [[name("Save for")]];
             padding : 1;
         }
-    // Stairs/Teleporter
-        (5|34): {
+    // Stairs/TransferModule/Teleporter
+        (5|11|34): {
             padding : 2;
             DIRECTION Direction : 2;
-            padding : 1;
+            TRANSFERTYPE TransferInCell : 1 [[name(std::format("Transfer the Party when{}", EventTypeID == 11 ? "" : " (Hidden)")),comment(std::format("{}", EventTypeID == 11 ? "" : "Value is hardcoded to \"" + (EventTypeID == 5 ? "AttemptsToEnterTheCell" : "IsInTheCell") + "\""))]];
             bool AskYesNo : 1 [[name("Ask \"Yes/No\" Question?")]];
             YESNO TransferOn : 1 [[name("Transfer On")]];
         }
@@ -2339,7 +2344,7 @@ bitfield EVENT_BYTE_07<auto EventTypeID> {
             padding : 2;
             bool BackupOneStep : 1 [[name("Back Up One Step When Leaving?")]];
             bool AllowDonation : 1 [[name("Allow Donations")]];
-            Unknown_04 : 1;
+            Unknown_04 : 1 [[comment("Value is hardcoded to 1 (or true)")]];
             padding : 2;
         }
     // Question_Button/List
@@ -2350,14 +2355,6 @@ bitfield EVENT_BYTE_07<auto EventTypeID> {
             bool Event3_ReturnToQuestion : 1 [[name("Event 3: Return to Question")]];
             bool Event4_ReturnToQuestion : 1 [[name("Event 4: Return to Question")]];
             bool Event5_ReturnToQuestion : 1 [[name("Event 5: Return to Question")]];
-        }
-    // TransferModule
-        (11): {
-            padding : 2;
-            DIRECTION Direction : 2;
-            TRANSFERTYPE TransferInCell : 1 [[name("Transfer the Party when")]];
-            bool AskYesNo : 1 [[name("Ask \"Yes/No\" Question?")]];
-            YESNO TransferOn : 1 [[name("Transfer On")]];
         }
     // GuidedTour
         (12): {
@@ -2486,6 +2483,11 @@ bitfield EVENT_02_14_BYTE_04<auto EventTypeID> {
     }
 } [[inline]];
 
+bitfield EVENT_03_25_BYTE_04 {
+    MNY_Platinum : 31 [[name("Platinum")]];
+    bool IsIdentified : 1 [[name("Items are Identified")]];
+} [[inline]];
+
 // Stairs/TransferModule/Teleporter event byte 12
 bitfield EVENT_05_11_34_BYTE_0C<auto EventTypeID> {
     TRANSFERPLACE PlaceAt : 1 [[name("Place at")]];
@@ -2499,8 +2501,8 @@ bitfield EVENT_05_11_34_BYTE_0C<auto EventTypeID> {
 // Damage event byte 13
 bitfield EVENT_04_BYTE_0D {
     SaveBonus : 4 [[name("Add to Saving Throw")]];
-    SAVETYPE SaveType : 4 [[name("Saving Throw Type")]];
-    padding : 5;
+    SAVETYPE SaveType : 3 [[name("Saving Throw Type")]];
+    padding : 6;
     DISTANCE Distance : 2;
 } [[inline]];
 
@@ -2566,6 +2568,12 @@ bitfield EVENT_22_BYTE_09 {
     MaxSpellLevel : 3 [[name("Highest Temple Spell Level")]];
 } [[inline]];
 
+// SmallTown event byte 12
+bitfield EVENT_22_BYTE_0C {
+    COSTFACTOR TrainingHallTemple_CostModifier : 5 [[name("Training Hall & Temple Cost Factor")]];
+    padding : 3;
+} [[inline]];
+
 // Invalid struct - Used to show the invalid events as highlighted in Hex Editor so don't appear to be missed
 struct EVENT_INVALID {
     u8 Invalid [[name(std::format("Invalid_{:02X}", std::core::array_index() + 4))]];
@@ -2574,6 +2582,10 @@ struct EVENT_INVALID {
 // Event struct
 struct ENCR {
     u8 EventTypeID @ $ [[hidden]];
+    if (EventTypeID == 0) {
+        padding[20];    // Need to pad this to skip it forward
+        continue;
+    }
     str Path = std::format("{}", EventTypeID == 0 ? "N/A" : GetEventPath(std::core::array_index() + 1)) [[export,comment("Event chain path from originating event (Map/Rest/Step)")]];
     EVENTTYPE EventType [[name("Event Type")]];
     EVENTCONTROL Control;
@@ -2623,9 +2635,7 @@ struct ENCR {
         }
     // GiveTreasure/CombatTreasure
         (3|25): {
-            u16 MNY_Platinum [[name("Platinum")]];
-            padding[1];
-            EVENT_BYTE_07<EventTypeID> Byte07;
+            EVENT_03_25_BYTE_04 Byte04;
             u16 MNY_Gem [[name("Gems")]];
             u16 MNY_Jewelry [[name("Jewelry")]];
             ITEMLIST Item1 [[name("Item 1")]];
@@ -2751,8 +2761,8 @@ struct ENCR {
             u8 StepCount [[name("Number of Steps")]];
             EVENT_BYTE_07<EventTypeID> Byte07;
             TOURSTEP<StepCount> TourSteps [[inline]];
-            u8 Text1_DisplayBeforeStep [[name("Text 1: Display Before Step")]];
-            u8 Text2_DisplayBeforeStep [[name("Text 2: Display Before Step")]];
+            u8 Text1_DisplayBeforeStep [[name("Text 1: Display Before Step"),format_read("MinusOneRead"),format_write("MinusOneWrite")]];
+            u8 Text2_DisplayBeforeStep [[name("Text 2: Display Before Step"),format_read("MinusOneRead"),format_write("MinusOneWrite")]];
             u16 Text1_String [[sealed,name("Text 1"),format("GetString")]];
             u16 Text2_String [[sealed,name("Text 2"),format("GetString")]];
         }
@@ -2816,7 +2826,7 @@ struct ENCR {
                 (21,1):     IMG_PIC_NOSPRITE PlayerSees [[name("Player Sees")]];
             }
             EVENT_BYTE_07<EventTypeID> Byte07;
-          // Flag "always" checks for WhoTries once to make the rest a little cleaner
+        // Flag "always" checks for WhoTries once to make the rest a little cleaner
             match (EventTypeID) {
                 (18):   bool IsAlways = (Byte07.CheckAbilitySkill == CHECKABILITYSKILL::AlwaysSucceeds || Byte07.CheckAbilitySkill == CHECKABILITYSKILL::AlwaysFails);
                 (_):    bool IsAlways = false;
@@ -2857,7 +2867,7 @@ struct ENCR {
             CLASSARRAY CanTrain [[name("Classes May Train"),comment("Classes allowed to train at this Training Hall\nNote: Training Hall must be selected as available")]];
             EVENT_22_BYTE_09 Byte09;
             u16 TavernTale [[sealed,name("Tavern Tale"),format("GetString")]];
-            COSTFACTOR TrainingHallTemple_CostModifier [[name("Training Hall & Temple Cost Factor")]];
+            EVENT_22_BYTE_0C Byte12;
             padding[1];
             SHOP ShopType[2] [[name("Shop Items"),comment("Items types available in the Shop\nNote: Shop must be selected as available")]];
         }
@@ -2949,6 +2959,6 @@ struct ENCR {
         }
         (_):    EVENT_INVALID Invalid[16] [[inline]];
     }
-} [[name(GetEventNameLong(std::core::array_index() + 1, EventTypeID))]];
+} [[name(std::core::has_member(this, "EventTypeID") ? GetEventNameLong(std::core::array_index() + 1, EventTypeID) : "")]];
 
 ENCR Event[GameID == 10 ? LastEventID : 0] @ Offset_Event;
