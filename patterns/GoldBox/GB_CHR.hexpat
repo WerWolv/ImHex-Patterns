@@ -955,7 +955,9 @@ struct CHAR_BASE10 {
 // 10 - Player character struct
 struct CHAR_CHR10 : CHAR_BASE10 {
     ITEM Item[ITM_Count] [[comment("Items in the character's inventory")]];
-    SFX_CHR10 SFX_Effect[GetSFXCount(10)] [[comment("Active effect or ability")]];
+    if (ADDR_Effect != 0) {
+        SFX_CHR10 SFX_Effect[GetSFXCount(10)] [[comment("Active effect or ability")]];
+    }
 };
 
 // 10 - Monster struct
@@ -984,4 +986,4 @@ struct CHAR {
     }
 };
 
-CHAR Character @ Offset;
+CHAR Character @ Offset [[inline]];
