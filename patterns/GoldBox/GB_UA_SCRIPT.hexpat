@@ -13,7 +13,7 @@ import std.string;
  Edits that do not change the byte counts can be easily done but edits that change a field will require
  changing the field's FieldLength, the page it is on PageLength, the script record's DataEnd offset and
  all offsets after the modified script, and the FileSize at 0x0004
- 
+
  A backup of the SCRIPT.GLB may be considered good advice before editing
  but that's for cowards and you should have confidence in yourself
 **********/
@@ -25,14 +25,14 @@ import std.string;
     Text Color
     Used to change the default colors of Label field types (0x03) from default BrightRed to
     LightGrey and other field type text from default LightGrey to BrightRed
-    
+
     Other values above 2 _do_ work, at least so far as they do change the font
     However, different results observed depending on the event, typically a
     black, blue, or green background with a different foreground (text) color
-    
+
     Based on that, I assume this is likely an overflow - all usages are 0 or 2
     though 1 is valid (color used for header, page #, and briefly displayed when clicking select boxes)
-    
+
     Note: Color names are EGA standard names
 ***********/
 enum TEXTCOLOR:u8 {
@@ -45,7 +45,7 @@ enum TEXTCOLOR:u8 {
     Backgrounds
     These are used by field type Background (0x21) to set various background images and/or text
     below the page fields that are dynamically updated based on byte values or other controls
-    
+
     Combat_Monster1/2:
     Used on page containing monsters 1-3/4-6 in Combat/PickOne events
     Displays the dungeon cave floor tile and displays the combat icon based on bytes 9/11/13 (1) or 15/17/19 (2)
@@ -58,20 +58,12 @@ enum TEXTCOLOR:u8 {
     Used in the MonsterEditor on page one as a dynamic background to display the monster's current level
     SetCurrentLevel control (11) on ThiefLevel in page 2 performs the check for max value and updates
 
-    NPC_Page1:
-    Unclear what this does, set on page 1 of the NPCEditor but removing/changing doesn't appear to affect anything
-    If I had to speculate (I do not, but I will anyways :P), it's left over from some attempt to make the
-    values there editable - Field_Disable control (50) is set on all fields except name/morale which prevents
-    editing values which I suspect is because they couldn't (or at least didn't) get the logic in place to prevent
-    a player from setting invalid combos (Chaotic Evil Paladin, Level 40 Dwarven Magic User, etc), how they would
-    handle dual class characters, or doing large updates from changing classes (i.e. setting/clearing thief skills or known spells)
+    NPC_OldClass:
+    Used in the NPCEditor on page one as a dynamic background to display the NPC's "Old Class" for dual class NPCs
+    between the character's current class and hit points - this will only display (including the "Old Class:" text label)
+    for humans that are dual class, single class humans and all non-humans (even if hacked to have a previous class) will
+    have empty space between class and hit points
 
-    In any case, my guess is it was supposed to do something similar to Monster_CurrentLevel in the MonsterEditor
-    but is unfinished and was left behind which is not uncommon in games (or programs in general)
-
-    I will note you can remove the Field_Disable controls and edit values but it does not properly handle class/race or level
-    changes (i.e. changing a fighter to mage does not set/adjust spell counts, changing human to elf doesn't apply racial effects, etc)
-    
     Note:
     Background may not be an accurate description, there are no static full page images it is loading, but it is displaying
     non-interactable text or images (floor + monster icons in Combat/PickOne) so I'm not sure what else to describe it as
@@ -84,14 +76,14 @@ enum BACKGROUND:u8 {
     Shop_AvailableItem3 = 5,
     Shop_AvailableItem4 = 6,
     Monster_CurrentLevel = 7,
-    NPC_Page1 = 8
+    NPC_OldClass = 8
 };
 
 /***********
     Controls
     These are used by the Control property type (0x36) to perform additional data updates,
     modify/reformat entered values, and updates backgrounds
-    
+
     SetImageType:
     Sets/clears bit 7 on byte 7 indicating if selected picture is a picture (1) or sprite (0)
 
@@ -124,8 +116,12 @@ enum BACKGROUND:u8 {
     Makes the field unselected/editable - used in NPCEditor where it needs the fields to
     exist to display the values but doesn't allow modification
 
+    I will note you can remove the Field_Disable controls (or set the control value to 0 so you don't have to mess with updating
+    offsets/lengths) and edit the values but it does not properly handle class/race or level changes (i.e. changing a fighter to
+    mage does not set/adjust spell counts, changing human to elf doesn't apply racial effects, etc)
+
     Unknown_51:
-    Probably nothing but seems like there should be something here
+    Probably nothing but seems like there should be something here - no usages
 
     Field_Hide:
     Hides fields where value is unneeded for display - used in MonsterEditor to hide the 3 additional
@@ -155,7 +151,7 @@ enum CONTROL:u8 {
 /***********
     Data Check
     These are used by field type DataCheck (0x20) to perform more complex data validation
-    
+
     CheckGrid:
     Used in Dungeon/Overland Global Information on page 1 and Clear Module (56)
     to verify combination of Height/Width values are less than 576 max
@@ -179,60 +175,60 @@ enum DATACHECK:u8 {
     Field Types
     Records that make up a page - primarily what would be considered fields
     but page start/end and 3 whole page types included
-    
+
     PageStart (0x01):
     Indicates the start of a page
-    
+
     PageEnd (0x02):
     Page terminator record - a new page will immediately follow or 0x00 indicating end of the record's script data
-    
+
     Label (0x03):
     A text string to display on the page with no data entry - primarily used for headers
     Default text color is BrightRed but is overridden in sections with Text_Color property to LightGrey
-    
+
     Button (0x04):
     On/off radio button style control, typically (maybe always, haven't checked) sets a single bit value
     Unlike all other field types, the text is positioned to the right
-    
+
     List (0x05):
     Drop down list allowing a single selection - available options defined as field properties
-    
+
     Text Box (0x06):
     Large 6 line text input boxes primarily used in events - the string is compressed and stored in the STRG section
     of the file with the Store u16 property containing the string's index
-    
+
     Number (0x07):
     Numeric value that always has Value_Min/Max properties
-    
+
     Select (0x08):
     Used as large buttons that open another window to select a value (i.e. image, event, etc)
-    
+
     String (0x09):
     Single line strings, the size is matched to the String_Length property - the string is uncompressed and stored directly where placed
     * See note below
-    
+
     Text (0x0A):
     Single line strings, the size is matched to the String_Length property - the string is compressed and stored in the STRG section
     of the file with the Store u16 property containing the string's index - only used in EnterPassword/QuestionList
-    
+
     Data Check (0x20):
     Runs the specified data check in properties when attempting to switch or leave the page - used for complex data validation types
-    
+
     Background (0x21):
     Sets a dynamic background below the pages fields - typically auto updated by a control record
-    
+
     Auto Set (0x22):
     Automatically sets a byte/bit value to the Default_u8/16/32 (and presumably String but no usage) - some usages set values that are not
     displayed such as setting the Transfer the Party value in Stairs to 0 (Attempts to Enter) and to 1 (Is In) on Teleporter events
     making this function as a hardcoded value in those cases
-    
+
     Note:
     There are a few usages of the uncompressed string types in events, which cannot store those
     They are used where multiple strings are concatenated, such as with Question-Button/List or TavernDrinks
-    
+
     How that works is it temporarily stores those strings outside the available 20 bytes for event records,
     like EventControl does, with the strings placed at bytes 40/80/120/160/200
-    
+
     A hidden Text_Box field is then placed, typically (maybe always?) at the end of the page with a text caption of "~"
     That text box is used to concatenate the strings into a single ^ delimited compressed string and store the index to
     it at the byte specified
@@ -255,56 +251,57 @@ enum FIELDTYPE:u8 {
 
 /***
     Property Types
-    
+
     Various attributes that control field's behavior and where/how it saves the data entered
-    
+
     Text Color (0x30):
     Overrides the color of the text for that field - by default, Label field types are BrightRed and
     all others are LightGrey - following u8 byte specifies the color type (see enum above)
-    
+
     Unknown 31 (0x31):
-    No usage seen
-    
+    Probably nothing but seems like there should be something here - no usages
+
     Store: u8-32 (0x32-34):
     Stores the value entered using 1, 2, or 4 bytes, depending on the type - following u16 value specifies the first (or only)
     byte to write the data to - for text this is the index to the compressed string
-    
+
     Store: Bit (0x35):
     Stores the value as a bit value - typically used on buttons for setting a single bit but other multi bit values exist
     This type has a u8 byte that specifies the number of bits that are updated and is then followed with that number of u16
     values that specify the bit (counting up from the beginning of the record at 0) that is set
     The value is then stored across those bit with the first bit (bit 0) of the value stored in the first u16 bit specified,
     the second bit (1) stored in the second specified, etc - Typically stored in a contiguous range but not always (approach in Combat/PickOne splits one off)
-    
+
     Store: Control (0x36):
     Performs additional logic when storing the value, either modifying (i.e. changing AC/THAC0 values), setting additional bytes/bits
     depending on the selected value, or shifting the data from temporary storage - has u8 byte that specifies behavior - see CONTROL enum above
-    
+
     List Item (0x37):
     Used only by List field types, these are the values available on the list
     Begins with u8 value that is the ID number stored for the list entry, then a u8 byte indicating the item's string length (+2),
     then followed by a NULL (0x00) terminated string for the text displayed
-    
+
     Value: Min/Max (0x38-39):
-    Used by Numeric fields - has a u32 value indicating the minimum/maximum number allowed in the field
-    
+    Used by Numeric fields - has a s32 value indicating the minimum/maximum number allowed in the field
+    Negative values only seen on AC/THAC0 numeric fields which have the SetACTHAC0 control on it
+
     Art (0x3A-43):
     Used by Select fields - These are identifiers for the image types to include in the selection window displayed
     when the button is clicked - Multiple types are allowed - These are always listed first and are added until another
     non-Art property type is hit - Note: while Sprites may be added to an event, they are suppressed in Overland maps
-    
+
     Select (0x44/4A-4F):
     Used by Select field - Same as Art, however, these are always single types
-    
+
     String: Length (0x45):
     Used by String type, sets the maximum number of characters allowed for the string - string box is adjusted to match
-    
+
     Default: u8/16/32 (0x46-48):
     Sets the initial value to the following u8/16/32 value - this essentially functions as a hardcoded value
     for hidden AutoSet fields where the updated bit/byte is not viewable (i.e. Transfer the Party on Teleport events)
-    
+
     Note:  Default 16/32 types are not used
-    
+
     Default: String (0x49):
     Sets an initial/prepopulated string in text/string boxes - has a u8 value indicating the string length plus 2
     (i.e. 10 character default string will have a value of 12), followed by a null terminated character string
@@ -365,14 +362,14 @@ fn TitleCase (auto Input) {
     u8 StrLen = sizeof(Input);
     str OutString = "";
     str SpaceChar[9] = {" ", "-", "\\", "/", ".", ",", "(", ")", "\""};
-    
+
     for (u8 Current = 0, Current < StrLen, Current = Current + 1) {
         str CurrentChar = str(std::string::at(Input, Current));
-    
+
     // Always capitalize first character
         if (Current == 0) {
             OutString = OutString + std::string::to_upper(CurrentChar);
-            
+
         }
         else {
         // Get previous character
@@ -388,7 +385,7 @@ fn TitleCase (auto Input) {
             }
         }
     }
-    
+
     return OutString;
 };
 
@@ -400,7 +397,7 @@ fn CleanEnum (auto Input) {
             OutString = std::string::substr(OutString, Pos + 2, sizeof(OutString) - Pos - 2);
         }
     }
-    
+
     return std::string::replace(std::string::replace(OutString, "__", ": "), "_", " ");
 };
 
@@ -422,7 +419,7 @@ fn FormatStoreBit (ref auto Bits) {
     u8 BitCount = std::core::member_count(Bits);
 
 // Iterate bits to bundle into ranges
-    str OutString = "";   
+    str OutString = "";
     for (u8 Index = 0, Index < BitCount, Index = Index + 1) {
     // Get current bit
         u16 CurrentBit = Bits[Index];
@@ -431,7 +428,7 @@ fn FormatStoreBit (ref auto Bits) {
       // Get all sequential bits
         for (u8 SeqCheck = (Index + 1), SeqCheck < BitCount, SeqCheck = SeqCheck + 1) {
             u16 NextBit = Bits[SeqCheck];
-         
+
         // Check if current last sequential bit equals next bit -1
             if (UntilBit == (NextBit - 1)) {
             // Push last bit/position forward
@@ -443,7 +440,7 @@ fn FormatStoreBit (ref auto Bits) {
                 break;
             }
         }
-        
+
     // Pad bit range into OutString
         if (CurrentBit == UntilBit) {
     // If single bit, just add
@@ -457,15 +454,15 @@ fn FormatStoreBit (ref auto Bits) {
             OutString = std::format("{}{:d}.{:d}-{}{:d}", OutString + (OutString == "" ? "" : ", "), CurrentByte, CurrentBit % 8, CurrentByte == UntilByte ? "" : std::string::to_string(UntilByte) + ".", UntilBit % 8);
         }
     }
-    
-    return OutString;    
+
+    return OutString;
 };
 
 // Art select types allow multiple types to be added to a field so concatenate to make look nice :P
 fn GetSelectType (auto SelectType) {
     u8 SelectCount = std::core::member_count(SelectType);
     str SelectList = Between(SelectType[0], 58, 67) ? "Art: " : "";
- 
+
 // ENUMs exist for this but doing a match is easier to concatenate and make clean display names
     for (u8 Index = 0, Index < SelectCount, Index = Index + 1) {
         match (SelectType[Index]) {
@@ -522,7 +519,7 @@ struct LISTITEM {
 } [[name(std::format("{:02d}: {}", ID, TitleCase(DisplayName)))]];
 
 // Select field type selection options
-struct SELECTIMAGE {
+struct SELECT {
     u8 Select[while(Between(std::mem::read_unsigned($, 1), 58, 68) || Between(std::mem::read_unsigned($, 1), 74, 79))] [[sealed,format("GetSelectType")]];
 } [[inline]];
 
@@ -535,7 +532,7 @@ struct STOREBIT {
 // Field properties
 struct PROPERTY<auto TypeID> {
     u8 Val @ $ [[hidden]];
-    
+
     match (TypeID,Val) {
     // DataCheck
         (32,_): {
@@ -550,15 +547,25 @@ struct PROPERTY<auto TypeID> {
             PROPERTYTYPE Property [[tree_hidden]];
             TEXTCOLOR TextColor;
         }
-    // 0x32/33/34/47 - Store_u8/16/32 & Default_u16 - u16
-        (_,50|51|52|71): {
+    // 0x32 - Store_u8 - u16
+        (_,50): {
             PROPERTYTYPE Property [[tree_hidden]];
-            u16 Value [[name(std::format("{}", CleanEnum(Property)))]];
+            u16 Store_u8 [[name(std::format("{}", CleanEnum(Property)))]];
+        }
+    // 0x33 - Store_u16 - u16
+        (_,51): {
+            PROPERTYTYPE Property [[tree_hidden]];
+            u16 Store_u16 [[name(std::format("{}", CleanEnum(Property)))]];
+        }
+    // 0x34 - Store_u32 - u16
+        (_,52): {
+            PROPERTYTYPE Property [[tree_hidden]];
+            u16 Store_u32 [[name(std::format("{}", CleanEnum(Property)))]];
         }
     // 0x35 - Store_Bit - variable
         (_,53): {
             PROPERTYTYPE Property [[tree_hidden]];
-            STOREBIT StoreBit;
+            STOREBIT Store_Bit;
         }
     // 0x36 - Store_Control
         (_,54): {
@@ -569,25 +576,46 @@ struct PROPERTY<auto TypeID> {
         (_,55): {
             LISTITEM ListItem[while(std::mem::read_unsigned($, 1) == 55)] [[name("List Items")]];
         }
-    // 0x38/39/48 - Value_Min/Max & Default_u32 - u32
-        (_,56|57|72): {
+    // 0x38 - Value_Min - s32
+        (_,56): {
             PROPERTYTYPE Property [[tree_hidden]];
-            s32 Value [[name(std::format("{}", CleanEnum(Property)))]];
+            s32 Value_Min [[name(std::format("{}", CleanEnum(Property)))]];
+        }
+    // 0x39 - Value_Max - s32
+        (_,57): {
+            PROPERTYTYPE Property [[tree_hidden]];
+            s32 Value_Max [[name(std::format("{}", CleanEnum(Property)))]];
         }
     // 0x3A-44/74-79 - Select Screen
         (_,58 ... 68|74 ... 79): {
-            SELECTIMAGE SelectImage;
+            SELECT SelectScreen;
         }
-    // 0x45/46 - String_Length & Default_u8 - u8
-        (_,69|70): {
+    // 0x45 - String_Length - u8
+        (_,69): {
             PROPERTYTYPE Property [[tree_hidden]];
-            u8 Value [[name(std::format("{}", CleanEnum(Property)))]];
+            u8 String_Length [[name(std::format("{}", CleanEnum(Property)))]];
         }
+    // 0x46 - Default_u8 - u8
+        (_,70): {
+            PROPERTYTYPE Property [[tree_hidden]];
+            u8 Default_u8 [[name(std::format("{}", CleanEnum(Property)))]];
+        }
+    // 0x47 - Default_u16 - u16
+        (_,71): {
+            PROPERTYTYPE Property [[tree_hidden]];
+            u16 Default_u16 [[name(std::format("{}", CleanEnum(Property)))]];
+        }
+    // 0x48 - Default_u32 - u32
+        (_,72): {
+            PROPERTYTYPE Property [[tree_hidden]];
+            u32 Default_u32 [[name(std::format("{}", CleanEnum(Property)))]];
+        }
+
     // 0x49 - Default_String
         (_,73): {
             PROPERTYTYPE Property [[tree_hidden]];
             u8 StringLength [[tree_hidden,name("Default String Length"),comment("Length is +2 of actual text length")]];
-            char DefaultString[] [[name("Default: String"), format("std::string::to_string")]];
+            char Default_String[] [[name("Default: String"), format("std::string::to_string")]];
         }
     // Fallback
         (_,_): {
