@@ -64,22 +64,23 @@ using OldGenHeader = Header<u32>;
 using NewGenHeader = Header<u64>;
 
 struct MSSCMP {
-    char magic[4];
-    if (magic == "BANK")
-        std::core::set_endian(std::mem::Endian::Big);
-    else if (magic == "KNAB")
-        std::core::set_endian(std::mem::Endian::Little);
-    else
-        std::error("Magic does not match BANK or KNAB");
+  u32  check1 @ 0x18 [[hidden]];
+  u32  check2 @ 0x1C [[hidden]];
+  char magic[4];
 
-    u32 check1 @ 0x1c [[hidden]]; // use this to check if old gen or new gen
-    u32 check2 @ 0x20 [[hidden]];
+  if (magic == "BANK")
+    std::core::set_endian(std::mem::Endian::Big);
+  else if (magic == "KNAB")
+    std::core::set_endian(std::mem::Endian::Little);
+  else
+    std::error("Magic does not match BANK or KNAB");
 
-    if (check1 == check2)
-        OldGenHeader header;
-    else
-        NewGenHeader header;
-    MsscmpEntry entry;
+  if (check1 == check2)
+    OldGenHeader header;
+  else
+    NewGenHeader header;
+  
+  MsscmpEntry entry;
 };
 
 MSSCMP msscmp @ 0x00;
