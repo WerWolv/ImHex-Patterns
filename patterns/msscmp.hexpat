@@ -11,58 +11,62 @@ import std.core;
     import hex.core;
 #endif
 
-struct FileDataEntry {
-  u32 folderOffset;
-  char folder[] @ folderOffset +  parent.entryOffset;
-  u32 nameOffset;
-  char name[] @ nameOffset;
-  le u32 fileDataOffset;
+struct msscmp_file_header {
+  u32  pathaddr;
+  char path[] @ pathaddr;
+  u32  nameaddr;
+  char name[] @ nameaddr +  parent.headeraddr;
+
+  le u32 fileaddr;
   padding[8];
-  u32 sampleRate;
-  u32 fileSize;
-  u8 data[fileSize] @ fileDataOffset;
+  u32 samplerate;
+  u32 filesize;
+};
+
+struct msscmp_file {
+  padding [4];
+  u32 headeraddr;
+  msscmp_file_header header @ headeraddr;
+  u8 data[header.filesize] @ header.fileaddr;
+
   #ifdef __IMHEX__
-    hex::core::add_virtual_file(std::string::to_string(name) + ".binka", data);
+    hex::core::add_virtual_file(std::string::to_string(header.name) + ".binka", data);
   #endif
 };
 
-struct Index2Entry {
-    u32 fStructureOffset;
-    u32 entryOffset;
-    FileDataEntry fileDataEntry @ entryOffset;
-};
+struct msscmp_fileinfo
+{
+  u32  pathaddr;
+  char path[] @ pathaddr;
 
-struct MsscmpEntry {
+  u32  infoaddr;
+  char info[] @ infoaddr;
 };
 
 struct msscmp_header32 {
-  padding[4]; // unk
-  u32 fileDataOffset;
-  padding[8]; // unk
-  u32 index1Offset;
-  u32 index1LastEntryOffset;
-  padding[8];
-  u32 unkOffset;
-  u32 index1EntryCount;
-  padding[8];
-  u32 index2EntryCount;
+  padding [16];
+  u32  infoaddr;
+  padding [8];
+  u32  entryaddr;
+  padding [4];
+  u32  infocount;
+  padding [8];
+  u32  entrycount;
+  char name[];
 };
 
 struct msscmp_header64 {
-  padding[4]; // unk
-  u64 fileDataOffset;
-  padding[8]; // unk
-  u64 index1Offset;
-  u64 index1LastEntryOffset;
-  padding[16];
-  u64 unkOffset;
-  u64 index1EntryCount;
-  padding[4];
-  u32 index2EntryCount;
-    char name[12];
+  padding[20];
+  u64  infoaddr;
+  u64  infocount;
+  padding[8];
+  u64  entryaddr;
+  padding[20];
+  u64  entrycount;
+  char name[];
 };
 
-struct MSSCMP {
+struct msscmp {
   u32  check1 @ 0x18 [[hidden]];
   u32  check2 @ 0x1C [[hidden]];
   char magic[4];
@@ -79,7 +83,8 @@ struct MSSCMP {
   else
     msscmp_header64 header;
   
-  Index2Entry entries[header.index2EntryCount] @header.index1LastEntryOffset;
+  msscmp_file entries[header.entrycount] @ header.entryaddr;
+  msscmp_fileinfo info[header.infocount] @ header.infoaddr;
 };
 
-MSSCMP msscmp @ 0x00;
+msscmp file @ 0x00;
