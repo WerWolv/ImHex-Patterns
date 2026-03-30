@@ -12,29 +12,27 @@ import std.core;
 #endif
 
 struct FileDataEntry {
-    u32 nameOffset;
-    char name[] @ nameOffset;
-    u32 folderOffset;
-    char folder[] @ folderOffset;
-    le u32 fileDataOffset;
-    padding[8];
-    u32 sampleRate;
-    u32 fileSize;
-    u8 data[fileSize] @ fileDataOffset;
-    #ifdef __IMHEX__
-        hex::core::add_virtual_file(std::string::to_string(name) + ".binka", data);
-    #endif
+  u32 folderOffset;
+  char folder[] @ folderOffset +  parent.entryOffset;
+  u32 nameOffset;
+  char name[] @ nameOffset;
+  le u32 fileDataOffset;
+  padding[8];
+  u32 sampleRate;
+  u32 fileSize;
+  u8 data[fileSize] @ fileDataOffset;
+  #ifdef __IMHEX__
+    hex::core::add_virtual_file(std::string::to_string(name) + ".binka", data);
+  #endif
 };
 
 struct Index2Entry {
-    u32 entryOffset;
     u32 fStructureOffset;
+    u32 entryOffset;
     FileDataEntry fileDataEntry @ entryOffset;
 };
 
 struct MsscmpEntry {
-    char name[12];
-    Index2Entry entries[parent.header.index2EntryCount] @ parent.header.index1LastEntryOffset + 4;
 };
 
 struct msscmp_header32 {
@@ -61,6 +59,7 @@ struct msscmp_header64 {
   u64 index1EntryCount;
   padding[4];
   u32 index2EntryCount;
+    char name[12];
 };
 
 struct MSSCMP {
@@ -80,7 +79,7 @@ struct MSSCMP {
   else
     msscmp_header64 header;
   
-  MsscmpEntry entry;
+  Index2Entry entries[header.index2EntryCount] @header.index1LastEntryOffset;
 };
 
 MSSCMP msscmp @ 0x00;
