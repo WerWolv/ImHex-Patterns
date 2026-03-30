@@ -37,31 +37,31 @@ struct MsscmpEntry {
     Index2Entry entries[parent.header.index2EntryCount] @ parent.header.index1LastEntryOffset + 4;
 };
 
-
-struct Header<T> {
-    padding[4]; // unk
-    T fileDataOffset;
-    padding[8]; // unk
-    T index1Offset;
-    T index1LastEntryOffset;
-    if (sizeof(T) == 4)
-        padding[8];
-    else
-        padding[16];
-
-    T unkOffset;
-    T index1EntryCount;
-
-    if (sizeof(T) == 4)
-        padding[8];
-    else
-        padding[4];
-
-    u32 index2EntryCount;
+struct msscmp_header32 {
+  padding[4]; // unk
+  u32 fileDataOffset;
+  padding[8]; // unk
+  u32 index1Offset;
+  u32 index1LastEntryOffset;
+  padding[8];
+  u32 unkOffset;
+  u32 index1EntryCount;
+  padding[8];
+  u32 index2EntryCount;
 };
 
-using OldGenHeader = Header<u32>;
-using NewGenHeader = Header<u64>;
+struct msscmp_header64 {
+  padding[4]; // unk
+  u64 fileDataOffset;
+  padding[8]; // unk
+  u64 index1Offset;
+  u64 index1LastEntryOffset;
+  padding[16];
+  u64 unkOffset;
+  u64 index1EntryCount;
+  padding[4];
+  u32 index2EntryCount;
+};
 
 struct MSSCMP {
   u32  check1 @ 0x18 [[hidden]];
@@ -76,9 +76,9 @@ struct MSSCMP {
     std::error("Magic does not match BANK or KNAB");
 
   if (check1 == check2)
-    OldGenHeader header;
+    msscmp_header32 header;
   else
-    NewGenHeader header;
+    msscmp_header64 header;
   
   MsscmpEntry entry;
 };
