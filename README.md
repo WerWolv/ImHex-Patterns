@@ -51,6 +51,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | BLF | | [`patterns/blf.hexpat`](patterns/blf.hexpat) | Vector BLF Frame Logging Files |
 | BMP  | `image/bmp` | [`patterns/bmp.hexpat`](patterns/bmp.hexpat) | OS2/Windows Bitmap files |
 | BIN  | | [`patterns/selinux.hexpat`](patterns/selinux.pat) | SE Linux modules |
+| BINK Container | `video/vnd.radgamettools.bink` | [`patterns/bink_container.hexpat`](patterns/bink_container.hexpat) | [RAD Game Tools Bink Video Container files](https://en.wikipedia.org/wiki/Bink_Video) |
 | BINKA  | | [`patterns/binka.hexpat`](patterns/binka.pat) | RAD Game Tools Bink Audio (BINKA) files |
 | BSON | `application/bson` | [`patterns/bson.hexpat`](patterns/bson.hexpat) | BSON (Binary JSON) format |
 | bplist | `application/x-bplist` | [`patterns/bplist.hexpat`](patterns/bplist.hexpat) | Apple's binary property list format (bplist) |
