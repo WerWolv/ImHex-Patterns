@@ -42,7 +42,7 @@ namespace auto type {
     namespace impl {
 
         fn format_time_t(time64_t value) {
-            return builtin::std::time::format_tt_locale(value);
+            return builtin::std::time::format_tt(value);
         };
 
         fn format_dosdate(u16 value) {
