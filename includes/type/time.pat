@@ -46,11 +46,11 @@ namespace auto type {
         };
 
         fn format_dosdate(u16 value) {
-            return std::time::format_dos_date(std::time::to_dos_date(value));
+            return builtin::std::time::format_dos_date(value);
         };
 
         fn format_dostime(u16 value) {
-            return std::time::format_dos_time(std::time::to_dos_time(value));
+            return builtin::std::time::format_dos_time(value);
         };
 
         fn format_filetime_as_unix(u64 value) {
