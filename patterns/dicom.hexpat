@@ -117,9 +117,7 @@ struct Element {
             u32 limit = $ + length;
             Element value[while ($ < limit)];
         }
-        return;
-    }
-    if (tag_value(tag) == Item) {
+    } else if (tag_value(tag) == Item) {
         // sequence Item or encapsulated Pixel Data fragment
         if (tag_value(parent.tag) == PixelData) {
             // Pixel Data fragment
@@ -137,29 +135,27 @@ struct Element {
             u32 limit = $ + length;
             Element value[while ($ < limit)];
         }
-        return;
-    }
-    if (tag_value(tag) == ItemDelimitationItem || tag_value(tag) == SequenceDelimitationItem) {
+    } else if (tag_value(tag) == ItemDelimitationItem || tag_value(tag) == SequenceDelimitationItem) {
         std::assert(length == 0, "delimitation items should have zero length");
         break;
-    }
-    if (length == UNDEFINED_LENGTH) {
+    } else if (length == UNDEFINED_LENGTH) {
         std::error(std::format("expected defined length for {} [{}]", tag, vr));
-    }
-    match (vr) {
-        ("AE"|"AS"|"CS"|"DA"|"DS"|"DT"|"IS"|"LO"|"PN"|"SH"|"TM"|"UC"|"UI"): StringValues value;
-        ("AT"): Values<Tag> value;
-        ("FL"|"OF"): Values<float> value;
-        ("FD"|"OD"): Values<double> value;
-        ("LT"|"ST"|"UR"|"UT"): char value[length];
-        ("OB"|"UN"): std::mem::Bytes<length> value;
-        ("OL"|"UL"): Values<u32> value;
-        ("OV"|"UV"): Values<u64> value;
-        ("OW"|"US"): Values<u16> value;
-        ("SL"): Values<s32> value;
-        ("SS"): Values<s16> value;
-        ("SV"): Values<s64> value;
-        (_): std::mem::Bytes<length> value;
+    } else {
+        match (vr) {
+            ("AE"|"AS"|"CS"|"DA"|"DS"|"DT"|"IS"|"LO"|"PN"|"SH"|"TM"|"UC"|"UI"): StringValues value;
+            ("AT"): Values<Tag> value;
+            ("FL"|"OF"): Values<float> value;
+            ("FD"|"OD"): Values<double> value;
+            ("LT"|"ST"|"UR"|"UT"): char value[length];
+            ("OB"|"UN"): std::mem::Bytes<length> value;
+            ("OL"|"UL"): Values<u32> value;
+            ("OV"|"UV"): Values<u64> value;
+            ("OW"|"US"): Values<u16> value;
+            ("SL"): Values<s32> value;
+            ("SS"): Values<s16> value;
+            ("SV"): Values<s64> value;
+            (_): std::mem::Bytes<length> value;
+        }
     }
 } [[format_read("format_element")]];
 
