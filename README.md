@@ -200,6 +200,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | sup | | [`patterns/sup.hexpat`](patterns/sup.hexpat) | PGS Subtitle |
 | SPC | | [`patterns/spc.hexpat`](patterns/spc.hexpat) | Super Nintendo Entertainment System SPC-700 dump file |
 | SPIRV | | [`patterns/spirv.hexpat`](patterns/spirv.hexpat) | SPIR-V header and instructions |
+| Spore EAPd Resource | | [`patterns/Spore/spore-pdr.hexpat`](patterns/Spore/spore-pdr.hexpat) | Spore EAPd Resource (Binary Patch) |
 | STDF | | [`patterns/stdfv4.hexpat`](patterns/stdfv4.hexpat) | Standard test data format for IC testers |
 | STL | `model/stl` | [`patterns/stl.hexpat`](patterns/stl.hexpat) | STL 3D Model format |
 | StuffItV5 | `application/x-stuffit` | [`patterns/sit5.hexpat`](patterns/sit5.hexpat) | StuffIt V5 archive |
