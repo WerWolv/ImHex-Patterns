@@ -2,6 +2,7 @@
 #pragma description Minecraft NBT
 
 import std.sys;
+import std.mem;
 
 #pragma endian big
 
@@ -73,7 +74,7 @@ struct Element {
 };
 
 struct NBT {
-    Element element[while(true)] [[inline]];
+    Element element[while(!std::mem::eof())] [[inline]];
 };
 
 NBT nbt @ 0x00;
