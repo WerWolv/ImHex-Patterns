@@ -5,11 +5,12 @@
 
 import std.io;
 import std.mem;
+import type.base;
 
 #define VTOR	0x00000000
 #define EXTERNAL_INTERRUPT_COUNT	64
 
-using Address = u32;
+using Address = type::Hex<u32>;
 
 struct Exceptions {
 	Address reset [[name("Reset Handler")]];
