@@ -285,13 +285,21 @@ enum FIELDTYPE:u8 {
     Used by Numeric fields - has a s32 value indicating the minimum/maximum number allowed in the field
     Negative values only seen on AC/THAC0 numeric fields which have the SetACTHAC0 control on it
 
-    Art (0x3A-43):
+    Picture (0x3A-3F):
     Used by Select fields - These are identifiers for the image types to include in the selection window displayed
     when the button is clicked - Multiple types are allowed - These are always listed first and are added until another
-    non-Art property type is hit - Note: while Sprites may be added to an event, they are suppressed in Overland maps
+    non-Picture property type is hit - Note: while Sprites may be added to an event, they are suppressed in Overland maps
+    
+    Note:  Picture names and types are defined in STRG.GLB data set 1
+
+    Art (0x3A-43):
+    Used by Select fields - Same as Picture, these are identifiers for the image types to include in the selection window
+    displayed when the button is clicked - Multiple types are not allowed, if multiple added, the last type is what is returned
+    
+    Note:  Art names and types are defined in STRG.GLB data set 2
 
     Select (0x44/4A-4F):
-    Used by Select field - Same as Art, however, these are always single types
+    Used by Select field - Same as Picture/Art, however, these are always single types
 
     String: Length (0x45):
     Used by String type, sets the maximum number of characters allowed for the string - string box is adjusted to match
@@ -317,15 +325,15 @@ enum PROPERTYTYPE:u8 {
     List_Item = 55,
     Value__Min = 56,
     Value__Max = 57,
-    Art__Small = 58,
-    Art__Sprite = 59,
-    Art__Icon_Monster = 60,
-    Art__Icon_NPC = 61,
-    Art__Big = 62,
-    Art__Map = 63,
-    Art__Tile_Indoor = 64,
-    Art__Tile_Outdoor = 65,
-    Art__Wall = 66,
+    Picture__Picture = 58,
+    Picture__Sprite = 59,
+    Picture__Combat_Icon_Monster = 60,
+    Picture__Combat_Icon_NPC = 61,
+    Picture__Big_Picture = 62,
+    Picture__Map = 63,
+    Art__Dungeon = 64,
+    Art__Wilderness = 65,
+    Art__Wall_Set = 66,
     Art__Backdrop = 67,
     Select__Event = 68,
     String__Length = 69,
@@ -334,10 +342,10 @@ enum PROPERTYTYPE:u8 {
     Default__u32 = 72,
     Default__String = 73,
     Select__Module = 74,
-    Select__Shop = 75,
+    Select__Item_Kind = 75,
     Select__Item = 76,
-    Select__Effect = 77,
-    Select__ItemKeyQuest = 78,
+    Select__Special_Effect = 77,
+    Select__Variable = 78,
     Select__Spell = 79
 };
 // Note: double __ in enum names replaced as ": " to make the displayed name look nice :)
@@ -458,26 +466,26 @@ fn FormatStoreBit (ref auto Bits) {
     return OutString;
 };
 
-// Art select types allow multiple types to be added to a field so concatenate to make look nice :P
+// Picture select types allow multiple types to be added to a field so concatenate to make look nice :P
 fn GetSelectType (auto SelectType) {
     u8 SelectCount = std::core::member_count(SelectType);
-    str SelectList = Between(SelectType[0], 58, 67) ? "Art: " : "";
+    str SelectList = Between(SelectType[0], 58, 63) ? "Picture: " : "";
 
 // ENUMs exist for this but doing a match is easier to concatenate and make clean display names
     for (u8 Index = 0, Index < SelectCount, Index = Index + 1) {
         match (SelectType[Index]) {
-        // Art types
+        // Picture types
             (58):   SelectList = SelectList + "Picture/";
             (59):   SelectList = SelectList + "Sprite/";
             (60):   SelectList = SelectList + "Combat Icon (Monster)/";
             (61):   SelectList = SelectList + "Combat Icon (NPC)/";
             (62):   SelectList = SelectList + "Big Picture/";
             (63):   SelectList = SelectList + "Map/";
+       // These are never combined but still including "/" at end to simplify return            
             (64):   SelectList = SelectList + "Dungeon/";
             (65):   SelectList = SelectList + "Wilderness/";
             (66):   SelectList = SelectList + "Wall Set/";
             (67):   SelectList = SelectList + "Backdrop/";
-        // These are never combined but still including "/" at end to simplify return
             (68):   SelectList = SelectList + "Event/";
             (74):   SelectList = SelectList + "Module/";
             (75):   SelectList = SelectList + "Item Kind/";
