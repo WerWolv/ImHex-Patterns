@@ -2823,7 +2823,7 @@ struct ENCR {
                 (18|19,0):  IMG_PIC_SMALLSPRITE PlayerSees [[name("Player Sees")]];
                 (18|19,1):  IMG_PIC_SMALL PlayerSees [[name("Player Sees")]];
                 (20,0):     IMG_PIC_ALL PlayerSees [[name("Player Sees")]];
-                (21,1):     IMG_PIC_NOSPRITE PlayerSees [[name("Player Sees")]];
+                (20,1):     IMG_PIC_NOSPRITE PlayerSees [[name("Player Sees")]];
             }
             EVENT_BYTE_07<EventTypeID> Byte07;
         // Flag "always" checks for WhoTries once to make the rest a little cleaner
@@ -2939,12 +2939,12 @@ struct ENCR {
     // TavernTales
         (37): {
             padding[4];
-            u16 Tale1 [[sealed,name("Tale 1"),format("GetString")]];
-            u16 Tale2 [[sealed,name("Tale 2"),format("GetString")]];
-            u16 Tale3 [[sealed,name("Tale 3"),format("GetString")]];
-            u16 Tale4 [[sealed,name("Tale 4"),format("GetString")]];
-            u16 Tale5 [[sealed,name("Tale 5"),format("GetString")]];
-            u16 Tale6 [[sealed,name("Tale 6"),format("GetString")]];
+            u16 TavernTale1 [[sealed,name("Tale 1"),format("GetString")]];
+            u16 TavernTale2 [[sealed,name("Tale 2"),format("GetString")]];
+            u16 TavernTale3 [[sealed,name("Tale 3"),format("GetString")]];
+            u16 TavernTale4 [[sealed,name("Tale 4"),format("GetString")]];
+            u16 TavernTale5 [[sealed,name("Tale 5"),format("GetString")]];
+            u16 TavernTale6 [[sealed,name("Tale 6"),format("GetString")]];
         }
     // SpecialItem
         (38): {
