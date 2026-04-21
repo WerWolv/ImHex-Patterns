@@ -55,88 +55,6 @@ enum EUnrealEngineObjectUE5Version : u32 {
     AUTOMATIC_VERSION = EUnrealEngineObjectUE5Version::AUTOMATIC_VERSION_PLUS_ONE - 1
 };
 
-// ====== Save Game Header types ======
-
-struct FString {
-    s32 length;
-    if (length > 0) {
-        // ASCII, treated as UTF-8
-        try {
-            char data[length - 1];
-        } catch {
-            std::error(std::format(
-                "Invalid string length 0x{:x}",
-                length));
-        }
-        type::Magic<"\x00"> terminator;
-    } else if (length < 0) {
-        // UTF-16
-        char16 data[-length - 1];
-        type::Magic<"\x00\x00"> terminator;
-    } else {
-        // Null
-    }
-} [[sealed, format("format_fstring")]];
-
-fn format_fstring(FString string) {
-    return string.length == 0
-        ? "null"
-        : std::format("\"{}\"", string.data);
-};
-
-struct FEngineVersion {
-    u16 major, minor, patch;
-    u32 changeList;
-    FString branch;
-} [[sealed, format("format_fengineversion")]];
-
-fn format_fengineversion(FEngineVersion version) {
-    const str branch = std::string::replace(version.branch.data, "+", "/");
-    return std::format(
-        "{}.{}.{}-{} {}",
-        version.major, version.minor, version.patch,
-        version.changeList,
-        branch);
-};
-
-struct FCustomVersion {
-    u128 key;
-    s32 value;
-} [[sealed, name(std::format("0x{:032X}", key)), format("format_fcustomversion")]];
-
-fn format_fcustomversion(FCustomVersion version) {
-    return version.value;
-};
-
-struct FSaveGameHeader {
-    type::Magic<"GVAS"> fileTypeTag;
-    SaveGameFileVersion saveGameFileVersion;
-    EUnrealEngineObjectUE4Version packageFileVersion;
-    if (packageFileVersion < EUnrealEngineObjectUE4Version::VER_UE4_OLDEST_LOADABLE_PACKAGE) {
-        std::error(std::format(
-            "Package file version {} is too old",
-            u32(packageFileVersion)));
-    }
-    if (saveGameFileVersion >= SaveGameFileVersion::PackageFileSummaryVersionChange) {
-        EUnrealEngineObjectUE5Version packageFileVersionUE5;
-        if (packageFileVersionUE5 >= EUnrealEngineObjectUE5Version::AUTOMATIC_VERSION) {
-            std::warning(std::format(
-                "Package file version UE5 {} not recognized, attempting to load...",
-                u32(packageFileVersionUE5)));
-        }
-    }
-    FEngineVersion engineVersion;
-    if (saveGameFileVersion >= SaveGameFileVersion::AddedCustomVersions) {
-        s32 customVersionFormat, customVersionLength;
-        FCustomVersion customVersions[customVersionLength] [[single_color]];
-    }
-    FString saveGameClassName;
-};
-
-// ====== Save Game Header ======
-
-FSaveGameHeader header @ 0;
-
 // ====== Custom version constants ======
 
 /// Custom serialization version for changes made in //UE5/Release-* stream
@@ -211,8 +129,102 @@ enum EEditorObjectVersion : s32 {
     MeshDescriptionRemovedHoles,
     ChangedWidgetComponentWindowVisibilityDefault,
     CultureInvariantTextSerializationKeyStability,
+    ScrollBarThicknessChange,
+    RemoveLandscapeHoleMaterial,
+    MeshDescriptionTriangles,
+    ComputeWeightedNormals,
+    SkeletalMeshBuildRefactor,
+    SkeletalMeshMoveEditorSourceDataToPrivateAsset,
+    NumberParsingOptionsNumberLimitsAndClamping,
+    SkeletalMeshSourceDataSupport16bitOfMaterialNumber,
 };
 const u128 GUID_EDITOR = 0x2E46BB41A231DA0BF49442E9E4B068ED;
+
+// ====== Save Game Header types ======
+
+struct FString {
+    s32 length;
+    if (length > 0) {
+        // ASCII, treated as UTF-8
+        try {
+            char data[length - 1];
+        } catch {
+            std::error(std::format(
+                "Invalid string length 0x{:x}",
+                length));
+        }
+        type::Magic<"\x00"> terminator;
+    } else if (length < 0) {
+        // UTF-16
+        char16 data[-length - 1];
+        type::Magic<"\x00\x00"> terminator;
+    } else {
+        // Null
+    }
+} [[sealed, format("format_fstring")]];
+
+fn format_fstring(FString string) {
+    return string.length == 0
+        ? "null"
+        : std::format("\"{}\"", string.data);
+};
+
+struct FEngineVersion {
+    u16 major, minor, patch;
+    u32 changeList;
+    FString branch;
+} [[sealed, format("format_fengineversion")]];
+
+fn format_fengineversion(FEngineVersion version) {
+    const str branch = std::string::replace(version.branch.data, "+", "/");
+    return std::format(
+        "{}.{}.{}-{} {}",
+        version.major, version.minor, version.patch,
+        version.changeList,
+        branch);
+};
+
+struct FCustomVersion {
+    u128 key;
+    match (key) {
+        (GUID_UE5_RELEASE_STREAM): EUE5ReleaseStreamObjectVersion value;
+        (GUID_EDITOR): EEditorObjectVersion value;
+        (_): s32 value;
+    }
+} [[sealed, name(std::format("0x{:032X}", key)), format("format_fcustomversion")]];
+
+fn format_fcustomversion(FCustomVersion version) {
+    return version.value;
+};
+
+struct FSaveGameHeader {
+    type::Magic<"GVAS"> fileTypeTag;
+    SaveGameFileVersion saveGameFileVersion;
+    EUnrealEngineObjectUE4Version packageFileVersion;
+    if (packageFileVersion < EUnrealEngineObjectUE4Version::VER_UE4_OLDEST_LOADABLE_PACKAGE) {
+        std::error(std::format(
+            "Package file version {} is too old",
+            u32(packageFileVersion)));
+    }
+    if (saveGameFileVersion >= SaveGameFileVersion::PackageFileSummaryVersionChange) {
+        EUnrealEngineObjectUE5Version packageFileVersionUE5;
+        if (packageFileVersionUE5 >= EUnrealEngineObjectUE5Version::AUTOMATIC_VERSION) {
+            std::warning(std::format(
+                "Package file version UE5 {} not recognized, attempting to load...",
+                u32(packageFileVersionUE5)));
+        }
+    }
+    FEngineVersion engineVersion;
+    if (saveGameFileVersion >= SaveGameFileVersion::AddedCustomVersions) {
+        s32 customVersionFormat, customVersionLength;
+        FCustomVersion customVersions[customVersionLength] [[single_color]];
+    }
+    FString saveGameClassName;
+};
+
+// ====== Save Game Header ======
+
+FSaveGameHeader header @ 0;
 
 // ====== Custom version logic ======
 
