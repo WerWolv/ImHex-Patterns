@@ -458,20 +458,16 @@ fn format_typetreenode(TypeTreeNode node) {
 };
 
 using Properties;
-struct StructPropertyValue<auto type> {
-    match (type) {
-        ("DateTime"): u64 value;
-        ("Guid"): u128 value;
-        ("Rotator"): Rotator value;
-        ("Vector"): Vector value;
-        ("Quat"): Quat value;
-        (_): Properties value;
-    }
-} [[inline]];
-
-struct SafeStructPropertyValue<auto type, auto size> {
+struct StructPropertyValue<auto type, auto size> {
     try {
-        StructPropertyValue<type> value;
+        match (type) {
+            ("DateTime"): u64 value;
+            ("Guid"): u128 value;
+            ("Rotator"): Rotator value;
+            ("Vector"): Vector value;
+            ("Quat"): Quat value;
+            (_): Properties value [[inline]];
+        }
     } catch {
         std::warning(std::format(
             "StructPropertyValue parsing failed for {}",
@@ -479,7 +475,7 @@ struct SafeStructPropertyValue<auto type, auto size> {
         // Wrap the unknown data
         std::mem::Bytes<size> value;
     }
-} [[inline]];
+};
 
 struct FPropertyTag {
     const auto dollar = $;
@@ -498,7 +494,7 @@ struct FPropertyTag {
         TypeTreeNode type;
         u32 size;
         if (flags.hasArrayIndex) {
-           u32  arrayIndex;
+            u32 arrayIndex;
         }
         if (flags.hasPropertyGuid) {
             u128 guid;
@@ -514,15 +510,7 @@ struct FPropertyTag {
         match (type.data) {
             ("ArrayProperty"): FString propertyType;
             ("BoolProperty"): bool value;
-            ("ByteProperty"): {
-                FString name;
-                type::Magic<"\x00"> terminator;
-                match (size) {
-                    (0|1): u8 value;
-                    (_): FString value;
-                }
-                std::error("Not implemented");
-            }
+            ("ByteProperty"): FString enumName;
             ("EnumProperty"): FString enumType;
             ("MapProperty"): {
                 FString keyType;
@@ -596,6 +584,12 @@ struct FPropertyTag {
             }
         }
         ("BoolProperty"): {}
+        ("ByteProperty"): {
+            match (size) {
+                (0|1): u8 value;
+                (_): FString value;
+            }
+        }
         ("DoubleProperty"): double value;
         ("FloatProperty"): float value;
         ("IntProperty"): s32 value;
@@ -608,7 +602,7 @@ struct FPropertyTag {
         ("SoftObjectProperty"): std::mem::Bytes<size> value;
         ("EnumProperty" | "StrProperty" | "ObjectProperty"): FString value;
         ("MapProperty" | "SetProperty"): std::mem::Bytes<size> value;
-        ("StructProperty"): SafeStructPropertyValue<propertyTagCompleteTypeName ? type.child[0].name.data : typeName.data, size> value;
+        ("StructProperty"): StructPropertyValue<propertyTagCompleteTypeName ? type.child[0].name.data : typeName.data, size> value;
         ("TextProperty"): {
             try {
                 FText value;
