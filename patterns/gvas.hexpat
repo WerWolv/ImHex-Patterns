@@ -91,9 +91,12 @@ struct FEngineVersion {
 } [[sealed, format("format_fengineversion")]];
 
 fn format_fengineversion(FEngineVersion version) {
-    return std::format("{}.{}.{}-{}+{}",
+    const str branch = std::string::replace(version.branch.data, "+", "/");
+    return std::format(
+        "{}.{}.{}-{} {}",
         version.major, version.minor, version.patch,
-        version.changeList, version.branch.data);
+        version.changeList,
+        branch);
 };
 
 struct FCustomVersion {
