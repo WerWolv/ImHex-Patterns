@@ -226,7 +226,7 @@ struct FSaveGameHeader {
 
 FSaveGameHeader header @ 0;
 
-// ====== Custom version logic ======
+// ====== Property serialization logic ======
 
 const bool propertyTagCompleteTypeName =
     (header.saveGameFileVersion >= SaveGameFileVersion::PackageFileSummaryVersionChange) &&
@@ -583,7 +583,11 @@ struct FPropertyTag {
                 }
             }
         }
-        ("BoolProperty"): {}
+        ("BoolProperty"): {
+            if (propertyTagCompleteTypeName) {
+                const bool value = flags.boolTrue;
+            }
+        }
         ("ByteProperty"): {
             match (size) {
                 (0|1): u8 value;
@@ -593,8 +597,12 @@ struct FPropertyTag {
         ("DoubleProperty"): double value;
         ("FloatProperty"): float value;
         ("IntProperty"): s32 value;
+        ("Int8Property"): s8 value;
+        ("Int16Property"): s16 value;
         ("Int64Property"): s64 value;
+        ("UInt16Property"): u16 value;
         ("UInt32Property"): u32 value;
+        ("UInt64Property"): u64 value;
         ("DelegateProperty"): Delegate value;
         ("MulticastInlineDelegateProperty"): MulticastInlineDelegate value;
         ("MulticastSparseDelegateProperty"): MulticastSparseDelegate value;
@@ -651,3 +659,5 @@ struct Properties {
 
 Properties properties @ $;
 type::Magic<"\x00\x00\x00\x00"> footer @ $;
+
+std::assert_warn(std::mem::eof(), std::format("Expected EOF @ 0x{:04X}", $));
