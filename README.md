@@ -239,6 +239,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ZIM  | | [`patterns/zim.hexpat`](patterns/zim.hexpat) | [ZIM](https://openzim.org) file format |
 | ZIP  | `application/zip` | [`patterns/zip.hexpat`](patterns/zip.hexpat) | End of Central Directory Header, Central Directory File Headers |
 | ZLIB | `application/zlib` | [`patterns/zlib.hexpat`](patterns/zlib.hexpat) | ZLIB compressed data format |
+| Zone | | [`patterns/zone.hexpat`](patterns/zone.hexpat) | Minecraft Infdev 20100624 Zone file |
 | ZSTD | `application/zstd` | [`patterns/zstd.hexpat`](patterns/zstd.hexpat) | Zstandard compressed data format |
 | MOD | `3d-model/mod` | [`patterns/DMC3HD-Mod.hexpat`](patterns/dmc3_hd_mod.hexpat) | 3D Model files used in Devil May Cry 3 HD Collection |
 | CBM BASIC | | [`commodore_basic.hexpat`](patterns/commodore_basic.hexpat) | Commodore BASIC |
