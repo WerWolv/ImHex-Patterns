@@ -108,6 +108,13 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | GGUF | | [`patterns/gguf.hexpat`](patterns/gguf.hexpat) | GGML Inference Models |
 | GIF | `image/gif` | [`patterns/gif.hexpat`](patterns/gif.hexpat) | GIF image files |
 | GLTF | `model/gltf-binary` | [`patterns/gltf.hexpat`](patterns/gltf.hexpat) | GL Transmission Format binary 3D model file |
+| Gold Box Games: Character | | [`patterns/GoldBox/GB_CHR.hexpat`](patterns/GoldBox/GB_CHR.hexpat) | Gold Box Game Character/Monster files |
+| Gold Box Games: Executable | | [`patterns/GoldBox/GB_EXE.hexpat`](patterns/GoldBox/GB_EXE.hexpat) | Gold Box Game Executables |
+| Gold Box Games: Item Base | | [`patterns/GoldBox/GB_ITM-Base.hexpat`](patterns/GoldBox/GB_ITM-Base.hexpat) | Gold Box Game Item Base files |
+| Gold Box Games: Item Record | | [`patterns/GoldBox/GB_ITM-Record.hexpat`](patterns/GoldBox/GB_ITM-Record.hexpat) | Gold Box Game Item Record files |
+| Gold Box Games: Map | | [`patterns/GoldBox/GB_GEO.hexpat`](patterns/GoldBox/GB_GEO.hexpat) | Gold Box Game Map files |
+| Gold Box Games: Unlimited Adventures Script | | [`patterns/GoldBox/GB_UA_SCRIPT.hexpat`](patterns/GoldBox/GB_UA_SCRIPT.hexpat) | Gold Box Unlimited Adventures SCRIPT file |
+| Gold Box Games: Vault | | [`patterns/GoldBox/GB_VLT.hexpat`](patterns/GoldBox/GB_VLT.hexpat) | Gold Box Game Vault files |
 | GZIP | `application/gzip` | [`patterns/gzip.hexpat`](patterns/gzip.hexpat) | GZip compressed data format |
 | Halo Tag || [`patterns/hinf_tag.hexpat`](patterns/hinf_tag.hexpat) | Halo Infinite Tag Files |
 | Halo Module || [`patterns/hinf_module.hexpat`](patterns/hinf_module.hexpat) | Halo Infinite Module Archive Files |
