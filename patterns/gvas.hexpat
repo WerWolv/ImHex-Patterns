@@ -466,7 +466,7 @@ struct StructPropertyValue<auto type, auto size> {
             ("Rotator"): Rotator value;
             ("Vector"): Vector value;
             ("Quat"): Quat value;
-            (_): Properties value [[inline]];
+            (_): Properties value;
         }
     } catch {
         std::warning(std::format(
@@ -475,7 +475,7 @@ struct StructPropertyValue<auto type, auto size> {
         // Wrap the unknown data
         std::mem::Bytes<size> value;
     }
-};
+} [[inline]];
 
 struct FPropertyTag {
     const auto dollar = $;
