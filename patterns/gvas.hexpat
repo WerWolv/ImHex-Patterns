@@ -531,9 +531,15 @@ struct FPropertyTag {
             u32 count;
             match (propertyTagCompleteTypeName ? type.child[0].name.data : propertyType.data) {
                 ("BoolProperty"): bool values[count];
-                ("ByteProperty"): std::mem::Bytes<count> values;
+                ("ByteProperty"): {
+                    if (count + 4 == size) {
+                       std::mem::Bytes<count> values;
+                    } else {
+                        FString values[count];
+                    }
+                }
                 ("DoubleProperty"): double values[count];
-                ("EnumProperty" | "StrProperty" | "NameProperty"): FString values[count];
+                ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString values[count];
                 ("FloatProperty"): float values[count];
                 ("IntProperty"): s32 values[count];
                 ("StructProperty"): {
