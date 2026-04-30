@@ -137,6 +137,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | LZNT1 | | [`patterns/lznt1.hexpat`](patterns/lznt1.hexpat) | LZNT1 compressed data format |
 | Mach-O | `application/x-mach-binary` | [`patterns/macho.hexpat`](patterns/macho.hexpat) | Mach-O executable |
 | MIDI | `audio/midi` | [`patterns/midi.hexpat`](patterns/midi.hexpat) | MIDI header, event fields provided |
+| MIFARE Classic 1K | `application/x-mifare-classic` | [`patterns/mifare/mifare-1k.hexpat`](patterns/mifare/mifare-1k.hexpat) | MIFARE Classic EV1 1K (MF1S50yyX/V1) |
+| MIFARE Classic 4K | `application/x-mifare-classic` | [`patterns/mifare/mifare-4k.hexpat`](patterns/mifare/mifare-4k.hexpat) | MIFARE Classic EV1 4K (MF1S70yyX/V1) |
 | MiniDump | `application/x-dmp` | [`patterns/minidump.hexpat`](patterns/minidump.hexpat) | Windows MiniDump files |
 | MO | | [`patterns/mo.hexpat`](patterns/mo.hexpat) | GNU Machine Object (MO) files containing translations for gettext |
 | mp4 | `video/mp4` | [`patterns/mp4.hexpat`](patterns/mp4.hexpat) | MPEG-4 Part 14 digital multimedia container format |
