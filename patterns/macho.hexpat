@@ -295,7 +295,21 @@ enum Command : u32 {
     Main = 0x28 | Command::ReqDyLd,
     DataInCode = 0x29,
     SourceVersion = 0x2A,
-    DyLibCodeSignDRS = 0x2B
+    DyLibCodeSignDRS = 0x2B,
+	EncryptionInfo64 = 0x2C,
+	LinkerOption = 0x2D,
+	LinkerOptimizationHint = 0x2E,
+	VersionMinTvOS = 0x2F,
+	VersionMinWatchOS = 0x30,
+	Note = 0x31,
+	BuildVersion = 0x32,
+	DyldExportsTrie = 0x33 | Command::ReqDyLd,
+	DyldChainedFixups = 0x34 | Command::ReqDyLd,
+	FilesetEntry = 0x35 | Command::ReqDyLd,
+	AtomInfo = 0x36,
+	FunctionVariants = 0x37,
+	FunctionVariantFixups = 0x38,
+	TargetTriple = 0x39
 };
 
 struct CommandUUID {
