@@ -340,7 +340,7 @@ struct FTextHistory {
                     FString cultureInvariantString;
                 }
             } else {
-                FString cultureInvariantString;
+                const bool hasCultureInvariantString = false;
             }
         }
         (ETextHistoryType::Base): {
