@@ -249,7 +249,7 @@ const EEditorObjectVersion editorVersion = custom_version(GUID_EDITOR);
 const bool         includeAlwaysSign = editorVersion >= EEditorObjectVersion::AddedAlwaysSignNumberFormattingOption;
 const bool cultureInvariantStability = editorVersion >= EEditorObjectVersion::CultureInvariantTextSerializationKeyStability;
 
-// ====== Property serialization ======
+// ====== Text serialization ======
 
 enum TextHistoryType : u8 {
     None = 255,
@@ -397,6 +397,13 @@ fn format_ftext(FText text) {
     return text;
 };
 
+// ====== Struct serialization ======
+
+struct GameplayTagContainer {
+    u32 count;
+    FString tags[count];
+};
+
 struct Rotator {
     if (largeWorldCoordinates) {
         double pitch, yaw, roll;
@@ -424,6 +431,8 @@ struct Quat {
         float x, y, z, w;
     }
 };
+
+// ====== Property serialization ======
 
 struct Delegate {
     FString object, functionName;
@@ -467,6 +476,7 @@ struct StructPropertyValue<auto type, auto size> {
     try {
         match (type) {
             ("DateTime"): u64 value;
+            ("GameplayTagContainer"): GameplayTagContainer value;
             ("Guid"): u128 value;
             ("Rotator"): Rotator value;
             ("Vector"): Vector value;
@@ -560,6 +570,7 @@ struct FPropertyTag {
                     }
                     try {
                         match (propertyTagCompleteTypeName ? type.child[0].child[0].name.data : structName.data) {
+                            ("GameplayTagContainer"): GameplayTagContainer values[count];
                             ("Guid"): u128 values[count];
                             ("Rotator"): Rotator values[count];
                             ("Vector"): Vector values[count];
