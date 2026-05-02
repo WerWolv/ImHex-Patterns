@@ -256,14 +256,23 @@ enum EFormatArgumentType: u8 {
     Float,
     Double,
     Text,
+    Gender,
 };
 
 using FText;
 struct FFormatArgumentValue {
     EFormatArgumentType type;
     match (type) {
+        (EFormatArgumentType::Double): double value;
+        (EFormatArgumentType::Float): float value;
         (EFormatArgumentType::Int): {
-            // FUE5ReleaseStreamObjectVersion::TextFormatArgumentData64bitSupport
+            if (text64bitSupport) {
+                s64 value;
+            } else {
+                s32 value;
+            }
+        }
+        (EFormatArgumentType::UInt | EFormatArgumentType::Gender): {
             if (text64bitSupport) {
                 u64 value;
             } else {
