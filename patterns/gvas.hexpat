@@ -405,6 +405,10 @@ struct Rotator {
     }
 };
 
+struct Vector2D {
+    double x, y;
+};
+
 struct Vector {
     if (largeWorldCoordinates) {
         double x, y, z;
@@ -466,6 +470,7 @@ struct StructPropertyValue<auto type, auto size> {
             ("Guid"): u128 value;
             ("Rotator"): Rotator value;
             ("Vector"): Vector value;
+            ("Vector2D"): Vector2D value;
             ("Quat"): Quat value;
             (_): Properties value;
         }
@@ -558,6 +563,7 @@ struct FPropertyTag {
                             ("Guid"): u128 values[count];
                             ("Rotator"): Rotator values[count];
                             ("Vector"): Vector values[count];
+                            ("Vector2D"): Vector2D values[count];
                             ("Quat"): Quat values[count];
                             (_): Properties values[count];
                         }
