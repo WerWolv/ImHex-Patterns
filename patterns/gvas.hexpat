@@ -399,9 +399,31 @@ fn format_ftext(FText text) {
 
 // ====== Struct serialization ======
 
+struct DateTime {
+    u64 ticks;
+};
+
 struct GameplayTagContainer {
     u32 count;
     FString tags[count];
+};
+
+using Guid = u128;
+
+struct IntPoint {
+    s32 x, y;
+};
+
+struct LinearColor {
+    float r, g, b, a;
+};
+
+struct Quat {
+    if (largeWorldCoordinates) {
+        double x, y, z, w;
+    } else {
+        float x, y, z, w;
+    }
 };
 
 struct Rotator {
@@ -410,6 +432,10 @@ struct Rotator {
     } else {
         float pitch, yaw, roll;
     }
+};
+
+struct Timespan {
+    u64 ticks;
 };
 
 struct Vector2D {
@@ -421,14 +447,6 @@ struct Vector {
         double x, y, z;
     } else {
         float x, y, z;
-    }
-};
-
-struct Quat {
-    if (largeWorldCoordinates) {
-        double x, y, z, w;
-    } else {
-        float x, y, z, w;
     }
 };
 
@@ -475,13 +493,16 @@ using Properties;
 struct StructPropertyValue<auto type, auto size> {
     try {
         match (type) {
-            ("DateTime"): u64 value;
+            ("DateTime"): DateTime value;
             ("GameplayTagContainer"): GameplayTagContainer value;
-            ("Guid"): u128 value;
+            ("Guid"): Guid value;
+            ("IntPoint"): IntPoint value;
+            ("LinearColor"): LinearColor value;
+            ("Quat"): Quat value;
             ("Rotator"): Rotator value;
+            ("Timespan"): Timespan value;
             ("Vector"): Vector value;
             ("Vector2D"): Vector2D value;
-            ("Quat"): Quat value;
             (_): Properties value;
         }
     } catch {
@@ -570,12 +591,16 @@ struct FPropertyTag {
                     }
                     try {
                         match (propertyTagCompleteTypeName ? type.child[0].child[0].name.data : structName.data) {
+                            ("DateTime"): DateTime values[count];
                             ("GameplayTagContainer"): GameplayTagContainer values[count];
-                            ("Guid"): u128 values[count];
+                            ("Guid"): Guid values[count];
+                            ("IntPoint"): IntPoint values[count];
+                            ("LinearColor"): LinearColor values[count];
+                            ("Quat"): Quat values[count];
                             ("Rotator"): Rotator values[count];
+                            ("Timespan"): Timespan values[count];
                             ("Vector"): Vector values[count];
                             ("Vector2D"): Vector2D values[count];
-                            ("Quat"): Quat values[count];
                             (_): Properties values[count];
                         }
                     } catch {
