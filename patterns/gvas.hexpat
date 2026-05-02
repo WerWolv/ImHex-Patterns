@@ -242,10 +242,11 @@ fn custom_version(u128 guid) {
 };
 
 const EUE5ReleaseStreamObjectVersion releaseVersion = custom_version(GUID_UE5_RELEASE_STREAM);
+const bool      text64bitSupport = releaseVersion >= EUE5ReleaseStreamObjectVersion::TextFormatArgumentData64bitSupport;
 const bool largeWorldCoordinates = releaseVersion >= EUE5ReleaseStreamObjectVersion::LargeWorldCoordinates;
-const bool text64bitSupport      = releaseVersion >= EUE5ReleaseStreamObjectVersion::TextFormatArgumentData64bitSupport;
 
 const EEditorObjectVersion editorVersion = custom_version(GUID_EDITOR);
+const bool         includeAlwaysSign = editorVersion >= EEditorObjectVersion::AddedAlwaysSignNumberFormattingOption;
 const bool cultureInvariantStability = editorVersion >= EEditorObjectVersion::CultureInvariantTextSerializationKeyStability;
 
 // ====== Property serialization ======
@@ -312,7 +313,7 @@ enum RoundingMode : s8 {
 };
 
 struct NumberFormattingOptions {
-    u32 always_include_sign;
+    if (includeAlwaysSign) u32 always_sign;
     u32 use_grouping;
     RoundingMode rounding_mode;
     s32 minimum_integral_digits;
