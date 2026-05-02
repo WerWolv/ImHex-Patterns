@@ -59,7 +59,6 @@ enum EUnrealEngineObjectUE5Version : u32 {
 
 /// Custom serialization version for changes made in //UE5/Release-* stream
 /// See: Engine/Source/Runtime/Core/Public/UObject/UE5ReleaseStreamObjectVersion.h
-/// See: Engine/Source/Runtime/Core/Public/UObject/UE5ReleaseStreamObjectVersions.inl
 enum EUE5ReleaseStreamObjectVersion : s32 {
     BeforeCustomVersionWasAdded = 0,
     ReflectionMethodEnum,
@@ -251,7 +250,61 @@ const bool cultureInvariantStability = editorVersion >= EEditorObjectVersion::Cu
 
 // ====== Text serialization ======
 
-enum TextHistoryType : u8 {
+enum EFormatArgumentType: u8 {
+    Int,
+    UInt,
+    Float,
+    Double,
+    Text,
+};
+
+using FText;
+struct FFormatArgumentValue {
+    EFormatArgumentType type;
+    match (type) {
+        (EFormatArgumentType::Int): {
+            // FUE5ReleaseStreamObjectVersion::TextFormatArgumentData64bitSupport
+            if (text64bitSupport) {
+                u64 value;
+            } else {
+                u32 value;
+            }
+        }
+        (EFormatArgumentType::Text): FText value;
+        (_): {
+            std::error(std::format(
+                "Unknown FormatArgumentValue type {} ({})",
+                type, u8(type)));
+        }
+    }
+};
+
+struct FFormatArgumentData {
+    FString name;
+    FFormatArgumentValue value;
+};
+
+enum ERoundingMode : s8 {
+    HalfToEven,
+    HalfFromZero,
+    HalfToZero,
+    FromZero,
+    ToZero,
+    ToNegativeInfinity,
+    ToPositiveInfinity,
+};
+
+struct FNumberFormattingOptions {
+    if (includeAlwaysSign) u32 alwaysSign;
+    u32 useGrouping;
+    ERoundingMode roundingMode;
+    s32 minimumIntegralDigits;
+    s32 maximumIntegralDigits;
+    s32 minimumFractionalDigits;
+    s32 maximumFractionalDigits;
+};
+
+enum ETextHistoryType : u8 {
     None = 255,
     Base = 0,
     NamedFormat,
@@ -268,64 +321,10 @@ enum TextHistoryType : u8 {
     TextGenerator,
 };
 
-enum FormatArgumentType: u8 {
-    Int,
-    UInt,
-    Float,
-    Double,
-    Text,
-};
-
-using FText;
-struct FormatArgumentValue {
-    FormatArgumentType type;
-    match (type) {
-        (FormatArgumentType::Int): {
-            // FUE5ReleaseStreamObjectVersion::TextFormatArgumentData64bitSupport
-            if (text64bitSupport) {
-                u64 value;
-            } else {
-                u32 value;
-            }
-        }
-        (FormatArgumentType::Text): FText value;
-        (_): {
-            std::error(std::format(
-                "Unknown FormatArgumentValue type {} ({})",
-                type, u8(type)));
-        }
-    }
-};
-
-struct FormatArgument {
-    FString key;
-    FormatArgumentValue value;
-};
-
-enum RoundingMode : s8 {
-    HalfToEven,
-    HalfFromZero,
-    HalfToZero,
-    FromZero,
-    ToZero,
-    ToNegativeInfinity,
-    ToPositiveInfinity,
-};
-
-struct NumberFormattingOptions {
-    if (includeAlwaysSign) u32 always_sign;
-    u32 use_grouping;
-    RoundingMode rounding_mode;
-    s32 minimum_integral_digits;
-    s32 maximum_integral_digits;
-    s32 minimum_fractional_digits;
-    s32 maximum_fractional_digits;
-};
-
 struct FTextHistory {
-    TextHistoryType type;
+    ETextHistoryType type;
     match (type) {
-        (TextHistoryType::None): {
+        (ETextHistoryType::None): {
             if (cultureInvariantStability) {
                 u32 hasCultureInvariantString;
                 if (hasCultureInvariantString) {
@@ -335,38 +334,38 @@ struct FTextHistory {
                 FString cultureInvariantString;
             }
         }
-        (TextHistoryType::Base): {
+        (ETextHistoryType::Base): {
             FString nameSpace;
             FString key;
             FString sourceString;
         }
-        // (TextHistoryType::NamedFormat): {}
-        // (TextHistoryType::OrderedFormat): {}
-        (TextHistoryType::ArgumentFormat): {
+        // (ETextHistoryType::NamedFormat): {}
+        // (ETextHistoryType::OrderedFormat): {}
+        (ETextHistoryType::ArgumentFormat): {
             FText sourceFormat;
             u32 argumentCount;
-            FormatArgument arguments[argumentCount];
+            FFormatArgumentData arguments[argumentCount];
         }
-        (TextHistoryType::AsNumber): {
-            FormatArgumentValue sourceValue;
+        (ETextHistoryType::AsNumber): {
+            FFormatArgumentValue sourceValue;
             u32 hasFormatOptions;
             if (hasFormatOptions) {
-                NumberFormattingOptions formatOptions;
+                FNumberFormattingOptions formatOptions;
             }
             FString targetCulture;
         }
-        // (TextHistoryType::AsPercent): {}
-        // (TextHistoryType::AsCurrency): {}
-        // (TextHistoryType::AsDate): {}
-        // (TextHistoryType::AsTime): {}
-        // (TextHistoryType::AsDateTime): {}
-        // (TextHistoryType::Transform): {}
-        (TextHistoryType::StringTableEntry): {
+        // (ETextHistoryType::AsPercent): {}
+        // (ETextHistoryType::AsCurrency): {}
+        // (ETextHistoryType::AsDate): {}
+        // (ETextHistoryType::AsTime): {}
+        // (ETextHistoryType::AsDateTime): {}
+        // (ETextHistoryType::Transform): {}
+        (ETextHistoryType::StringTableEntry): {
             FString tableId;
             FString key;
         }
-        // (TextHistoryType::TextGenerator): {}
-        // (TextHistoryType::RawText): {}
+        // (ETextHistoryType::TextGenerator): {}
+        // (ETextHistoryType::RawText): {}
         (_): {
             std::error(std::format(
                 "Unsupported TextHistory type {} ({})",
@@ -382,7 +381,7 @@ struct FText {
 
 fn format_ftext(FText text) {
     match (text.history.type) {
-        (TextHistoryType::None): {
+        (ETextHistoryType::None): {
             if (cultureInvariantStability) {
                 if (text.history.hasCultureInvariantString) {
                     return text.history.cultureInvariantString;
@@ -392,7 +391,7 @@ fn format_ftext(FText text) {
                 return text.history.cultureInvariantString;
             }
         }
-        (TextHistoryType::Base): return text.history.sourceString;
+        (ETextHistoryType::Base): return text.history.sourceString;
     }
     return text;
 };
