@@ -25,6 +25,7 @@ enum SaveGameFileVersion : u32 {
 /// See: Engine/Source/Runtime/Core/Public/UObject/ObjectVersion.h
 enum EUnrealEngineObjectUE4Version : u32 {
     VER_UE4_OLDEST_LOADABLE_PACKAGE = 214,
+    VER_UE4_FTEXT_HISTORY = 368,
 };
 
 /// UE5 object versions
@@ -385,7 +386,11 @@ struct FTextHistory {
 
 struct FText {
     u32 flags;
-    FTextHistory history [[inline]];
+    if (header.packageFileVersion < EUnrealEngineObjectUE4Version::VER_UE4_FTEXT_HISTORY) {
+        std::error("Not supported");
+    } else {
+        FTextHistory history [[inline]];
+    }
 } [[single_color, format("format_ftext")]];
 
 fn format_ftext(FText text) {
