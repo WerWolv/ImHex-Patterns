@@ -679,9 +679,8 @@ struct FPropertyTag {
         ("DelegateProperty"): Delegate value;
         ("MulticastInlineDelegateProperty"): MulticastInlineDelegate value;
         ("MulticastSparseDelegateProperty"): MulticastSparseDelegate value;
-        ("NameProperty"): std::mem::Bytes<size> value;
-        ("SoftObjectProperty"): std::mem::Bytes<size> value;
-        ("EnumProperty" | "StrProperty" | "ObjectProperty"): FString value;
+        ("SoftObjectProperty"): SoftObject value;
+        ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
         ("MapProperty" | "SetProperty"): std::mem::Bytes<size> value;
         ("StructProperty"): StructPropertyValue<propertyTagCompleteTypeName ? type.child[0].name.data : typeName.data, size> value;
         ("TextProperty"): {
@@ -733,7 +732,7 @@ struct Properties {
 
 struct SaveGameFile {
     if (propertyTagCompleteTypeName) {
-        type::Magic<"\x00"> spacer;
+        type::Magic<"\x00"> spacer [[hidden]];
     }
     Properties properties;
     type::Magic<"\x00\x00\x00\x00"> footer;
