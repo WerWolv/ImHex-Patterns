@@ -231,6 +231,9 @@ FSaveGameHeader header @ 0;
 const bool propertyTagCompleteTypeName =
     (header.saveGameFileVersion >= SaveGameFileVersion::PackageFileSummaryVersionChange) &&
     (header.packageFileVersionUE5 >= EUnrealEngineObjectUE5Version::PROPERTY_TAG_COMPLETE_TYPE_NAME);
+const bool fsoftobjectpathRemoveAssetPathFNames =
+    (header.saveGameFileVersion >= SaveGameFileVersion::PackageFileSummaryVersionChange) &&
+    (header.packageFileVersionUE5 >= EUnrealEngineObjectUE5Version::FSOFTOBJECTPATH_REMOVE_ASSET_PATH_FNAMES);
 
 fn custom_version(u128 guid) {
     for (u32 i = 0, i < header.customVersionLength, i = i + 1) {
@@ -479,6 +482,16 @@ struct MulticastSparseDelegate {
     Delegate delegates[count];
 } [[inline]];
 
+struct SoftObject {
+    FString asset_path;
+    if (fsoftobjectpathRemoveAssetPathFNames) {
+        FString package;
+        FString asset;
+    } else {
+        FString sub_path;
+    }
+};
+
 bitfield PropertyTagFlags {
     bool hasArrayIndex              : 1;
     bool hasPropertyGuid            : 1;
@@ -529,9 +542,6 @@ struct StructPropertyValue<auto type, auto size> {
 
 struct FPropertyTag {
     const auto dollar = $;
-    if (propertyTagCompleteTypeName) {
-        PropertyTagFlags flags;
-    }
     FString name;
     if (name.length == 0 || name.data == "None") {
         break;
@@ -539,10 +549,10 @@ struct FPropertyTag {
     const str prefix = std::format(
         "FPropertyTag {} @ 0x{:X};",
         name.data, dollar);
-    // Debug logging
     if (propertyTagCompleteTypeName) {
         TypeTreeNode type;
         u32 size;
+        PropertyTagFlags flags;
         if (flags.hasArrayIndex) {
             u32 arrayIndex;
         }
@@ -592,6 +602,7 @@ struct FPropertyTag {
                 ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString values[count];
                 ("FloatProperty"): float values[count];
                 ("IntProperty"): s32 values[count];
+                ("SoftObjectProperty"): SoftObject values[count];
                 ("StructProperty"): {
                     if (!propertyTagCompleteTypeName) {
                         FString fieldName;
@@ -639,7 +650,7 @@ struct FPropertyTag {
                 (_): {
                     std::warning(std::format(
                         "Unknown array element type {} in {}",
-                        propertyType, name));
+                        propertyTagCompleteTypeName ? type.child[0].name : propertyType, name));
                     // Wrap the unknown data
                     std::mem::Bytes<size-4> values;
                 }
@@ -696,7 +707,8 @@ struct FPropertyTag {
     s32 bytesRemaining = size + start - $;
     if (bytesRemaining != 0) {
         std::warning(std::format(
-            "Property length mismatch while parsing {}. Bytes {}: {}",
+            "Property length mismatch while parsing {} {}. Bytes {}: {}",
+            type,
             name,
             bytesRemaining < 0 ? "overrun" : "remaining",
             std::math::abs(bytesRemaining)));
@@ -719,7 +731,13 @@ struct Properties {
     FPropertyTag values[while(true)] [[inline]];
 };
 
-Properties properties @ $;
-type::Magic<"\x00\x00\x00\x00"> footer @ $;
+struct SaveGameFile {
+    if (propertyTagCompleteTypeName) {
+        type::Magic<"\x00"> spacer;
+    }
+    Properties properties;
+    type::Magic<"\x00\x00\x00\x00"> footer;
+};
+SaveGameFile file @ $ [[inline]];
 
 std::assert_warn(std::mem::eof(), std::format("Expected EOF @ 0x{:04X}", $));
