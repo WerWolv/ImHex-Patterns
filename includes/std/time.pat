@@ -1,6 +1,7 @@
 #pragma once
 
 import std.io;
+import std.core;
 
 /*!
     Library to handle time and date related operations.
@@ -51,7 +52,7 @@ namespace auto std::time {
         day: 5;
         month: 4;
         year: 7;
-    } [[sealed]];
+    } [[sealed, bitfield_order(std::core::BitfieldOrder::LeastToMostSignificant,16)]];
 
     /**
         A type to represent a DOS time.
@@ -60,7 +61,7 @@ namespace auto std::time {
         seconds: 5;
         minutes: 6;
         hours: 5;
-    } [[sealed]];
+    } [[sealed, bitfield_order(std::core::BitfieldOrder::LeastToMostSignificant,16)]];
 
     namespace impl {
 
