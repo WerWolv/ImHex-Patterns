@@ -84,6 +84,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DS_Store | | [`patterns/dsstore.hexpat`](patterns/dsstore.hexpat) | .DS_Store file format |
 | DTA | | [`patterns/max_v104.hexpat`](patterns/max_v104.hexpat) | Mechanized Assault and Exploration v1.04 (strategy game) save file format |
 | DTED | | [`patterns/dted.hexpat`](patterns/dted.hexpat) | Digital Terrain Elevation Data (DTED) |
+| EBU STL | `application/x-ebu-stl` | [`patterns/ebu_stl.hexpat`](patterns/ebu_stl.hexpat) | EBU STL broadcast subtitle format |
 | ELF  | `application/x-executable` | [`patterns/elf.hexpat`](patterns/elf.hexpat) | ELF header in elf binaries |
 | ESP32 Image | | [`patterns/esp32_image.hexpat`](patterns/esp32_image.hexpat) | Firmware image format for the ESP32 chip family |
 | EVTX | `application/x-ms-evtx` | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
@@ -197,6 +198,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ReFS | | [`patterns/refs.hexpat`](patterns/fs/refs.hexpat) | Microsoft Resilient File System |
 | RGBDS | | [`patterns/rgbds.hexpat`](patterns/rgbds.hexpat) | [RGBDS](https://rgbds.gbdev.io) object file format |
 | RPM | | [`patterns/rpm.hexpat`](patterns/rpm.hexpat) | [RPM](http://ftp.rpm.org/max-rpm/s1-rpm-file-format-rpm-file-format.html) package file format |
+| RSC | | [`patterns/rsc.hexpat`](patterns/rsc.hexpat) | BYOND Resource Cache file |
 | SDB | | [`patterns/sdb.hexpat`](patterns/sdb.hexpat) | [Shim DataBase](https://learn.microsoft.com/en-us/windows/win32/devnotes/application-compatibility-database) file format |
 | Shell Link | `application/x-ms-shortcut` | [`patterns/lnk.hexpat`](patterns/lnk.hexpat) | Windows Shell Link file format |
 | shp | | [`patterns/shp.hexpat`](patterns/shp.hexpat) | ESRI shape file |
