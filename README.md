@@ -53,6 +53,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | BIN  | | [`patterns/selinux.hexpat`](patterns/selinux.pat) | SE Linux modules |
 | BINKA  | | [`patterns/binka.hexpat`](patterns/binka.pat) | RAD Game Tools Bink Audio (BINKA) files |
 | BSON | `application/bson` | [`patterns/bson.hexpat`](patterns/bson.hexpat) | BSON (Binary JSON) format |
+| BTRFS Send Stream | | [`patterns/btrfs_send_stream.hexpat`](patterns/btrfs_send_stream.hexpat) | BTRFS Send Stream format |
 | bplist | `application/x-bplist` | [`patterns/bplist.hexpat`](patterns/bplist.hexpat) | Apple's binary property list format (bplist) |
 | BSP | | [`patterns/bsp_goldsrc.hexpat`](patterns/bsp_goldsrc.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
 | BZIP3 | | [`patterns/bzip3.hexpat`](patterns/bzip3.hexpat) | Parses BZip3 compression (file format) by Kamila Szewczyk |
