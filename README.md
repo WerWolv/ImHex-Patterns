@@ -53,6 +53,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | BIN  | | [`patterns/selinux.hexpat`](patterns/selinux.pat) | SE Linux modules |
 | BINKA  | | [`patterns/binka.hexpat`](patterns/binka.pat) | RAD Game Tools Bink Audio (BINKA) files |
 | BSON | `application/bson` | [`patterns/bson.hexpat`](patterns/bson.hexpat) | BSON (Binary JSON) format |
+| BTRFS Send Stream | | [`patterns/btrfs_send_stream.hexpat`](patterns/btrfs_send_stream.hexpat) | BTRFS Send Stream format |
 | bplist | `application/x-bplist` | [`patterns/bplist.hexpat`](patterns/bplist.hexpat) | Apple's binary property list format (bplist) |
 | BSP | | [`patterns/bsp_goldsrc.hexpat`](patterns/bsp_goldsrc.hexpat) | GoldSrc engine maps format (used in Half-Life 1) |
 | BZIP3 | | [`patterns/bzip3.hexpat`](patterns/bzip3.hexpat) | Parses BZip3 compression (file format) by Kamila Szewczyk |
@@ -84,8 +85,10 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DS_Store | | [`patterns/dsstore.hexpat`](patterns/dsstore.hexpat) | .DS_Store file format |
 | DTA | | [`patterns/max_v104.hexpat`](patterns/max_v104.hexpat) | Mechanized Assault and Exploration v1.04 (strategy game) save file format |
 | DTED | | [`patterns/dted.hexpat`](patterns/dted.hexpat) | Digital Terrain Elevation Data (DTED) |
+| EBU STL | `application/x-ebu-stl` | [`patterns/ebu_stl.hexpat`](patterns/ebu_stl.hexpat) | EBU STL broadcast subtitle format |
 | ELF  | `application/x-executable` | [`patterns/elf.hexpat`](patterns/elf.hexpat) | ELF header in elf binaries |
 | ESP32 Image | | [`patterns/esp32_image.hexpat`](patterns/esp32_image.hexpat) | Firmware image format for the ESP32 chip family |
+| ESP8266 Image | | [`patterns/esp8266.hexpat`](patterns/esp8266.hexpat) | ESP8266 Firmware Image v1 |
 | EVTX | `application/x-ms-evtx` | [`patterns/evtx.hexpat`](patterns/evtx.hexpat) | MS Windows Vista Event Log |
 | EXFAT | | [`patterns/fs/exfat.hexpat`](patterns/fs/exfat.hexpat) | Extensible File Allocation Table (exFAT) |
 | EXFAT (DFIR) | | [`patterns/DFIR/exFAT.hexpat`](patterns/DFIR/exFAT.hexpat) | Imported by DISK_PARSER.hexpat |
@@ -108,6 +111,13 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | GGUF | | [`patterns/gguf.hexpat`](patterns/gguf.hexpat) | GGML Inference Models |
 | GIF | `image/gif` | [`patterns/gif.hexpat`](patterns/gif.hexpat) | GIF image files |
 | GLTF | `model/gltf-binary` | [`patterns/gltf.hexpat`](patterns/gltf.hexpat) | GL Transmission Format binary 3D model file |
+| Gold Box Games: Character | | [`patterns/GoldBox/GB_CHR.hexpat`](patterns/GoldBox/GB_CHR.hexpat) | Gold Box Game Character/Monster files |
+| Gold Box Games: Executable | | [`patterns/GoldBox/GB_EXE.hexpat`](patterns/GoldBox/GB_EXE.hexpat) | Gold Box Game Executables |
+| Gold Box Games: Item Base | | [`patterns/GoldBox/GB_ITM-Base.hexpat`](patterns/GoldBox/GB_ITM-Base.hexpat) | Gold Box Game Item Base files |
+| Gold Box Games: Item Record | | [`patterns/GoldBox/GB_ITM-Record.hexpat`](patterns/GoldBox/GB_ITM-Record.hexpat) | Gold Box Game Item Record files |
+| Gold Box Games: Map | | [`patterns/GoldBox/GB_GEO.hexpat`](patterns/GoldBox/GB_GEO.hexpat) | Gold Box Game Map files |
+| Gold Box Games: Unlimited Adventures Script | | [`patterns/GoldBox/GB_UA_SCRIPT.hexpat`](patterns/GoldBox/GB_UA_SCRIPT.hexpat) | Gold Box Unlimited Adventures SCRIPT file |
+| Gold Box Games: Vault | | [`patterns/GoldBox/GB_VLT.hexpat`](patterns/GoldBox/GB_VLT.hexpat) | Gold Box Game Vault files |
 | GZIP | `application/gzip` | [`patterns/gzip.hexpat`](patterns/gzip.hexpat) | GZip compressed data format |
 | Halo Tag || [`patterns/hinf_tag.hexpat`](patterns/hinf_tag.hexpat) | Halo Infinite Tag Files |
 | Halo Module || [`patterns/hinf_module.hexpat`](patterns/hinf_module.hexpat) | Halo Infinite Module Archive Files |
@@ -192,6 +202,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ReFS | | [`patterns/refs.hexpat`](patterns/fs/refs.hexpat) | Microsoft Resilient File System |
 | RGBDS | | [`patterns/rgbds.hexpat`](patterns/rgbds.hexpat) | [RGBDS](https://rgbds.gbdev.io) object file format |
 | RPM | | [`patterns/rpm.hexpat`](patterns/rpm.hexpat) | [RPM](http://ftp.rpm.org/max-rpm/s1-rpm-file-format-rpm-file-format.html) package file format |
+| RSC | | [`patterns/rsc.hexpat`](patterns/rsc.hexpat) | BYOND Resource Cache file |
 | SDB | | [`patterns/sdb.hexpat`](patterns/sdb.hexpat) | [Shim DataBase](https://learn.microsoft.com/en-us/windows/win32/devnotes/application-compatibility-database) file format |
 | Shell Link | `application/x-ms-shortcut` | [`patterns/lnk.hexpat`](patterns/lnk.hexpat) | Windows Shell Link file format |
 | shp | | [`patterns/shp.hexpat`](patterns/shp.hexpat) | ESRI shape file |
