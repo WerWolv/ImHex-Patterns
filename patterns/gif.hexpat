@@ -8,8 +8,8 @@
 #define LABEL_APPLICATION 0xFF
 #define LABEL_PLAINTEXT 0x01
 
-// Indentifier Magics
-#define IMAGE_SEPERATOR_MAGIC 0x2C
+// Identifier Magics
+#define IMAGE_SEPARATOR_MAGIC 0x2C
 #define EXTENSION_INTRODUCER_MAGIC 0x21
 #define GIF_TRAILER_MAGIC 0x3B
 
@@ -68,7 +68,7 @@ struct LogicalScreenDescriptor {
     u16 height;
     GCT_Flags gctFlags;
     u8 bgColorIndex;
-    u8 pixelAscpet;
+    u8 pixelAspect;
     if (gctFlags.enabled) {
         Color gct[std::math::pow(2, gctFlags.size + 1)];
     }
@@ -84,7 +84,7 @@ struct ImageDescriptor {
         Color lct[std::math::pow(2, flags.lctSize + 1)];
     }
     u8 lzwMinCode [[comment("This byte determines the initial number of bits used for LZW codes in the image data")]];
-    DataSubBlocks lzwCompressedData [[comment("Data is pallet indecies either into current LDC or GCT and is compressed using LZW")]];
+    DataSubBlocks lzwCompressedData [[comment("Data is palette indices either into current LDC or GCT and is compressed using LZW")]];
 };
 
 struct CommentExtension {
@@ -130,7 +130,7 @@ struct Extension {
 
 struct Block {
     u8 identifier [[format("format::identifier_name")]];
-    if(identifier == IMAGE_SEPERATOR_MAGIC) ImageDescriptor i [[inline]];
+    if(identifier == IMAGE_SEPARATOR_MAGIC) ImageDescriptor i [[inline]];
     if(identifier == EXTENSION_INTRODUCER_MAGIC) Extension e [[inline]];
     if(identifier == GIF_TRAILER_MAGIC) break;
     u8 blockTerminator;
@@ -153,14 +153,14 @@ namespace format {
     };
 
     fn block_name(ref Block b) {
-        if(b.identifier == IMAGE_SEPERATOR_MAGIC) return "Image Descriptor";
+        if(b.identifier == IMAGE_SEPARATOR_MAGIC) return "Image Descriptor";
         if(b.identifier == EXTENSION_INTRODUCER_MAGIC) return "Extension";
         if(b.identifier == GIF_TRAILER_MAGIC) return "Trailer";
         return "Unknown Block Type";
     };
 
     fn identifier_name(u8 identifier) {
-        if(identifier == IMAGE_SEPERATOR_MAGIC) return "Image Separator";
+        if(identifier == IMAGE_SEPARATOR_MAGIC) return "Image Separator";
         if(identifier == EXTENSION_INTRODUCER_MAGIC) return "Extension Introducer";
         if(identifier == GIF_TRAILER_MAGIC) return "GIF Trailer";
         return "Unknown Identifier";
