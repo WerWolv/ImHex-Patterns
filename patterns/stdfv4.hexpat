@@ -94,7 +94,7 @@ struct VarLenBits {
 };
 
 fn format_VarLenNibbles(ref auto vln) {
-    return vlb.n;
+    return vln.n;
 };
 /// Variable length nibble array (kxN*1 in spec)
 struct VarLenNibbles {
@@ -164,78 +164,111 @@ struct MIR : Header {
     char PROT_COD [[comment("Data protection code (absent if 'space')"), format("format::absent_space")]];
     u16 BURN_TIM [[comment("Burn-in time (in minutes) (absent if 65,535)"), format("format::absent_65_535")]];
     char CMOD_COD [[comment("Command mode code (absent if 'space')"), format("format::absent_space")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr LOT_ID [[comment("Lot ID (customer specified)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr PART_TYP [[comment("Part Type (or product ID)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr NODE_NAM [[comment("Name of node that generated data")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr TSTR_TYP [[comment("Tester type")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr JOB_NAM [[comment("Job name (test program name)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr JOB_REV [[comment("Job (test program) revision number (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr SBLOT_ID [[comment("Sublot ID (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr OPER_NAM [[comment("Operator name or ID (at setup time) (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr EXEC_TYP [[comment("Tester executive software type (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr EXEC_VER [[comment("Tester exec software version number (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr TEST_COD [[comment("Test phase or step code (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr TST_TEMP [[comment("Test temperature (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr USER_TXT [[comment("Generic user text (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr AUX_FILE [[comment("Name of auxiliary data file (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr PKG_TYP [[comment("Package type (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr FAMLY_ID [[comment("Product family ID (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr DATE_COD [[comment("Date code (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr FACIL_ID [[comment("Test facility ID (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr FLOOR_ID [[comment("Test floor ID (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr PROC_ID [[comment("Fabrication process ID (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr OPER_FRQ [[comment("Operation frequency or step (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr SPEC_NAM [[comment("Test specification name (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr SPEC_VER [[comment("Test specification version number (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr FLOW_ID [[comment("Test flow ID (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr SETUP_ID [[comment("Test setup ID (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr DSGN_REV [[comment("Device design revision (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr ENG_ID [[comment("Engineering lot ID (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr ROM_COD [[comment("ROM code ID (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr SERL_NUM [[comment("Tester serial number (absent if length byte=0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr SUPR_NAM [[comment("Supervisor name or ID (absent if length byte=0)")]];
+    if (($ - start) < REC_LEN) {
+        VarLenStr LOT_ID [[comment("Lot ID (customer specified)")]];
+        if (($ - start) < REC_LEN) {
+            VarLenStr PART_TYP [[comment("Part Type (or product ID)")]];
+            if (($ - start) < REC_LEN) {
+                VarLenStr NODE_NAM [[comment("Name of node that generated data")]];
+                if (($ - start) < REC_LEN) {
+                    VarLenStr TSTR_TYP [[comment("Tester type")]];
+                    if (($ - start) < REC_LEN) {
+                        VarLenStr JOB_NAM [[comment("Job name (test program name)")]];
+                        if (($ - start) < REC_LEN) {
+                            VarLenStr JOB_REV [[comment("Job (test program) revision number (absent if length byte=0)")]];
+                            if (($ - start) < REC_LEN) {
+                                VarLenStr SBLOT_ID [[comment("Sublot ID (absent if length byte=0)")]];
+                                if (($ - start) < REC_LEN) {
+                                    VarLenStr OPER_NAM [[comment("Operator name or ID (at setup time) (absent if length byte=0)")]];
+                                    if (($ - start) < REC_LEN) {
+                                        VarLenStr EXEC_TYP [[comment("Tester executive software type (absent if length byte=0)")]];
+                                        if (($ - start) < REC_LEN) {
+                                            VarLenStr EXEC_VER [[comment("Tester exec software version number (absent if length byte=0)")]];
+                                            if (($ - start) < REC_LEN) {
+                                                VarLenStr TEST_COD [[comment("Test phase or step code (absent if length byte=0)")]];
+                                                if (($ - start) < REC_LEN) {
+                                                    VarLenStr TST_TEMP [[comment("Test temperature (absent if length byte=0)")]];
+                                                    if (($ - start) < REC_LEN) {
+                                                        VarLenStr USER_TXT [[comment("Generic user text (absent if length byte=0)")]];
+                                                        if (($ - start) < REC_LEN) {
+                                                            VarLenStr AUX_FILE [[comment("Name of auxiliary data file (absent if length byte=0)")]];
+                                                            if (($ - start) < REC_LEN) {
+                                                                VarLenStr PKG_TYP [[comment("Package type (absent if length byte=0)")]];
+                                                                if (($ - start) < REC_LEN) {
+                                                                    VarLenStr FAMLY_ID [[comment("Product family ID (absent if length byte=0)")]];
+                                                                    if (($ - start) < REC_LEN) {
+                                                                        VarLenStr DATE_COD [[comment("Date code (absent if length byte=0)")]];
+                                                                        if (($ - start) < REC_LEN) {
+                                                                            VarLenStr FACIL_ID [[comment("Test facility ID (absent if length byte=0)")]];
+                                                                            if (($ - start) < REC_LEN) {
+                                                                                VarLenStr FLOOR_ID [[comment("Test floor ID (absent if length byte=0)")]];
+                                                                                if (($ - start) < REC_LEN) {
+                                                                                    VarLenStr PROC_ID [[comment("Fabrication process ID (absent if length byte=0)")]];
+                                                                                    if (($ - start) < REC_LEN) {
+                                                                                        VarLenStr OPER_FRQ [[comment("Operation frequency or step (absent if length byte=0)")]];
+                                                                                        if (($ - start) < REC_LEN) {
+                                                                                            VarLenStr SPEC_NAM [[comment("Test specification name (absent if length byte=0)")]];
+                                                                                            if (($ - start) < REC_LEN) {
+                                                                                                VarLenStr SPEC_VER [[comment("Test specification version number (absent if length byte=0)")]];
+                                                                                                if (($ - start) < REC_LEN) {
+                                                                                                    VarLenStr FLOW_ID [[comment("Test flow ID (absent if length byte=0)")]];
+                                                                                                    if (($ - start) < REC_LEN) {
+                                                                                                        VarLenStr SETUP_ID [[comment("Test setup ID (absent if length byte=0)")]];
+                                                                                                        if (($ - start) < REC_LEN) {
+                                                                                                            VarLenStr DSGN_REV [[comment("Device design revision (absent if length byte=0)")]];
+                                                                                                            if (($ - start) < REC_LEN) {
+                                                                                                                VarLenStr ENG_ID [[comment("Engineering lot ID (absent if length byte=0)")]];
+                                                                                                                if (($ - start) < REC_LEN) {
+                                                                                                                    VarLenStr ROM_COD [[comment("ROM code ID (absent if length byte=0)")]];
+                                                                                                                    if (($ - start) < REC_LEN) {
+                                                                                                                        VarLenStr SERL_NUM [[comment("Tester serial number (absent if length byte=0)")]];
+                                                                                                                        if (($ - start) < REC_LEN) {
+                                                                                                                            VarLenStr SUPR_NAM [[comment("Supervisor name or ID (absent if length byte=0)")]];
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }       
+                                                                                    }           
+                                                                                }               
+                                                                            }                   
+                                                                        }                       
+                                                                    }                           
+                                                                }                               
+                                                            }                                   
+                                                        }                                        
+                                                    }                                                                                            
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }                                                    
+        }
+    }
 };
 
 // See STDF V4, Master Results Record, p.21
 struct MRR : Header {
     auto start = $;
     std::time::EpochTime FINISH_T [[comment("Date and time of the last part tested"), format("format::epoch")]];
-    if (($ - start) == REC_LEN) { return; }
-    char DISP_COD[1] [[comment("Lot disposition code")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr USR_DESC [[comment("Lot description supplied by user")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr EXC_DESC [[comment("Lot description supplied by exec")]];
+    if (($ - start) < REC_LEN) {
+        char DISP_COD[1] [[comment("Lot disposition code")]];
+        if (($ - start) < REC_LEN) {
+            VarLenStr USR_DESC [[comment("Lot description supplied by user")]];
+            if (($ - start) < REC_LEN) {
+                VarLenStr EXC_DESC [[comment("Lot description supplied by exec")]];
+            }
+        }
+    }
 };
 
 // See STDF V4, Part Count Record, p.22
@@ -250,16 +283,21 @@ struct PCR : Header {
     auto start = $;
     u8 HEAD_NUM [[comment("Test head number"), format("format_HEAD_NUM")]];
     u8 SITE_NUM [[comment("Test site number")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 PART_CNT [[comment("Number of parts tested (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 RTST_CNT [[comment("Number of parts retested (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 ABRT_CNT [[comment("Number of aborts during testing (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 GOOD_CNT [[comment("Number of good (passed) parts tested (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 FUNC_CNT [[comment("Number of functional parts tested (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+    if (($ - start) < REC_LEN) {
+        u32 PART_CNT [[comment("Number of parts tested (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+        if (($ - start) < REC_LEN) {
+            u32 RTST_CNT [[comment("Number of parts retested (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+            if (($ - start) < REC_LEN) {
+                u32 ABRT_CNT [[comment("Number of aborts during testing (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+                if (($ - start) < REC_LEN) {
+                    u32 GOOD_CNT [[comment("Number of good (passed) parts tested (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+                    if (($ - start) < REC_LEN) {
+                        u32 FUNC_CNT [[comment("Number of functional parts tested (absent i 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+                    }
+                }
+            }
+        }
+    }
 } [[static]];
 
 // See STDF V4, Hardware Bin Record, p.23
@@ -274,10 +312,12 @@ struct HBR : Header {
     u8 SITE_NUM [[comment("Test site number")]];
     u16 HBIN_NUM [[comment("Hardware bin number")]];
     u32 HBIN_CNT [[comment("Number of parts in bin")]];
-    if (($ - start) == REC_LEN) { return; }
-    HBRHbinPf HBIN_PF [[comment("Pass/fail indication (absent if 'space')")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr HBIN_NAM [[comment("Name of hardware bin (absent if length byte = 0)")]];
+    if (($ - start) < REC_LEN) {
+        HBRHbinPf HBIN_PF [[comment("Pass/fail indication (absent if 'space')")]];
+        if (($ - start) < REC_LEN) {
+            VarLenStr HBIN_NAM [[comment("Name of hardware bin (absent if length byte = 0)")]];
+        }    
+    }
 };
 
 // See STDF V4, Software Bin Record, p.25
@@ -292,10 +332,12 @@ struct SBR : Header {
     u8 SITE_NUM [[comment("Test site number")]];
     u16 SBIN_NUM [[comment("Software bin number")]];
     u32 SBIN_CNT [[comment("Number of parts in bin")]];
-    if (($ - start) == REC_LEN) { return; }
-    SBRSbinPf SBIN_PF [[comment("Pass/fail indication (absent if 'space')")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr SBIN_NAM [[comment("Name of software bin (absent if length byte = 0)")]];
+    if (($ - start) < REC_LEN) {
+        SBRSbinPf SBIN_PF [[comment("Pass/fail indication (absent if 'space')")]];
+        if (($ - start) < REC_LEN) {
+            VarLenStr SBIN_NAM [[comment("Name of software bin (absent if length byte = 0)")]];
+        }
+    }        
 };
 
 // See STDF V4, Pin Map Record, p.27
@@ -309,18 +351,24 @@ fn format_PMR_HEAD_NUM(u8 x) {
 struct PMR : Header {
     auto start = $;
     u16 PMR_INDX [[comment("Unique index associated with pin")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 CHAN_TYP [[comment("Channel type (absent if 0)"), format("format::absent_0")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr CHAN_NAM [[comment("Channel name (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr PHY_NAM [[comment("Physical name of pin (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr LOG_NAM [[comment("Logical name of pin (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    u8 HEAD_NUM [[comment("Head number associated with channel (absent if 1)"), format("format_PMR_HEAD_NUM")]];
-    if (($ - start) == REC_LEN) { return; }
-    u8 SITE_NUM [[comment("Site number associated with channel (absent if 1)"), format("format::absent_1")]];
+    if (($ - start) < REC_LEN) {
+        u16 CHAN_TYP [[comment("Channel type (absent if 0)"), format("format::absent_0")]];
+        if (($ - start) < REC_LEN) {
+            VarLenStr CHAN_NAM [[comment("Channel name (absent if length byte = 0)")]];
+            if (($ - start) < REC_LEN) {
+                VarLenStr PHY_NAM [[comment("Physical name of pin (absent if length byte = 0)")]];
+                if (($ - start) < REC_LEN) {
+                    VarLenStr LOG_NAM [[comment("Logical name of pin (absent if length byte = 0)")]];
+                    if (($ - start) < REC_LEN) {
+                        u8 HEAD_NUM [[comment("Head number associated with channel (absent if 1)"), format("format_PMR_HEAD_NUM")]];
+                        if (($ - start) < REC_LEN) {
+                            u8 SITE_NUM [[comment("Site number associated with channel (absent if 1)"), format("format::absent_1")]];
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
 
 // See STDF V4, Pin Group Record, p.29
@@ -329,8 +377,9 @@ struct PGR : Header {
     u16 GRP_INDX [[comment("Unique index associated with pin group")]];
     VarLenStr GRP_NAM [[comment("Name of pin group (absent if length byte = 0)")]];
     u16 INDX_CNT [[comment("Count (k) of PMR indexes")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 PMR_INDX[INDX_CNT] [[comment("Array of indexes for pins in the group (absent if INDX_CNT = 0)")]];
+    if (($ - start) < REC_LEN) {
+        u16 PMR_INDX[INDX_CNT] [[comment("Array of indexes for pins in the group (absent if INDX_CNT = 0)")]];
+    }
 };
 
 // See STDF V4, Pin List Record, p.30
@@ -361,28 +410,35 @@ enum PLRGrpRadx : u8 {
 struct PLR : Header {
     auto start = $;
     u16 GRP_CNT [[comment("Count (k) of pins or pin groups")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 GRP_INDX[GRP_CNT] [[comment("Array of pin or pin group indexes")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 GRP_MODE[GRP_CNT] [[comment("Operating mode of pin group (absent if 0)"), format("format_PLR_GRP_MODE")]];
-    if (($ - start) == REC_LEN) { return; }
-    PLRGrpRadx GRP_RADX[GRP_CNT] [[comment("Display radix of pin group (absent if 0)"), format("format::absent_0")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr PGM_CHAR[GRP_CNT] [[comment("Program state encoding characters (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr RTN_CHAR[GRP_CNT] [[comment("Return state encoding characters (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr PGM_CHAL[GRP_CNT] [[comment("Program state encoding characters (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr RTN_CHAL[GRP_CNT] [[comment("Return state encoding characters (absent if length byte = 0)")]];
+    if (($ - start) < REC_LEN) {
+        u16 GRP_INDX[GRP_CNT] [[comment("Array of pin or pin group indexes")]];
+        if (($ - start) < REC_LEN) {
+            u16 GRP_MODE[GRP_CNT] [[comment("Operating mode of pin group (absent if 0)"), format("format_PLR_GRP_MODE")]];
+            if (($ - start) < REC_LEN) {
+                PLRGrpRadx GRP_RADX[GRP_CNT] [[comment("Display radix of pin group (absent if 0)"), format("format::absent_0")]];
+                if (($ - start) < REC_LEN) {
+                    VarLenStr PGM_CHAR[GRP_CNT] [[comment("Program state encoding characters (absent if length byte = 0)")]];
+                    if (($ - start) < REC_LEN) {
+                        VarLenStr RTN_CHAR[GRP_CNT] [[comment("Return state encoding characters (absent if length byte = 0)")]];
+                        if (($ - start) < REC_LEN) {
+                            VarLenStr PGM_CHAL[GRP_CNT] [[comment("Program state encoding characters (absent if length byte = 0)")]];
+                            if (($ - start) < REC_LEN) {
+                                VarLenStr RTN_CHAL[GRP_CNT] [[comment("Return state encoding characters (absent if length byte = 0)")]];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
 
 // See STDF V4, Retest Data Record, p.32
 struct RDR : Header {
     auto start = $;
     u16 NUM_BINS [[comment("Number (k) of bins being retested")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 RTST_BIN[NUM_BINS] [[comment("Array of retest bin numbers (absent if NUM_BINS = 0)")]];
+    if (($ - start) < REC_LEN)
+        u16 RTST_BIN[NUM_BINS] [[comment("Array of retest bin numbers (absent if NUM_BINS = 0)")]];
 } [[static]];
 
 // See STDF V4, Site Description Record, p.33
@@ -392,38 +448,54 @@ struct SDR : Header {
     u8 SITE_GRP [[comment("Site group number")]];
     u8 SITE_CNT [[comment("Number (k) of test sites in site group")]];
     u8 SITE_NUM[SITE_CNT] [[comment("Array of test site numbers")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr HAND_TYP [[comment("Handler or prober type (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr HAND_ID [[comment("Handler or prober ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr CARD_TYP [[comment("Probe card type (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr CARD_ID [[comment("Probe card ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr LOAD_TYP [[comment("Load board type (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr LOAD_ID [[comment("Load board ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr DIB_TYP [[comment("DIB board type (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr DIB_ID [[comment("DIB board ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr CABL_TYP [[comment("Interface cable type (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr CABL_ID [[comment("Interface cable ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr CONT_TYP [[comment("Handler contactor type (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr CONT_ID [[comment("Handler contactor ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr LASR_TYP [[comment("Laser type (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr LASR_ID [[comment("Laser ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr EXTR_TYP [[comment("Extra equipment type field (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr EXTR_ID [[comment("Extra equipment ID (absent if length byte = 0)")]];
+    if (($ - start) < REC_LEN) {
+        VarLenStr HAND_TYP [[comment("Handler or prober type (absent if length byte = 0)")]];
+        if (($ - start) < REC_LEN) {
+            VarLenStr HAND_ID [[comment("Handler or prober ID (absent if length byte = 0)")]];
+            if (($ - start) < REC_LEN) {
+                VarLenStr CARD_TYP [[comment("Probe card type (absent if length byte = 0)")]];
+                if (($ - start) < REC_LEN) {
+                    VarLenStr CARD_ID [[comment("Probe card ID (absent if length byte = 0)")]];
+                    if (($ - start) < REC_LEN) {
+                        VarLenStr LOAD_TYP [[comment("Load board type (absent if length byte = 0)")]];
+                        if (($ - start) < REC_LEN) {
+                            VarLenStr LOAD_ID [[comment("Load board ID (absent if length byte = 0)")]];
+                            if (($ - start) < REC_LEN) {
+                                VarLenStr DIB_TYP [[comment("DIB board type (absent if length byte = 0)")]];
+                                if (($ - start) < REC_LEN) {
+                                    VarLenStr DIB_ID [[comment("DIB board ID (absent if length byte = 0)")]];
+                                    if (($ - start) < REC_LEN) {
+                                        VarLenStr CABL_TYP [[comment("Interface cable type (absent if length byte = 0)")]];
+                                        if (($ - start) < REC_LEN) {
+                                            VarLenStr CABL_ID [[comment("Interface cable ID (absent if length byte = 0)")]];
+                                            if (($ - start) < REC_LEN) {
+                                                VarLenStr CONT_TYP [[comment("Handler contactor type (absent if length byte = 0)")]];
+                                                if (($ - start) < REC_LEN) {
+                                                    VarLenStr CONT_ID [[comment("Handler contactor ID (absent if length byte = 0)")]];
+                                                    if (($ - start) < REC_LEN) {
+                                                        VarLenStr LASR_TYP [[comment("Laser type (absent if length byte = 0)")]];
+                                                        if (($ - start) < REC_LEN) {
+                                                            VarLenStr LASR_ID [[comment("Laser ID (absent if length byte = 0)")]];
+                                                            if (($ - start) < REC_LEN) {
+                                                                VarLenStr EXTR_TYP [[comment("Extra equipment type field (absent if length byte = 0)")]];
+                                                                if (($ - start) < REC_LEN) {
+                                                                    VarLenStr EXTR_ID [[comment("Extra equipment ID (absent if length byte = 0)")]];
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
 
 // See STDF V4, Wafer Information Record, p.25
@@ -439,8 +511,8 @@ struct WIR : Header {
     u8 HEAD_NUM [[comment("Test head number")]];
     u8 SITE_GRP [[comment("Site group number (absent if '255')"), format("format_WIR_SITE_GRP")]];
     u32 START_T [[comment("Date and time first part tested")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr WAFER_ID [[comment("Wafer ID (absent if length byte = 0)")]];
+    if (($ - start) < REC_LEN)
+        VarLenStr WAFER_ID [[comment("Wafer ID (absent if length byte = 0)")]];
 };
 
 // See STDF V4, Wafer Results Record, p.36
@@ -450,26 +522,36 @@ struct WRR : Header {
     u8 SITE_GRP [[comment("Site group number (absent if '255')"), format("format::absent_255")]];
     u32 FINISH_T [[comment("Date and time last part tested")]];
     u32 PART_CNT [[comment("Number of parts tested")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 RTST_CNT [[comment("Number of parts retested (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 ABRT_CNT [[comment("Number of aborts during testing (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 GOOD_CNT [[comment("Number of good (passed) parts tested (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 FUNC_CNT [[comment("Number of functional parts tested (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr WAFER_ID [[comment("Wafer ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr FABWF_ID [[comment("Fab wafer ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr FRAME_ID [[comment("Wafer frame ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr MASK_ID [[comment("Wafer mask ID (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr USR_DESC [[comment("Wafer description supplied by user (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr EXC_DESC [[comment("Wafer description supplied by exec (absent if length byte = 0)")]];
+    if (($ - start) < REC_LEN) {
+        u32 RTST_CNT [[comment("Number of parts retested (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+        if (($ - start) < REC_LEN) {
+            u32 ABRT_CNT [[comment("Number of aborts during testing (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+            if (($ - start) < REC_LEN) {
+                u32 GOOD_CNT [[comment("Number of good (passed) parts tested (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+                if (($ - start) < REC_LEN) {
+                    u32 FUNC_CNT [[comment("Number of functional parts tested (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+                    if (($ - start) < REC_LEN) {
+                        VarLenStr WAFER_ID [[comment("Wafer ID (absent if length byte = 0)")]];
+                        if (($ - start) < REC_LEN) {
+                            VarLenStr FABWF_ID [[comment("Fab wafer ID (absent if length byte = 0)")]];
+                            if (($ - start) < REC_LEN) {
+                                VarLenStr FRAME_ID [[comment("Wafer frame ID (absent if length byte = 0)")]];
+                                if (($ - start) < REC_LEN) {
+                                    VarLenStr MASK_ID [[comment("Wafer mask ID (absent if length byte = 0)")]];
+                                    if (($ - start) < REC_LEN) {
+                                        VarLenStr USR_DESC [[comment("Wafer description supplied by user (absent if length byte = 0)")]];
+                                        if (($ - start) < REC_LEN) {
+                                            VarLenStr EXC_DESC [[comment("Wafer description supplied by exec (absent if length byte = 0)")]];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
 
 // See STDF V4, Wafer Configuration Record, p.38
@@ -499,24 +581,33 @@ enum WCRPosY : char {
 };
 struct WCR : Header {
     auto start = $;
-    if (($ - start) == REC_LEN) { return; }
-    float WAFR_SIZ [[comment("Diameter of wafer in WF_UNITS (absent if 0)"), format("format::absent_0")]];
-    if (($ - start) == REC_LEN) { return; }
-    float DIE_HT [[comment("Height of die in WF_UNITS (absent if 0)"), format("format::absent_0")]];
-    if (($ - start) == REC_LEN) { return; }
-    float DIE_WID [[comment("Width of die in WF_UNITS (absent if 0)"), format("format::absent_0")]];
-    if (($ - start) == REC_LEN) { return; }
-    WCRWfUnits WF_UNITS [[comment("Units for wafer and die dimensions (absent if 0)"), format("format::absent_0")]];
-    if (($ - start) == REC_LEN) { return; }
-    WCRWfFlat WF_FLAT [[comment("Orientation of wafer flat (absent if 'space')"), format("format::absent_space")]];
-    if (($ - start) == REC_LEN) { return; }
-    s16 CENTER_X [[comment("X coordinate of center die on wafer (invalid if -32768"), format("format::absent_neg_32768")]];
-    if (($ - start) == REC_LEN) { return; }
-    s16 CENTER_Y [[comment("Y coordinate of center die on wafer (invalid if -32768"), format("format::absent_neg_32768")]];
-    if (($ - start) == REC_LEN) { return; }
-    WCRPosX POS_X [[comment("Positive X direction of wafer (absent if 'space')"), format("format::absent_space")]];
-    if (($ - start) == REC_LEN) { return; }
-    WCRPosY POS_Y [[comment("Positive Y direction of wafer (absent if 'space')"), format("format::absent_space")]];
+    if (($ - start) < REC_LEN) {
+        float WAFR_SIZ [[comment("Diameter of wafer in WF_UNITS (absent if 0)"), format("format::absent_0")]];
+        if (($ - start) < REC_LEN) {
+            float DIE_HT [[comment("Height of die in WF_UNITS (absent if 0)"), format("format::absent_0")]];
+            if (($ - start) < REC_LEN) {
+                float DIE_WID [[comment("Width of die in WF_UNITS (absent if 0)"), format("format::absent_0")]];
+                if (($ - start) < REC_LEN) {
+                    WCRWfUnits WF_UNITS [[comment("Units for wafer and die dimensions (absent if 0)"), format("format::absent_0")]];
+                    if (($ - start) < REC_LEN) {
+                        WCRWfFlat WF_FLAT [[comment("Orientation of wafer flat (absent if 'space')"), format("format::absent_space")]];
+                        if (($ - start) < REC_LEN) {
+                            s16 CENTER_X [[comment("X coordinate of center die on wafer (invalid if -32768"), format("format::absent_neg_32768")]];
+                            if (($ - start) < REC_LEN) {
+                                s16 CENTER_Y [[comment("Y coordinate of center die on wafer (invalid if -32768"), format("format::absent_neg_32768")]];
+                                if (($ - start) < REC_LEN) {
+                                    WCRPosX POS_X [[comment("Positive X direction of wafer (absent if 'space')"), format("format::absent_space")]];
+                                    if (($ - start) < REC_LEN) {
+                                        WCRPosY POS_Y [[comment("Positive Y direction of wafer (absent if 'space')"), format("format::absent_space")]];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 } [[static]];
 
 // See STDF V4, Part Information Record, p.40
@@ -547,20 +638,27 @@ struct PRR : Header {
     PRRPartFlg PART_FLG [[comment("Part information flag")]];
     u16 NUM_TEST [[comment("Number of tests executed")]];
     u16 HARD_BIN [[comment("Hardware bin number")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 SOFT_BIN [[comment("Software bin number (absent if 65535)"), format("format::absent_65_535")]];
-    if (($ - start) == REC_LEN) { return; }
-    s16 X_COORD [[comment("(Wafer) X coordinate (absent if -32768"), format("format::absent_neg_32768")]];
-    if (($ - start) == REC_LEN) { return; }
-    s16 Y_COORD [[comment("(Wafer) Y coordinate (absent if -32768"), format("format::absent_neg_32768")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 TEST_T [[comment("Elapsed test time in milliseconds 0")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr PART_ID [[comment("Part identification (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr PART_TXT [[comment("Part description text (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    type::Nibbles PART_FIX [[comment("Part repair information (absent if length byte = 0)")]];
+    if (($ - start) < REC_LEN) {
+        u16 SOFT_BIN [[comment("Software bin number (absent if 65535)"), format("format::absent_65_535")]];
+        if (($ - start) < REC_LEN) {
+            s16 X_COORD [[comment("(Wafer) X coordinate (absent if -32768"), format("format::absent_neg_32768")]];
+            if (($ - start) < REC_LEN) {
+                s16 Y_COORD [[comment("(Wafer) Y coordinate (absent if -32768"), format("format::absent_neg_32768")]];
+                if (($ - start) < REC_LEN) {
+                    u32 TEST_T [[comment("Elapsed test time in milliseconds 0")]];
+                    if (($ - start) < REC_LEN) {
+                        VarLenStr PART_ID [[comment("Part identification (absent if length byte = 0)")]];
+                        if (($ - start) < REC_LEN) {
+                            VarLenStr PART_TXT [[comment("Part description text (absent if length byte = 0)")]];
+                            if (($ - start) < REC_LEN) {
+                                type::Nibbles PART_FIX [[comment("Part repair information (absent if length byte = 0)")]];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
 
 // See STDF V4, Test Synopsis Record, p.43
@@ -592,30 +690,42 @@ struct TSR : Header {
     u8 SITE_NUM [[comment("Test site number")]];
     TSRTestTyp TEST_TYP [[comment("Test type (absent if 'space')"), format("format::absent_space")]];
     u32 TEST_NUM [[comment("Test number")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 EXEC_CNT [[comment("Number of test executions (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 FAIL_CNT [[comment("Number of test failures (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 ALRM_CNT [[comment("Number of alarmed tests (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr TEST_NAM [[comment("Test name (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr SEQ_NAME [[comment("Sequencer (program segment/flow) name (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr TEST_LBL [[comment("Test label or text (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    TSROptFlag OPT_FLAG [[comment("Optional data flag")]];
-    if (($ - start) == REC_LEN) { return; }
-    float TEST_TIM [[comment("Average test execution time in seconds (invalid if OPT_FLAG bit 2 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float TEST_MIN [[comment("Lowest test result value (invalid if OPT_FLAG bit 0 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float TEST_MAX [[comment("Highest test result value (invalid if OPT_FLAG bit 1 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float TST_SUMS [[comment("Sum of test result values (invalid if OPT_FLAG bit 4 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float TST_SQRS [[comment("Sum of squares of test result values (invalid if OPT_FLAG bit 5 = 1)")]];
+    if (($ - start) < REC_LEN) {
+        u32 EXEC_CNT [[comment("Number of test executions (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+        if (($ - start) < REC_LEN) {
+            u32 FAIL_CNT [[comment("Number of test failures (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+            if (($ - start) < REC_LEN) {
+                u32 ALRM_CNT [[comment("Number of alarmed tests (absent if 4,294,967,295)"), format("format::absent_4_294_967_295")]];
+                if (($ - start) < REC_LEN) {
+                    VarLenStr TEST_NAM [[comment("Test name (absent if length byte = 0)")]];
+                    if (($ - start) < REC_LEN) {
+                        VarLenStr SEQ_NAME [[comment("Sequencer (program segment/flow) name (absent if length byte = 0)")]];
+                        if (($ - start) < REC_LEN) {
+                            VarLenStr TEST_LBL [[comment("Test label or text (absent if length byte = 0)")]];
+                            if (($ - start) < REC_LEN) {
+                                TSROptFlag OPT_FLAG [[comment("Optional data flag")]];
+                                if (($ - start) < REC_LEN) {
+                                    float TEST_TIM [[comment("Average test execution time in seconds (invalid if OPT_FLAG bit 2 = 1)")]];
+                                    if (($ - start) < REC_LEN) {
+                                        float TEST_MIN [[comment("Lowest test result value (invalid if OPT_FLAG bit 0 = 1)")]];
+                                        if (($ - start) < REC_LEN) {
+                                            float TEST_MAX [[comment("Highest test result value (invalid if OPT_FLAG bit 1 = 1)")]];
+                                            if (($ - start) < REC_LEN) {
+                                                float TST_SUMS [[comment("Sum of test result values (invalid if OPT_FLAG bit 4 = 1)")]];
+                                                if (($ - start) < REC_LEN) {
+                                                    float TST_SQRS [[comment("Sum of squares of test result values (invalid if OPT_FLAG bit 5 = 1)")]];
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
 
 // See STDF V4, Parametric Test Record, p.45
@@ -656,36 +766,51 @@ struct PTR : Header {
     u8 SITE_NUM [[comment("Test site number")]];
     PTRTestFlg TEST_FLG [[comment("Test flags (fail, alarm, etc.)")]];
     ParamFlg PARM_FLG [[comment("Parametric test flags (drift, etc.)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float RESULT [[comment("Test result (only valid if TEST_FLG bit 1 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr TEST_TXT [[comment("Test description text or label (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr ALARM_ID [[comment("Name of alarm (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    PTROptFlag OPT_FLAG [[comment("Optional data flag See note")]];
-    if (($ - start) == REC_LEN) { return; }
-    s8 RES_SCAL [[comment("Test results scaling exponent (invalid if OPT_FLAG bit 0 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    s8 LLM_SCAL [[comment("Low limit scaling exponent (invalid if OPT_FLAG bit 4 or 6 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    s8 HLM_SCAL [[comment("High limit scaling exponent (invalid if OPT_FLAG bit 5 or 7 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float LO_LIMIT [[comment("Low test limit value (invalid if OPT_FLAG bit 4 or 6 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float HI_LIMIT [[comment("High test limit value (invalid if OPT_FLAG bit 5 or 7 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr UNITS [[comment("Test units (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr C_RESFMT [[comment("ANSI C result format string (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr C_LLMFMT [[comment("ANSI C low limit format string (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr C_HLMFMT [[comment("ANSI C high limit format string (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float LO_SPEC [[comment("Low specification limit value (invalid if OPT_FLAG bit 2 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float HI_SPEC [[comment("High specification limit value (invalid if OPT_FLAG bit 3 = 1)")]];
+    if (($ - start) < REC_LEN) {
+        float RESULT [[comment("Test result (only valid if TEST_FLG bit 1 = 1)")]];
+        if (($ - start) < REC_LEN) {
+            VarLenStr TEST_TXT [[comment("Test description text or label (absent if length byte = 0)")]];
+            if (($ - start) < REC_LEN) {
+                VarLenStr ALARM_ID [[comment("Name of alarm (absent if length byte = 0)")]];
+                if (($ - start) < REC_LEN) {
+                    PTROptFlag OPT_FLAG [[comment("Optional data flag See note")]];
+                    if (($ - start) < REC_LEN) {
+                        s8 RES_SCAL [[comment("Test results scaling exponent (invalid if OPT_FLAG bit 0 = 1)")]];
+                        if (($ - start) < REC_LEN) {
+                            s8 LLM_SCAL [[comment("Low limit scaling exponent (invalid if OPT_FLAG bit 4 or 6 = 1)")]];
+                            if (($ - start) < REC_LEN) {
+                                s8 HLM_SCAL [[comment("High limit scaling exponent (invalid if OPT_FLAG bit 5 or 7 = 1)")]];
+                                if (($ - start) < REC_LEN) {
+                                    float LO_LIMIT [[comment("Low test limit value (invalid if OPT_FLAG bit 4 or 6 = 1)")]];
+                                    if (($ - start) < REC_LEN) {
+                                        float HI_LIMIT [[comment("High test limit value (invalid if OPT_FLAG bit 5 or 7 = 1)")]];
+                                        if (($ - start) < REC_LEN) {
+                                            VarLenStr UNITS [[comment("Test units (absent if length byte = 0)")]];
+                                            if (($ - start) < REC_LEN) {
+                                                VarLenStr C_RESFMT [[comment("ANSI C result format string (absent if length byte = 0)")]];
+                                                if (($ - start) < REC_LEN) {
+                                                    VarLenStr C_LLMFMT [[comment("ANSI C low limit format string (absent if length byte = 0)")]];
+                                                    if (($ - start) < REC_LEN) {
+                                                        VarLenStr C_HLMFMT [[comment("ANSI C high limit format string (absent if length byte = 0)")]];
+                                                        if (($ - start) < REC_LEN) {
+                                                            float LO_SPEC [[comment("Low specification limit value (invalid if OPT_FLAG bit 2 = 1)")]];
+                                                            if (($ - start) < REC_LEN) {
+                                                                float HI_SPEC [[comment("High specification limit value (invalid if OPT_FLAG bit 3 = 1)")]];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
 
 // See STDF V4, Multiple-Result Parametric Record, p.51
@@ -718,46 +843,66 @@ struct MPR : Header {
     ParamFlg PARM_FLG [[comment("Parametric test flags (drift, etc.)")]];
     u16 RTN_ICNT [[comment("Count (j) of PMR indexes")]];
     u16 RSLT_CNT [[comment("Count (k) of returned results")]];
-    if (($ - start) == REC_LEN) { return; }
-    type::Nibbles RTN_STAT[(RTN_ICNT+1)/2] [[comment("Array of returned states (absent if RTN_ICNT = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float RTN_RSLT[RSLT_CNT] [[comment("Array of returned results (absent if RSLT_CNT = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr TEST_TXT [[comment("Descriptive text or label (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr ALARM_ID [[comment("Name of alarm (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    MPROptFlag OPT_FLAG [[comment("Optional data flag")]];
-    if (($ - start) == REC_LEN) { return; }
-    s8 RES_SCAL [[comment("Test result scaling exponent (absent if OPT_FLAG bit 0 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    s8 LLM_SCAL [[comment("Test low limit scaling exponent (absent if OPT_FLAG bit 4 or 6 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    s8 HLM_SCAL [[comment("Test high limit scaling exponent (absent if OPT_FLAG bit 5 or 7 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float LO_LIMIT [[comment("Test low limit value (absent if OPT_FLAG bit 4 or 6 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float HI_LIMIT [[comment("Test high limit value (absent if OPT_FLAG bit 5 or 7 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float START_IN [[comment("Starting input value (condition) (absent if OPT_FLAG bit 1 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float INCR_IN [[comment("Increment of input condition (absent if OPT_FLAG bit 1 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 RTN_INDX[RTN_ICNT] [[comment("Array of PMR indexes")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr UNITS [[comment("Units of returned results (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr UNITS_IN [[comment("Input condition units (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr C_RESFMT [[comment("ANSI C result format string (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr C_LLMFMT [[comment("ANSI C low limit format string (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr C_HLMFMT [[comment("ANSI C high limit format string (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float LO_SPEC [[comment("Low specification limit value (absent if OPT_FLAG bit 2 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    float HI_SPEC [[comment("High specification limit value (absent if OPT_FLAG bit 3 = 1)")]];
+    if (($ - start) < REC_LEN) {
+        type::Nibbles RTN_STAT[(RTN_ICNT+1)/2] [[comment("Array of returned states (absent if RTN_ICNT = 0)")]];
+        if (($ - start) < REC_LEN) {
+            float RTN_RSLT[RSLT_CNT] [[comment("Array of returned results (absent if RSLT_CNT = 0)")]];
+            if (($ - start) < REC_LEN) {
+                VarLenStr TEST_TXT [[comment("Descriptive text or label (absent if length byte = 0)")]];
+                if (($ - start) < REC_LEN) {
+                    VarLenStr ALARM_ID [[comment("Name of alarm (absent if length byte = 0)")]];
+                    if (($ - start) < REC_LEN) {
+                        MPROptFlag OPT_FLAG [[comment("Optional data flag")]];
+                        if (($ - start) < REC_LEN) {
+                        s8 RES_SCAL [[comment("Test result scaling exponent (absent if OPT_FLAG bit 0 = 1)")]];
+                            if (($ - start) < REC_LEN) {
+                            s8 LLM_SCAL [[comment("Test low limit scaling exponent (absent if OPT_FLAG bit 4 or 6 = 1)")]];
+                                if (($ - start) < REC_LEN) {
+                                s8 HLM_SCAL [[comment("Test high limit scaling exponent (absent if OPT_FLAG bit 5 or 7 = 1)")]];
+                                    if (($ - start) < REC_LEN) {
+                                    float LO_LIMIT [[comment("Test low limit value (absent if OPT_FLAG bit 4 or 6 = 1)")]];
+                                        if (($ - start) < REC_LEN) {
+                                        float HI_LIMIT [[comment("Test high limit value (absent if OPT_FLAG bit 5 or 7 = 1)")]];
+                                            if (($ - start) < REC_LEN) {
+                                            float START_IN [[comment("Starting input value (condition) (absent if OPT_FLAG bit 1 = 1)")]];
+                                                if (($ - start) < REC_LEN) {
+                                                float INCR_IN [[comment("Increment of input condition (absent if OPT_FLAG bit 1 = 1)")]];
+                                                    if (($ - start) < REC_LEN) {
+                                                    u16 RTN_INDX[RTN_ICNT] [[comment("Array of PMR indexes")]];
+                                                        if (($ - start) < REC_LEN) {
+                                                        VarLenStr UNITS [[comment("Units of returned results (absent if length byte = 0)")]];
+                                                            if (($ - start) < REC_LEN) {
+                                                            VarLenStr UNITS_IN [[comment("Input condition units (absent if length byte = 0)")]];
+                                                                if (($ - start) < REC_LEN) {
+                                                                VarLenStr C_RESFMT [[comment("ANSI C result format string (absent if length byte = 0)")]];
+                                                                    if (($ - start) < REC_LEN) {
+                                                                    VarLenStr C_LLMFMT [[comment("ANSI C low limit format string (absent if length byte = 0)")]];
+                                                                        if (($ - start) < REC_LEN) {
+                                                                        VarLenStr C_HLMFMT [[comment("ANSI C high limit format string (absent if length byte = 0)")]];
+                                                                            if (($ - start) < REC_LEN) {
+                                                                            float LO_SPEC [[comment("Low specification limit value (absent if OPT_FLAG bit 2 = 1)")]];
+                                                                                if (($ - start) < REC_LEN) {
+                                                                                    float HI_SPEC [[comment("High specification limit value (absent if OPT_FLAG bit 3 = 1)")]];
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
 
 // See STDF V4, Functional Test Record, p.55
@@ -776,54 +921,78 @@ struct FTR : Header {
     u8 HEAD_NUM [[comment("Test head number")]];
     u8 SITE_NUM [[comment("Test site number")]];
     MPR_FTR_TestFlg TEST_FLG [[comment("Test flags (fail, alarm, etc.)")]];
-    if (($ - start) == REC_LEN) { return; }
-    FTROptFlag OPT_FLAG [[comment("Optional data flag")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 CYCL_CNT [[comment("Cycle count of vector (absent if OPT_FLAG bit 0 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 REL_VADR [[comment("Relative vector address (absent if OPT_FLAG bit 1 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 REPT_CNT [[comment("Repeat count of vector (absent if OPT_FLAG bit 2 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    u32 NUM_FAIL [[comment("Number of pins with 1 or more failures (absent if OPT_FLAG bit 3 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    s32 XFAIL_AD [[comment("X logical device failure address (absent if OPT_FLAG bit 4 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    s32 YFAIL_AD [[comment("Y logical device failure address (absent if OPT_FLAG bit 4 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    s16 VECT_OFF [[comment("Offset from vector of interest (absent if OPT_FLAG bit 5 = 1)")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 RTN_ICNT [[comment("Count (j) of return data PMR indexes")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 PGM_ICNT [[comment("Count (k) of programmed state indexes")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 RTN_INDX[RTN_ICNT] [[comment("Array of return data PMR indexes")]];
-    if (($ - start) == REC_LEN) { return; }
-    u8 RTN_STAT[(RTN_ICNT+1)/2] [[comment("Array of returned states\n\n0 = 0 or low\n1 = 1 or high\n2 = midband\n3 = glitch\n4 = undetermined\n5 = failed low\n6 = failed high\n7 = failed midband\n8 = failed with a glitch\n9 = open\nA = short")]];
-    if (($ - start) == REC_LEN) { return; }
-    u16 PGM_INDX[PGM_ICNT] [[comment("Array of programmed state indexes")]];
-    if (($ - start) == REC_LEN) { return; }
-    u8 PGM_STAT[(PGM_ICNT+1)/2] [[comment("Array of programmed states")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenNibbles FAIL_PIN [[comment("Failing pin bitfield (absent if length bytes = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr VECT_NAM [[comment("Vector module pattern name (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr TIME_SET [[comment("Time set name (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr OP_CODE [[comment("Vector Op Code (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr TEST_TXT [[comment("Descriptive text or label (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr ALARM_ID [[comment("Name of alarm (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr PROG_TXT [[comment("Additional programmed information (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenStr RSLT_TXT [[comment("Additional result information (absent if length byte = 0)")]];
-    if (($ - start) == REC_LEN) { return; }
-    u8 PATG_NUM [[comment("Pattern generator number (absent if 255)"), format("format::absent_255")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenNibbles SPIN_MAP [[comment("Bit map of enabled comparators (absent if length byte = 0)")]];
+    if (($ - start) < REC_LEN) {
+        FTROptFlag OPT_FLAG [[comment("Optional data flag")]];
+        if (($ - start) < REC_LEN) {
+            u32 CYCL_CNT [[comment("Cycle count of vector (absent if OPT_FLAG bit 0 = 1)")]];
+            if (($ - start) < REC_LEN) {
+                u32 REL_VADR [[comment("Relative vector address (absent if OPT_FLAG bit 1 = 1)")]];
+                if (($ - start) < REC_LEN) {
+                    u32 REPT_CNT [[comment("Repeat count of vector (absent if OPT_FLAG bit 2 = 1)")]];
+                    if (($ - start) < REC_LEN) {
+                        u32 NUM_FAIL [[comment("Number of pins with 1 or more failures (absent if OPT_FLAG bit 3 = 1)")]];
+                        if (($ - start) < REC_LEN) {
+                            s32 XFAIL_AD [[comment("X logical device failure address (absent if OPT_FLAG bit 4 = 1)")]];
+                            if (($ - start) < REC_LEN) {
+                                s32 YFAIL_AD [[comment("Y logical device failure address (absent if OPT_FLAG bit 4 = 1)")]];
+                                if (($ - start) < REC_LEN) {
+                                    s16 VECT_OFF [[comment("Offset from vector of interest (absent if OPT_FLAG bit 5 = 1)")]];
+                                    if (($ - start) < REC_LEN) {
+                                        u16 RTN_ICNT [[comment("Count (j) of return data PMR indexes")]];
+                                        if (($ - start) < REC_LEN) {
+                                            u16 PGM_ICNT [[comment("Count (k) of programmed state indexes")]];
+                                            if (($ - start) < REC_LEN) {
+                                                u16 RTN_INDX[RTN_ICNT] [[comment("Array of return data PMR indexes")]];
+                                                if (($ - start) < REC_LEN) {
+                                                    u8 RTN_STAT[(RTN_ICNT+1)/2] [[comment("Array of returned states\n\n0 = 0 or low\n1 = 1 or high\n2 = midband\n3 = glitch\n4 = undetermined\n5 = failed low\n6 = failed high\n7 = failed midband\n8 = failed with a glitch\n9 = open\nA = short")]];
+                                                    if (($ - start) < REC_LEN) {
+                                                        u16 PGM_INDX[PGM_ICNT] [[comment("Array of programmed state indexes")]];
+                                                        if (($ - start) < REC_LEN) {
+                                                            u8 PGM_STAT[(PGM_ICNT+1)/2] [[comment("Array of programmed states")]];
+                                                            if (($ - start) < REC_LEN) {
+                                                                VarLenNibbles FAIL_PIN [[comment("Failing pin bitfield (absent if length bytes = 0)")]];
+                                                                if (($ - start) < REC_LEN) {
+                                                                    VarLenStr VECT_NAM [[comment("Vector module pattern name (absent if length byte = 0)")]];
+                                                                    if (($ - start) < REC_LEN) {
+                                                                        VarLenStr TIME_SET [[comment("Time set name (absent if length byte = 0)")]];
+                                                                        if (($ - start) < REC_LEN) {
+                                                                            VarLenStr OP_CODE [[comment("Vector Op Code (absent if length byte = 0)")]];
+                                                                            if (($ - start) < REC_LEN) {
+                                                                                VarLenStr TEST_TXT [[comment("Descriptive text or label (absent if length byte = 0)")]];
+                                                                                if (($ - start) < REC_LEN) {
+                                                                                    VarLenStr ALARM_ID [[comment("Name of alarm (absent if length byte = 0)")]];
+                                                                                    if (($ - start) < REC_LEN) {
+                                                                                        VarLenStr PROG_TXT [[comment("Additional programmed information (absent if length byte = 0)")]];
+                                                                                        if (($ - start) < REC_LEN) {
+                                                                                            VarLenStr RSLT_TXT [[comment("Additional result information (absent if length byte = 0)")]];
+                                                                                            if (($ - start) < REC_LEN) {
+                                                                                                u8 PATG_NUM [[comment("Pattern generator number (absent if 255)"), format("format::absent_255")]];
+                                                                                                if (($ - start) < REC_LEN) {
+                                                                                                    VarLenNibbles SPIN_MAP [[comment("Bit map of enabled comparators (absent if length byte = 0)")]];
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }    
+    }
 };
 
 // See STDF V4, Begin Program Record, p.60
@@ -872,8 +1041,8 @@ struct GenData {
 struct GDR : Header {
     auto start = $;
     u16 FLD_CNT [[comment("Count of data fields in record")]];
-    if (($ - start) == REC_LEN) { return; }
-    VarLenBytes GEN_DATA [[comment("Data type code and data for one field")]];
+    if (($ - start) < REC_LEN)
+        VarLenBytes GEN_DATA [[comment("Data type code and data for one field")]];
 };
 
 // See STDF V4, Datalog Text Record, p.64
