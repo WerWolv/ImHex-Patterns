@@ -166,7 +166,7 @@ struct FString {
 fn format_fstring(FString string) {
     return string.length == 0
         ? "null"
-        : std::format("\"{}\"", string.data);
+        : std::format("\"{}\"", std::string::replace(string.data, "\n", "\\n"));
 };
 
 struct FEngineVersion {
