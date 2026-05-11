@@ -146,13 +146,7 @@ struct FString {
     s32 length;
     if (length > 0) {
         // ASCII, treated as UTF-8
-        try {
-            char data[length - 1];
-        } catch {
-            std::error(std::format(
-                "Invalid string length 0x{:x}",
-                length));
-        }
+        char data[length - 1];
         type::Magic<"\x00"> terminator;
     } else if (length < 0) {
         // UTF-16
