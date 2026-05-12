@@ -26,6 +26,7 @@ enum SaveGameFileVersion : u32 {
 enum EUnrealEngineObjectUE4Version : u32 {
     VER_UE4_OLDEST_LOADABLE_PACKAGE = 214,
     VER_UE4_FTEXT_HISTORY = 368,
+    VER_UE4_FTEXT_HISTORY_DATE_TIMEZONE = 422,
 };
 
 /// UE5 object versions
@@ -222,6 +223,8 @@ FSaveGameHeader header @ 0;
 
 // ====== Property serialization logic ======
 
+const bool ftextHistoryDateTimezone =
+    header.packageFileVersion >= EUnrealEngineObjectUE4Version::VER_UE4_FTEXT_HISTORY_DATE_TIMEZONE;
 const bool propertyTagCompleteTypeName =
     (header.saveGameFileVersion >= SaveGameFileVersion::PackageFileSummaryVersionChange) &&
     (header.packageFileVersionUE5 >= EUnrealEngineObjectUE5Version::PROPERTY_TAG_COMPLETE_TYPE_NAME);
@@ -328,6 +331,16 @@ enum ETextHistoryType : u8 {
     TextGenerator,
 };
 
+enum EDateTimeStyle : s8 {
+    Default,
+    Short,
+    Medium,
+    Long,
+    Full,
+    Custom,
+};
+
+using DateTime;
 struct FTextHistory {
     ETextHistoryType type;
     match (type) {
@@ -346,8 +359,12 @@ struct FTextHistory {
             FString key;
             FString sourceString;
         }
-        // (ETextHistoryType::NamedFormat): {}
-        // (ETextHistoryType::OrderedFormat): {}
+        (ETextHistoryType::NamedFormat): {
+            FText formatText;
+        }
+        (ETextHistoryType::OrderedFormat): {
+            FText formatText;
+        }
         (ETextHistoryType::ArgumentFormat): {
             FText sourceFormat;
             u32 argumentCount;
@@ -363,9 +380,29 @@ struct FTextHistory {
         }
         // (ETextHistoryType::AsPercent): {}
         // (ETextHistoryType::AsCurrency): {}
-        // (ETextHistoryType::AsDate): {}
-        // (ETextHistoryType::AsTime): {}
-        // (ETextHistoryType::AsDateTime): {}
+        (ETextHistoryType::AsDate): {
+            DateTime sourceDateTime;
+            EDateTimeStyle dateStyle;
+            if (ftextHistoryDateTimezone) {
+                FString timeZone;
+            }
+            FString cultureName;
+        }
+        (ETextHistoryType::AsTime): {
+            DateTime sourceDateTime;
+            EDateTimeStyle timeStyle;
+            FString timeZone;
+            FString cultureName;
+        }
+        (ETextHistoryType::AsDateTime): {
+            DateTime sourceDateTime;
+            EDateTimeStyle dateStyle, timeStyle;
+            if (dateStyle == EDateTimeStyle::Custom) {
+                FString customPattern;
+            }
+            FString timeZone;
+            FString cultureName;
+        }
         // (ETextHistoryType::Transform): {}
         (ETextHistoryType::StringTableEntry): {
             FString tableId;
