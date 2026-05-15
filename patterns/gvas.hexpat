@@ -4,6 +4,9 @@
 #pragma magic [ 47 56 41 53 0? 00 00 00 ] @ 0x00
 #pragma endian little
 
+// Subnautica 2
+#pragma magic [ 47 53 57 55 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 47 56 41 53 0? 00 00 00 ] @ 0x00
+
 #pragma array_limit    300000
 #pragma pattern_limit 2000000
 
@@ -194,6 +197,9 @@ fn format_fcustomversion(FCustomVersion version) {
 };
 
 struct FSaveGameHeader {
+    if (std::mem::read_unsigned($, 4, std::mem::Endian::Little) == 0x55575347) {
+        padding[16];
+    }
     type::Magic<"GVAS"> fileTypeTag;
     SaveGameFileVersion saveGameFileVersion;
     EUnrealEngineObjectUE4Version packageFileVersion;
