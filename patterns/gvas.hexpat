@@ -459,7 +459,7 @@ struct DateTime {
 
 fn format_datetime(DateTime dt) {
     // Convert 100-ns intervals since 01-01-0001 to seconds since 01-01-1970
-    std::time::EpochTime et = (dt.ticks - 621355968000000000) / 10000000;
+    std::time::EpochTime et = dt.ticks / 10000000 - 62135596800;
     std::time::Time t = std::time::to_local(et);
     str s = std::time::format(t);
     return s;
