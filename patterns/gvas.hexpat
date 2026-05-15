@@ -9,6 +9,7 @@
 
 import std.io;
 import std.math;
+import std.time;
 import type.magic;
 
 // ====== Save Game Header constants ======
@@ -448,6 +449,14 @@ fn format_ftext(FText text) {
 
 struct DateTime {
     u64 ticks;
+} [[format("format_datetime")]];
+
+fn format_datetime(DateTime dt) {
+    // Convert 100-ns intervals since 01-01-0001 to seconds since 01-01-1970
+    std::time::EpochTime et = (dt.ticks - 621355968000000000) / 10000000;
+    std::time::Time t = std::time::to_local(et);
+    str s = std::time::format(t);
+    return s;
 };
 
 struct GameplayTagContainer {
