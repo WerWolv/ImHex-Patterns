@@ -196,6 +196,13 @@ fn format_fcustomversion(FCustomVersion version) {
     return version.value;
 };
 
+enum ECustomVersionSerializationFormat : u32 {
+    Unknown,
+    Guids,
+    Enums,
+    Optimized,
+};
+
 struct FSaveGameHeader {
     if (std::mem::read_unsigned($, 4, std::mem::Endian::Little) == 0x55575347) {
         padding[16];
@@ -218,7 +225,13 @@ struct FSaveGameHeader {
     }
     FEngineVersion engineVersion;
     if (saveGameFileVersion >= SaveGameFileVersion::AddedCustomVersions) {
-        s32 customVersionFormat, customVersionLength;
+        ECustomVersionSerializationFormat customVersionFormat;
+        if (customVersionFormat != ECustomVersionSerializationFormat::Optimized) {
+            std::error(std::format(
+                "Unsupported custom version format {}",
+                u32(customVersionFormat)));
+        }
+        s32 customVersionLength;
         FCustomVersion customVersions[customVersionLength] [[single_color]];
     }
     FString saveGameClassName;
