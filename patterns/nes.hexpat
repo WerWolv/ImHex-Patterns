@@ -598,7 +598,7 @@ struct MiscellaneousROMs {
 		u8 decryptionDataPROM[16];
 		u8 decryptionCounterOutPROM[16];
 	}
-	else if ($[0x0D] == ExtendedConsoleType::VT3xx) {
+	else if ($[0x0D] == ExtendedConsoleType::VT369) {
 		u8 embeddedROM[std::mem::size()-calculatedCHRROMSize-fullPRGROMSize-sizeof(trainer)-0x10];
 	}
 	else if (mapperValue == 355) {
