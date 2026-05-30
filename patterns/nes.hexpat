@@ -1,12 +1,12 @@
 #pragma author gmestanley
-#pragma description Nintendo Entertainment System ROM (.nes)
+#pragma description Nintendo Entertainment System ROM
 #pragma MIME application/x-nes-rom
 
 import std.string;
 
 enum MirroringType : u8 {
-	Vertical,
-	Horizontal
+	Horizontal,
+	Vertical
 };
 
 fn mirroring(u8 value) {
@@ -17,8 +17,8 @@ fn mirroring(u8 value) {
 bitfield Flags {
 	mirroring : 1 [[format("mirroring")]];
 	ignoreMirroring : 1;
-	batterybackedPRGRAM : 1;
 	trainerOf512Bytes : 1;
+	batterybackedPRGRAM : 1;
 	lowerMapperNybble : 4;
 };
 
@@ -124,7 +124,7 @@ enum ExtendedConsoleType : ConsoleType {
 	VT03,
 	VT09,
 	VT32,
-	VT36x,
+	VT368,
 	UM6578,
 	FamicomNetworkSystem
 };
@@ -182,7 +182,7 @@ struct NES2Attributes {
 		VsSystemType vsSystemType;
 	}
 	else if (parent.inesFlags7.consoleType == ConsoleType::ExtendedConsoleType) {
-		ExtendedConsoleTypeByte ExtendedConsoleTypeByte;
+		ExtendedConsoleTypeByte extendedConsoleTypeByte;
 	}
 	else {
 		padding[1];
@@ -227,18 +227,18 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 	match (mapperValue) {
 		(0): mapper = "No mapper";
 		(1): mapper = "Nintendo MMC1B";
-		(2): mapper = "UxROM";
-		(3): mapper = "CNROM-32";
-		(4): mapper = "MMC3";
-		(5): mapper = "MMC5";
+		(2): mapper = "Nintendo UxROM";
+		(3): mapper = "Nintendo CNROM-32";
+		(4): mapper = "Nintendo MMC3";
+		(5): mapper = "Nintendo MMC5";
 		(6): mapper = "Front Fareast Magic Card 1/2M RAM Cartridge";
-		(7): mapper = "AxROM";
+		(7): mapper = "Nintendo AxROM";
 		(8): mapper = "Front Fareast Magic Card 1/2M RAM Cartridge [Initial latch-based banking mode 4]";
-		(9): mapper = "MMC2";
-		(10): mapper = "MMC4";
+		(9): mapper = "Nintendo MMC2";
+		(10): mapper = "Nintendo MMC4";
 		(11): mapper = "Color Dreams";
 		(12): mapper = "[See submapper]";
-		(13): mapper = "CPROM";
+		(13): mapper = "Nintendo CPROM";
 		(14): mapper = "SL-1632";
 		(15): mapper = "K-102xx";
 		(16): mapper = "Bandai FCG boards";
@@ -253,16 +253,16 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(25): mapper = "Konami VRC4d or VRC2c + VRC4b";
 		(26): mapper = "Konami VRC6b";
 		(27): mapper = "World Hero";
-		(28): mapper = "InfiniteNESLives' Action 53";
+		(28): mapper = "InfiniteNESLives Action 53";
 		(29): mapper = "RET-CUFROM";
-		(30): mapper = "UNROM 512";
+		(30): mapper = "Nintendo UNROM-512";
 		(31): mapper = "NSF";
 		(32): mapper = "G-101";
 		(33): mapper = "Taito TC0190";
 		(34): mapper = "[See submapper]";
 		(35): mapper = "J.Y. Company ASIC [8KiB WRAM]";
 		(36): mapper = "Micro Genius 01-22000-400";
-		(37): mapper = "SMB+Tetris+NWC";
+		(37): mapper = "Nintendo SMB+Tetris+NWC";
 		(38): mapper = "Bit Corp. Crime Busters";
 			(39): mapper = "Study & Game 32-in-1 [DEPRECATED]";
 		(40): mapper = "NTDEC 27xx";
@@ -271,7 +271,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(43): mapper = "TONY-I/YS-612";
 		(44): mapper = "Super Big 7-in-1";
 		(45): mapper = "GA23C"; //TC3294 according to NintendulatorNRS
-		(46): mapper = "Lite Star's Rumble Station";
+		(46): mapper = "Lite Star Rumble Station";
 		(47): mapper = "Nintendo Super Spike V'Ball + NWC";
 		(48): mapper = "Taito TC0690";
 		(49): mapper = "Super HIK 4-in-1";
@@ -281,7 +281,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(53): mapper = "Supervision 16-in-1";
 			(54): mapper = "Novel Diamond 9999999-in-1 [DEPRECATED]";
 		(55): mapper = "QFJxxxx";
-		(56): mapper = "KS202";
+		(56): mapper = "Kaiser KS202";
 		(57): mapper = "GK";
 		(58): mapper = "WQ";
 		(59): mapper = "T3H53";
@@ -299,7 +299,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 		(71): mapper = "Camerica";
 		(72): mapper = "Jaleco JF-17 [16 KiB PRG ROM]";
 		(73): mapper = "Konami VRC3";
-		(74): mapper = "860908C";
+		(74): mapper = "Waixing 860908C";
 		(75): mapper = "Konami VRC1";
 		(76): mapper = "NAMCOT-3446";
 		(77): mapper = "Napoleon Senki";
@@ -312,29 +312,75 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 			(84): mapper = "PC-SMB2J [DEPRECATED]";
 		(85): mapper = "Konami VRC7";
 		(86): mapper = "Jaleco JF-13";
-		(87): mapper = "JF87";
+		(87): mapper = "Jaleco JF-87";
 		(88): mapper = "Namco chip";
 		(89): mapper = "Sunsoft 2.5";
 		(90): mapper = "J.Y. Company ASIC [ROM nametables & extended mirroring]";
 		(91): mapper = "J.Y. Company clone boards";
 		(92): mapper = "Jaleco JF-17 [16 KiB PRG ROM]";
-		(124): mapper = "Super Game Mega Type III";
+		(106): mapper = "Super Mario Bros. 3 Bootleg";
+		(115): mapper = "Kǎ Shèng SFC-0xx";
+		(116): mapper = "Supertone SOMARI-P";
+		(121): mapper = "Kǎ Shèng A971";
+		(124): mapper = "Super Game Mega Type";
+		(125): mapper = "Whirlwind Manu FDS -> NES";
 		(126): mapper = "TEC9719";
-		(132): mapper = "TXC 05-00002-010";
+		(127): mapper = "Double Dragon II - The Revenge (J) bootleg";
+		(132): mapper = "TXC Corp. 05-00002-010";
+		(163): mapper = "Nanjing FC-001";
+		(164): mapper = "Dōngdá PEC-9588";
+		(167): mapper = "Subor Educational Computer";
 		(173): mapper = "C&E 05-00002-010";
+		(183): mapper = "AX5208C";
 		(187): mapper = "Kǎ Shèng A98402";
+		(191): mapper = "Xianfeng Cartoon Dǔshén";
+		(192): mapper = "Waixing FS308";
+		(195): mapper = "Waixing FS303";
+		(198): mapper = "Xianfeng Cartoon Tūnshí Tiāndì - Sānguó Wàizhuàn";
+		(215): mapper = "Sugar Softec 8237";
+		(219): mapper = "Kǎ Shèng A9461";
+			(224): mapper = "Jncota KT-008 [DEPRECATED]";
+		(225): mapper = "ET-4310";
+		(240): mapper = "C&E board";
+		(241): mapper = "BNROM with WRAM";
+		(244): mapper = "C&E Decathlon";
+		(252): mapper = "Waixing San Guo Zhi";
+		(253): mapper = "Waixing Qi Long Zhu";
+
 		(256): mapper = "V.R. Technology OneBus";
+		(257): mapper = "Dōngdá PEC-586";
 		(269): mapper = "Nice Code Games Xplosion 121-in-1";
+		(281): mapper = "J.Y. Company YY8xxxxxC";
+		(291): mapper = "Kǎ Shèng Mortal Kombat";
+		(296): mapper = "V.R. Technology VT32";
 		(355): mapper = "Jùjīng 3D-BLOCK";
+		(383): mapper = "J.Y. Company YY840708C";
+		(405): mapper = "Bandai Multi Game Player Gamepad";
+		(407): mapper = "Senario Win, Lose or Draw";
 		(419): mapper = "Taikee TK-8007 MCU";
 		(422): mapper = "ING-022";
 		(423): mapper = "Lexibook Compact Cyber Arcade";
 		(424): mapper = "Lexibook Retro TV Game Console";
 		(425): mapper = "Cube Tech Handheld";
 		(426): mapper = "V.R. Technology OneBus [Serial ROM in GPIO]";
-		(534): mapper = "ING003C";
+		(427): mapper = "V.R. Technology OneBus [I²C chip in GPIO]";
+		(432): mapper = "Realtec 8xxx";
+		(433): mapper = "Realtec NC-20MB";
+		(443): mapper = "Realtec NC3000M";
+		(444): mapper = "Realtec NC7000M";
+
+		(514): mapper = "Subor Karaoke";
+		(518): mapper = "Subor SB-97";
+		(523): mapper = "Jncota Fēngshénbǎng: Fúmó Sān Tàizǐ";
+		(534): mapper = "Nice Code ING003C";
+		(544): mapper = "Waixing FS306";
+		(556): mapper = "J.Y. Company JY-215";
 		(594): mapper = "Rinco FSG2";
 		(595): mapper = "NES-4MROM-512";
+		(600): mapper = "UMC UM6578";
+		(601): mapper = "UMC UM6578, Jungle Technology coding";
+		(602): mapper = "Subor SB-2000";
+		(682): mapper = "Broke Studio Rainbow Mapper";
 	}
 	match (mapperValue) {
 		(0): designation = "NROM";
@@ -401,7 +447,7 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 			(1): submapper = "82-in-1";
 		}
 	}
-	else if (mapperValue == 256 || mapperValue == 419) {
+	else if (mapperValue == 256 || mapperValue == 407 || mapperValue == 419 || mapperValue == 425) {
 		match (submapperValue) {
 			(0): submapper = "Normal";
 			(1): submapper = "Waixing VT03";
@@ -410,12 +456,17 @@ fn identifyMapper(u16 mapperValue, u8 submapperValue) {
 			(4): submapper = "Nice Code VT03";
 			(5): submapper = "Waixing VT02";
 			(11): submapper = "Vibes";
-			(12): submapper = "Cheertone";
+			(12): submapper = "Meili VT368";
 			(13): submapper = "Cube Tech";
-            (14): submapper = "Unknown developer (Publisher: Karaoto)";
-			(15): submapper = "JungleTac Fuzhou";
+			(14): submapper = "Meili VT02";
+			(15): submapper = "Jungle Fuzhou";
 		}
 		submapper += " wiring";
+	}
+	else if (mapperValue == 427) {
+		match (submapperValue) {
+			(1): submapper = "Lexibook Cyber Arcade Pocket";
+		}
 	}
 	std::print("Mapper: " + mapper + " (" + std::string::to_string(mapperValue) + ")");
 	if (submapper) std::print("Submapper: " + submapper + " (" + std::string::to_string(submapperValue) + ")");

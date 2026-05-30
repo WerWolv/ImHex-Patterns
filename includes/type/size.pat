@@ -1,3 +1,5 @@
+#pragma once
+
 import std.io;
 
 /*!
