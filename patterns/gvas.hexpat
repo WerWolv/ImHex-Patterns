@@ -14,6 +14,7 @@ import std.io;
 import std.math;
 import std.time;
 import type.magic;
+import type.size;
 
 // ====== Save Game Header constants ======
 
@@ -674,7 +675,7 @@ struct FPropertyTag {
         name.data, dollar);
     if (propertyTagCompleteTypeName) {
         TypeTreeNode type;
-        u32 size;
+        type::Size32 size;
         PropertyTagFlags flags;
         if (flags.hasArrayIndex) {
             u32 arrayIndex;
@@ -688,7 +689,7 @@ struct FPropertyTag {
         }
     } else {
         FString type;
-        u32 size;
+        type::Size32 size;
         u32 arrayIndex;
         match (type.data) {
             ("ArrayProperty"): FString propertyType;
