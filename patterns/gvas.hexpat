@@ -183,14 +183,36 @@ fn format_fengineversion(FEngineVersion version) {
         branch);
 };
 
+bitfield FGuid {
+    a : 32;
+    b_lo : 16;
+    b_hi : 16;
+    c_lo : 16;
+    c_hi : 16;
+    d : 32;
+};
+union Guid {
+    u128 integer;
+    FGuid guid;
+} [[sealed, format("format_guid")]];
+fn format_guid(Guid value) {
+    return std::format("{{{:08X}-{:04X}-{:04X}-{:04X}-{:04X}{:08X}}}",
+        value.guid.a,
+        value.guid.b_hi,
+        value.guid.b_lo,
+        value.guid.c_hi,
+        value.guid.c_lo,
+        value.guid.d);
+};
+
 struct FCustomVersion {
-    u128 key;
-    match (key) {
+    Guid key;
+    match (key.integer) {
         (GUID_UE5_RELEASE_STREAM): EUE5ReleaseStreamObjectVersion value;
         (GUID_EDITOR): EEditorObjectVersion value;
         (_): s32 value;
     }
-} [[sealed, name(std::format("0x{:032X}", key)), format("format_fcustomversion")]];
+} [[name(format_guid(key)), format("format_fcustomversion")]];
 
 fn format_fcustomversion(FCustomVersion version) {
     return version.value;
@@ -254,7 +276,7 @@ const bool fsoftobjectpathRemoveAssetPathFNames =
 
 fn custom_version(u128 guid) {
     for (u32 i = 0, i < header.customVersionLength, i = i + 1) {
-        if (header.customVersions[i].key == guid) {
+        if (header.customVersions[i].key.integer == guid) {
             return header.customVersions[i].value;
         }
     }
@@ -483,8 +505,6 @@ struct GameplayTagContainer {
     FString tags[count];
 };
 
-using Guid = u128;
-
 struct IntPoint {
     s32 x, y;
 };
@@ -616,7 +636,7 @@ struct FPropertyTag {
             u32 arrayIndex;
         }
         if (flags.hasPropertyGuid) {
-            u128 guid;
+            Guid guid;
         }
         if (flags.hasPropertyExtensions) {
             std::error(std::format(
@@ -638,7 +658,7 @@ struct FPropertyTag {
             ("SetProperty"): FString propertyType;
             ("StructProperty"): {
                 FString typeName;
-                u128 guid;
+                Guid guid;
             }
         }
         type::Magic<"\x00"> terminator;
@@ -668,7 +688,7 @@ struct FPropertyTag {
                         type::Magic<"\x0F\x00\x00\x00StructProperty\x00"> propertyType;
                         u32 propertySize, arrayIndex;
                         FString structName;
-                        u128 guid;
+                        Guid guid;
                         type::Magic<"\x00"> terminator;
                         u32 propertyStart = $;
                     }
