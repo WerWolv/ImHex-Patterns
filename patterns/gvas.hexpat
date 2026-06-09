@@ -617,7 +617,11 @@ struct StructPropertyValue<auto type, auto size> {
         // Wrap the unknown data
         std::mem::Bytes<size> value;
     }
-} [[inline]];
+} [[inline, format("format_structpropertyvalue")]];
+
+fn format_structpropertyvalue(auto spv) {
+    return spv.value;
+};
 
 struct FPropertyTag {
     const auto dollar = $;
@@ -718,9 +722,10 @@ struct FPropertyTag {
                         s32 propertyBytesRemaining = propertySize + propertyStart - $;
                         if (propertyBytesRemaining != 0) {
                             std::print(std::format(
-                                "Struct parsing failed for {}. Bytes remaining: {}",
+                                "Struct parsing failed for {}. Bytes {}: {}",
                                 structName,
-                                propertyBytesRemaining));
+                                propertyBytesRemaining < 0 ? "overrun" : "remaining",
+                                std::math::abs(propertyBytesRemaining)));
                             std::mem::Bytes<propertyBytesRemaining> warning;
                         }
                     }
@@ -801,6 +806,7 @@ fn format_fpropertytag(FPropertyTag property) {
     }
     match (propertyTagCompleteTypeName ? property.type.name.data : property.type.data) {
         ("ArrayProperty"): return property.values;
+        ("StructProperty"): return property.value.value;
     }
     return property.value;
 };
