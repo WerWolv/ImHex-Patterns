@@ -623,6 +623,46 @@ fn format_structpropertyvalue(auto spv) {
     return spv.value;
 };
 
+struct FProperty<auto type> {
+    match (type) {
+        ("DoubleProperty"): double value;
+        ("FloatProperty"): float value;
+        ("IntProperty"): s32 value;
+        ("Int8Property"): s8 value;
+        ("Int16Property"): s16 value;
+        ("Int64Property"): s64 value;
+        ("UInt16Property"): u16 value;
+        ("UInt32Property"): u32 value;
+        ("UInt64Property"): u64 value;
+        ("DelegateProperty"): Delegate value;
+        ("MulticastInlineDelegateProperty"): MulticastInlineDelegate value;
+        ("MulticastSparseDelegateProperty"): MulticastSparseDelegate value;
+        ("SoftObjectProperty"): SoftObject value;
+        ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
+        ("TextProperty"): FText value;
+        (_): std::error(std::format("Unsupported property {}", type));
+    }
+} [[format("format_fproperty")]];
+
+fn format_fproperty(auto property) {
+    return property.value;
+};
+
+struct MapPropertyEntry<auto K, auto V> {
+    FProperty<K> key;
+    FProperty<V> value;
+} [[name(key), format("format_mappropertyentry")]];
+
+fn format_mappropertyentry(auto entry) {
+    return entry.value;
+};
+
+struct MapProperty<auto K, auto V> {
+    u32 allocation_flags;
+    u32 count;
+    MapPropertyEntry<K, V> entries[count] [[inline]];
+};
+
 struct FPropertyTag {
     const auto dollar = $;
     FString name;
@@ -765,7 +805,20 @@ struct FPropertyTag {
         ("MulticastSparseDelegateProperty"): MulticastSparseDelegate value;
         ("SoftObjectProperty"): SoftObject value;
         ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
-        ("MapProperty" | "SetProperty"): std::mem::Bytes<size> value;
+        ("MapProperty"): {
+            const str k = propertyTagCompleteTypeName ? type.child[0].name.data : keyType.data;
+            const str v = propertyTagCompleteTypeName ? type.child[1].name.data : valueType.data;
+            try {
+                MapProperty<k, v> value;
+            } catch {
+                std::warning(std::format(
+                    "MapProperty<{}, {}> {} @ 0x{:04X}; Failed to parse",
+                    k, v, name.data, $));
+                // Wrap the unknown data
+                std::mem::Bytes<size> value;
+            }
+        }
+        ("SetProperty"): std::mem::Bytes<size> value;
         ("StructProperty"): StructPropertyValue<propertyTagCompleteTypeName ? type.child[0].name.data : typeName.data, size> value;
         ("TextProperty"): {
             try {
