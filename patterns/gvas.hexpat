@@ -641,6 +641,7 @@ struct FProperty<auto type> {
         ("SoftObjectProperty"): SoftObject value;
         ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
         ("TextProperty"): FText value;
+        ("StructProperty"): Properties value;
         (_): std::error(std::format("Unsupported property {}", type));
     }
 } [[format("format_fproperty")]];
