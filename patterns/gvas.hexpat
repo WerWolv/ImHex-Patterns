@@ -665,6 +665,12 @@ struct MapProperty<auto K, auto V> {
     MapPropertyEntry<K, V> entries[count] [[inline]];
 };
 
+struct SetProperty<auto T> {
+    u32 allocation_flags;
+    u32 count;
+    FProperty<T> entries[count] [[inline]];
+};
+
 struct FPropertyTag {
     const auto dollar = $;
     FString name;
@@ -825,7 +831,18 @@ struct FPropertyTag {
                 }
             }
         }
-        ("SetProperty"): std::mem::Bytes<size> value;
+        ("SetProperty"): {
+            const str t = propertyTagCompleteTypeName ? type.child[0].name.data : propertyType.data;
+            try {
+                SetProperty<t> value;
+            } catch {
+                std::warning(std::format(
+                    "SetProperty<{}> {} @ 0x{:04X}; Failed to parse",
+                    t, name.data, $));
+                // Wrap the unknown data
+                std::mem::Bytes<size> value;
+            }
+        }
         ("StructProperty"): StructPropertyValue<propertyTagCompleteTypeName ? type.child[0].name.data : typeName.data, size> value;
         ("TextProperty"): {
             try {
