@@ -808,16 +808,21 @@ struct FPropertyTag {
         ("SoftObjectProperty"): SoftObject value;
         ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
         ("MapProperty"): {
-            const str k = propertyTagCompleteTypeName ? type.child[0].name.data : keyType.data;
-            const str v = propertyTagCompleteTypeName ? type.child[1].name.data : valueType.data;
-            try {
-                MapProperty<k, v> value;
-            } catch {
-                std::warning(std::format(
-                    "MapProperty<{}, {}> {} @ 0x{:04X}; Failed to parse",
-                    k, v, name.data, $));
+            if (propertyTagCompleteTypeName && flags.hasBinaryOrNativeSerialize) {
                 // Wrap the unknown data
                 std::mem::Bytes<size> value;
+            } else {
+                const str k = propertyTagCompleteTypeName ? type.child[0].name.data : keyType.data;
+                const str v = propertyTagCompleteTypeName ? type.child[1].name.data : valueType.data;
+                try {
+                    MapProperty<k, v> value;
+                } catch {
+                    std::warning(std::format(
+                        "MapProperty<{}, {}> {} @ 0x{:04X}; Failed to parse",
+                        k, v, name.data, $));
+                    // Wrap the unknown data
+                    std::mem::Bytes<size> value;
+                }
             }
         }
         ("SetProperty"): std::mem::Bytes<size> value;
