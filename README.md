@@ -262,7 +262,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | CBM BASIC | | [`commodore_basic.hexpat`](patterns/commodore_basic.hexpat) | Commodore BASIC |
 | Atari XEX | | [`xex.hexpat`](patterns/xex.hexpat) | Atari 8-bit binary format |
 | Terminfo | `application/x-terminfo` and `application/x-terminfo2` | [`patterns/terminfo.hexpat`](patterns/terminfo.hexpat) | Compiled *(legacy and extended)* term info entry |
-
+| CSNAP | [`csnap.hexpat`](patterns/csnap.hexpat) | ClipboardEdit Clipboard Snapshot format |
 
 
 ### Scripts
