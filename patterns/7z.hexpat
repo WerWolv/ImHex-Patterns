@@ -46,7 +46,7 @@ struct EndHeader {
     // Set padding to place End Header in right position
     padding[startheader.relativeOffsetEndHeader];
     // Mark link to meta block
-    u8 linkToMetaBlock [[color("FF0000")]];
+    u8 linkToMetaBlock [[color("FF0000"), no_unique_address]];
     // Mark all End Header
     char fullEndHeader[startheader.theLengthOfEndHeader] [[color("63954A")]];
     // Detect LZMA signature
