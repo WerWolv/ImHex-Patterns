@@ -4,6 +4,7 @@
 #pragma MIME application/x-pcx
 
 import std.io;
+import std.mem;
 
 enum Encoding : u8 {
     NoEncoding = 0x00,
@@ -52,4 +53,15 @@ struct PCX {
     padding[54];
 };
 
+struct ExtendedPalette {
+    if (std::mem::size() > sizeof(pcx) + 256*3 + 1) {
+        if (std::mem::read_unsigned(std::mem::size() - 256*3 - 1, 1) == 0x0C) {
+            u8 extended_palette_marker @ std::mem::size() - 256*3 - 1;
+            RGB8 palette256[256] @ std::mem::size() - 256*3;
+        }
+    }
+};
+
+
 PCX pcx @ 0x00;
+ExtendedPalette ExtendedPalette @ std::mem::size();
