@@ -62,6 +62,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | CCHVA | | [`patterns/cchva.hexpat`](patterns/cchva.hexpat) | Command and Conquer Voxel Animation |
 | CCVXL | | [`patterns/ccvxl.hexpat`](patterns/ccvxl.hexpat) | Command and Conquer Voxel Model |
 | CCPAL | | [`patterns/ccpal.hexpat`](patterns/ccpal.hexpat) | Command and Conquer Voxel Palette |
+| CGX | | [`patterns/CGX.hexpat`](patterns/CGX.hexpat) | PlayStation Mobile Shader |
 | CDA | | [`patterns/cda.hexpat`](patterns/cda.hexpat) | Compact Disc Audio track |
 | CHD | | [`patterns/chd.hexpat`](patterns/chd.hexpat) | MAME Compressed Hunks of Data file |
 | CHM | `application/vnd.ms-htmlhelp` | [`patterns/chm.hexpat`](patterns/chm.hexpat) | Windows HtmlHelp Data (ITSF / CHM) |
