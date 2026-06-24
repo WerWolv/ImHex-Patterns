@@ -1,4 +1,6 @@
 import std.io;
+import std.time;
+import type.time;
 
 fn id_to_format(u32 format) {
     if (format == 0x008E) return "CF_DSPENHMETAFILE";
@@ -34,94 +36,9 @@ struct ClipboardEntry
     u8 data[length];
 };
 
-const u64 FILETIME_EPOCH_DIFF = 116444736000000000;
-
-fn filetime_to_unix(s64 ft)
-{
-    return (ft - FILETIME_EPOCH_DIFF) / 10000000;
-};
-
-fn is_leap(s32 year)
-{
-    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-};
-
-fn days_in_month(s32 month, s32 year)
-{
-    if (month == 1) return 31;
-    if (month == 2) return is_leap(year) ? 29 : 28;
-    if (month == 3) return 31;
-    if (month == 4) return 30;
-    if (month == 5) return 31;
-    if (month == 6) return 30;
-    if (month == 7) return 31;
-    if (month == 8) return 31;
-    if (month == 9) return 30;
-    if (month == 10) return 31;
-    if (month == 11) return 30;
-    if (month == 12) return 31;
-    return 30;
-};
-
-fn unix_to_datetime(s64 unix)
-{
-    s64 seconds = unix;
-    s32 year = 1970;
-
-    // compute year
-    while (true)
-    {
-        s64 seconds_in_year = is_leap(year) ? 31622400 : 31536000;
-
-        if (seconds >= seconds_in_year)
-        {
-            seconds -= seconds_in_year;
-            year += 1;
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    // compute month
-    s32 month = 1;
-
-    while (true)
-    {
-        s64 dim = days_in_month(month, year) * 86400;
-
-        if (seconds >= dim)
-        {
-            seconds -= dim;
-            month += 1;
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    // day
-    s32 day = (seconds / 86400) + 1;
-    seconds = seconds % 86400;
-
-    // time
-    s32 hour = seconds / 3600;
-    seconds = seconds % 3600;
-
-    s32 minute = seconds / 60;
-    s32 second = seconds % 60;
-
-    return std::format(
-        "{:04}-{:02}-{:02} {:02}:{:02}:{:02}",
-        year, month, day, hour, minute, second
-    );
-};
-
-fn filetime_to_string(s64 ft)
-{
-    return unix_to_datetime(filetime_to_unix(ft));
+fn to_utc(auto v) {
+    type::time64_t unix_time = std::time::filetime_to_unix(v);
+    return type::impl::format_time_t(unix_time);
 };
 
 struct ClipboardSnapshot
@@ -132,7 +49,7 @@ struct ClipboardSnapshot
 
     ClipboardEntry entries[count];
 
-    s64 filetimeTakenUtc [[format("filetime_to_string")]];
+    type::FILETIME filetimeTakenUtc [[format("to_utc")]];
 };
 
 ClipboardSnapshot snapshot @ 0x00;
