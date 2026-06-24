@@ -1,3 +1,9 @@
+#pragma endian little
+#pragma magic 0x0F1B0A6D @ 0x00
+#pragma author FireBlade
+#pragma description ClipboardEdit Clipboard Snapshot format
+
+
 import std.io;
 import std.core;
 import std.time;
