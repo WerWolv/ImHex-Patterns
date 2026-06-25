@@ -183,11 +183,12 @@ namespace auto std::math {
     fn ln(auto value) { return builtin::std::math::ln(value); };
 
     /**
-        Calculates the floating point modulus of `value`.
-        @param value Value
-        @return Floating point modulus of `value`
+        Calculates the floating point modulus (remainder) of the division of `x` by `y`.
+        @param x Numerator
+        @param y Denominator
+        @return Floating point modulus (remainder) of the division of `x` by `y`
     */
-    fn fmod(auto value) { return builtin::std::math::fmod(value); };
+    fn fmod(auto x, auto y) { return builtin::std::math::fmod(x, y); };
 
     /**
         Calculates the value of `base` raised to the power of `exp`.
