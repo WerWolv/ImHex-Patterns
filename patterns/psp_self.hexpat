@@ -1,0 +1,40 @@
+import std.io;
+
+struct PspHeader2 {
+    u32 magic;
+    u16 modAttribute;
+    u16 compAttribute;
+    u8 moduleVerLo;
+    u8 moduleVerHi;
+    u8 modName[27];
+    u8 terminal;
+    u8 modVersion;
+    u8 nSegments;
+    s32 elfSize;
+    s32 pspSize;
+    u32 bootEntry;
+    s32 modInfoOffset;
+    u32 bssSize;
+    u16 segAlign[4];
+    u32 segAddress[4];
+    u32 segSize[4];
+    u32 reserved[5];
+    u32 devkitVersion;
+    u8 decryptMode;
+    u8 padByte;
+    u16 overlapSize;
+    u8 aesKey[16];
+    u8 cmacKey[16];
+    u8 cmacHeaderHash[16];
+    s32 dataSize;
+    s32 dataOffset;
+    u32 unk184;
+    u32 unk188;
+    u8 cmacDataHash[16];
+    u32 tag;
+    u8 sCheck[0x58];
+    u8 sha1Hash[20];
+    u8 keyData4[16];
+};
+
+PspHeader2 header @ 0x00;
