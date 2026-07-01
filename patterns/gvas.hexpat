@@ -7,14 +7,65 @@
 // Subnautica 2
 #pragma magic [ 47 53 57 55 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 47 56 41 53 0? 00 00 00 ] @ 0x00
 
+// Palworld
+#pragma magic [ 50 6C 5A 3? ] @ 0x08
+
 #pragma array_limit    300000
 #pragma pattern_limit 2000000
 
 import std.io;
 import std.math;
+import std.mem;
 import std.time;
 import type.magic;
 import type.size;
+
+#ifdef __IMHEX__
+import hex.core;
+import hex.dec;
+#endif
+
+// ====== Palworld Compression ======
+
+struct PalworldHeader {
+    if (std::mem::size() >= 12 && std::mem::read_string(8, 3) == "PlZ") {
+        type::Size32 uncompressed_len, compressed_len;
+        type::Magic<"PlZ"> magic;
+        char compression_rounds;
+        u8 compressed[while(!std::mem::eof())];
+        #ifdef __IMHEX__
+        match (compression_rounds) {
+            ('0'): {
+                std::unimplemented();
+            }
+            ('1'): {
+                std::mem::Section uncompressed = std::mem::create_section("uncompressed");
+                hex::dec::zlib_decompress(compressed, uncompressed, 15);
+                u8 decompressed_content[uncompressed_len] @ 0x00 in uncompressed;
+                hex::core::add_virtual_file("palworld.sav", decompressed_content);
+                std::mem::delete_section(uncompressed);
+                std::warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n! Palworld file content is compressed !\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nopen `palworld.sav` file from the Virtual Filesystem tab and run this pattern on it.");
+            }
+            ('2'): {
+                std::mem::Section buffer = std::mem::create_section("buffer");
+                hex::dec::zlib_decompress(compressed, buffer, 15);
+                u8 temp[std::mem::get_section_size(buffer)] @ 0x00 in buffer;
+                std::mem::Section uncompressed = std::mem::create_section("uncompressed");
+                hex::dec::zlib_decompress(temp, uncompressed, 15);
+                u8 decompressed_content[uncompressed_len] @ 0x00 in uncompressed;
+                std::mem::delete_section(buffer);
+                hex::core::add_virtual_file("palworld.sav", decompressed_content);
+                std::mem::delete_section(uncompressed);
+                std::warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n! Palworld file content is compressed !\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nopen `palworld.sav` file from the Virtual Filesystem tab and run this pattern on it.");
+            }
+            (_): std::unimplemented();
+        }
+        #endif
+        std::assert_warn(std::mem::eof(), std::format("Expected EOF @ 0x{:04X}", $));
+        return;
+    }
+};
+PalworldHeader palworld_header @ 0x00 [[inline]];
 
 // ====== Save Game Header constants ======
 
