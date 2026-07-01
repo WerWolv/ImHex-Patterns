@@ -681,6 +681,7 @@ fn format_structpropertyvalue(auto spv) {
 
 struct FProperty<auto type, auto inner> {
     match (type) {
+        ("BoolProperty"): bool value;
         ("DoubleProperty"): double value;
         ("FloatProperty"): float value;
         ("IntProperty"): s32 value;
