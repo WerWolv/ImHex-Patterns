@@ -7,14 +7,65 @@
 // Subnautica 2
 #pragma magic [ 47 53 57 55 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 47 56 41 53 0? 00 00 00 ] @ 0x00
 
+// Palworld
+#pragma magic [ 50 6C 5A 3? ] @ 0x08
+
 #pragma array_limit    300000
 #pragma pattern_limit 2000000
 
 import std.io;
 import std.math;
+import std.mem;
 import std.time;
 import type.magic;
 import type.size;
+
+#ifdef __IMHEX__
+import hex.core;
+import hex.dec;
+#endif
+
+// ====== Palworld Compression ======
+
+struct PalworldHeader {
+    if (std::mem::size() >= 12 && std::mem::read_string(8, 3) == "PlZ") {
+        type::Size32 uncompressed_len, compressed_len;
+        type::Magic<"PlZ"> magic;
+        char compression_rounds;
+        u8 compressed[while(!std::mem::eof())];
+        #ifdef __IMHEX__
+        match (compression_rounds) {
+            ('0'): {
+                std::unimplemented();
+            }
+            ('1'): {
+                std::mem::Section uncompressed = std::mem::create_section("uncompressed");
+                hex::dec::zlib_decompress(compressed, uncompressed, 15);
+                u8 decompressed_content[uncompressed_len] @ 0x00 in uncompressed;
+                hex::core::add_virtual_file("palworld.sav", decompressed_content);
+                std::mem::delete_section(uncompressed);
+                std::warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n! Palworld file content is compressed !\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nopen `palworld.sav` file from the Virtual Filesystem tab and run this pattern on it.");
+            }
+            ('2'): {
+                std::mem::Section buffer = std::mem::create_section("buffer");
+                hex::dec::zlib_decompress(compressed, buffer, 15);
+                u8 temp[std::mem::get_section_size(buffer)] @ 0x00 in buffer;
+                std::mem::Section uncompressed = std::mem::create_section("uncompressed");
+                hex::dec::zlib_decompress(temp, uncompressed, 15);
+                u8 decompressed_content[uncompressed_len] @ 0x00 in uncompressed;
+                std::mem::delete_section(buffer);
+                hex::core::add_virtual_file("palworld.sav", decompressed_content);
+                std::mem::delete_section(uncompressed);
+                std::warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n! Palworld file content is compressed !\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nopen `palworld.sav` file from the Virtual Filesystem tab and run this pattern on it.");
+            }
+            (_): std::unimplemented();
+        }
+        #endif
+        std::assert_warn(std::mem::eof(), std::format("Expected EOF @ 0x{:04X}", $));
+        return;
+    }
+};
+PalworldHeader palworld_header @ 0x00 [[inline]];
 
 // ====== Save Game Header constants ======
 
@@ -596,21 +647,25 @@ fn format_typetreenode(TypeTreeNode node) {
 };
 
 using Properties;
+struct StructPropertyValueRaw<auto type> {
+    match (type) {
+        ("DateTime"): DateTime value;
+        ("GameplayTagContainer"): GameplayTagContainer value;
+        ("Guid"): Guid value;
+        ("IntPoint"): IntPoint value;
+        ("LinearColor"): LinearColor value;
+        ("Quat"): Quat value;
+        ("Rotator"): Rotator value;
+        ("Timespan"): Timespan value;
+        ("Vector"): Vector value;
+        ("Vector2D"): Vector2D value;
+        (_): Properties value;
+    }
+} [[inline, format("format_structpropertyvalue")]];
+
 struct StructPropertyValue<auto type, auto size> {
     try {
-        match (type) {
-            ("DateTime"): DateTime value;
-            ("GameplayTagContainer"): GameplayTagContainer value;
-            ("Guid"): Guid value;
-            ("IntPoint"): IntPoint value;
-            ("LinearColor"): LinearColor value;
-            ("Quat"): Quat value;
-            ("Rotator"): Rotator value;
-            ("Timespan"): Timespan value;
-            ("Vector"): Vector value;
-            ("Vector2D"): Vector2D value;
-            (_): Properties value;
-        }
+        StructPropertyValueRaw<type> value;
     } catch {
         std::warning(std::format(
             "StructPropertyValue parsing failed for {}",
@@ -624,8 +679,9 @@ fn format_structpropertyvalue(auto spv) {
     return spv.value;
 };
 
-struct FProperty<auto type> {
+struct FProperty<auto type, auto inner> {
     match (type) {
+        ("BoolProperty"): bool value;
         ("DoubleProperty"): double value;
         ("FloatProperty"): float value;
         ("IntProperty"): s32 value;
@@ -641,7 +697,7 @@ struct FProperty<auto type> {
         ("SoftObjectProperty"): SoftObject value;
         ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
         ("TextProperty"): FText value;
-        ("StructProperty"): Properties value;
+        ("StructProperty"): StructPropertyValueRaw<inner> value;
         (_): std::error(std::format("Unsupported property {}", type));
     }
 } [[format("format_fproperty")]];
@@ -650,25 +706,25 @@ fn format_fproperty(auto property) {
     return property.value;
 };
 
-struct MapPropertyEntry<auto K, auto V> {
-    FProperty<K> key;
-    FProperty<V> value;
+struct MapPropertyEntry<auto K, auto V, auto KI, auto VI> {
+    FProperty<K, KI> key;
+    FProperty<V, VI> value;
 } [[name(key), format("format_mappropertyentry")]];
 
 fn format_mappropertyentry(auto entry) {
     return entry.value;
 };
 
-struct MapProperty<auto K, auto V> {
+struct MapProperty<auto K, auto V, auto KI, auto VI> {
     u32 allocation_flags;
     u32 count;
-    MapPropertyEntry<K, V> entries[count] [[inline]];
+    MapPropertyEntry<K, V, KI, VI> entries[count] [[inline]];
 };
 
-struct SetProperty<auto T> {
+struct SetProperty<auto T, auto TI> {
     u32 allocation_flags;
     u32 count;
-    FProperty<T> entries[count] [[inline]];
+    FProperty<T, TI> entries[count] [[inline]];
 };
 
 struct FPropertyTag {
@@ -820,12 +876,14 @@ struct FPropertyTag {
             } else {
                 const str k = propertyTagCompleteTypeName ? type.child[0].name.data : keyType.data;
                 const str v = propertyTagCompleteTypeName ? type.child[1].name.data : valueType.data;
+                const str ki = propertyTagCompleteTypeName && k == "StructProperty" ? type.child[0].child[0].name.data : "";
+                const str vi = propertyTagCompleteTypeName && v == "StructProperty" ? type.child[1].child[0].name.data : "";
                 try {
-                    MapProperty<k, v> value;
+                    MapProperty<k, v, ki, vi> value;
                 } catch {
                     std::warning(std::format(
-                        "MapProperty<{}, {}> {} @ 0x{:04X}; Failed to parse",
-                        k, v, name.data, $));
+                        "MapProperty<{}, {}, {}, {}> {} @ 0x{:04X}; Failed to parse",
+                        k, v, ki, vi, name.data, $));
                     // Wrap the unknown data
                     std::mem::Bytes<size> value;
                 }
@@ -833,12 +891,13 @@ struct FPropertyTag {
         }
         ("SetProperty"): {
             const str t = propertyTagCompleteTypeName ? type.child[0].name.data : propertyType.data;
+            const str ti = propertyTagCompleteTypeName && t == "StructProperty" ? type.child[0].child[0].name.data : "";
             try {
-                SetProperty<t> value;
+                SetProperty<t, ti> value;
             } catch {
                 std::warning(std::format(
-                    "SetProperty<{}> {} @ 0x{:04X}; Failed to parse",
-                    t, name.data, $));
+                    "SetProperty<{}, {}> {} @ 0x{:04X}; Failed to parse",
+                    t, ti, name.data, $));
                 // Wrap the unknown data
                 std::mem::Bytes<size> value;
             }
@@ -875,7 +934,7 @@ struct FPropertyTag {
         // Adjust the file offset
         $ += bytesRemaining;
     }
-} [[name(name.length == 0 ? "null" : name.data), format("format_fpropertytag")]];
+} [[single_color, name(name.length == 0 ? "null" : name.data), format("format_fpropertytag")]];
 
 fn format_fpropertytag(FPropertyTag property) {
     if (property.name.data == "None") {
