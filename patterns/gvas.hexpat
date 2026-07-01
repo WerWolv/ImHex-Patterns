@@ -647,21 +647,25 @@ fn format_typetreenode(TypeTreeNode node) {
 };
 
 using Properties;
+struct StructPropertyValueRaw<auto type> {
+    match (type) {
+        ("DateTime"): DateTime value;
+        ("GameplayTagContainer"): GameplayTagContainer value;
+        ("Guid"): Guid value;
+        ("IntPoint"): IntPoint value;
+        ("LinearColor"): LinearColor value;
+        ("Quat"): Quat value;
+        ("Rotator"): Rotator value;
+        ("Timespan"): Timespan value;
+        ("Vector"): Vector value;
+        ("Vector2D"): Vector2D value;
+        (_): Properties value;
+    }
+} [[inline, format("format_structpropertyvalue")]];
+
 struct StructPropertyValue<auto type, auto size> {
     try {
-        match (type) {
-            ("DateTime"): DateTime value;
-            ("GameplayTagContainer"): GameplayTagContainer value;
-            ("Guid"): Guid value;
-            ("IntPoint"): IntPoint value;
-            ("LinearColor"): LinearColor value;
-            ("Quat"): Quat value;
-            ("Rotator"): Rotator value;
-            ("Timespan"): Timespan value;
-            ("Vector"): Vector value;
-            ("Vector2D"): Vector2D value;
-            (_): Properties value;
-        }
+        StructPropertyValueRaw<type> value;
     } catch {
         std::warning(std::format(
             "StructPropertyValue parsing failed for {}",
@@ -675,7 +679,7 @@ fn format_structpropertyvalue(auto spv) {
     return spv.value;
 };
 
-struct FProperty<auto type> {
+struct FProperty<auto type, auto inner> {
     match (type) {
         ("DoubleProperty"): double value;
         ("FloatProperty"): float value;
@@ -692,7 +696,7 @@ struct FProperty<auto type> {
         ("SoftObjectProperty"): SoftObject value;
         ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
         ("TextProperty"): FText value;
-        ("StructProperty"): Properties value;
+        ("StructProperty"): StructPropertyValueRaw<inner> value;
         (_): std::error(std::format("Unsupported property {}", type));
     }
 } [[format("format_fproperty")]];
@@ -701,25 +705,25 @@ fn format_fproperty(auto property) {
     return property.value;
 };
 
-struct MapPropertyEntry<auto K, auto V> {
-    FProperty<K> key;
-    FProperty<V> value;
+struct MapPropertyEntry<auto K, auto V, auto KI, auto VI> {
+    FProperty<K, KI> key;
+    FProperty<V, VI> value;
 } [[name(key), format("format_mappropertyentry")]];
 
 fn format_mappropertyentry(auto entry) {
     return entry.value;
 };
 
-struct MapProperty<auto K, auto V> {
+struct MapProperty<auto K, auto V, auto KI, auto VI> {
     u32 allocation_flags;
     u32 count;
-    MapPropertyEntry<K, V> entries[count] [[inline]];
+    MapPropertyEntry<K, V, KI, VI> entries[count] [[inline]];
 };
 
-struct SetProperty<auto T> {
+struct SetProperty<auto T, auto TI> {
     u32 allocation_flags;
     u32 count;
-    FProperty<T> entries[count] [[inline]];
+    FProperty<T, TI> entries[count] [[inline]];
 };
 
 struct FPropertyTag {
@@ -871,12 +875,14 @@ struct FPropertyTag {
             } else {
                 const str k = propertyTagCompleteTypeName ? type.child[0].name.data : keyType.data;
                 const str v = propertyTagCompleteTypeName ? type.child[1].name.data : valueType.data;
+                const str ki = propertyTagCompleteTypeName && k == "StructProperty" ? type.child[0].child[0].name.data : "";
+                const str vi = propertyTagCompleteTypeName && v == "StructProperty" ? type.child[1].child[0].name.data : "";
                 try {
-                    MapProperty<k, v> value;
+                    MapProperty<k, v, ki, vi> value;
                 } catch {
                     std::warning(std::format(
-                        "MapProperty<{}, {}> {} @ 0x{:04X}; Failed to parse",
-                        k, v, name.data, $));
+                        "MapProperty<{}, {}, {}, {}> {} @ 0x{:04X}; Failed to parse",
+                        k, v, ki, vi, name.data, $));
                     // Wrap the unknown data
                     std::mem::Bytes<size> value;
                 }
@@ -884,12 +890,13 @@ struct FPropertyTag {
         }
         ("SetProperty"): {
             const str t = propertyTagCompleteTypeName ? type.child[0].name.data : propertyType.data;
+            const str ti = propertyTagCompleteTypeName && t == "StructProperty" ? type.child[0].child[0].name.data : "";
             try {
-                SetProperty<t> value;
+                SetProperty<t, ti> value;
             } catch {
                 std::warning(std::format(
-                    "SetProperty<{}> {} @ 0x{:04X}; Failed to parse",
-                    t, name.data, $));
+                    "SetProperty<{}, {}> {} @ 0x{:04X}; Failed to parse",
+                    t, ti, name.data, $));
                 // Wrap the unknown data
                 std::mem::Bytes<size> value;
             }
@@ -926,7 +933,7 @@ struct FPropertyTag {
         // Adjust the file offset
         $ += bytesRemaining;
     }
-} [[name(name.length == 0 ? "null" : name.data), format("format_fpropertytag")]];
+} [[single_color, name(name.length == 0 ? "null" : name.data), format("format_fpropertytag")]];
 
 fn format_fpropertytag(FPropertyTag property) {
     if (property.name.data == "None") {
