@@ -668,8 +668,8 @@ struct StructPropertyValue<auto type, auto size> {
         StructPropertyValueRaw<type> value;
     } catch {
         std::warning(std::format(
-            "StructPropertyValue parsing failed for {}",
-            type));
+            "StructPropertyValue<\"{}\", 0x{:X}> @ 0x{:04X}; parsing failed",
+            type, size, $));
         // Wrap the unknown data
         std::mem::Bytes<size> value;
     }
@@ -816,7 +816,7 @@ struct FPropertyTag {
                         }
                     } catch {
                         std::warning(std::format(
-                            "{} Failed to parse array of structs size {} in {}",
+                            "{} Failed to parse Array<size={}, Struct<{}>>",
                             prefix, size,
                             propertyTagCompleteTypeName ? type.child[0].child[0] : structName));
                         // Wrap the unknown data
