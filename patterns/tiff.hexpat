@@ -445,6 +445,12 @@ struct ImageData<auto Desc> {
     std::mem::Bytes<ByteCount> ImageData @ Offset [[name(std::format("{} {}", Desc, Index))]];
 } [[inline]];
 
+struct ExifIFD {
+    Big<u16> NumberDirectoryEntries;
+    IFDEntry DirectoryEntry[NumberDirectoryEntries];
+    Big<u32> NextIFD;
+};
+
 u64 currentIFD = 0;
 struct IFD {
     u64 Number = currentIFD;
@@ -465,6 +471,13 @@ struct IFD {
         u64 Count = std::core::member_count(DirectoryEntry[OffsetField].ValueOffset.ValueArray.Values);
         ImageData<"Tile"> Tiles[Count];
     } catch {}
+
+    try {
+        u64 ExifIFDField = get_field(DirectoryEntry, TIFFTag::ExifIFD);
+        u32 ExifOffset = DirectoryEntry[ExifIFDField].ValueOffset.ValueArray.Value;
+        ExifIFD ExifData @ ExifOffset;
+    } catch {}
+
 } [[name(std::format("IFD {}", Number))]];
 
 struct IFDS {
