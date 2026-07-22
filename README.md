@@ -120,6 +120,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Gold Box Games: Map | | [`patterns/GoldBox/GB_GEO.hexpat`](patterns/GoldBox/GB_GEO.hexpat) | Gold Box Game Map files |
 | Gold Box Games: Unlimited Adventures Script | | [`patterns/GoldBox/GB_UA_SCRIPT.hexpat`](patterns/GoldBox/GB_UA_SCRIPT.hexpat) | Gold Box Unlimited Adventures SCRIPT file |
 | Gold Box Games: Vault | | [`patterns/GoldBox/GB_VLT.hexpat`](patterns/GoldBox/GB_VLT.hexpat) | Gold Box Game Vault files |
+| GTA:SA *.b | | [`patterns/gtasa_save.hexpat`](patterns/gtasa_save.hexpat) | GTA San Andreas Save Game File |
 | GVAS | | [`patterns/gvas.hexpat`](patterns/gvas.hexpat) | Unreal Engine 4+ Save Game file |
 | GZIP | `application/gzip` | [`patterns/gzip.hexpat`](patterns/gzip.hexpat) | GZip compressed data format |
 | Halo Tag || [`patterns/hinf_tag.hexpat`](patterns/hinf_tag.hexpat) | Halo Infinite Tag Files |
