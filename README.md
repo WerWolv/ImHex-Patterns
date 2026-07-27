@@ -135,6 +135,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | IPS | | [`patterns/ips.hexpat`](patterns/ips.hexpat) | IPS (International Patching System) files |
 | ISO | `application/x-iso9660-image` | [`patterns/iso.hexpat`](patterns/iso.hexpat) | ISO 9660 file system |
 | Java Class | `application/x-java-applet` | [`patterns/java_class.hexpat`](patterns/java_class.hexpat) | Java Class files |
+| Job File   | `patterns/job.hexpat` | [`patterns/job.hexpat`](patterns/job.hexpat) | TaskScheduler v1.0 Job File | 
 | JPEG | `image/jpeg` | [`patterns/jpeg.hexpat`](patterns/jpeg.hexpat) | JPEG Image Format |
 | Kindle Update | | [`patterns/kindle_update.hexpat`](patterns/kindle_update.hexpat) | Kindle Update Package |
 | KTX | `image/ktx` | [`patterns/ktx.hexpat`](patterns/ktx.hexpat) | Khronos TeXture 1.0 |
