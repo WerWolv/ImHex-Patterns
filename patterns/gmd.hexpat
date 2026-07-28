@@ -110,10 +110,10 @@ struct BitmapData {
         (0): {
             u8 bfType[2];
             u32 bfSize;
-            u8 bfData[bfSize-6] [[sealed, static]];}
-        (1): RLEImage bfData [[sealed, static]];
-        (2): RLEImageColorTabled bfData [[sealed, static]];
-        (10): {u32 bmSize; u8 bmData[bmSize] [[sealed, static]];}
+            u8 bfData[bfSize-6] [[sealed, static]];} //raw BMP
+        (1): RLEImage bfData [[sealed, static]]; //RLE
+        (2): RLEImageColorTabled bfData [[sealed, static]]; //RLE + color table
+        (10): {u32 bmSize; u8 bmData[bmSize] [[sealed, static]];} //Zlib-compressed
     }
 };
 
@@ -472,10 +472,10 @@ struct Background {
         u32 width, height;
         bool transparent; padding[3];
         if (version_verify >= 540) {
-        bool smooth_edges; padding[3];
-        bool preload; padding[3];
-        bool is_a_tileset; padding[3];
-        u32 tile_width, tile_height, tile_x_offset, tile_y_offset, tile_x_seperation, tile_y_seperation;
+            bool smooth_edges; padding[3];
+            bool preload; padding[3];
+            bool is_a_tileset; padding[3];
+            u32 tile_width, tile_height, tile_x_offset, tile_y_offset, tile_x_seperation, tile_y_seperation;
         } else {
             bool video_memory; padding[3];
             bool load_only_on_use; padding[3];
@@ -510,7 +510,7 @@ struct Path {
             s32 grid_width, grid_height;
         } else {
             PathEndAction end_action;
-            padding[4];
+            u32 precision;
         }
         u32 point_count;
         PathPoint points[point_count];
@@ -663,8 +663,25 @@ struct Room {
             u32 tile_count;
             RoomTile tiles[tile_count];
         }
-        if ((version_verify >= 440) && (version_verify <= 530)) padding[80];
-        if (version_verify >= 541) padding[56];
+        if (version_verify >= 500) {
+            bool remember_window_size; padding[3];
+            s32 editor_width, editor_height;
+            bool show_grid; padding[3];
+            bool show_objects; padding[3];
+            if (version_verify >= 520) {bool show_tiles; padding[3];}
+            else if (version_verify == 500) {bool show_tiles_front; padding[3];}
+            if (version_verify == 500) {bool show_tiles_back; padding[3];}
+            bool show_backgrounds; padding[3];
+            bool show_foregrounds; padding[3];
+            bool show_views; padding[3];
+            bool delete_underlying_objects; padding[3];
+            bool delete_underlying_tiles; padding[3];
+            if (version_verify <= 500) {bool foreground_tiles; padding[3];}
+            if (version_verify <= 520) u32 tile_selector_width, tile_selector_height,
+                tile_selector_x_seperation, tile_selector_y_seperation;
+            if (version_verify == 520) u32 tile_selector_x_offset, tile_selector_y_offset;
+            u32 editor_current_tab, editor_scrollbar_x, editor_scrollbar_y;
+        }
     }
 } [[name(data_present ? name.data : "<dead data>")]];
 
@@ -897,7 +914,7 @@ struct TreeNode {
 struct GMD {
     s32 signature;
     s32 ide_version;
-    if (ide_version < 600) u32 standalone_key; // 4.0 GMR only
+    if (ide_version < 600 || ide_version == 701) u32 standalone_key; // 4.0 GMR only
     s32 identifier;
     if (ide_version >= 411)
         u8 unique_id[16] [[sealed, static]];
@@ -951,9 +968,9 @@ struct GMD {
         s32 last_tile_id;
     GameInformation information;
     if (ide_version >= 500) {
-        s32 version_verify_dummy;
-        s32 dummy_count;
-        padding[4*dummy_count];
+        s32 version_verify_library_creation_code;
+        s32 library_creation_code_count;
+        padding[4*library_creation_code_count];
     }
     s32 version_verify_resource_tree;
     u32 active_room_count;
