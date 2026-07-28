@@ -914,7 +914,7 @@ struct TreeNode {
 struct GMD {
     s32 signature;
     s32 ide_version;
-    if (ide_version < 600 || ide_version == 701) u32 standalone_key; // 4.0 GMR only
+    if (ide_version < 600) u32 standalone_key; // 4.0 GMR only
     s32 identifier;
     if (ide_version >= 411)
         u8 unique_id[16] [[sealed, static]];
