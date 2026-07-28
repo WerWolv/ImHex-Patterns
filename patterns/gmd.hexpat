@@ -634,8 +634,9 @@ struct RoomTile {
     RectRegion region;
     s32 depth;
     s32 id;
-    if (parent.version_verify >= 520)
+    if (parent.version_verify >= 520) {
         bool locked; padding[3];
+    }
 };
 
 struct Room {
