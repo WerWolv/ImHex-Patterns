@@ -49,6 +49,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Prusa BGCODE | | [`patterns/bgcode.hexpat`](patterns/bgcode.hexpat) | PrusaSlicer Binary G-Code files |
 | BLEND  | | [`patterns/blend.hexpat`](patterns/blend.hexpat) | Blender Project file |
 | BLF | | [`patterns/blf.hexpat`](patterns/blf.hexpat) | Vector BLF Frame Logging Files |
+| Bloodborne | | [`patterns/bloodborne_save.hexpat`](patterns/bloodborne_save.hexpat) | Bloodborne character files (userdata0000 to userdata0009) |
 | BMP  | `image/bmp` | [`patterns/bmp.hexpat`](patterns/bmp.hexpat) | OS2/Windows Bitmap files |
 | BIN  | | [`patterns/selinux.hexpat`](patterns/selinux.pat) | SE Linux modules |
 | BINKA  | | [`patterns/binka.hexpat`](patterns/binka.pat) | RAD Game Tools Bink Audio (BINKA) files |
