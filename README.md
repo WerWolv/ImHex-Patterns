@@ -23,11 +23,14 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 
 | Name | MIME | Path | Description |
 |------|------|------|-------------|
+| $I | | [`patterns/ifile.hexpat`](patterns/ifile.hexpat) | Windows Recycling Bin $I file |
 | 3DS | | [`patterns/3ds.hexpat`](patterns/3ds.hexpat) | Autodesk 3DS Max Model file |
 | 7Z | | [`patterns/7z.hexpat`](patterns/7z.hexpat) | 7z File Format |
 | ADTFDAT | | [`patterns/adtfdat.hexpat`](patterns/adtfdat.hexpat) | [ADTFDAT files](https://digitalwerk.gitlab.io/solutions/adtf_content/adtf_base/adtf_file_library) |
 | ADTS | `audio/x-hx-aac-adts` | [`patterns/adts.hexpat`](patterns/adts.hexpat) | ADTS/AAC audio files |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
+| AMD Ucode Container | | [`patterns/amd_ucode_container.hexpat`](patterns/amd_ucode_container.hexpat) | AMD Linux Kernel microcode container |
+| AMD Ucode Patch | | [`patterns/amd_ucode_patch.hexpat`](patterns/amd_ucode_patch.hexpat) | AMD microcode patch |
 | ANI | `application/x-navi-animation` | [`patterns/ani.hexpat`](patterns/ani.hexpat) | Windows Animated Cursor file |
 | APFS | | [`patterns/fs/apfs.hexpat`](patterns/fs/apfs.hexpat) | Apple File Ssytem (APFS) |
 | AppleSingle | `application/applefile` | [`patterns/apple_single_double.hexpat`](patterns/apple_single_double.hexpat) | AppleSingle Dual Fork file |
@@ -237,6 +240,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | UEFI Variable Store | | [`patterns/uefi_fv_varstore.hexpat`](patterns/uefi_fv_varstore.hexpat) | UEFI Firmware Volume Variable Store |
 | UF2 | | [`patterns/uf2.hexpat`](patterns/uf2.hexpat) | [USB Flashing Format](https://github.com/microsoft/uf2) |
 | Unity Asset Bundle | | [`patterns/unity-asset-bundle.hexpat`](patterns/unity-asset-bundle.hexpat) | Unity Asset Bundle |
+| Unity Web Data 1.0 | | [`patterns/unity_web_data.hexpat`](patterns/unity_web_data.hexpat) | Unity Web Data 1.0 |
 | Valve VPK | | [`patterns/valve_vpk.hexpat`](valve_vpk.hexpat) | Valve Package File |
 | VBMeta | | [`patterns/vbmeta.hexpat`](patterns/vbmeta.hexpat) | Android VBMeta image |
 | VDF | | [`patterns/vdf.hexpat`](patterns/vdf.hexpat) | Binary Value Data Format (.vdf) files |
@@ -262,7 +266,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | CBM BASIC | | [`commodore_basic.hexpat`](patterns/commodore_basic.hexpat) | Commodore BASIC |
 | Atari XEX | | [`xex.hexpat`](patterns/xex.hexpat) | Atari 8-bit binary format |
 | Terminfo | `application/x-terminfo` and `application/x-terminfo2` | [`patterns/terminfo.hexpat`](patterns/terminfo.hexpat) | Compiled *(legacy and extended)* term info entry |
-
+| CSNAP | [`csnap.hexpat`](patterns/csnap.hexpat) | ClipboardEdit Clipboard Snapshot format |
 
 
 ### Scripts

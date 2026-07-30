@@ -4,12 +4,17 @@
 #pragma magic [ 47 56 41 53 0? 00 00 00 ] @ 0x00
 #pragma endian little
 
+// Subnautica 2
+#pragma magic [ 47 53 57 55 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 47 56 41 53 0? 00 00 00 ] @ 0x00
+
 #pragma array_limit    300000
 #pragma pattern_limit 2000000
 
 import std.io;
 import std.math;
+import std.time;
 import type.magic;
+import type.size;
 
 // ====== Save Game Header constants ======
 
@@ -26,6 +31,7 @@ enum SaveGameFileVersion : u32 {
 enum EUnrealEngineObjectUE4Version : u32 {
     VER_UE4_OLDEST_LOADABLE_PACKAGE = 214,
     VER_UE4_FTEXT_HISTORY = 368,
+    VER_UE4_FTEXT_HISTORY_DATE_TIMEZONE = 422,
 };
 
 /// UE5 object versions
@@ -146,13 +152,7 @@ struct FString {
     s32 length;
     if (length > 0) {
         // ASCII, treated as UTF-8
-        try {
-            char data[length - 1];
-        } catch {
-            std::error(std::format(
-                "Invalid string length 0x{:x}",
-                length));
-        }
+        char data[length - 1];
         type::Magic<"\x00"> terminator;
     } else if (length < 0) {
         // UTF-16
@@ -184,20 +184,52 @@ fn format_fengineversion(FEngineVersion version) {
         branch);
 };
 
+bitfield FGuid {
+    a : 32;
+    b_lo : 16;
+    b_hi : 16;
+    c_lo : 16;
+    c_hi : 16;
+    d : 32;
+};
+union Guid {
+    u128 integer;
+    FGuid guid;
+} [[sealed, format("format_guid")]];
+fn format_guid(Guid value) {
+    return std::format("{{{:08X}-{:04X}-{:04X}-{:04X}-{:04X}{:08X}}}",
+        value.guid.a,
+        value.guid.b_hi,
+        value.guid.b_lo,
+        value.guid.c_hi,
+        value.guid.c_lo,
+        value.guid.d);
+};
+
 struct FCustomVersion {
-    u128 key;
-    match (key) {
+    Guid key;
+    match (key.integer) {
         (GUID_UE5_RELEASE_STREAM): EUE5ReleaseStreamObjectVersion value;
         (GUID_EDITOR): EEditorObjectVersion value;
         (_): s32 value;
     }
-} [[sealed, name(std::format("0x{:032X}", key)), format("format_fcustomversion")]];
+} [[name(format_guid(key)), format("format_fcustomversion")]];
 
 fn format_fcustomversion(FCustomVersion version) {
     return version.value;
 };
 
+enum ECustomVersionSerializationFormat : u32 {
+    Unknown,
+    Guids,
+    Enums,
+    Optimized,
+};
+
 struct FSaveGameHeader {
+    if (std::mem::read_unsigned($, 4, std::mem::Endian::Little) == 0x55575347) {
+        padding[16];
+    }
     type::Magic<"GVAS"> fileTypeTag;
     SaveGameFileVersion saveGameFileVersion;
     EUnrealEngineObjectUE4Version packageFileVersion;
@@ -216,7 +248,13 @@ struct FSaveGameHeader {
     }
     FEngineVersion engineVersion;
     if (saveGameFileVersion >= SaveGameFileVersion::AddedCustomVersions) {
-        s32 customVersionFormat, customVersionLength;
+        ECustomVersionSerializationFormat customVersionFormat;
+        if (customVersionFormat != ECustomVersionSerializationFormat::Optimized) {
+            std::error(std::format(
+                "Unsupported custom version format {}",
+                u32(customVersionFormat)));
+        }
+        s32 customVersionLength;
         FCustomVersion customVersions[customVersionLength] [[single_color]];
     }
     FString saveGameClassName;
@@ -228,6 +266,8 @@ FSaveGameHeader header @ 0;
 
 // ====== Property serialization logic ======
 
+const bool ftextHistoryDateTimezone =
+    header.packageFileVersion >= EUnrealEngineObjectUE4Version::VER_UE4_FTEXT_HISTORY_DATE_TIMEZONE;
 const bool propertyTagCompleteTypeName =
     (header.saveGameFileVersion >= SaveGameFileVersion::PackageFileSummaryVersionChange) &&
     (header.packageFileVersionUE5 >= EUnrealEngineObjectUE5Version::PROPERTY_TAG_COMPLETE_TYPE_NAME);
@@ -237,7 +277,7 @@ const bool fsoftobjectpathRemoveAssetPathFNames =
 
 fn custom_version(u128 guid) {
     for (u32 i = 0, i < header.customVersionLength, i = i + 1) {
-        if (header.customVersions[i].key == guid) {
+        if (header.customVersions[i].key.integer == guid) {
             return header.customVersions[i].value;
         }
     }
@@ -334,6 +374,16 @@ enum ETextHistoryType : u8 {
     TextGenerator,
 };
 
+enum EDateTimeStyle : s8 {
+    Default,
+    Short,
+    Medium,
+    Long,
+    Full,
+    Custom,
+};
+
+using DateTime;
 struct FTextHistory {
     ETextHistoryType type;
     match (type) {
@@ -352,8 +402,12 @@ struct FTextHistory {
             FString key;
             FString sourceString;
         }
-        // (ETextHistoryType::NamedFormat): {}
-        // (ETextHistoryType::OrderedFormat): {}
+        (ETextHistoryType::NamedFormat): {
+            FText formatText;
+        }
+        (ETextHistoryType::OrderedFormat): {
+            FText formatText;
+        }
         (ETextHistoryType::ArgumentFormat): {
             FText sourceFormat;
             u32 argumentCount;
@@ -369,9 +423,29 @@ struct FTextHistory {
         }
         // (ETextHistoryType::AsPercent): {}
         // (ETextHistoryType::AsCurrency): {}
-        // (ETextHistoryType::AsDate): {}
-        // (ETextHistoryType::AsTime): {}
-        // (ETextHistoryType::AsDateTime): {}
+        (ETextHistoryType::AsDate): {
+            DateTime sourceDateTime;
+            EDateTimeStyle dateStyle;
+            if (ftextHistoryDateTimezone) {
+                FString timeZone;
+            }
+            FString cultureName;
+        }
+        (ETextHistoryType::AsTime): {
+            DateTime sourceDateTime;
+            EDateTimeStyle timeStyle;
+            FString timeZone;
+            FString cultureName;
+        }
+        (ETextHistoryType::AsDateTime): {
+            DateTime sourceDateTime;
+            EDateTimeStyle dateStyle, timeStyle;
+            if (dateStyle == EDateTimeStyle::Custom) {
+                FString customPattern;
+            }
+            FString timeZone;
+            FString cultureName;
+        }
         // (ETextHistoryType::Transform): {}
         (ETextHistoryType::StringTableEntry): {
             FString tableId;
@@ -417,14 +491,20 @@ fn format_ftext(FText text) {
 
 struct DateTime {
     u64 ticks;
+} [[format("format_datetime")]];
+
+fn format_datetime(DateTime dt) {
+    // Convert 100-ns intervals since 01-01-0001 to seconds since 01-01-1970
+    std::time::EpochTime et = dt.ticks / 10000000 - 62135596800;
+    std::time::Time t = std::time::to_local(et);
+    str s = std::time::format(t);
+    return s;
 };
 
 struct GameplayTagContainer {
     u32 count;
     FString tags[count];
 };
-
-using Guid = u128;
 
 struct IntPoint {
     s32 x, y;
@@ -538,7 +618,58 @@ struct StructPropertyValue<auto type, auto size> {
         // Wrap the unknown data
         std::mem::Bytes<size> value;
     }
-} [[inline]];
+} [[inline, format("format_structpropertyvalue")]];
+
+fn format_structpropertyvalue(auto spv) {
+    return spv.value;
+};
+
+struct FProperty<auto type> {
+    match (type) {
+        ("DoubleProperty"): double value;
+        ("FloatProperty"): float value;
+        ("IntProperty"): s32 value;
+        ("Int8Property"): s8 value;
+        ("Int16Property"): s16 value;
+        ("Int64Property"): s64 value;
+        ("UInt16Property"): u16 value;
+        ("UInt32Property"): u32 value;
+        ("UInt64Property"): u64 value;
+        ("DelegateProperty"): Delegate value;
+        ("MulticastInlineDelegateProperty"): MulticastInlineDelegate value;
+        ("MulticastSparseDelegateProperty"): MulticastSparseDelegate value;
+        ("SoftObjectProperty"): SoftObject value;
+        ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
+        ("TextProperty"): FText value;
+        ("StructProperty"): Properties value;
+        (_): std::error(std::format("Unsupported property {}", type));
+    }
+} [[format("format_fproperty")]];
+
+fn format_fproperty(auto property) {
+    return property.value;
+};
+
+struct MapPropertyEntry<auto K, auto V> {
+    FProperty<K> key;
+    FProperty<V> value;
+} [[name(key), format("format_mappropertyentry")]];
+
+fn format_mappropertyentry(auto entry) {
+    return entry.value;
+};
+
+struct MapProperty<auto K, auto V> {
+    u32 allocation_flags;
+    u32 count;
+    MapPropertyEntry<K, V> entries[count] [[inline]];
+};
+
+struct SetProperty<auto T> {
+    u32 allocation_flags;
+    u32 count;
+    FProperty<T> entries[count] [[inline]];
+};
 
 struct FPropertyTag {
     const auto dollar = $;
@@ -551,13 +682,13 @@ struct FPropertyTag {
         name.data, dollar);
     if (propertyTagCompleteTypeName) {
         TypeTreeNode type;
-        u32 size;
+        type::Size32 size;
         PropertyTagFlags flags;
         if (flags.hasArrayIndex) {
             u32 arrayIndex;
         }
         if (flags.hasPropertyGuid) {
-            u128 guid;
+            Guid guid;
         }
         if (flags.hasPropertyExtensions) {
             std::error(std::format(
@@ -565,7 +696,7 @@ struct FPropertyTag {
         }
     } else {
         FString type;
-        u32 size;
+        type::Size32 size;
         u32 arrayIndex;
         match (type.data) {
             ("ArrayProperty"): FString propertyType;
@@ -579,7 +710,7 @@ struct FPropertyTag {
             ("SetProperty"): FString propertyType;
             ("StructProperty"): {
                 FString typeName;
-                u128 guid;
+                Guid guid;
             }
         }
         type::Magic<"\x00"> terminator;
@@ -609,7 +740,7 @@ struct FPropertyTag {
                         type::Magic<"\x0F\x00\x00\x00StructProperty\x00"> propertyType;
                         u32 propertySize, arrayIndex;
                         FString structName;
-                        u128 guid;
+                        Guid guid;
                         type::Magic<"\x00"> terminator;
                         u32 propertyStart = $;
                     }
@@ -639,9 +770,10 @@ struct FPropertyTag {
                         s32 propertyBytesRemaining = propertySize + propertyStart - $;
                         if (propertyBytesRemaining != 0) {
                             std::print(std::format(
-                                "Struct parsing failed for {}. Bytes remaining: {}",
+                                "Struct parsing failed for {}. Bytes {}: {}",
                                 structName,
-                                propertyBytesRemaining));
+                                propertyBytesRemaining < 0 ? "overrun" : "remaining",
+                                std::math::abs(propertyBytesRemaining)));
                             std::mem::Bytes<propertyBytesRemaining> warning;
                         }
                     }
@@ -681,7 +813,36 @@ struct FPropertyTag {
         ("MulticastSparseDelegateProperty"): MulticastSparseDelegate value;
         ("SoftObjectProperty"): SoftObject value;
         ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
-        ("MapProperty" | "SetProperty"): std::mem::Bytes<size> value;
+        ("MapProperty"): {
+            if (propertyTagCompleteTypeName && flags.hasBinaryOrNativeSerialize) {
+                // Wrap the unknown data
+                std::mem::Bytes<size> value;
+            } else {
+                const str k = propertyTagCompleteTypeName ? type.child[0].name.data : keyType.data;
+                const str v = propertyTagCompleteTypeName ? type.child[1].name.data : valueType.data;
+                try {
+                    MapProperty<k, v> value;
+                } catch {
+                    std::warning(std::format(
+                        "MapProperty<{}, {}> {} @ 0x{:04X}; Failed to parse",
+                        k, v, name.data, $));
+                    // Wrap the unknown data
+                    std::mem::Bytes<size> value;
+                }
+            }
+        }
+        ("SetProperty"): {
+            const str t = propertyTagCompleteTypeName ? type.child[0].name.data : propertyType.data;
+            try {
+                SetProperty<t> value;
+            } catch {
+                std::warning(std::format(
+                    "SetProperty<{}> {} @ 0x{:04X}; Failed to parse",
+                    t, name.data, $));
+                // Wrap the unknown data
+                std::mem::Bytes<size> value;
+            }
+        }
         ("StructProperty"): StructPropertyValue<propertyTagCompleteTypeName ? type.child[0].name.data : typeName.data, size> value;
         ("TextProperty"): {
             try {
@@ -722,6 +883,7 @@ fn format_fpropertytag(FPropertyTag property) {
     }
     match (propertyTagCompleteTypeName ? property.type.name.data : property.type.data) {
         ("ArrayProperty"): return property.values;
+        ("StructProperty"): return property.value.value;
     }
     return property.value;
 };
