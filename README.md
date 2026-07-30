@@ -29,6 +29,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ADTFDAT | | [`patterns/adtfdat.hexpat`](patterns/adtfdat.hexpat) | [ADTFDAT files](https://digitalwerk.gitlab.io/solutions/adtf_content/adtf_base/adtf_file_library) |
 | ADTS | `audio/x-hx-aac-adts` | [`patterns/adts.hexpat`](patterns/adts.hexpat) | ADTS/AAC audio files |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
+| AMD Ucode Container | | [`patterns/amd_ucode_container.hexpat`](patterns/amd_ucode_container.hexpat) | AMD Linux Kernel microcode container |
+| AMD Ucode Patch | | [`patterns/amd_ucode_patch.hexpat`](patterns/amd_ucode_patch.hexpat) | AMD microcode patch |
 | ANI | `application/x-navi-animation` | [`patterns/ani.hexpat`](patterns/ani.hexpat) | Windows Animated Cursor file |
 | APFS | | [`patterns/fs/apfs.hexpat`](patterns/fs/apfs.hexpat) | Apple File Ssytem (APFS) |
 | AppleSingle | `application/applefile` | [`patterns/apple_single_double.hexpat`](patterns/apple_single_double.hexpat) | AppleSingle Dual Fork file |
@@ -265,7 +267,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | CBM BASIC | | [`commodore_basic.hexpat`](patterns/commodore_basic.hexpat) | Commodore BASIC |
 | Atari XEX | | [`xex.hexpat`](patterns/xex.hexpat) | Atari 8-bit binary format |
 | Terminfo | `application/x-terminfo` and `application/x-terminfo2` | [`patterns/terminfo.hexpat`](patterns/terminfo.hexpat) | Compiled *(legacy and extended)* term info entry |
-
+| CSNAP | [`csnap.hexpat`](patterns/csnap.hexpat) | ClipboardEdit Clipboard Snapshot format |
 
 
 ### Scripts

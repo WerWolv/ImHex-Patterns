@@ -676,7 +676,7 @@ struct Elf32_Shdr {
     Elf32_Word sh_addralign;
     Elf32_Word sh_entsize;
 
-    if (sh_size > 0 && sh_offset + sh_size < std::mem::size()) {
+    if (sh_size > 0 && sh_offset + sh_size <= std::mem::size()) {
     	if (sh_type == SHT::NOBITS || sh_type == SHT::NULL) {
 		// Section has no data
 		} else if (sh_type == SHT::STRTAB) {
@@ -751,7 +751,7 @@ struct Elf64_Shdr {
     Elf64_Xword sh_addralign;
     Elf64_Xword sh_entsize;
 
-    if (sh_size > 0 && sh_offset + sh_size < std::mem::size()) {
+    if (sh_size > 0 && sh_offset + sh_size <= std::mem::size()) {
     	if (sh_type == SHT::NOBITS || sh_type == SHT::NULL) {
 			// Section has no data
 		} else if (sh_type == SHT::STRTAB) {
