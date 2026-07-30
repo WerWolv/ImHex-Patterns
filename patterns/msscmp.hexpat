@@ -11,75 +11,80 @@ import std.core;
     import hex.core;
 #endif
 
-struct FileDataEntry {
-    u32 nameOffset;
-    char name[] @ nameOffset;
-    u32 folderOffset;
-    char folder[] @ folderOffset;
-    le u32 fileDataOffset;
-    padding[8];
-    u32 sampleRate;
-    u32 fileSize;
-    u8 data[fileSize] @ fileDataOffset;
-    #ifdef __IMHEX__
-        hex::core::add_virtual_file(std::string::to_string(name) + ".binka", data);
-    #endif
+struct msscmp_file_header {
+  u32  pathaddr;
+  char path[] @ pathaddr;
+  u32  nameaddr;
+  char name[] @ nameaddr +  parent.headeraddr;
+
+  le u32 fileaddr;
+  padding[8];
+  u32 samplerate;
+  u32 filesize;
 };
 
-struct Index2Entry {
-    u32 entryOffset;
-    u32 fStructureOffset;
-    FileDataEntry fileDataEntry @ entryOffset;
+struct msscmp_file {
+  padding [4];
+  u32 headeraddr;
+  msscmp_file_header header @ headeraddr;
+  u8 data[header.filesize] @ header.fileaddr;
+
+  #ifdef __IMHEX__
+    hex::core::add_virtual_file(std::string::to_string(header.name) + ".binka", data);
+  #endif
 };
 
-struct MsscmpEntry {
-    char name[12];
-    Index2Entry entries[parent.header.index2EntryCount] @ parent.header.index1LastEntryOffset + 4;
+struct msscmp_fileinfo
+{
+  u32  pathaddr;
+  char path[] @ pathaddr;
+
+  u32  infoaddr;
+  char info[] @ infoaddr;
 };
 
-
-struct Header<T> {
-    padding[4]; // unk
-    T fileDataOffset;
-    padding[8]; // unk
-    T index1Offset;
-    T index1LastEntryOffset;
-    if (sizeof(T) == 4)
-        padding[8];
-    else
-        padding[16];
-
-    T unkOffset;
-    T index1EntryCount;
-
-    if (sizeof(T) == 4)
-        padding[8];
-    else
-        padding[4];
-
-    u32 index2EntryCount;
+struct msscmp_header32 {
+  padding [16];
+  u32  infoaddr;
+  padding [8];
+  u32  entryaddr;
+  padding [4];
+  u32  infocount;
+  padding [8];
+  u32  entrycount;
+  char name[];
 };
 
-using OldGenHeader = Header<u32>;
-using NewGenHeader = Header<u64>;
-
-struct MSSCMP {
-    char magic[4];
-    if (magic == "BANK")
-        std::core::set_endian(std::mem::Endian::Big);
-    else if (magic == "KNAB")
-        std::core::set_endian(std::mem::Endian::Little);
-    else
-        std::error("Magic does not match BANK or KNAB");
-
-    u32 check1 @ 0x1c [[hidden]]; // use this to check if old gen or new gen
-    u32 check2 @ 0x20 [[hidden]];
-
-    if (check1 == check2)
-        OldGenHeader header;
-    else
-        NewGenHeader header;
-    MsscmpEntry entry;
+struct msscmp_header64 {
+  padding[20];
+  u64  infoaddr;
+  u64  infocount;
+  padding[8];
+  u64  entryaddr;
+  padding[20];
+  u64  entrycount;
+  char name[];
 };
 
-MSSCMP msscmp @ 0x00;
+struct msscmp {
+  u32  check1 @ 0x18 [[hidden]];
+  u32  check2 @ 0x1C [[hidden]];
+  char magic[4];
+
+  if (magic == "BANK")
+    std::core::set_endian(std::mem::Endian::Big);
+  else if (magic == "KNAB")
+    std::core::set_endian(std::mem::Endian::Little);
+  else
+    std::error("Magic does not match BANK or KNAB");
+
+  if (check1 == check2)
+    msscmp_header32 header;
+  else
+    msscmp_header64 header;
+  
+  msscmp_file entries[header.entrycount] @ header.entryaddr;
+  msscmp_fileinfo info[header.infocount] @ header.infoaddr;
+};
+
+msscmp file @ 0x00;

@@ -645,6 +645,15 @@ struct Elf32_Syminfo {
     SYMINFO_FLG si_flags;
 };
 
+struct Elf32_Dyn {
+    DT d_tag;
+    Elf32_Word d_val;
+} [[format("format_elf32_dyn")]];
+
+fn format_elf32_dyn(auto dyn) {
+    return dyn.d_tag;
+};
+
 s64 stringTableIndex;
 
 struct String {
@@ -667,7 +676,7 @@ struct Elf32_Shdr {
     Elf32_Word sh_addralign;
     Elf32_Word sh_entsize;
 
-    if (sh_size > 0 && sh_offset + sh_size < std::mem::size()) {
+    if (sh_size > 0 && sh_offset + sh_size <= std::mem::size()) {
     	if (sh_type == SHT::NOBITS || sh_type == SHT::NULL) {
 		// Section has no data
 		} else if (sh_type == SHT::STRTAB) {
@@ -680,6 +689,8 @@ struct Elf32_Shdr {
 			Elf32_Rela relaTable[sh_size / sh_entsize] @ sh_offset;
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
+        } else if (sh_type == SHT::DYNAMIC) {
+            Elf32_Dyn dynamic_entries[sh_size / sh_entsize] @ sh_offset;
 		} else {
 			u8 data[sh_size] @ sh_offset [[sealed]];
 		}
@@ -716,6 +727,16 @@ struct Elf64_Syminfo {
     u16 si_boundto;
     SYMINFO_FLG si_flags;
 };
+    
+struct Elf64_Dyn {
+    DT d_tag;
+    padding[4];
+    Elf64_Xword d_val;
+} [[format("format_elf64_dyn")]];
+
+fn format_elf64_dyn(auto dyn) {
+    return dyn.d_tag;
+};
 
 struct Elf64_Shdr {
     u32 sh_name;
@@ -730,7 +751,7 @@ struct Elf64_Shdr {
     Elf64_Xword sh_addralign;
     Elf64_Xword sh_entsize;
 
-    if (sh_size > 0 && sh_offset + sh_size < std::mem::size()) {
+    if (sh_size > 0 && sh_offset + sh_size <= std::mem::size()) {
     	if (sh_type == SHT::NOBITS || sh_type == SHT::NULL) {
 			// Section has no data
 		} else if (sh_type == SHT::STRTAB) {
@@ -743,6 +764,8 @@ struct Elf64_Shdr {
 			Elf64_Rela relaTable[sh_size / sh_entsize] @ sh_offset;
 		} else if (sh_type == SHT::INIT_ARRAY || sh_type == SHT::FINI_ARRAY) {
 			u32 pointer[while($ < (sh_offset + sh_size))] @ sh_offset;
+        } else if (sh_type == SHT::DYNAMIC) {
+            Elf64_Dyn dynamic_entries[sh_size / sh_entsize] @ sh_offset;
 		} else {
 			u8 data[sh_size] @ sh_offset [[sealed]];
 		}

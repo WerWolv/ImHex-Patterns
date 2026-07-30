@@ -7,7 +7,7 @@ import std.core;
 import std.sys;
 import std.math;
 
-struct PEFContainerHeader 
+struct PEFContainerHeader
 {
     char tag1 [4] [[comment("designates that the container uses an Apple-defined format. This field must be set to Joy! in ASCII.")]];
     char tag2 [4] [[comment("identifies the type of container (currently set to peff in ASCII")]];
@@ -42,7 +42,7 @@ enum ShareKind : u8
     Protected_Share = 5 // Indicates that the section is shared between all processes, but is protected. Protected sections are read/write in privileged mode and read-only in user mode. This option is not available in System 7.
 };
 
-struct PEFSectionHeader 
+struct PEFSectionHeader
 {
     s32 nameOffset [[comment("holds the offset from the start of the section name table to the location of the section name. The name of the section is stored as a C-style null-terminated character string.")]];
     u32 defaultAddress [[comment("indicates the preferred address (as designated by the linker) at which to place the section’s instance. If the Code Fragment Manager can place the instance in the preferred memory location, the load-time and link-time addresses are identical and no internal relocations need to be performed.")]];
@@ -62,12 +62,12 @@ struct String {
     char value[];
 } [[sealed, format("format_string")]];
 
-fn format_string(String string) 
+fn format_string(String string)
 {
-    return string.value;    
+    return string.value;
 };
 
-struct PEFLoaderInfoHeader 
+struct PEFLoaderInfoHeader
 {
     s32 mainSection [[comment("specifies the number of the section in this container that contains the main symbol. If the fragment does not have a main symbol, this field is set to -1.")]];
     u32 mainOffset [[comment("indicates the offset (in bytes) from the beginning of the section to the main symbol.")]];
@@ -92,7 +92,7 @@ enum importedLibraryOption :u8
   kPEFInitLibBeforeMask         = 0x80  /* The imported library must be initialized first.*/
 };
 
-struct PEFImportedLibrary 
+struct PEFImportedLibrary
 {
     u32 nameOffset  [[comment("Indicates the offset (in bytes) from the beginning of the loader string table to the start of the null-terminated library name.")]];
     u32 oldImpVersion [[comment("Provide version information for checking the compatibility of the imported library.")]];
@@ -113,13 +113,13 @@ enum importSymbolClass :u8
     kPEFGlueSymbol = 4, // A linker-inserted glue symbol
 };
 
-struct PEFImportSymbol 
+struct PEFImportSymbol
 {
   importSymbolClass class [[comment("Indicates the class of the imported symbol.")]];
   u24 nameOffset [[comment("Indicates the offset (in bytes) from the beginning of the loader string table to the null-terminated name of the symbol")]];
 } [[format("format_name")]];
 
-struct PEFLoaderRelocationHeader 
+struct PEFLoaderRelocationHeader
 {
     u16 sectionIndex [[comment("Designates the section number to which this relocation header refers.")]];
     u16 reservedA [[comment("Reserved")]];
@@ -130,23 +130,23 @@ struct PEFLoaderRelocationHeader
 enum relocationOpcode : u8
 {
     kPEFRelocBySectDWithSkip      = 0x00, /* Binary: 00x_xxxx*/
-    
+
     kPEFRelocBySectC              = 0x20, /* Binary: 010_0000, group is "RelocRun"*/
     kPEFRelocBySectD              = 0x21, /* Binary: 010_0001*/
     kPEFRelocTVector12            = 0x22, /* Binary: 010_0010*/
     kPEFRelocTVector8             = 0x23, /* Binary: 010_0011*/
     kPEFRelocVTable8              = 0x24, /* Binary: 010_0100*/
     kPEFRelocImportRun            = 0x25, /* Binary: 010_0101*/
-    
+
     kPEFRelocSmByImport           = 0x30, /* Binary: 011_0000, group is "RelocSmIndex"*/
     kPEFRelocSmSetSectC           = 0x31, /* Binary: 011_0001*/
     kPEFRelocSmSetSectD           = 0x32, /* Binary: 011_0010*/
     kPEFRelocSmBySection          = 0x33, /* Binary: 011_0011*/
-    
+
     kPEFRelocIncrPosition         = 0x40, /* Binary: 100_0xxx*/
-    
+
     kPEFRelocSmRepeat             = 0x48, /* Binary: 100_1xxx*/
-    
+
     kPEFRelocSetPosition          = 0x50, /* Binary: 101_000x*/
     kPEFRelocLgByImport           = 0x52, /* Binary: 101_001x*/
     kPEFRelocLgRepeat             = 0x58, /* Binary: 101_100x*/
@@ -168,7 +168,7 @@ bitfield RelocBySectDWithSkip
 // "RelocTVector12" (DESC)
 // "RelocTVector8" (DSC2)
 // "RelocVTable8" (VTBL)
-// "RelocImportRun" (SYMR) 
+// "RelocImportRun" (SYMR)
 bitfield RelocRunGroup
 {
     op : 3; // 010
@@ -178,7 +178,7 @@ bitfield RelocRunGroup
 
 // "RelocSmByImport" (SYMB)
 // "RelocSmSetSectC" (CDIS)
-// "RelocSmSetSectD" (DTIS) 
+// "RelocSmSetSectD" (DTIS)
 // "RelocSmBySection" (SECN)
 bitfield RelocSmIndexGroup
 {
@@ -224,7 +224,7 @@ bitfield RelocLgRepeat
     repeatCount : 22;
 };
 
-// "RelocLgSetOrBySection" (LSEC) instruction is a group including the 
+// "RelocLgSetOrBySection" (LSEC) instruction is a group including the
 // "RelocLgBySection",
 // "RelocLgSetSectC"
 // "RelocLgSetSectD"
@@ -244,10 +244,10 @@ enum relocLgSetOrBySectionAdditionalOpcode :u8
 };
 
 
-struct RelocInstruction 
+struct RelocInstruction
 {
       u8 firstByte[[no_unique_address, hidden]];
-      
+
       if (firstByte & 0b11000000 == 0)
       {
             RelocBySectDWithSkip instruction;
@@ -329,22 +329,22 @@ struct RelocInstruction
       else if (firstByte & 0b11111100 == relocationOpcode::kPEFRelocLgSetOrBySection << 1)
       {
             RelocLgSetOrBySection instruction;
-            if (instruction.subOp == kPEFRelocLgBySectionSubopcode)
+            if (instruction.subOp == relocLgSetOrBySectionAdditionalOpcode::kPEFRelocLgBySectionSubopcode)
             {
                 std::core::set_display_name(this, "RelocLgBySectionSubopcode");
             }
-            else if (instruction.subOp == kPEFRelocLgSetSectCSubopcode)
+            else if (instruction.subOp == relocLgSetOrBySectionAdditionalOpcode::kPEFRelocLgSetSectCSubopcode)
             {
                 std::core::set_display_name(this, "RelocLgSetSectCSubopcode");
             }
-            else if (instruction.subOp == kPEFRelocLgSetSectDSubopcode)
+            else if (instruction.subOp == relocLgSetOrBySectionAdditionalOpcode::kPEFRelocLgSetSectDSubopcode)
             {
                 std::core::set_display_name(this, "RelocLgSetSectDSubopcode");
             }
       }
 };
 
-bitfield PEFExportedSymbolHashSlot 
+bitfield PEFExportedSymbolHashSlot
 {
     count : 14;
     start : 18;
@@ -362,13 +362,13 @@ enum exportSymbolClass :u8
     kPEFReexportedImport          = -3    /* The symbol value is the index of a reexported import.*/
 };
 
-struct PEFExportSymbol 
+struct PEFExportSymbol
 {
   exportSymbolClass class [[comment("Indicates the class of the exported symbol.")]];
   u24 nameOffset [[comment("Indicates the offset (in bytes) from the beginning of the loader string table to the null-terminated name of the symbol")]];
 };
 
-struct PEFExportedSymbol 
+struct PEFExportedSymbol
 {
     PEFExportSymbol classAndName [[comment("The first byte designates the symbol class of the exported symbol. See \"symbolClass\" enum. Flag bits for exported symbols are reserved for future use. The following 3 bytes designate the offset from the beginning of the loader string table to the name of the symbol. The name of the symbol is not null terminated, but you can determine the length of the string from the upper 2 bytes of the symbol’s hash word (found in the export key table).")]];
     u32 symbolValue [[comment("Typically indicates the offset from the beginning of the symbol’s section to the exported symbol.")]];
@@ -378,7 +378,7 @@ struct PEFExportedSymbol
 PEFContainerHeader containerHeader @ 0x00;
 PEFSectionHeader sectionsTable[containerHeader.sectionCount] @ sizeof(containerHeader);
 
-fn getFirstSectionInContainer() 
+fn getFirstSectionInContainer()
 {
     u32 minOff = 0xFFFFFFFF;
     for (u32 i = 0, i < containerHeader.sectionCount, i += 1)
@@ -397,7 +397,7 @@ u32 sectionNameTableBase = sizeof(containerHeader) + sizeof(sectionsTable);
 
 String sectionNameTable[while($ < firstSectionOffset)] @ sectionNameTableBase;
 
-fn getLoaderSection() 
+fn getLoaderSection()
 {
     for (u32 i = 0, i < containerHeader.sectionCount, i += 1)
     {
@@ -414,7 +414,7 @@ PEFLoaderInfoHeader loaderHeader @ loaderOffset;
 u32 loaderStringTableOffset = loaderOffset + loaderHeader.loaderStringsOffset;
 String loaderStringTable[while($ < loaderOffset + loaderHeader.exportHashOffset)] @ loaderStringTableOffset;
 
-fn format_name(auto pat) 
+fn format_name(auto pat)
 {
     u32 i = 0;
 
