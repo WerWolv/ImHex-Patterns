@@ -172,6 +172,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NotepadStateFile | | [`patterns/notepad-state.hexpat`](patterns/notepad-state.hexpat) | Windows Notepad .bin State files |
 | NotepadWindowState | | [`patterns/notepadwindowstate.hexpat`](patterns/notepadwindowstate.hexpat) | Windows 11 Notepad - Window State .bin file |
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
+| NSO | | [`patterns/nso.hexpat`](patterns/nso.hexpat) | Nintendo Switch NSO files |
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
 | NTFS | | [`patterns/fs/ntfs.hexpat`](patterns/fs/ntfs.hexpat) | NTFS (NT File System) |
 | NTFS (DFIR) | | [`patterns/DFIR/NTFS.hexpat`](patterns/DFIR/NTFS.hexpat) | Imported by DISK_PARSER.hexpat |
