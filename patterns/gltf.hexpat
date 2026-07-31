@@ -167,7 +167,11 @@ fn has_mem(auto value, str member) {
 struct accessor_t {
     u64 accessor_index = std::core::array_index();
     u64 view_index = glb.json_chunk.json.accessors[accessor_index].bufferView [[export]];
-    u64 view_offset = glb.json_chunk.json.bufferViews[view_index].byteOffset [[export]];
+    if (has_mem(glb.json_chunk.json.bufferViews[view_index], "byteOffset")) {
+        u64 view_offset = glb.json_chunk.json.bufferViews[view_index].byteOffset [[export]];
+    } else {
+        u64 view_offset = 0 [[export]];
+    }
     if (has_mem(glb.json_chunk.json.bufferViews[view_index], "byteStride")) {
         u64 byte_stride = glb.json_chunk.json.bufferViews[view_index].byteStride [[export]];
     } else {
@@ -184,13 +188,13 @@ struct accessor_t {
     str element_type = glb.json_chunk.json.accessors[accessor_index].type [[export]];
 
     match (element_type) {
-        ("SCALAR"): stride_type_t<scalar_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
-        ("VEC2"): stride_type_t<vec2_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
-        ("VEC3"): stride_type_t<vec3_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
-        ("VEC4"): stride_type_t<vec4_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
-        ("MAT2"): stride_type_t<mat2_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
-        ("MAT3"): stride_type_t<mat3_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
-        ("MAT4"): stride_type_t<mat4_t<parent.component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("SCALAR"): stride_type_t<scalar_t<component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("VEC2"): stride_type_t<vec2_t<component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("VEC3"): stride_type_t<vec3_t<component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("VEC4"): stride_type_t<vec4_t<component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("MAT2"): stride_type_t<mat2_t<component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("MAT3"): stride_type_t<mat3_t<component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
+        ("MAT4"): stride_type_t<mat4_t<component_type>, byte_stride> content[count_elements] @ view_offset + addressof(glb.chunks[0].data);
     }
 } [[format("accessor_format")]];
 
@@ -201,14 +205,22 @@ fn accessor_format(accessor_t accessor) {
 struct image_buffer_t {
     u64 image_index = std::core::array_index();
     u64 buffer_view_index = glb.json_chunk.json.images[image_index].bufferView;
-    u64 byte_offset = glb.json_chunk.json.bufferViews[buffer_view_index].byteOffset;
+    if (has_mem(glb.json_chunk.json.bufferViews[buffer_view_index], "byteOffset")) {
+        u64 byte_offset = glb.json_chunk.json.bufferViews[buffer_view_index].byteOffset;
+    } else {
+        u64 byte_offset = 0;
+    }
     u64 byte_length = glb.json_chunk.json.bufferViews[buffer_view_index].byteLength;
     u8 image[byte_length] @ addressof(glb.chunks[0].data) + byte_offset;
 } [[hex::visualize("image", image)]];
 
 struct buffer_view_t {
     u64 buffer_view_index = std::core::array_index();
-    u64 byte_offset = glb.json_chunk.json.bufferViews[buffer_view_index].byteOffset;
+    if (has_mem(glb.json_chunk.json.bufferViews[buffer_view_index], "byteOffset")) {
+        u64 byte_offset = glb.json_chunk.json.bufferViews[buffer_view_index].byteOffset;
+    } else {
+        u64 byte_offset = 0;
+    }
     u64 byte_length = glb.json_chunk.json.bufferViews[buffer_view_index].byteLength;
     u8 data[byte_length] @ addressof(glb.chunks[0].data) + byte_offset;
 };
