@@ -29,6 +29,8 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | ADTFDAT | | [`patterns/adtfdat.hexpat`](patterns/adtfdat.hexpat) | [ADTFDAT files](https://digitalwerk.gitlab.io/solutions/adtf_content/adtf_base/adtf_file_library) |
 | ADTS | `audio/x-hx-aac-adts` | [`patterns/adts.hexpat`](patterns/adts.hexpat) | ADTS/AAC audio files |
 | AFE2 | | [`patterns/afe2.hexpat`](patterns/afe2.hexpat) | Nintendo Switch Atmosphère CFW Fatal Error log |
+| AMD Ucode Container | | [`patterns/amd_ucode_container.hexpat`](patterns/amd_ucode_container.hexpat) | AMD Linux Kernel microcode container |
+| AMD Ucode Patch | | [`patterns/amd_ucode_patch.hexpat`](patterns/amd_ucode_patch.hexpat) | AMD microcode patch |
 | ANI | `application/x-navi-animation` | [`patterns/ani.hexpat`](patterns/ani.hexpat) | Windows Animated Cursor file |
 | APFS | | [`patterns/fs/apfs.hexpat`](patterns/fs/apfs.hexpat) | Apple File Ssytem (APFS) |
 | AppleSingle | `application/applefile` | [`patterns/apple_single_double.hexpat`](patterns/apple_single_double.hexpat) | AppleSingle Dual Fork file |
@@ -50,6 +52,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Prusa BGCODE | | [`patterns/bgcode.hexpat`](patterns/bgcode.hexpat) | PrusaSlicer Binary G-Code files |
 | BLEND  | | [`patterns/blend.hexpat`](patterns/blend.hexpat) | Blender Project file |
 | BLF | | [`patterns/blf.hexpat`](patterns/blf.hexpat) | Vector BLF Frame Logging Files |
+| Bloodborne | | [`patterns/bloodborne_save.hexpat`](patterns/bloodborne_save.hexpat) | Bloodborne character files (userdata0000 to userdata0009) |
 | BMP  | `image/bmp` | [`patterns/bmp.hexpat`](patterns/bmp.hexpat) | OS2/Windows Bitmap files |
 | BIN  | | [`patterns/selinux.hexpat`](patterns/selinux.pat) | SE Linux modules |
 | BINK Container | `video/vnd.radgamettools.bink` | [`patterns/bink_container.hexpat`](patterns/bink_container.hexpat) | [RAD Game Tools Bink Video Container files](https://en.wikipedia.org/wiki/Bink_Video) |
@@ -63,6 +66,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | CCHVA | | [`patterns/cchva.hexpat`](patterns/cchva.hexpat) | Command and Conquer Voxel Animation |
 | CCVXL | | [`patterns/ccvxl.hexpat`](patterns/ccvxl.hexpat) | Command and Conquer Voxel Model |
 | CCPAL | | [`patterns/ccpal.hexpat`](patterns/ccpal.hexpat) | Command and Conquer Voxel Palette |
+| CGX | | [`patterns/CGX.hexpat`](patterns/CGX.hexpat) | PlayStation Mobile Shader |
 | CDA | | [`patterns/cda.hexpat`](patterns/cda.hexpat) | Compact Disc Audio track |
 | CHD | | [`patterns/chd.hexpat`](patterns/chd.hexpat) | MAME Compressed Hunks of Data file |
 | CHM | `application/vnd.ms-htmlhelp` | [`patterns/chm.hexpat`](patterns/chm.hexpat) | Windows HtmlHelp Data (ITSF / CHM) |
@@ -171,6 +175,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NotepadStateFile | | [`patterns/notepad-state.hexpat`](patterns/notepad-state.hexpat) | Windows Notepad .bin State files |
 | NotepadWindowState | | [`patterns/notepadwindowstate.hexpat`](patterns/notepadwindowstate.hexpat) | Windows 11 Notepad - Window State .bin file |
 | NRO | | [`patterns/nro.hexpat`](patterns/nro.hexpat) | Nintendo Switch NRO files |
+| NSO | | [`patterns/nso.hexpat`](patterns/nso.hexpat) | Nintendo Switch NSO files |
 | NTAG | | [`patterns/ntag.hexpat`](patterns/ntag.hexpat) | NTAG213/NTAG215/NTAG216, NFC Forum Type 2 Tag compliant IC |
 | NTFS | | [`patterns/fs/ntfs.hexpat`](patterns/fs/ntfs.hexpat) | NTFS (NT File System) |
 | NTFS (DFIR) | | [`patterns/DFIR/NTFS.hexpat`](patterns/DFIR/NTFS.hexpat) | Imported by DISK_PARSER.hexpat |
@@ -234,7 +239,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | TTF | `font/ttf`, `font/otf` | [`patterns/ttf.hexpat`](patterns/ttf.hexpat) | TrueType and OpenType font format |
 | Ubiquiti | | [`patterns/ubiquiti.hexpat`](patterns/ubiquiti.hexpat) | Ubiquiti Firmware (update) image |
 | UPK | | [`patterns/upk-ue3.hexpat`](patterns/upk-ue3.hexpat) | Unreal Engine 3 UPK file |
-| UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat)` | UEFI structs for parsing efivars |
+| UEFI | | [`patterns/uefi.hexpat`](patterns/uefi.hexpat) | UEFI structs for parsing efivars |
 | UEFI Boot Entry | | [`patterns/uefi_boot_entry.hexpat`](patterns/uefi_boot_entry.hexpat) | UEFI Boot Entry (Load option) |
 | UEFI Variable Store | | [`patterns/uefi_fv_varstore.hexpat`](patterns/uefi_fv_varstore.hexpat) | UEFI Firmware Volume Variable Store |
 | UF2 | | [`patterns/uf2.hexpat`](patterns/uf2.hexpat) | [USB Flashing Format](https://github.com/microsoft/uf2) |
@@ -245,6 +250,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | VDF | | [`patterns/vdf.hexpat`](patterns/vdf.hexpat) | Binary Value Data Format (.vdf) files |
 | VEADO | | [`patterns/veado.hexpat`](patterns/veado.hexpat) | veadotube mini avatar file |
 | VGM | | [`patterns/vgm.hexpat`](patterns/vgm.hexpat) | VGM (Video Game Music) sound log |
+| VHD | `application/x-vhd` | [`patterns/vhd.hexpat`](patterns/vhd.hexpat) | [Connectix Virtual Hard Disk format](https://en.wikipedia.org/wiki/VHD_(file_format)) |
 | VHDX | | [`patterns/vhdx.hexpat`](patterns/vhdx.hexpat) | Microsoft Hyper-V Virtual Hard Disk format |
 | VOX | | [`patterns/vox.hexpat`](patterns/vox.hexpat) | MagicaVoxel scene description format |
 | WAV  | `audio/x-wav`  | [`patterns/wav.hexpat`](patterns/wav.hexpat)  | RIFF header, WAVE header, PCM header |
