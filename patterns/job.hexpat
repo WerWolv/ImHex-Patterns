@@ -5,7 +5,8 @@ import std.array;
 import type.guid;
 
 #pragma endian little
-#pragma author shark 
+#pragma description WindowsTaskScheduler v1.0 job
+#pragma author Sabhya // shark
 
 fn fmt_hex(auto val) {
     return std::format("{:#x}", val);
