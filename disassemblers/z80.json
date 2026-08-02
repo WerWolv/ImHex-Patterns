@@ -1,0 +1,731 @@
+{
+    "name": "Z80",
+    "includes": [],
+    "options": [],
+    "settings": [
+        {
+            "name": "endian",
+            "displayName": "Endian",
+            "type": "enum",
+            "values": [
+                { "name": "Little", "value": 0 },
+                { "name": "Big", "value": 1 }
+            ]
+        }
+    ],
+    "tables": {
+        "z80r": [
+            "B", "C", "D", "E", "H", "L", "(HL)", "A"
+        ],
+        "z80rp": [
+            "BC", "DE", "HL", "SP"
+        ],
+        "z80rpa": [
+            "BC", "DE", "HL", "AF"
+        ],
+        "z80cc": [
+            "NZ", "Z", "NC", "C", "PO", "PE", "P", "M"
+        ]
+    },
+    "opcodes": [
+        {
+            "mask": "0000'0000",
+            "mnemonic": "NOP",
+            "format": ""
+        },
+        {
+            "mask": "0000'0111",
+            "mnemonic": "RLCA",
+            "format": ""
+        },
+        {
+            "mask": "0000'1000",
+            "mnemonic": "EX",
+            "format": "AF, AF'"
+        },
+        {
+            "mask": "0000'1111",
+            "mnemonic": "RRCA",
+            "format": ""
+        },
+        {
+            "mask": "0001'0000 AAAA'AAAA",
+            "mnemonic": "DJNZ",
+            "format": "PC + 0x{A:02X}",
+            "metadata": [
+                {
+                    "type": "jump",
+                    "data": {
+                        "destination": "offset + 2 + A"
+                    }
+                }
+            ]
+        },
+        {
+            "mask": "0001'0111",
+            "mnemonic": "RLA",
+            "format": ""
+        },
+        {
+            "mask": "0001'1000 AAAA'AAAA",
+            "mnemonic": "JR",
+            "format": "PC + 0x{A:02X}",
+            "metadata": [
+                {
+                    "type": "jump",
+                    "data": {
+                        "destination": "offset + 2 + A"
+                    }
+                }
+            ]
+        },
+        {
+            "mask": "0001'1111",
+            "mnemonic": "RRA",
+            "format": ""
+        },
+        {
+            "mask": "000P'0010",
+            "mnemonic": "LD",
+            "format": "({z80rp[P]}), A"
+        },
+        {
+            "mask": "0010'0010 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "LD",
+            "format": "(0x{asEndian(endian, A, 2):04X}), HL"
+        },
+        {
+            "mask": "0010'0111",
+            "mnemonic": "DAA",
+            "format": ""
+        },
+        {
+            "mask": "0010'1010 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "LD",
+            "format": "HL, (0x{asEndian(endian, A, 2):04X})"
+        },
+        {
+            "mask": "0010'1111",
+            "mnemonic": "CPL",
+            "format": ""
+        },
+        {
+            "mask": "0011'0010 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "LD",
+            "format": "(0x{asEndian(endian, A, 2):04X}), A"
+        },
+        {
+            "mask": "0011'0111",
+            "mnemonic": "SCF",
+            "format": ""
+        },
+        {
+            "mask": "0011'1010 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "LD",
+            "format": "A, (0x{asEndian(endian, A, 2):04X})"
+        },
+        {
+            "mask": "0011'1111",
+            "mnemonic": "CCF",
+            "format": ""
+        },
+        {
+            "mask": "001C'C000 AAAA'AAAA",
+            "mnemonic": "JR",
+            "format": "{z80cc[C]}, PC + 0x{A:02X}",
+            "metadata": [
+                {
+                    "type": "jump",
+                    "data": {
+                        "destination": "offset + 2 + A"
+                    }
+                }
+            ]
+        },
+        {
+            "mask": "00PP'0001 DDDD'DDDD DDDD'DDDD",
+            "mnemonic": "LD",
+            "format": "{z80rp[P]}, (0x{asEndian(endian, D, 2):04X})"
+        },
+        {
+            "mask": "00PP'0011",
+            "mnemonic": "INC",
+            "format": "{z80rp[P]}"
+        },
+        {
+            "mask": "00PP'1001",
+            "mnemonic": "ADD",
+            "format": "{z80rp[P]}"
+        },
+        {
+            "mask": "000P'1010",
+            "mnemonic": "LD",
+            "format": "A, ({z80rp[P]})"
+        },
+        {
+            "mask": "00PP'1011",
+            "mnemonic": "DEC",
+            "format": "{z80rp[P]}"
+        },
+        {
+            "mask": "00RR'R100",
+            "mnemonic": "INC",
+            "format": "{z80r[R]}"
+        },
+        {
+            "mask": "00RR'R101",
+            "mnemonic": "DEC",
+            "format": "{z80r[R]}"
+        },
+        {
+            "mask": "00RR'R110 DDDD'DDDD",
+            "mnemonic": "LD",
+            "format": "{z80r[R]}, (0x{D:02X})"
+        },
+        {
+            "mask": "0111'0110",
+            "mnemonic": "HALT",
+            "format": ""
+        },
+        {
+            "mask": "01RR'RSSS",
+            "mnemonic": "LD",
+            "format": "{z80r[R]}, {z80r[S]}"
+        },
+        {
+            "mask": "1000'0SSS",
+            "mnemonic": "ADD",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1000'1SSS",
+            "mnemonic": "ADC",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1001'0SSS",
+            "mnemonic": "SUB",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1001'1SSS",
+            "mnemonic": "SBC",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1010'0SSS",
+            "mnemonic": "AND",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1010'1SSS",
+            "mnemonic": "XOR",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1011'0SSS",
+            "mnemonic": "OR",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1011'1SSS",
+            "mnemonic": "CP",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1100'0011 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "JP",
+            "format": "#0x{asEndian(endian, A, 2):04X}",
+            "metadata": [
+                {
+                    "type": "jump",
+                    "data": {
+                        "destination": "asEndian(endian, A, 2)"
+                    }
+                }
+            ]
+        },
+        {
+            "mask": "1100'0110 DDDD'DDDD",
+            "mnemonic": "ADD",
+            "format": "#0x{D:02X}"
+        },
+        {
+            "mask": "1100'1001",
+            "mnemonic": "RET",
+            "format": ""
+        },
+        {
+            "mask": "1100'1011 0000'0SSS",
+            "mnemonic": "RLC",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 0000'1SSS",
+            "mnemonic": "RRC",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 0001'0SSS",
+            "mnemonic": "RL",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 0001'1SSS",
+            "mnemonic": "RR",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 0010'0SSS",
+            "mnemonic": "SLA",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 0010'1SSS",
+            "mnemonic": "SRA",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 0011'0SSS",
+            "mnemonic": "SLL",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 0011'1SSS",
+            "mnemonic": "SRL",
+            "format": "{z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 01BB'BSSS",
+            "mnemonic": "BIT",
+            "format": "bit {B}, {z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 10BB'BSSS",
+            "mnemonic": "RES",
+            "format": "{B}, {z80r[S]}"
+        },
+        {
+            "mask": "1100'1011 11BB'BSSS",
+            "mnemonic": "SET",
+            "format": "{B}, {z80r[S]}"
+        },
+        {
+            "mask": "1100'1101 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "CALL",
+            "format": "#0x{asEndian(endian, A, 2):04X}",
+            "metadata": [
+                {
+                    "type": "jump",
+                    "data": {
+                        "destination": "asEndian(endian, A, 2)"
+                    }
+                }
+            ]
+        },
+        {
+            "mask": "1100'1110 DDDD'DDDD",
+            "mnemonic": "ADC",
+            "format": "#0x{D:02X}"
+        },
+        {
+            "mask": "1101'0011 AAAA'AAAA",
+            "mnemonic": "OUT",
+            "format": "(#0x{A:02X}), A"
+        },
+        {
+            "mask": "1101'0110 DDDD'DDDD",
+            "mnemonic": "SUB",
+            "format": "#0x{D:02X}"
+        },
+        {
+            "mask": "1101'1001",
+            "mnemonic": "EXX",
+            "format": ""
+        },
+        {
+            "mask": "1101'1011 AAAA'AAAA",
+            "mnemonic": "IN",
+            "format": "A, (#0x{A:02X})"
+        },
+        {
+            "mask": "1101'1101",
+            "mnemonic": "IX-Override",
+            "format": ""
+        },
+        {
+            "mask": "1101'1110 DDDD'DDDD",
+            "mnemonic": "SBC",
+            "format": "#0x{D:02X}"
+        },
+        {
+            "mask": "1110'0011",
+            "mnemonic": "EX",
+            "format": "(SP), HL"
+        },
+        {
+            "mask": "1110'0110 DDDD'DDDD",
+            "mnemonic": "AND",
+            "format": "#0x{D:02X}"
+        },
+        {
+            "mask": "1110'1001",
+            "mnemonic": "JP",
+            "format": "(HL)"
+        },
+        {
+            "mask": "1110'1011",
+            "mnemonic": "EX",
+            "format": "DE, HL"
+        },
+        {
+            "mask": "1110'1101 0100'0100",
+            "mnemonic": "NEG",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0100'0101",
+            "mnemonic": "RETN",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0100'0111",
+            "mnemonic": "LD",
+            "format": "I, A"
+        },
+        {
+            "mask": "1110'1101 0100'1100",
+            "mnemonic": "NEG",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0100'1101",
+            "mnemonic": "RETI",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0100'1110",
+            "mnemonic": "IM",
+            "format": "?"
+        },
+        {
+            "mask": "1110'1101 0100'1111",
+            "mnemonic": "LD",
+            "format": "R, A"
+        },
+        {
+            "mask": "1110'1101 0101'0100",
+            "mnemonic": "NEG",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0101'0101",
+            "mnemonic": "RETN",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0101'0111",
+            "mnemonic": "LD",
+            "format": "A, I"
+        },
+        {
+            "mask": "1110'1101 0101'1100",
+            "mnemonic": "NEG",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0101'1101",
+            "mnemonic": "RETI",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0101'1111",
+            "mnemonic": "LD",
+            "format": "A, R"
+        },
+        {
+            "mask": "1110'1101 010N'N110",
+            "mnemonic": "IM",
+            "format": "{N}"
+        },
+        {
+            "mask": "1110'1101 0110'0100",
+            "mnemonic": "NEG",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0110'0101",
+            "mnemonic": "RETN",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0110'0110",
+            "mnemonic": "IM",
+            "format": "0"
+        },
+        {
+            "mask": "1110'1101 0110'0111",
+            "mnemonic": "RRD",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0110'1100",
+            "mnemonic": "NEG",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0110'1101",
+            "mnemonic": "RETI",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0110'1110",
+            "mnemonic": "IM",
+            "format": "?"
+        },
+        {
+            "mask": "1110'1101 0110'1111",
+            "mnemonic": "RLD",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0111'0000",
+            "mnemonic": "IN",
+            "format": "#0x0F, (C)"
+        },
+        {
+            "mask": "1110'1101 0111'0001",
+            "mnemonic": "OUT",
+            "format": "(C), #0x00"
+        },
+        {
+            "mask": "1110'1101 0111'0100",
+            "mnemonic": "NEG",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0111'0101",
+            "mnemonic": "RETN",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0111'0110",
+            "mnemonic": "IM",
+            "format": "1"
+        },
+        {
+            "mask": "1110'1101 0111'1100",
+            "mnemonic": "NEG",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0111'1101",
+            "mnemonic": "RETI",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 0111'1110",
+            "mnemonic": "IM",
+            "format": "2"
+        },
+        {
+            "mask": "1110'1101 01PP'0010",
+            "mnemonic": "SBC",
+            "format": "HL, {z80rp[P]}"
+        },
+        {
+            "mask": "1110'1101 01PP'0011 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "LD",
+            "format": "(#0x{asEndian(endian, A, 2):04X}), {z80rp[P]}"
+        },
+        {
+            "mask": "1110'1101 01PP'1010",
+            "mnemonic": "ADC",
+            "format": "HL, {z80rp[P]}"
+        },
+        {
+            "mask": "1110'1101 01PP'1011 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "LD",
+            "format": "{z80rp[P]}, (#0x{asEndian(endian, A, 2):04X})"
+        },
+        {
+            "mask": "1110'1101 01RR'R000",
+            "mnemonic": "IN",
+            "format": "{z80r[R]}, (C)"
+        },
+        {
+            "mask": "1110'1101 01SS'S001",
+            "mnemonic": "OUT",
+            "format": "(C), {z80r[S]}"
+        },
+        {
+            "mask": "1110'1101 1010'0000",
+            "mnemonic": "LDI",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1010'0001",
+            "mnemonic": "CPI",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1010'0010",
+            "mnemonic": "INI",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1010'0011",
+            "mnemonic": "OUTI",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1010'1000",
+            "mnemonic": "LDD",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1010'1001",
+            "mnemonic": "CPD",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1010'1010",
+            "mnemonic": "IND",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1010'1011",
+            "mnemonic": "OUTD",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1011'0000",
+            "mnemonic": "LDIR",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1011'0001",
+            "mnemonic": "CPIR",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1011'0010",
+            "mnemonic": "INIR",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1011'0011",
+            "mnemonic": "OTIR",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1011'1000",
+            "mnemonic": "LDDR",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1011'1001",
+            "mnemonic": "CPDR",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1011'1010",
+            "mnemonic": "INDR",
+            "format": ""
+        },
+        {
+            "mask": "1110'1101 1011'1011",
+            "mnemonic": "OTDR",
+            "format": ""
+        },
+        {
+            "mask": "1110'1110 DDDD'DDDD",
+            "mnemonic": "XOR",
+            "format": "#0x{D:02X}"
+        },
+        {
+            "mask": "1111'0011",
+            "mnemonic": "DI",
+            "format": ""
+        },
+        {
+            "mask": "1111'0110 DDDD'DDDD",
+            "mnemonic": "OR",
+            "format": "#0x{D:02X}"
+        },
+        {
+            "mask": "1111'1001",
+            "mnemonic": "LD",
+            "format": "SP, HL"
+        },
+        {
+            "mask": "1111'1011",
+            "mnemonic": "EI",
+            "format": ""
+        },
+        {
+            "mask": "1111'1101",
+            "mnemonic": "IY-Override",
+            "format": ""
+        },
+        {
+            "mask": "1111'1110 DDDD'DDDD",
+            "mnemonic": "CP",
+            "format": "#0x{D:02X}"
+        },
+        {
+            "mask": "11CC'C000",
+            "mnemonic": "RET",
+            "format": "{z80cc[C]}"
+        },
+        {
+            "mask": "11CC'C010 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "JP",
+            "format": "{z80cc[C]}, #0x{asEndian(endian, A, 2):04X}",
+            "metadata": [
+                {
+                    "type": "jump",
+                    "data": {
+                        "destination": "asEndian(endian, A, 2)"
+                    }
+                }
+            ]
+        },
+        {
+            "mask": "11CC'C100 AAAA'AAAA AAAA'AAAA",
+            "mnemonic": "CALL",
+            "format": "{z80cc[C]}, #0x{asEndian(endian, A, 2):04X}",
+            "metadata": [
+                {
+                    "type": "jump",
+                    "data": {
+                        "destination": "asEndian(endian, A, 2)"
+                    }
+                }
+            ]
+        },
+        {
+            "mask": "11NN'N111",
+            "mnemonic": "RST",
+            "format": "#0x{N:02X}",
+            "metadata": [
+                {
+                    "type": "jump",
+                    "data": {
+                        "destination": "N"
+                    }
+                }
+            ]
+        },
+        {
+            "mask": "11PP'0001",
+            "mnemonic": "POP",
+            "format": "{z80rpa[P]}"
+        },
+        {
+            "mask": "11PP'0101",
+            "mnemonic": "PUSH",
+            "format": "{z80rpa[P]}"
+        }
+    ]
+}
