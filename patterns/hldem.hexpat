@@ -1,21 +1,14 @@
-// Enter your pattern code here and click on the Play button
-// below to execute your code. The results will then be visible
-// in the Pattern Data view.
-//
-// More information can be found in the documentation.
-//
-//
-// Simple example:
-//
-// import std.io;
-//
-// struct Pattern {
-//     u32 int;
-//     float floating_point;
-// };
-//
-// Pattern my_pattern @ 0x00;
-// std::print("0x{:08X}", my_pattern.int);
+/*
+* Simple GoldSRC demo pattern.
+* Regions of data:
+* * Demo header with all info
+* * Actual demo data (simplified)
+* * Directory of entries
+*/
+#pragma author den4iklovelinux
+#pragma description GoldSRC DEM
+#pragma magic [ 48 4C 44 45 4D 4F ] @ 0x00
+#pragma endian little
 
 struct header_t
 {
