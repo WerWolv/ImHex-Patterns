@@ -78,6 +78,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | CrashLvl | | [`patterns/Crashlvl.hexpat`](patterns/Crashlvl.hexpat) | Crash Bandicoot - Back in Time (fan game) User created level format |
 | CREDHIST | | [`patterns/credhist.hexpat`](patterns/credhist.hexpat) | CREDHIST Format |
 | DDS | `image/vnd-ms.dds` | [`patterns/dds.hexpat`](patterns/dds.hexpat) | DirectDraw Surface |
+| DEM | |[`patterns/hldem.hexpat`](patterns/hldem.hexpat) | GoldSRC Demo file |
 | DEX | | [`patterns/dex.hexpat`](patterns/dex.hexpat) | Dalvik EXecutable Format |
 | Devil May Cry HD Collection | | [`patterns/Devil May Cry HD Collection`](patterns/Devil May Cry HD Collection) | 3D Model files used in Devil May Cry 3 HD Collection |
 | DICOM | `application/dicom` | [`patterns/dicom.hexpat`](patterns/dicom.hexpat) | DICOM image format |
