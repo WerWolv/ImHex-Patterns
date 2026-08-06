@@ -1,14 +1,15 @@
 /*
-* Simple GoldSRC demo pattern.
-* Regions of data:
-* * Demo header with all info
-* * Actual demo data (simplified)
-* * Directory of entries
-*/
+ * Simple GoldSRC demo pattern.
+ * Regions of data:
+ * * Demo header with all info
+ * * Actual demo data (simplified)
+ * * Directory of entries
+ */
 #pragma author den4iklovelinux
 #pragma description GoldSRC DEM
 #pragma magic [ 48 4C 44 45 4D 4F ] @ 0x00
 #pragma endian little
+#include <std/io.pat>
 
 struct header_t
 {
@@ -42,20 +43,57 @@ struct demdir_t
 
 demdir_t Dirs @ Header.diroffset;
 
-struct Vector3D {
+struct vec3_t {
     float y;
     float x;
     float z;
 };
-struct Camera {
-    Vector3D position;
-    Vector3D orientation;
+struct camprefs_t {
+    vec3_t position;
+    vec3_t orientation;
+    vec3_t forward;
+    vec3_t right;
+    vec3_t up;
 };
+
+struct refparams_t
+{
+    float frametime;
+    float time;
+    s32 intermission;
+    s32 paused;
+    s32 spectator;
+    s32 onground;
+    s32 waterlevel;
+    vec3_t velocity;
+    vec3_t origin;
+    vec3_t viewHeight;
+    float idealPitch;
+    vec3_t viewangles;
+    s32 health;
+    vec3_t xhairAngle;
+    float viewsize;
+    vec3_t punchAngle;
+    s32 maxClients;
+    s32 viewEntity;
+    s32 playerCount;
+    s32 maxEnts;
+    s32 demoPlayback;
+    s32 hardware;
+    s32 smoothing;
+    s32 ptr_cmd;
+    s32 ptr_mvars;
+    s32 viewport[4];
+    s32 nextview;
+    s32 onlyClientDraw;
+};
+
 
 struct macro_data_0_1 {
     u32 pad1;
-    Camera camprefs;
-    u8 pad2[436];
+    camprefs_t camprefs;
+    refparams_t params;
+    u8 pad2[228];
     s32 length;
     u8 data[length];
 };
@@ -92,7 +130,7 @@ struct frame_t
     u8 type;
     float time;
     u32 frame;
-    
+
     if (type == 0 || type == 1) {
         macro_data_0_1 data;
     } else if (type == 3) {
@@ -110,6 +148,6 @@ struct frame_t
     }
 };
 
-#pragma array_limit 393210
+//#pragma array_limit 393210
 frame_t Frames1[while($ < Dirs.entries[0].offset + Dirs.entries[0].length)] @ Dirs.entries[0].offset;
 frame_t Frames2[while($ < Dirs.entries[1].offset + Dirs.entries[1].length)] @ Dirs.entries[1].offset;
