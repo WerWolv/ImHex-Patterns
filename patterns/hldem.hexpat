@@ -9,7 +9,7 @@
 #pragma description GoldSRC DEM
 #pragma magic [ 48 4C 44 45 4D 4F ] @ 0x00
 #pragma endian little
-#include <std/io.pat>
+
 
 struct header_t
 {
@@ -88,12 +88,58 @@ struct refparams_t
     s32 onlyClientDraw;
 };
 
+struct usercmd_t
+{
+    s16 lerp_msec;
+    u8 msec;
+    u8 UNUSED1;
+    vec3_t viewAngles;
+    float fwdMove;
+    float sideMove;
+    float upMove;
+    s8 lightLevel;
+    u8 UNUSED2;
+    u16 buttons;
+    s8 impulse;
+    s8 weaponSel;
+    s16 UNUSED3;
+    s32 impactIndex;
+    vec3_t impactPos;
+};
+
+struct movevars_t
+{
+    float gravity;
+    float stopSpeed;
+    float maxSpeed;
+    float specMaxSpeed;
+    float accel;
+    float airAccel;
+    float waterAccel;
+    float friction;
+    float edgeFriction;
+    float waterFrict;
+    float entGravity;
+    float bounce;
+    float stepSize;
+    float maxVel;
+    float zMax;
+    float waveHeight;
+    s32 footsteps;
+    char skyname[32];
+    float rollAngle;
+    float rollSpeed;
+    vec3_t skyColor;
+    vec3_t skyVec;
+};
 
 struct macro_data_0_1 {
     u32 pad1;
     camprefs_t camprefs;
     refparams_t params;
-    u8 pad2[228];
+    usercmd_t usercmds;
+    movevars_t movevars;
+    u8 etcdata[44];
     s32 length;
     u8 data[length];
 };
