@@ -219,6 +219,7 @@ struct frame_t
         macro_data_9 data;
     }
 };
-
+#pragma array_limit 16777215
+#pragma pattern_limit 16777215
 frame_t Frames1[while($ < Dirs.entries[0].offset + Dirs.entries[0].length)] @ Dirs.entries[0].offset;
 frame_t Frames2[while($ < Dirs.entries[1].offset + Dirs.entries[1].length)] @ Dirs.entries[1].offset;
