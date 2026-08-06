@@ -133,7 +133,7 @@ struct movevars_t
     vec3_t skyVec;
 };
 
-struct macro_data_0_1 {
+struct mainframes_t {
     u32 pad1;
     camprefs_t camprefs;
     refparams_t params;
@@ -144,26 +144,52 @@ struct macro_data_0_1 {
     u8 data[length];
 };
 
-struct macro_data_3 {
+struct cmd_t {
     char command[64];
 };
 
-struct macro_data_4 {
-    u8 pad[32];
+struct clientdata_t {
+    vec3_t position;
+    vec3_t rotation;
+    u32 weaponFlags;
+    float fov;
+};
+struct args_t
+{
+    u32 flags;
+    u32 entIdx;
+    vec3_t pos;
+    vec3_t rot;
+    vec3_t vel;
+    u32 ducking;
+    float fparam1;
+    float fparam2;
+    s32 iparam1;
+    s32 iparam2;
+    s32 bparam1;
+    s32 bparam2;
 };
 
-struct macro_data_6 {
-    u8 pad[84];
+struct eventdata_t {
+    u32 flags;
+    u32 index;
+    float delay;
+    args_t args;
 };
 
-struct macro_data_7 {
-    u8 pad[8];
+struct weaponanim_t {
+    s32 animIdx;
+    s32 body;
 };
 
-struct macro_data_8 {
-    u32 pad;
-    s32 length;
-    u8 data[length + 16];
+struct sounddata_t {
+    s32 channel;
+    s32 charslen;
+    char sample[charslen];
+    float attenuation;
+    float vol;
+    u32 flags;
+    s32 pitch;
 };
 
 struct macro_data_9 {
@@ -178,22 +204,21 @@ struct frame_t
     u32 frame;
 
     if (type == 0 || type == 1) {
-        macro_data_0_1 data;
+        mainframes_t framedata;
     } else if (type == 3) {
-        macro_data_3 data;
+        cmd_t cmdstring;
     } else if (type == 4) {
-        macro_data_4 data;
+        clientdata_t cldata;
     } else if (type == 6) {
-        macro_data_6 data;
+        eventdata_t eventdata;
     } else if (type == 7) {
-        macro_data_7 data;
+        weaponanim_t weaponanimdata;
     } else if (type == 8) {
-        macro_data_8 data;
+        sounddata_t snddata;
     } else if (type == 9) {
         macro_data_9 data;
     }
 };
 
-//#pragma array_limit 393210
 frame_t Frames1[while($ < Dirs.entries[0].offset + Dirs.entries[0].length)] @ Dirs.entries[0].offset;
 frame_t Frames2[while($ < Dirs.entries[1].offset + Dirs.entries[1].length)] @ Dirs.entries[1].offset;
