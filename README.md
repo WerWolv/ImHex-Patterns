@@ -378,3 +378,4 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Name | Path | Description |
 |------|------|-------------|
 | 8051 | [`disassemblers/8051.json`](disassemblers/8051.json) | Intel 8051 Architecture |
+| Z80 | [`disassemblers/z80.json`](disassemblers/z80.json) | Zelog Z80 Architecture |
