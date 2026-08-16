@@ -33,7 +33,9 @@ struct LuaBinaryHeader {
     u8 format_version;
     char LUAC_DATA[6];
     u8 size_of_int;
-    u8 size_of_size_t;
+    if (format_version != 1) {
+        u8 size_of_size_t;
+    }
     u8 size_of_Instruction;
     u8 size_of_lua_Integer;
     u8 sizeof_lua_Number;
