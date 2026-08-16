@@ -374,6 +374,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Catppuccin Mocha | [`themes/catppuccin-mocha.json`](themes/catppuccin-mocha.json) | Catppuccin Mocha Flavor (Dark Theme) |
 | Theme Lion | [`themes/theme_lion.json`](themes/theme_lion.json) | Semantic CLion inspired theme (Dark Theme) |
 | Retina Dark | [`themes/retina_dark.json`](themes/retina_dark.json) | Semantic theme based on Dark Theme |
+| OLED | [`themes/oled.json`](themes/oled.json) | OLED theme based on Dark Theme |
 
 ### Disassemblers
 
