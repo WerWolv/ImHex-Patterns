@@ -61,18 +61,20 @@ struct VendorStorage {
 };
 
 if (item_num == 0) {
-    std::error(
+    std::warning(
         "Please configure the `item_num` property in the settings\n" +
         "The default configuration for eMMC/NAND would be 126\n" +
         "The default configuration for NOR flash would be 62"
     );
+    return 0;
 }
 if (size == 0) {
-    std::error(
+    std::warning(
         "Please configure the total `size` property (in bytes) in the settings\n" +
         "The default configuration for eMMC/NAND would be 65536\n" +
         "The default configuration for NOR flash would be 4096"
     );
+    return 0;
 }
 
 auto vendor_storage_offset = std::mem::find_string(0, "DVKR");
