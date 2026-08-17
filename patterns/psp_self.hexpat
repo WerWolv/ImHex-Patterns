@@ -1,3 +1,6 @@
+#pragma author Li
+#pragma description PlayStation Portable SELF
+
 import std.io;
 
 struct PspHeader2 {
