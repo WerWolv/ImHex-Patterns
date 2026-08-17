@@ -1,0 +1,1139 @@
+{
+  "name": "CIL/MSIL",
+  "includes": [],
+  "opcodes": [
+    {
+      "mnemonic": "nop",
+      "format": "",
+      "mask": "0000'0000"
+    },
+    {
+      "mnemonic": "break",
+      "format": "",
+      "mask": "0000'0001"
+    },
+    {
+      "mnemonic": "ldarg.0",
+      "format": "",
+      "mask": "0000'0010"
+    },
+    {
+      "mnemonic": "ldarg.1",
+      "format": "",
+      "mask": "0000'0011"
+    },
+    {
+      "mnemonic": "ldarg.2",
+      "format": "",
+      "mask": "0000'0100"
+    },
+    {
+      "mnemonic": "ldarg.3",
+      "format": "",
+      "mask": "0000'0101"
+    },
+    {
+      "mnemonic": "ldloc.0",
+      "format": "",
+      "mask": "0000'0110"
+    },
+    {
+      "mnemonic": "ldloc.1",
+      "format": "",
+      "mask": "0000'0111"
+    },
+    {
+      "mnemonic": "ldloc.2",
+      "format": "",
+      "mask": "0000'1000"
+    },
+    {
+      "mnemonic": "ldloc.3",
+      "format": "",
+      "mask": "0000'1001"
+    },
+    {
+      "mnemonic": "stloc.0",
+      "format": "",
+      "mask": "0000'1010"
+    },
+    {
+      "mnemonic": "stloc.1",
+      "format": "",
+      "mask": "0000'1011"
+    },
+    {
+      "mnemonic": "stloc.2",
+      "format": "",
+      "mask": "0000'1100"
+    },
+    {
+      "mnemonic": "stloc.3",
+      "format": "",
+      "mask": "0000'1101"
+    },
+    {
+      "mnemonic": "ldarg.s",
+      "format": "#{A}",
+      "mask": "0000'1110 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldarga.s",
+      "format": "#{A}",
+      "mask": "0000'1111 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "starg.s",
+      "format": "#{A}",
+      "mask": "0001'0000 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldloc.s",
+      "format": "#{A}",
+      "mask": "0001'0001 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldloca.s",
+      "format": "#{A}",
+      "mask": "0001'0010 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "stloc.s",
+      "format": "#{A}",
+      "mask": "0001'0011 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldnull",
+      "format": "",
+      "mask": "0001'0100"
+    },
+    {
+      "mnemonic": "ldc.i4.m1",
+      "format": "",
+      "mask": "0001'0101"
+    },
+    {
+      "mnemonic": "ldc.i4.0",
+      "format": "",
+      "mask": "0001'0110"
+    },
+    {
+      "mnemonic": "ldc.i4.1",
+      "format": "",
+      "mask": "0001'0111"
+    },
+    {
+      "mnemonic": "ldc.i4.2",
+      "format": "",
+      "mask": "0001'1000"
+    },
+    {
+      "mnemonic": "ldc.i4.3",
+      "format": "",
+      "mask": "0001'1001"
+    },
+    {
+      "mnemonic": "ldc.i4.4",
+      "format": "",
+      "mask": "0001'1010"
+    },
+    {
+      "mnemonic": "ldc.i4.5",
+      "format": "",
+      "mask": "0001'1011"
+    },
+    {
+      "mnemonic": "ldc.i4.6",
+      "format": "",
+      "mask": "0001'1100"
+    },
+    {
+      "mnemonic": "ldc.i4.7",
+      "format": "",
+      "mask": "0001'1101"
+    },
+    {
+      "mnemonic": "ldc.i4.8",
+      "format": "",
+      "mask": "0001'1110"
+    },
+    {
+      "mnemonic": "ldc.i4.s",
+      "format": "0x{A:02X}",
+      "mask": "0001'1111 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldc.i4",
+      "format": "{A}",
+      "mask": "0010'0000 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldc.i8",
+      "format": "{A}",
+      "mask": "0010'0001 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldc.r4",
+      "format": "{A}",
+      "mask": "0010'0010 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldc.r8",
+      "format": "{A}",
+      "mask": "0010'0011 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "dup",
+      "format": "",
+      "mask": "0010'0101"
+    },
+    {
+      "mnemonic": "pop",
+      "format": "",
+      "mask": "0010'0110"
+    },
+    {
+      "mnemonic": "jmp",
+      "format": "Token 0x{A:08X}",
+      "mask": "0010'0111 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "call",
+      "format": "Token 0x{A:08X}",
+      "mask": "0010'1000 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "calli",
+      "format": "Token 0x{A:08X}",
+      "mask": "0010'1001 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ret",
+      "format": "",
+      "mask": "0010'1010"
+    },
+    {
+      "mnemonic": "br.s",
+      "format": "0x{A:02X}",
+      "mask": "0010'1011 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "brfalse.s",
+      "format": "0x{A:02X}",
+      "mask": "0010'1100 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "brtrue.s",
+      "format": "0x{A:02X}",
+      "mask": "0010'1101 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "beq.s",
+      "format": "0x{A:02X}",
+      "mask": "0010'1110 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bge.s",
+      "format": "0x{A:02X}",
+      "mask": "0010'1111 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bgt.s",
+      "format": "0x{A:02X}",
+      "mask": "0011'0000 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ble.s",
+      "format": "0x{A:02X}",
+      "mask": "0011'0001 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "blt.s",
+      "format": "0x{A:02X}",
+      "mask": "0011'0010 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bne.un.s",
+      "format": "0x{A:02X}",
+      "mask": "0011'0011 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bge.un.s",
+      "format": "0x{A:02X}",
+      "mask": "0011'0100 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bgt.un.s",
+      "format": "0x{A:02X}",
+      "mask": "0011'0101 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ble.un.s",
+      "format": "0x{A:02X}",
+      "mask": "0011'0110 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "blt.un.s",
+      "format": "0x{A:02X}",
+      "mask": "0011'0111 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "br",
+      "format": "0x{A:08X}",
+      "mask": "0011'1000 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "brfalse",
+      "format": "0x{A:08X}",
+      "mask": "0011'1001 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "brtrue",
+      "format": "0x{A:08X}",
+      "mask": "0011'1010 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "beq",
+      "format": "0x{A:08X}",
+      "mask": "0011'1011 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bge",
+      "format": "0x{A:08X}",
+      "mask": "0011'1100 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bgt",
+      "format": "0x{A:08X}",
+      "mask": "0011'1101 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ble",
+      "format": "0x{A:08X}",
+      "mask": "0011'1110 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "blt",
+      "format": "0x{A:08X}",
+      "mask": "0011'1111 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bne.un",
+      "format": "0x{A:08X}",
+      "mask": "0100'0000 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bge.un",
+      "format": "0x{A:08X}",
+      "mask": "0100'0001 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "bgt.un",
+      "format": "0x{A:08X}",
+      "mask": "0100'0010 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ble.un",
+      "format": "0x{A:08X}",
+      "mask": "0100'0011 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "blt.un",
+      "format": "0x{A:08X}",
+      "mask": "0100'0100 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "switch",
+      "format": "",
+      "sizeof": "be(A, 4) * 4",
+      "mask": "0100'0101 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldind.i1",
+      "format": "",
+      "mask": "0100'0110"
+    },
+    {
+      "mnemonic": "ldind.u1",
+      "format": "",
+      "mask": "0100'0111"
+    },
+    {
+      "mnemonic": "ldind.i2",
+      "format": "",
+      "mask": "0100'1000"
+    },
+    {
+      "mnemonic": "ldind.u2",
+      "format": "",
+      "mask": "0100'1001"
+    },
+    {
+      "mnemonic": "ldind.i4",
+      "format": "",
+      "mask": "0100'1010"
+    },
+    {
+      "mnemonic": "ldind.u4",
+      "format": "",
+      "mask": "0100'1011"
+    },
+    {
+      "mnemonic": "ldind.i8",
+      "format": "",
+      "mask": "0100'1100"
+    },
+    {
+      "mnemonic": "ldind.i",
+      "format": "",
+      "mask": "0100'1101"
+    },
+    {
+      "mnemonic": "ldind.r4",
+      "format": "",
+      "mask": "0100'1110"
+    },
+    {
+      "mnemonic": "ldind.r8",
+      "format": "",
+      "mask": "0100'1111"
+    },
+    {
+      "mnemonic": "ldind.ref",
+      "format": "",
+      "mask": "0101'0000"
+    },
+    {
+      "mnemonic": "stind.ref",
+      "format": "",
+      "mask": "0101'0001"
+    },
+    {
+      "mnemonic": "stind.i1",
+      "format": "",
+      "mask": "0101'0010"
+    },
+    {
+      "mnemonic": "stind.i2",
+      "format": "",
+      "mask": "0101'0011"
+    },
+    {
+      "mnemonic": "stind.i4",
+      "format": "",
+      "mask": "0101'0100"
+    },
+    {
+      "mnemonic": "stind.i8",
+      "format": "",
+      "mask": "0101'0101"
+    },
+    {
+      "mnemonic": "stind.r4",
+      "format": "",
+      "mask": "0101'0110"
+    },
+    {
+      "mnemonic": "stind.r8",
+      "format": "",
+      "mask": "0101'0111"
+    },
+    {
+      "mnemonic": "add",
+      "format": "",
+      "mask": "0101'1000"
+    },
+    {
+      "mnemonic": "sub",
+      "format": "",
+      "mask": "0101'1001"
+    },
+    {
+      "mnemonic": "mul",
+      "format": "",
+      "mask": "0101'1010"
+    },
+    {
+      "mnemonic": "div",
+      "format": "",
+      "mask": "0101'1011"
+    },
+    {
+      "mnemonic": "div.un",
+      "format": "",
+      "mask": "0101'1100"
+    },
+    {
+      "mnemonic": "rem",
+      "format": "",
+      "mask": "0101'1101"
+    },
+    {
+      "mnemonic": "rem.un",
+      "format": "",
+      "mask": "0101'1110"
+    },
+    {
+      "mnemonic": "and",
+      "format": "",
+      "mask": "0101'1111"
+    },
+    {
+      "mnemonic": "or",
+      "format": "",
+      "mask": "0110'0000"
+    },
+    {
+      "mnemonic": "xor",
+      "format": "",
+      "mask": "0110'0001"
+    },
+    {
+      "mnemonic": "shl",
+      "format": "",
+      "mask": "0110'0010"
+    },
+    {
+      "mnemonic": "shr",
+      "format": "",
+      "mask": "0110'0011"
+    },
+    {
+      "mnemonic": "shr.un",
+      "format": "",
+      "mask": "0110'0100"
+    },
+    {
+      "mnemonic": "neg",
+      "format": "",
+      "mask": "0110'0101"
+    },
+    {
+      "mnemonic": "not",
+      "format": "",
+      "mask": "0110'0110"
+    },
+    {
+      "mnemonic": "conv.i1",
+      "format": "",
+      "mask": "0110'0111"
+    },
+    {
+      "mnemonic": "conv.i2",
+      "format": "",
+      "mask": "0110'1000"
+    },
+    {
+      "mnemonic": "conv.i4",
+      "format": "",
+      "mask": "0110'1001"
+    },
+    {
+      "mnemonic": "conv.i8",
+      "format": "",
+      "mask": "0110'1010"
+    },
+    {
+      "mnemonic": "conv.r4",
+      "format": "",
+      "mask": "0110'1011"
+    },
+    {
+      "mnemonic": "conv.r8",
+      "format": "",
+      "mask": "0110'1100"
+    },
+    {
+      "mnemonic": "conv.u4",
+      "format": "",
+      "mask": "0110'1101"
+    },
+    {
+      "mnemonic": "conv.u8",
+      "format": "",
+      "mask": "0110'1110"
+    },
+    {
+      "mnemonic": "callvirt",
+      "format": "Token 0x{A:08X}",
+      "mask": "0110'1111 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "cpobj",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'0000 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldobj",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'0001 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldstr",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'0010 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "newobj",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'0011 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "castclass",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'0100 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "isinst",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'0101 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "conv.r.un",
+      "format": "",
+      "mask": "0111'0110"
+    },
+    {
+      "mnemonic": "unbox",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'1001 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "throw",
+      "format": "",
+      "mask": "0111'1010"
+    },
+    {
+      "mnemonic": "ldfld",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'1011 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldflda",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'1100 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "stfld",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'1101 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldsfld",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'1110 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldsflda",
+      "format": "Token 0x{A:08X}",
+      "mask": "0111'1111 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "stsfld",
+      "format": "Token 0x{A:08X}",
+      "mask": "1000'0000 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "stobj",
+      "format": "Token 0x{A:08X}",
+      "mask": "1000'0001 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "conv.ovf.i1.un",
+      "format": "",
+      "mask": "1000'0010"
+    },
+    {
+      "mnemonic": "conv.ovf.i2.un",
+      "format": "",
+      "mask": "1000'0011"
+    },
+    {
+      "mnemonic": "conv.ovf.i4.un",
+      "format": "",
+      "mask": "1000'0100"
+    },
+    {
+      "mnemonic": "conv.ovf.i8.un",
+      "format": "",
+      "mask": "1000'0101"
+    },
+    {
+      "mnemonic": "conv.ovf.u1.un",
+      "format": "",
+      "mask": "1000'0110"
+    },
+    {
+      "mnemonic": "conv.ovf.u2.un",
+      "format": "",
+      "mask": "1000'0111"
+    },
+    {
+      "mnemonic": "conv.ovf.u4.un",
+      "format": "",
+      "mask": "1000'1000"
+    },
+    {
+      "mnemonic": "conv.ovf.u8.un",
+      "format": "",
+      "mask": "1000'1001"
+    },
+    {
+      "mnemonic": "conv.ovf.i.un",
+      "format": "",
+      "mask": "1000'1010"
+    },
+    {
+      "mnemonic": "conv.ovf.u.un",
+      "format": "",
+      "mask": "1000'1011"
+    },
+    {
+      "mnemonic": "box",
+      "format": "Token 0x{A:08X}",
+      "mask": "1000'1100 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "newarr",
+      "format": "Token 0x{A:08X}",
+      "mask": "1000'1101 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldlen",
+      "format": "",
+      "mask": "1000'1110"
+    },
+    {
+      "mnemonic": "ldelema",
+      "format": "Token 0x{A:08X}",
+      "mask": "1000'1111 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldelem.i1",
+      "format": "",
+      "mask": "1001'0000"
+    },
+    {
+      "mnemonic": "ldelem.u1",
+      "format": "",
+      "mask": "1001'0001"
+    },
+    {
+      "mnemonic": "ldelem.i2",
+      "format": "",
+      "mask": "1001'0010"
+    },
+    {
+      "mnemonic": "ldelem.u2",
+      "format": "",
+      "mask": "1001'0011"
+    },
+    {
+      "mnemonic": "ldelem.i4",
+      "format": "",
+      "mask": "1001'0100"
+    },
+    {
+      "mnemonic": "ldelem.u4",
+      "format": "",
+      "mask": "1001'0101"
+    },
+    {
+      "mnemonic": "ldelem.i8",
+      "format": "",
+      "mask": "1001'0110"
+    },
+    {
+      "mnemonic": "ldelem.i",
+      "format": "",
+      "mask": "1001'0111"
+    },
+    {
+      "mnemonic": "ldelem.r4",
+      "format": "",
+      "mask": "1001'1000"
+    },
+    {
+      "mnemonic": "ldelem.r8",
+      "format": "",
+      "mask": "1001'1001"
+    },
+    {
+      "mnemonic": "ldelem.ref",
+      "format": "",
+      "mask": "1001'1010"
+    },
+    {
+      "mnemonic": "stelem.i",
+      "format": "",
+      "mask": "1001'1011"
+    },
+    {
+      "mnemonic": "stelem.i1",
+      "format": "",
+      "mask": "1001'1100"
+    },
+    {
+      "mnemonic": "stelem.i2",
+      "format": "",
+      "mask": "1001'1101"
+    },
+    {
+      "mnemonic": "stelem.i4",
+      "format": "",
+      "mask": "1001'1110"
+    },
+    {
+      "mnemonic": "stelem.i8",
+      "format": "",
+      "mask": "1001'1111"
+    },
+    {
+      "mnemonic": "stelem.r4",
+      "format": "",
+      "mask": "1010'0000"
+    },
+    {
+      "mnemonic": "stelem.r8",
+      "format": "",
+      "mask": "1010'0001"
+    },
+    {
+      "mnemonic": "stelem.ref",
+      "format": "",
+      "mask": "1010'0010"
+    },
+    {
+      "mnemonic": "ldelem",
+      "format": "Token 0x{A:08X}",
+      "mask": "1010'0011 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "stelem",
+      "format": "Token 0x{A:08X}",
+      "mask": "1010'0100 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "unbox.any",
+      "format": "Token 0x{A:08X}",
+      "mask": "1010'0101 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "conv.ovf.i1",
+      "format": "",
+      "mask": "1011'0011"
+    },
+    {
+      "mnemonic": "conv.ovf.u1",
+      "format": "",
+      "mask": "1011'0100"
+    },
+    {
+      "mnemonic": "conv.ovf.i2",
+      "format": "",
+      "mask": "1011'0101"
+    },
+    {
+      "mnemonic": "conv.ovf.u2",
+      "format": "",
+      "mask": "1011'0110"
+    },
+    {
+      "mnemonic": "conv.ovf.i4",
+      "format": "",
+      "mask": "1011'0111"
+    },
+    {
+      "mnemonic": "conv.ovf.u4",
+      "format": "",
+      "mask": "1011'1000"
+    },
+    {
+      "mnemonic": "conv.ovf.i8",
+      "format": "",
+      "mask": "1011'1001"
+    },
+    {
+      "mnemonic": "conv.ovf.u8",
+      "format": "",
+      "mask": "1011'1010"
+    },
+    {
+      "mnemonic": "refanyval",
+      "format": "Token 0x{A:08X}",
+      "mask": "1100'0010 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ckfinite",
+      "format": "",
+      "mask": "1100'0011"
+    },
+    {
+      "mnemonic": "mkrefany",
+      "format": "Token 0x{A:08X}",
+      "mask": "1100'0110 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldtoken",
+      "format": "Token 0x{A:08X}",
+      "mask": "1101'0000 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "conv.u2",
+      "format": "",
+      "mask": "1101'0001"
+    },
+    {
+      "mnemonic": "conv.u1",
+      "format": "",
+      "mask": "1101'0010"
+    },
+    {
+      "mnemonic": "conv.i",
+      "format": "",
+      "mask": "1101'0011"
+    },
+    {
+      "mnemonic": "conv.ovf.i",
+      "format": "",
+      "mask": "1101'0100"
+    },
+    {
+      "mnemonic": "conv.ovf.u",
+      "format": "",
+      "mask": "1101'0101"
+    },
+    {
+      "mnemonic": "add.ovf",
+      "format": "",
+      "mask": "1101'0110"
+    },
+    {
+      "mnemonic": "add.ovf.un",
+      "format": "",
+      "mask": "1101'0111"
+    },
+    {
+      "mnemonic": "mul.ovf",
+      "format": "",
+      "mask": "1101'1000"
+    },
+    {
+      "mnemonic": "mul.ovf.un",
+      "format": "",
+      "mask": "1101'1001"
+    },
+    {
+      "mnemonic": "sub.ovf",
+      "format": "",
+      "mask": "1101'1010"
+    },
+    {
+      "mnemonic": "sub.ovf.un",
+      "format": "",
+      "mask": "1101'1011"
+    },
+    {
+      "mnemonic": "endfinally",
+      "format": "",
+      "mask": "1101'1100"
+    },
+    {
+      "mnemonic": "leave",
+      "format": "0x{A:08X}",
+      "mask": "1101'1101 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "leave.s",
+      "format": "0x{A:02X}",
+      "mask": "1101'1110 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "stind.i",
+      "format": "",
+      "mask": "1101'1111"
+    },
+    {
+      "mnemonic": "conv.u",
+      "format": "",
+      "mask": "1110'0000"
+    },
+    {
+      "mnemonic": "prefix7",
+      "format": "",
+      "mask": "1111'1000"
+    },
+    {
+      "mnemonic": "prefix6",
+      "format": "",
+      "mask": "1111'1001"
+    },
+    {
+      "mnemonic": "prefix5",
+      "format": "",
+      "mask": "1111'1010"
+    },
+    {
+      "mnemonic": "prefix4",
+      "format": "",
+      "mask": "1111'1011"
+    },
+    {
+      "mnemonic": "prefix3",
+      "format": "",
+      "mask": "1111'1100"
+    },
+    {
+      "mnemonic": "prefix2",
+      "format": "",
+      "mask": "1111'1101"
+    },
+    {
+      "mnemonic": "prefixref",
+      "format": "",
+      "mask": "1111'1111"
+    },
+    {
+      "mnemonic": "arglist",
+      "format": "",
+      "mask": "1111'1110 0000'0000"
+    },
+    {
+      "mnemonic": "ceq",
+      "format": "",
+      "mask": "1111'1110 0000'0001"
+    },
+    {
+      "mnemonic": "cgt",
+      "format": "",
+      "mask": "1111'1110 0000'0010"
+    },
+    {
+      "mnemonic": "cgt.un",
+      "format": "",
+      "mask": "1111'1110 0000'0011"
+    },
+    {
+      "mnemonic": "clt",
+      "format": "",
+      "mask": "1111'1110 0000'0100"
+    },
+    {
+      "mnemonic": "clt.un",
+      "format": "",
+      "mask": "1111'1110 0000'0101"
+    },
+    {
+      "mnemonic": "ldftn",
+      "format": "Token 0x{A:08X}",
+      "mask": "1111'1110 0000'0110 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldvirtftn",
+      "format": "Token 0x{A:08X}",
+      "mask": "1111'1110 0000'0111 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldarg",
+      "format": "#{A}",
+      "mask": "1111'1110 0000'1001 AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldarga",
+      "format": "#{A}",
+      "mask": "1111'1110 0000'1010 AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "starg",
+      "format": "#{A}",
+      "mask": "1111'1110 0000'1011 AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldloc",
+      "format": "#{A}",
+      "mask": "1111'1110 0000'1100 AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "ldloca",
+      "format": "#{A}",
+      "mask": "1111'1110 0000'1101 AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "stloc",
+      "format": "#{A}",
+      "mask": "1111'1110 0000'1110 AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "localloc",
+      "format": "",
+      "mask": "1111'1110 0000'1111"
+    },
+    {
+      "mnemonic": "endfilter",
+      "format": "",
+      "mask": "1111'1110 0001'0001"
+    },
+    {
+      "mnemonic": "initobj",
+      "format": "Token 0x{A:08X}",
+      "mask": "1111'1110 0001'0101 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "cpblk",
+      "format": "",
+      "mask": "1111'1110 0001'0111"
+    },
+    {
+      "mnemonic": "initblk",
+      "format": "",
+      "mask": "1111'1110 0001'1000"
+    },
+    {
+      "mnemonic": "rethrow",
+      "format": "",
+      "mask": "1111'1110 0001'1010"
+    },
+    {
+      "mnemonic": "sizeof",
+      "format": "Token 0x{A:08X}",
+      "mask": "1111'1110 0001'1100 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "refanytype",
+      "format": "",
+      "mask": "1111'1110 0001'1101"
+    }
+  ],
+  "prefixes": [
+    {
+      "mnemonic": "unaligned.",
+      "format": "0x{A:02X}",
+      "mask": "1111'1110 0001'0010 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "volatile.",
+      "format": "",
+      "mask": "1111'1110 0001'0011"
+    },
+    {
+      "mnemonic": "tail.",
+      "format": "",
+      "mask": "1111'1110 0001'0100"
+    },
+    {
+      "mnemonic": "constrained.",
+      "format": "Token 0x{A:08X}",
+      "mask": "1111'1110 0001'0110 AAAA'AAAA AAAA'AAAA AAAA'AAAA AAAA'AAAA"
+    },
+    {
+      "mnemonic": "no.",
+      "format": "0x{A:02X}",
+      "mask": "1111'1110 0001'1001 AAAA'AAAA"
+    },
+    {
+      "mnemonic": "readonly.",
+      "format": "",
+      "mask": "1111'1110 0001'1110"
+    }
+  ]
+}
