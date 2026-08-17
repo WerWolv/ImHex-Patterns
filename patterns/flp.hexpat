@@ -1,15 +1,10 @@
-//
-// Copyright (c) 2023 Lautaro Martínez <lautaro.martinezarata@gmail.com>
-//
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 #pragma author Lautaro Martínez (PentaChess413)
 #pragma description A pattern for FL Studio project files
-
 #pragma MIME application/x-fruityloops
 #pragma MIME application/x-flp
 #pragma magic "FLhd" @ 0x00;
 
+#pragma version 1.1 "Bug fixes, (some) plugin types, and proper UTF-16 handling"
 #pragma version 1.0 "First version for public release"
 // Tested on an FL Studio 12.x file by stormstudios1 (once upon a time.flp)
 /* For adding something (if you're a forgetful me or a community dev wanting to help):
@@ -22,11 +17,14 @@ ARNG - ARraNGement
 PROJ - PROJect
 PLUG - PLUG-in (generic)
 Plugin FourCC are (keep in mind these structs can be used in other patterns for other DAWs and preset snapshots, like Ableton, Pro Tools or whatever you use):
+BRTM - BeRToM Audio, for Bertom Audio's plugins
 ILFL - Image-Line FL Studio, Image-Line built-in plugin
+JUCE - JUCE Framework, for common structures of it
 LENN - LENNarDigital, only used for Sylenth1 so far
-
+SYNT - SYNThEdit, used for plugins made with the SynthEdit framework
+YMCK - YMCK, for Takeshi Yokemura's magical8bitplug
 */
-// With thanks to: The DawVert project and demberto's PyFLP tool (last one's sadly abandoned)
+// With thanks to: The DawVert project, Per Ivan Nerseth's Sylenth1 binary templates, Raoul.sh's Pro-Q 3 parser and demberto's PyFLP tool (last one's sadly abandoned)
 // Bad news everybody! I can't get the VST flags to behave sanely so you're gonna have to place them patterns manually!
 #pragma array_limit 10000000000000000
 
@@ -35,19 +33,6 @@ import std.core;
 import std.string;
 import type.leb128;
 import type.magic;
-
-fn StripFLString(str value) {
-    str result;
-    u64 len = std::string::length(value);  
-  
-    for (u64 i = 0, i < len, i += 1) {  
-        char c = std::string::at(value, i);  
-        if (c != 0x00)  
-            result += c;  
-    }  
-  
-    return result;  
-};
 
 struct FLHeader {
     type::Magic<"FLhd"> magic;          // 'FLhd'
@@ -61,6 +46,11 @@ struct FLData {
     type::Magic<"FLdt"> magic;  // 'FLdt'
     u16 size;  // Total combined size of events
     u16 events;   // Event data
+};
+
+struct FLString {
+    u8 size;
+    char text[size];
 };
 
 enum FLEventType : u8 {
@@ -135,7 +125,7 @@ enum FLEventType : u8 {
     CHANEnvelopeLFO = 218,
     CHANLevels,
     CHANPolyphony = 221,
-    PATTControllers = 223, // CHANLegacyAutomation
+    /*PATTControllers = 223,*/ CHANLegacyAutomation = 223,
     PATTNotes,
     MIXRParams,
     CONTMidiContEvents,
@@ -424,6 +414,242 @@ struct PLUGDataVSTFlags {
     u8 extra[chunkSize - 23];
 };
 
+str fourcc;
+str name;
+str vendor;
+
+struct SYNTString {
+    char value[10]; // Untested
+};
+
+struct SYNTBlock {
+    u32 magic;
+    u32 paramCount;
+    u32 unk0[19];
+    u32 patchCount;
+    SYNTString patchNames[patchCount];
+    FLString patchParameters[patchCount * paramCount];
+};
+
+struct YMCKParamBlock {
+    float oscKind;
+    float volume;
+    float attack;
+    float decay;
+    float sus;
+    float release;
+    float bend;
+    float sweep;
+    float sweepTime;
+};
+
+struct YMCKBlock {
+    u32 size;
+    YMCKParamBlock params[128];
+    u32 programNum;
+    char programs[25 * 128];
+};
+
+struct JUCEString {
+    char string[];
+};
+
+bitfield JUCESizeByte {
+    negative : 1;
+    numBytes : 7;
+};
+
+struct JUCEInt  
+{  
+    be JUCESizeByte sizeByte; //Under no circ 
+    match (sizeByte.numBytes) {
+        (1): u8 value  [[export]];
+        (2): u16 value [[export]];
+        (3): u24 value [[export]];
+        (4): u32 value [[export]];
+        (_): u8 value = 0 [[export]];
+    }
+    
+};  
+
+enum JUCEMarker : u8 {
+    JUCEInt = 1,
+    JUCETrue,
+    JUCEFalse,
+    JUCEDouble,
+    JUCEString,
+    JUCEInt64,
+    JUCEArray,
+    JUCEBinary,
+    JUCEUndefined 
+};
+
+struct JUCEVar  
+{  
+    JUCEInt totalSize;  // numBytes incluyendo el marcador  
+    JUCEMarker marker; 
+    u8 payload[totalSize.value - 1]; // según marker  
+};
+
+struct JUCEProperty {
+    JUCEString name;
+    JUCEVar value;
+};
+
+struct JUCEValueTree {
+    JUCEString paramName;
+    JUCEInt numProps;
+    JUCEProperty props[numProps.value];
+    JUCEInt numChildren;
+    JUCEValueTree children[numChildren.value];
+};
+
+struct BRTMPhantomCenterParams {
+    u8 pad[71];
+    JUCEValueTree values;
+};
+
+enum FABFFilterType : u32 {
+    Bell,
+    LowShelf,
+    LowCut,
+    HighShelf,
+    HighCut,
+    Notch,
+    BandPass,
+    TiltShelf,
+    FlatTilt
+};
+
+enum FABFLPHPSlope : u32 {
+    Six,
+    Twelve,
+    TwentyFour,
+    FortyEight
+};
+
+enum FABFStereoPlacement : u32 {
+    Left,
+    Right,
+    Stereo
+};
+
+struct FABFBand {
+    float enabled;
+    float bypass;
+    float frequencyLog2;
+    float gain;
+    float dynRange;
+    float dynRangeOn;
+    float dynRangeTh;
+    float q;
+    FABFFilterType type;
+    FABFLPHPSlope lpHpSlope;
+    FABFStereoPlacement stereoPlacement;
+    float unk1;
+    float unk2;
+};
+
+enum FABFProcessMode : u32 {
+    ZeroLatency,
+    NaturalPhase,
+    LinearPhase
+};
+
+enum FABFLinearPhaseMode : u32 {
+    Low,
+    Med,
+    High,
+    VeryHigh,
+    Max
+};
+
+enum FABFAnalyzerSidechain : s32 {
+    ExternalSpectrumOff = -1,
+    SideChain = -2
+};
+
+enum FABFAnalyzerRange : u32 {
+    Sixty,
+    Ninety,
+    OneHundredTwenty
+};
+
+enum FABFAnalyzerResolution : float {
+    Low,
+    Med,
+    High,
+    Max
+};
+
+enum FABFAnalyzerSpeed : float {
+    VerySlow,
+    Slow,
+    Medium,
+    Fast,
+    VeryFast
+};
+
+enum FABFAnalyzerTilt : float {
+    Zero,
+    OneDotFive,
+    Three,
+    FourDotFive,
+    Six
+};
+
+enum FABFDisplayRange : float {
+    Three,
+    Six,
+    Twelve,
+    Thirty
+};
+
+struct FABFString {
+    u32 length;
+    char value[length];
+};
+
+struct FABFGlobalParams {
+    FABFProcessMode procMode;
+    FABFLinearPhaseMode linearMode;
+    float gainScale;
+    float outGain;
+    float outPan;
+    float unk1;
+    float bypass;
+    float phaseInvert;
+    float autoGain;
+    float analyzerPre;
+    float analyzerPost;
+    FABFAnalyzerSidechain analyzerSidechain;
+    FABFAnalyzerRange analyzerRange;
+    FABFAnalyzerResolution analyzerResolution;
+    FABFAnalyzerSpeed analyzerSpeed;
+    FABFAnalyzerTilt analyzerTilt;
+    float unk2;
+    float showCol;
+    float specGrab;
+    FABFDisplayRange dispRange;
+    float enableMidi;
+    float unk3;
+};
+
+struct FABFProQ3Params {
+    type::Magic<"FFBS"> magic;
+    u32 version;
+    u32 numParams;
+    FABFBand bands[24];
+    FABFGlobalParams params;
+    u8 unk0[96];
+    type::Magic<"FQ3p"> magic2;
+    u32 version2;
+    FABFString presetName;
+    u32 unk1[2];
+    FABFString windowTitle;
+    u8 unk2[16];
+};
+
 struct PLUGDataVSTState {
     u32 chunkSize;
     u32 skip;
@@ -432,6 +658,13 @@ struct PLUGDataVSTState {
     u32 vstPad;
     u32 vstProgram;
     u8 vstData[chunkSize - 21];
+    match (vendor) {
+        ("SynthEdit www.synthedit.com"): SYNTBlock syntblock @ ($ - sizeof(vstData));
+    }
+    match (name) {
+        ("magical8bitPlug"): YMCKBlock ymckblock @ ($ - sizeof(vstData));
+        ("Bertom_PhantomCenter"): BRTMPhantomCenterParams brtmblock @ ($ - sizeof(vstData));
+    }
 };
 
 struct PLUGDataVSTInfo {
@@ -447,18 +680,25 @@ struct PLUGDataVSTEvent {
     match (bytes) {
         (PLUGDataVSTEventID::MIDI): {
             PLUGDataVSTMIDI midi;
+            std::print("MIDI");
         }
         (PLUGDataVSTEventID::Flags): {
             PLUGDataVSTFlags flags;
+            std::print("Flags");
         }
-        (PLUGDataVSTEventID::GUID): u8 guid[16];
         (PLUGDataVSTEventID::State): {
             PLUGDataVSTState state;
+            std::print("State");
         }
         (PLUGDataVSTEventID::FourCC | PLUGDataVSTEventID::PluginPath | PLUGDataVSTEventID::Name | PLUGDataVSTEventID::Vendor): {
             u32 chunkSize;
             u32 skip;
             char value[chunkSize];
+            match (bytes) {
+                (PLUGDataVSTEventID::FourCC): fourcc = value;
+                (PLUGDataVSTEventID::Name): name = value;
+                (PLUGDataVSTEventID::Vendor): vendor = value;
+            }
         } 
         (PLUGDataVSTEventID::PluginInfo): PLUGDataVSTInfo info;
         (_): {
@@ -467,6 +707,7 @@ struct PLUGDataVSTEvent {
             u8 pad[chunkSize];
         }
     }
+    std::print("Struct size (parsed): {}", sizeof(this));
     vstDataSize += sizeof(this);
 };
 
@@ -474,6 +715,7 @@ struct PLUGDataVST<auto size> {
     u32 type;
     std::print("Struct size (FL): {}", size - 4);
     PLUGDataVSTEvent data[while(vstDataSize < (size - 4))];
+    vstDataSize = 0;
 };
 
 struct PLUGWrapperEvent<auto extraLen> {
@@ -572,7 +814,7 @@ struct ILFLStereoShaper {
 };
 
 struct ILFLLimiter {
-    u32 unk0;
+    u32 version;
     u32 gain;
     u32 sat;
     u32 limiterCeil;
@@ -610,8 +852,7 @@ struct ILFLLimiter {
     u32 sNoiseThreshold;
     u32 sNoiseRelease;
     u8 visualScrollSpeed;
-    u8 unk1[3];
-    u8 mode;
+    u32 mode;
     u8 unk2[3];
     u8 visualInputPeak;
     u8 visualOutputPeak;
@@ -632,7 +873,95 @@ struct ILFLParametricEQ2<auto length>
     u32 type[7];
     s32 order[7];
     s32 mainLvl;
+    s32 gainSpare[7];
+    u32 freqSpare[7];
+    u32 widthSpare[7];
+    u32 typeSpare[7];
+    s32 orderSpare[7];
+    s32 mainLvlSpare;
     u8 extra[length - sizeof(this)];
+};
+
+struct ILFLWaveCandyColor {
+    u32 id;
+    u32 flags;
+    u32 hue;
+    u32 luminance;
+    u32 saturation;
+    u32 color;
+};
+
+struct ILFLWaveCandyParamSection<auto size> {
+    // v9 = 88 bytes (0x58); v8 = 0x57, v7 = 0x56, v6 = 0x55,
+    // v5/v4/v3 = 0x44, v2 = 0x40, v1 = 0x3C (record all: version 9)
+
+    // 14 wheels (int32, LE)
+    if (($ - addressof(this)) < size) u32 paramValues;        // +0x00  1
+    if (($ - addressof(this)) < size) u32 gain;               // +0x04  Gain
+    if (($ - addressof(this)) < size) u32 field314;           // +0x08
+    if (($ - addressof(this)) < size) u32 reflect;            // +0x0C  Reflect
+    if (($ - addressof(this)) < size) u32 punch;              // +0x10  Punches
+    if (($ - addressof(this)) < size) u32 field302;           // +0x14
+    if (($ - addressof(this)) < size) u32 field303;           // +0x18
+    if (($ - addressof(this)) < size) u32 field301;           // +0x1C
+    if (($ - addressof(this)) < size) u32 specMax;            // +0x20  combo index (6 = 2048 bands)
+    if (($ - addressof(this)) < size) u32 specScale;          // +0x24  freq curve (256 = 100%)
+    if (($ - addressof(this)) < size) u32 specRange;          // +0x28  dB range (96)
+    if (($ - addressof(this)) < size) u32 meterScale;         // +0x2C
+    if (($ - addressof(this)) < size) u32 field307;           // +0x30
+    if (($ - addressof(this)) < size) u32 field306;           // +0x34
+
+    // 8 checkbox/byte states
+    if (($ - addressof(this)) < size) u8  pinch;              // +0x38  natural weighting
+    if (($ - addressof(this)) < size) u8  interpolate;        // +0x39  enhanced frequency
+    if (($ - addressof(this)) < size) u8  field265;           // +0x3A
+    if (($ - addressof(this)) < size) u8  field262;           // +0x3B
+    if (($ - addressof(this)) < size) u8  field285;           // +0x3C
+    if (($ - addressof(this)) < size) u8  field260;           // +0x3D
+    if (($ - addressof(this)) < size) u8  meterMode;          // +0x3E
+    if (($ - addressof(this)) < size) u8  field35;            // +0x3F
+
+    // 4 wheels + 4 bytes
+    if (($ - addressof(this)) < size) u32 corner;             // +0x40  rounded corners
+    if (($ - addressof(this)) < size) u32 osep;               // +0x44  oscilloscope separation
+    if (($ - addressof(this)) < size) u32 field308;           // +0x48
+    if (($ - addressof(this)) < size) u32 field309;           // +0x4C
+    if (($ - addressof(this)) < size) u32 visualMode;         // +0x50  0=Lissajou, 1=Osc, 2=Spectrum
+    if (($ - addressof(this)) < size) u8  field294;           // +0x54  auto visual mode
+    if (($ - addressof(this)) < size) u8  field296;           // +0x55
+    if (($ - addressof(this)) < size) u8  field297;           // +0x56
+    if (($ - addressof(this)) < size) u8  field319;           // +0x57
+};
+
+fn GetWCParamSize(u32 version) {
+    match (version) {
+        (1): return 60;
+        (2): return 64;
+        (6): return 85;
+        (7): return 86;
+        (8): return 87;
+        (9): return 88;
+        (_): return 68;
+    }
+};
+
+struct ILFLWaveCandy<auto size> {
+    u32 version;
+    u32 pad;
+    ILFLWaveCandyColor colors[version < 5 ? 26 : 28];
+    FLString windowTitle;
+    FLString font;
+    s32 fontHeight;
+    u8 fontCharset;
+    u8 fontStyle;
+    u16 unk0;
+    ILFLWaveCandyParamSection<GetWCParamSize(version)> params;
+    u8 vis;
+    u8 bgVis;
+    u8 solidVis;
+    u8 miniVis;
+    u32 windowGeom[7];
+    u8 unk7[size - sizeof(this)];
 };
 
 enum LENNArpMode : float {
@@ -1064,52 +1393,56 @@ struct FLEvent {
         type::uLEB128 length;
         match (type) {
         (FLEventType::PATTNotes): 
-            PATTNote value[length / sizeof(PATTNote)];
+            PATTNote notes[length / sizeof(PATTNote)];
         (FLEventType::CHANDelay):
-            CHANDelay value;
-        (/*FLEventType::CHANLegacyAutomation*/FLEventType::PATTControllers ):
-            /* CHANLegacyAutomation value[length / sizeof(CHANLegacyAutomation)]; */ PATTController value[length / sizeof(PATTController)];
+            CHANDelay delay;
+        (FLEventType::CHANLegacyAutomation/*FLEventType::PATTControllers */):
+            CHANLegacyAutomation autom[length / sizeof(CHANLegacyAutomation)]; /*PATTController controllers[length / sizeof(PATTController)];*/
         (FLEventType::CHANParams):
-            CHANParams<length> value;
+            CHANParams<length> chanPrms;
         (FLEventType::PROJTimestamp):
-            PROJTimestamp value;
+            PROJTimestamp timestamp;
         (FLEventType::CHANEnvelopeLFO):
-            CHANEnvelopeLFO value;
+            CHANEnvelopeLFO envLfo;
         (FLEventType::CHANLevelAdjusts):
-            CHANLevelAdjusts value;
+            CHANLevelAdjusts lvlAdjusts;
         (FLEventType::CHANLevels):
-            CHANLevels value[length / sizeof(CHANLevels)];
+            CHANLevels levels[length / sizeof(CHANLevels)];
         (FLEventType::CHANPolyphony):
-            CHANPolyphony value;
+            CHANPolyphony polyph;
         (FLEventType::CHANTracking):
             CHANTrack value[length / sizeof(CHANTrack)];
         (FLEventType::CONTRemoteContEvents):
             CONTRemoteContEvent value[length / sizeof(CONTRemoteContEvent)];
         (FLEventType::PLUGWrapper):
-            PLUGWrapperEvent<length> value;
+            PLUGWrapperEvent<length> wrapper;
         (FLEventType::PLUGData): {
-            char value[length];// PLUGDataVST<length> value;
+            char rawdata[length];// PLUGDataVST<length> value;
             match (plugName) {
                 ("Fruity Parametric EQ 2"): ILFLParametricEQ2<length> paramEq @ ($ - length);
                 ("Fruity Limiter"): ILFLLimiter limiter @ ($ - length);
                 ("Fruity Stereo Shaper"): ILFLStereoShaper stereoShaper @ ($ - length);
                 ("Fruity Wrapper"): PLUGDataVST<length> plugin @ ($ - length);
+                ("Wave Candy"): ILFLWaveCandy<length> waveCandy @ ($ - length);
             }
             }
         (FLEventType::ARNGPlaylist):
-            ARNGPlaylistEvent value[length / sizeof(ARNGPlaylistEvent)];
+            ARNGPlaylistEvent playlist[length / sizeof(ARNGPlaylistEvent)];
         (FLEventType::ARNGTrack):
-            ARNGTrack<length> value;
+            ARNGTrack<length> track;
         (FLEventType::MIXRInsertFlags):
-            MIXRInsertParams<length> value;
+            MIXRInsertParams<length> mixrInsert;
         (FLEventType::MIXRParams):
-            MIXRParams value[length / sizeof(MIXRParams)];
+            MIXRParams mixrParams[length / sizeof(MIXRParams)];
         (FLEventType::PLUGInternalName): {
-            char value[length] [[transform("StripFLString"), format("StripFLString")]];
-            plugName = value;
+            char16 pluginName[length / 2];
+            plugName = pluginName;
+        }
+        (FLEventType::CHANAutomation | FLEventType::MIXRInsertRouting): {
+            char value[length];
         }
         (_):
-            char value[length] [[transform("StripFLString"), format("StripFLString")]];
+            char16 value[length / 2];
         }
     }
 };
