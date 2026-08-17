@@ -202,6 +202,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | PNG  | `image/png` | [`patterns/png.hexpat`](patterns/png.hexpat) | PNG image files |
 | PRODINFO | | [`patterns/prodinfo.hexpat`](patterns/prodinfo.hexpat) | Nintendo Switch PRODINFO |
 | Protobuf | | [`patterns/protobuf.hexpat`](patterns/protobuf.hexpat) | Google Protobuf encoding |
+| PSP SELF | | [`patterns/psp_self.hexpat`](patterns/psp_self.hexpat) | PlayStation Portable SELF |
 | psafe3 | | [`patterns/psafe3.hexpat`](patterns/psafe3.hexpat`) | Password Safe V3 |
 | PyInstaller | | [`patterns/pyinstaller.hexpat`](patterns/pyinstaller.hexpat) | PyInstaller binray files |
 | PYC | `application/x-bytecode.python` | [`patterns/pyc.hexpat`](patterns/pyc.hexpat) | Python bytecode files |
