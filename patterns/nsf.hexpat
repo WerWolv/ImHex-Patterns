@@ -103,7 +103,7 @@ Header header @ 0x00;
 
 struct Chunks {
     if (header.dataLength)
-    NSFEChunk chunks[while($<std::mem::size())];
+    Chunk chunks[while($<std::mem::size())];
 };
 
 Chunks metadata @ 0x80+header.dataLength;
