@@ -1,5 +1,6 @@
 #pragma author Li
 #pragma description PlayStation Portable SELF
+#pragma magic [7E 50 53 50] @ 0x00
 
 import std.io;
 import type.magic;
