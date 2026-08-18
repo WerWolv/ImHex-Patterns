@@ -57,6 +57,11 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | BIN  | | [`patterns/selinux.hexpat`](patterns/selinux.pat) | SE Linux modules |
 | BINK Container | `video/vnd.radgamettools.bink` | [`patterns/bink_container.hexpat`](patterns/bink_container.hexpat) | [RAD Game Tools Bink Video Container files](https://en.wikipedia.org/wiki/Bink_Video) |
 | BINKA  | | [`patterns/binka.hexpat`](patterns/binka.pat) | RAD Game Tools Bink Audio (BINKA) files |
+| BroEngine .anim | | [`patterns/BroEngine/anim.hexpat`](patterns/BroEngine/anim.hexpat) | Bro Engine (World of Tanks: HEAT) Animation |
+| BroEngine .dds | | [`patterns/BroEngine/dds.hexpat`](patterns/BroEngine/dds.hexpat) | Bro Engine (World of Tanks: HEAT) Texture |
+| BroEngine .mesh | | [`patterns/BroEngine/mesh.hexpat`](patterns/BroEngine/mesh.hexpat) | Bro Engine (World of Tanks: HEAT) Mesh |
+| BroEngine .morph | | [`patterns/BroEngine/morph.hexpat`](patterns/BroEngine/morph.hexpat) | Bro Engine (World of Tanks: HEAT) Morph |
+| BroEngine .skel | | [`patterns/BroEngine/skel.hexpat`](patterns/BroEngine/skel.hexpat) | Bro Engine (World of Tanks: HEAT) Skeleton |
 | BSON | `application/bson` | [`patterns/bson.hexpat`](patterns/bson.hexpat) | BSON (Binary JSON) format |
 | BTRFS Send Stream | | [`patterns/btrfs_send_stream.hexpat`](patterns/btrfs_send_stream.hexpat) | BTRFS Send Stream format |
 | bplist | `application/x-bplist` | [`patterns/bplist.hexpat`](patterns/bplist.hexpat) | Apple's binary property list format (bplist) |
