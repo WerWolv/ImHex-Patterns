@@ -218,6 +218,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | RPM | | [`patterns/rpm.hexpat`](patterns/rpm.hexpat) | [RPM](http://ftp.rpm.org/max-rpm/s1-rpm-file-format-rpm-file-format.html) package file format |
 | RSC | | [`patterns/rsc.hexpat`](patterns/rsc.hexpat) | BYOND Resource Cache file |
 | SDB | | [`patterns/sdb.hexpat`](patterns/sdb.hexpat) | [Shim DataBase](https://learn.microsoft.com/en-us/windows/win32/devnotes/application-compatibility-database) file format |
+| SFO | | [`patterns/sfo.hexpat`](patterns/sfo.hexpat) | PlayStation Param File |
 | Shell Link | `application/x-ms-shortcut` | [`patterns/lnk.hexpat`](patterns/lnk.hexpat) | Windows Shell Link file format |
 | shp | | [`patterns/shp.hexpat`](patterns/shp.hexpat) | ESRI shape file |
 | SHR | | [`patterns/SHR.hexpat`](patterns/SHR.hexpat) | Apple IIgs Super Hi-Res (SHR) + PaintWorks Animation (ANI) |
