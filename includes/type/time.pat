@@ -12,7 +12,7 @@ namespace auto type {
     /**
         A 32 bit Unix time value
     */
-    using time32_t = u32 [[format("type::impl::format_time_t")]];
+    using time32_t = s32 [[format("type::impl::format_time_t")]];
 
     /**
         Alias name for `time32_t`
@@ -22,7 +22,7 @@ namespace auto type {
     /**
         A 64 bit Unix time value
     */
-    using time64_t = u64 [[format("type::impl::format_time_t")]];
+    using time64_t = s64 [[format("type::impl::format_time_t")]];
 
     /**
         A DOS Date value
@@ -41,16 +41,16 @@ namespace auto type {
 
     namespace impl {
 
-        fn format_time_t(u128 value) {
-            return std::time::format(std::time::to_utc(value));
+        fn format_time_t(time64_t value) {
+            return builtin::std::time::format_tt(value);
         };
 
         fn format_dosdate(u16 value) {
-            return std::time::format_dos_date(std::time::to_dos_date(value));
+            return builtin::std::time::format_dos_date(value);
         };
 
         fn format_dostime(u16 value) {
-            return std::time::format_dos_time(std::time::to_dos_time(value));
+            return builtin::std::time::format_dos_time(value);
         };
 
         fn format_filetime_as_unix(u64 value) {
