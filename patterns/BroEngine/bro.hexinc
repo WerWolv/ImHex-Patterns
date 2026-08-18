@@ -1,0 +1,58 @@
+// SPDX-FileCopyrightText: 2026 Neptuwunium
+//
+// SPDX-License-Identifier: EUPL-1.2
+
+#pragma once
+#pragma author Neptuwunium
+#pragma description BroEngine Common
+
+import type.float16;
+
+struct Vector4<Type> {
+	Type x, y, z, w;
+} [[format("format_vector4")]];
+
+
+struct Vector3<Type> {
+	Type x, y, z;
+} [[format("format_vector3")]];
+
+struct Matrix4x4<Type> {
+	Vector4<Type> m1, m2, m3, m4;
+};
+
+struct Ptr<T, auto baseOffset> {
+	u32 offset;
+
+	if (offset > 0) {
+		T value @ offset + baseOffset [[inline]];
+	}
+};
+
+struct RelPtr<T> {
+	Ptr<T, $ + 4> [[inline]];
+};
+
+struct PString<TLen, TChar> {
+	TLen length;
+	TChar data[length];
+} [[format("format_string"), sealed]];
+
+using half = type::float16;
+using Vector4H = Vector4<half>;
+using Vector4F = Vector4<float>;
+using Vector3F = Vector3<float>;
+using Matrix4x4F = Matrix4x4<float>;
+using PString32 = PString<u32, char>;
+
+fn format_vector3(ref auto vec) {
+	return std::format("{{ {}, {}, {} }}", vec.x, vec.y, vec.z);
+};
+
+fn format_vector4(ref auto vec) {
+	return std::format("{{ {}, {}, {}, {} }}", vec.x, vec.y, vec.z, vec.w);
+};
+
+fn format_string(ref auto pstr) {
+	return std::format("{}", pstr.data);
+};
