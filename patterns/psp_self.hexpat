@@ -2,9 +2,10 @@
 #pragma description PlayStation Portable SELF
 
 import std.io;
+import type.magic;
 
 struct PspHeader2 {
-    u32 magic;
+	type::Magic<"~PSP"> magic;
     u16 modAttribute;
     u16 compAttribute;
     u8 moduleVerLo;
