@@ -4,6 +4,7 @@
 #pragma MIME audio/wav
 
 import std.mem;
+import type.guid;
 
 struct RiffHeader {
   char ckID[4] [[comment("Container Signature"), name("RIFF Header Signature")]];
@@ -27,6 +28,7 @@ enum WaveFormatType : u16 {
   GSM610     = 0x31,
   MPEG       = 0x50,
   MPEGLAYER3 = 0x55,
+  EXTENSIBLE = 0xFFFE,
 };
 
 struct WaveFormat {
@@ -42,9 +44,18 @@ struct WaveFormatEx {
   u16 extendedDataSize;
 };
 
+struct WaveFormatExtensibleChunks {
+    u16 validBitsPerSample;
+    u32 channelMask;
+    type::GUID subformat;
+};
+
 struct WaveFormatExDummy {
   u16 bitsPerSample;
   u16 extendedDataSize;
+  if (parent.fmt.formatTag == WaveFormatType::EXTENSIBLE)
+  WaveFormatExtensibleChunks waveFormatExtensible;
+  else
   u8  extendedData[extendedDataSize];
 };
 
