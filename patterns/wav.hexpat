@@ -68,7 +68,6 @@ bitfield ChannelMask {
 
 struct WaveFormatExtensibleChunks {
     u16 validBitsPerSample;
-    //u32 channelMask;
     ChannelMask channelMask;
     type::GUID subformat;
 };
@@ -77,9 +76,9 @@ struct WaveFormatExDummy {
   u16 bitsPerSample;
   u16 extendedDataSize;
   if (parent.fmt.formatTag == WaveFormatType::EXTENSIBLE)
-  WaveFormatExtensibleChunks waveFormatExtensible;
+    WaveFormatExtensibleChunks waveFormatExtensible;
   else
-  u8  extendedData[extendedDataSize];
+    u8  extendedData[extendedDataSize];
 };
 
 struct WaveFormatPCM {
