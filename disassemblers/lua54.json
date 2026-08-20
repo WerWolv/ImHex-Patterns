@@ -1,0 +1,754 @@
+{
+  "name": "Lua5.4",
+  "includes": [],
+  "prefixes": [],
+  "opcodes": [
+    {
+      "mnemonic": "move",
+      "format": "",
+      "mask": "A000'0000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B R[A] := R[B]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "loadi",
+      "format": "",
+      "mask": "A000'0001 AAAA'AAAA BBBB'BBBB BBBB'BBBB",
+      "metadata": {
+        "comment": "A sBx R[A] := sBx",
+        "opmode": "iAsBx"
+      }
+    },
+    {
+      "mnemonic": "loadf",
+      "format": "",
+      "mask": "A000'0010 AAAA'AAAA BBBB'BBBB BBBB'BBBB",
+      "metadata": {
+        "comment": "A sBx R[A] := (lua_Number)sBx",
+        "opmode": "iAsBx"
+      }
+    },
+    {
+      "mnemonic": "loadk",
+      "format": "",
+      "mask": "A000'0011 AAAA'AAAA BBBB'BBBB BBBB'BBBB",
+      "metadata": {
+        "comment": "A Bx R[A] := K[Bx]",
+        "opmode": "iABx"
+      }
+    },
+    {
+      "mnemonic": "loadkx",
+      "format": "",
+      "mask": "A000'0100 AAAA'AAAA BBBB'BBBB BBBB'BBBB",
+      "metadata": {
+        "comment": "A R[A] := K[extra arg]",
+        "opmode": "iABx"
+      }
+    },
+    {
+      "mnemonic": "loadfalse",
+      "format": "",
+      "mask": "A000'0101 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A R[A] := false",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "lfalseskip",
+      "format": "",
+      "mask": "A000'0110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A R[A] := false; pc++ (*)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "loadtrue",
+      "format": "",
+      "mask": "A000'0111 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A R[A] := true",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "loadnil",
+      "format": "",
+      "mask": "A000'1000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B R[A], R[A+1], ..., R[A+B] := nil",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "getupval",
+      "format": "",
+      "mask": "A000'1001 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B R[A] := UpValue[B]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "setupval",
+      "format": "",
+      "mask": "A000'1010 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B UpValue[B] := R[A]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "gettabup",
+      "format": "",
+      "mask": "A000'1011 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := UpValue[B][K[C]:shortstring]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "gettable",
+      "format": "",
+      "mask": "A000'1100 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B][R[C]]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "geti",
+      "format": "",
+      "mask": "A000'1101 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B][C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "getfield",
+      "format": "",
+      "mask": "A000'1110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B][K[C]:shortstring]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "settabup",
+      "format": "",
+      "mask": "A000'1111 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C UpValue[A][K[B]:shortstring] := RK(C)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "settable",
+      "format": "",
+      "mask": "A001'0000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A][R[B]] := RK(C)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "seti",
+      "format": "",
+      "mask": "A001'0001 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A][B] := RK(C)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "setfield",
+      "format": "",
+      "mask": "A001'0010 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A][K[B]:shortstring] := RK(C)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "newtable",
+      "format": "",
+      "mask": "A001'0011 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C k R[A] := {}",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "self",
+      "format": "",
+      "mask": "A001'0100 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A+1] := R[B]; R[A] := R[B][RK(C):string]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "addi",
+      "format": "",
+      "mask": "A001'0101 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B sC R[A] := R[B] + sC",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "addk",
+      "format": "",
+      "mask": "A001'0110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] + K[C]:number",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "subk",
+      "format": "",
+      "mask": "A001'0111 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] - K[C]:number",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "mulk",
+      "format": "",
+      "mask": "A001'1000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] * K[C]:number",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "modk",
+      "format": "",
+      "mask": "A001'1001 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] % K[C]:number",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "powk",
+      "format": "",
+      "mask": "A001'1010 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] ^ K[C]:number",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "divk",
+      "format": "",
+      "mask": "A001'1011 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] / K[C]:number",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "idivk",
+      "format": "",
+      "mask": "A001'1100 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] // K[C]:number",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "bandk",
+      "format": "",
+      "mask": "A001'1101 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] & K[C]:integer",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "bork",
+      "format": "",
+      "mask": "A001'1110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] | K[C]:integer",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "bxork",
+      "format": "",
+      "mask": "A001'1111 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] ~ K[C]:integer",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "shri",
+      "format": "",
+      "mask": "A010'0000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B sC R[A] := R[B] >> sC",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "shli",
+      "format": "",
+      "mask": "A010'0001 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B sC R[A] := sC << R[B]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "add",
+      "format": "",
+      "mask": "A010'0010 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] + R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "sub",
+      "format": "",
+      "mask": "A010'0011 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] - R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "mul",
+      "format": "",
+      "mask": "A010'0100 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] * R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "mod",
+      "format": "",
+      "mask": "A010'0101 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] % R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "pow",
+      "format": "",
+      "mask": "A010'0110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] ^ R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "div",
+      "format": "",
+      "mask": "A010'0111 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] / R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "idiv",
+      "format": "",
+      "mask": "A010'1000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] // R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "band",
+      "format": "",
+      "mask": "A010'1001 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] & R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "bor",
+      "format": "",
+      "mask": "A010'1010 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] | R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "bxor",
+      "format": "",
+      "mask": "A010'1011 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] ~ R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "shl",
+      "format": "",
+      "mask": "A010'1100 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] << R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "shr",
+      "format": "",
+      "mask": "A010'1101 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A] := R[B] >> R[C]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "mmbin",
+      "format": "",
+      "mask": "A010'1110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C call C metamethod over R[A] and R[B] (*)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "mmbini",
+      "format": "",
+      "mask": "A010'1111 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A sB C k call C metamethod over R[A] and sB",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "mmbink",
+      "format": "",
+      "mask": "A011'0000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C k call C metamethod over R[A] and K[B]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "unm",
+      "format": "",
+      "mask": "A011'0001 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B R[A] := -R[B]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "bnot",
+      "format": "",
+      "mask": "A011'0010 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B R[A] := ~R[B]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "not",
+      "format": "",
+      "mask": "A011'0011 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B R[A] := not R[B]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "len",
+      "format": "",
+      "mask": "A011'0100 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B R[A] := #R[B] (length operator)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "concat",
+      "format": "",
+      "mask": "A011'0101 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B R[A] := R[A].. ... ..R[A + B - 1]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "close",
+      "format": "",
+      "mask": "A011'0110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A close all upvalues >= R[A]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "tbc",
+      "format": "",
+      "mask": "A011'0111 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A mark variable A \"to be closed\"",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "jmp",
+      "format": "",
+      "mask": "A011'1000 AAAA'AAAA AAAA'AAAA AAAA'AAAA",
+      "metadata": {
+        "comment": "sJ pc += sJ",
+        "opmode": "isJ"
+      }
+    },
+    {
+      "mnemonic": "eq",
+      "format": "",
+      "mask": "A011'1001 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B k if ((R[A] == R[B]) ~= k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "lt",
+      "format": "",
+      "mask": "A011'1010 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B k if ((R[A] < R[B]) ~= k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "le",
+      "format": "",
+      "mask": "A011'1011 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B k if ((R[A] <= R[B]) ~= k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "eqk",
+      "format": "",
+      "mask": "A011'1100 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B k if ((R[A] == K[B]) ~= k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "eqi",
+      "format": "",
+      "mask": "A011'1101 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A sB k if ((R[A] == sB) ~= k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "lti",
+      "format": "",
+      "mask": "A011'1110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A sB k if ((R[A] < sB) ~= k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "lei",
+      "format": "",
+      "mask": "A011'1111 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A sB k if ((R[A] <= sB) ~= k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "gti",
+      "format": "",
+      "mask": "A100'0000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A sB k if ((R[A] > sB) ~= k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "gei",
+      "format": "",
+      "mask": "A100'0001 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A sB k if ((R[A] >= sB) ~= k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "test",
+      "format": "",
+      "mask": "A100'0010 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A k if (not R[A] == k) then pc++",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "testset",
+      "format": "",
+      "mask": "A100'0011 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B k if (not R[B] == k) then pc++ else R[A] := R[B] (*)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "call",
+      "format": "",
+      "mask": "A100'0100 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C R[A], ... ,R[A+C-2] := R[A](R[A+1], ... ,R[A+B-1])",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "tailcall",
+      "format": "",
+      "mask": "A100'0101 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C k return R[A](R[A+1], ... ,R[A+B-1])",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "return",
+      "format": "",
+      "mask": "A100'0110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C k return R[A], ... ,R[A+B-2] (see note)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "return0",
+      "format": "",
+      "mask": "A100'0111 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "return",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "return1",
+      "format": "",
+      "mask": "A100'1000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A return R[A]",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "forloop",
+      "format": "",
+      "mask": "A100'1001 AAAA'AAAA BBBB'BBBB BBBB'BBBB",
+      "metadata": {
+        "comment": "A Bx update counters; if loop continues then pc-=Bx;",
+        "opmode": "iABx"
+      }
+    },
+    {
+      "mnemonic": "forprep",
+      "format": "",
+      "mask": "A100'1010 AAAA'AAAA BBBB'BBBB BBBB'BBBB",
+      "metadata": {
+        "comment": "A Bx <check values and prepare counters>; if not to run then pc+=Bx+1;",
+        "opmode": "iABx"
+      }
+    },
+    {
+      "mnemonic": "tforprep",
+      "format": "",
+      "mask": "A100'1011 AAAA'AAAA BBBB'BBBB BBBB'BBBB",
+      "metadata": {
+        "comment": "A Bx create upvalue for R[A + 3]; pc+=Bx",
+        "opmode": "iABx"
+      }
+    },
+    {
+      "mnemonic": "tforcall",
+      "format": "",
+      "mask": "A100'1100 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A C R[A+4], ... ,R[A+3+C] := R[A](R[A+1], R[A+2]);",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "tforloop",
+      "format": "",
+      "mask": "A100'1101 AAAA'AAAA BBBB'BBBB BBBB'BBBB",
+      "metadata": {
+        "comment": "A Bx if R[A+2] ~= nil then { R[A]=R[A+2]; pc -= Bx }",
+        "opmode": "iABx"
+      }
+    },
+    {
+      "mnemonic": "setlist",
+      "format": "",
+      "mask": "A100'1110 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A B C k R[A][C+i] := R[A+i], 1 <= i <= B",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "closure",
+      "format": "",
+      "mask": "A100'1111 AAAA'AAAA BBBB'BBBB BBBB'BBBB",
+      "metadata": {
+        "comment": "A Bx R[A] := closure(KPROTO[Bx])",
+        "opmode": "iABx"
+      }
+    },
+    {
+      "mnemonic": "vararg",
+      "format": "",
+      "mask": "A101'0000 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A C R[A], R[A+1], ..., R[A+C-2] = vararg",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "varargprep",
+      "format": "",
+      "mask": "A101'0001 AAAA'AAAA BBBB'BBBB CCCC'CCCC",
+      "metadata": {
+        "comment": "A (adjust vararg parameters)",
+        "opmode": "iABC"
+      }
+    },
+    {
+      "mnemonic": "extraarg",
+      "format": "",
+      "mask": "A101'0010 AAAA'AAAA AAAA'AAAA AAAA'AAAA",
+      "metadata": {
+        "comment": "Ax extra (larger) argument for previous opcode",
+        "opmode": "iAx"
+      }
+    }
+  ]
+}
