@@ -1,0 +1,211 @@
+{
+  "name": "CHIP-8",
+  "includes": [],
+  "options": [],
+  "opcodes": [
+    {
+      "mask": "0000'0000 1110'0000",
+      "mnemonic": "clear",
+      "format": ""
+    },
+    {
+      "mask": "0000'0000 1110'1110",
+      "mnemonic": "return",
+      "format": ""
+    },
+    {
+      "mask": "0000'NNNN NNNN'NNNN",
+      "mnemonic": "invalid",
+      "format": ""
+    },
+    {
+      "mask": "0001'NNNN NNNN'NNNN",
+      "mnemonic": "jump",
+      "format": "0x{N:03X}",
+      "metadata": [
+        {
+          "type": "jump",
+          "data": {
+            "destination": "N"
+          }
+        }
+      ]
+    },
+    {
+      "mask": "0010'NNNN NNNN'NNNN",
+      "mnemonic": ":call",
+      "format": "0x{N:03X}",
+      "metadata": [
+        {
+          "type": "jump",
+          "data": {
+            "destination": "N"
+          }
+        }
+      ]
+    },
+    {
+      "mask": "0011'XXXX NNNN'NNNN",
+      "mnemonic": "",
+      "format": "if v{X:X} != 0x{N:02X} then"
+    },
+    {
+      "mask": "0100'XXXX NNNN'NNNN",
+      "mnemonic": "",
+      "format": "if v{X:X} == 0x{N:02X} then"
+    },
+    {
+      "mask": "0101'XXXX YYYY'0000",
+      "mnemonic": "",
+      "format": "if v{X:X} != v{Y:X} then"
+    },
+    {
+      "mask": "0110'XXXX NNNN'NNNN",
+      "mnemonic": "",
+      "format": "v{X:X} := 0x{N:02X}"
+    },
+    {
+      "mask": "0111'XXXX NNNN'NNNN",
+      "mnemonic": "",
+      "format": "v{X:X} += 0x{N:02X}"
+    },
+    {
+      "mask": "1000'XXXX YYYY'0000",
+      "mnemonic": "",
+      "format": "v{X:X} := v{Y:X}"
+    },
+    {
+      "mask": "1000'XXXX YYYY'0001",
+      "mnemonic": "",
+      "format": "v{X:X} |= v{Y:X}"
+    },
+    {
+      "mask": "1000'XXXX YYYY'0010",
+      "mnemonic": "",
+      "format": "v{X:X} &= v{Y:X}"
+    },
+    {
+      "mask": "1000'XXXX YYYY'0011",
+      "mnemonic": "",
+      "format": "v{X:X} ^= v{Y:X}"
+    },
+    {
+      "mask": "1000'XXXX YYYY'0100",
+      "mnemonic": "",
+      "format": "v{X:X} += v{Y:X}"
+    },
+    {
+      "mask": "1000'XXXX YYYY'0101",
+      "mnemonic": "",
+      "format": "v{X:X} -= v{Y:X}"
+    },
+    {
+      "mask": "1000'XXXX YYYY'0110",
+      "mnemonic": "",
+      "format": "v{X:X} >>= v{Y:X}"
+    },
+    {
+      "mask": "1000'XXXX YYYY'0111",
+      "mnemonic": "",
+      "format": "v{X:X} =- v{Y:X}"
+    },
+    {
+      "mask": "1000'XXXX YYYY'1110",
+      "mnemonic": "",
+      "format": "v{X:X} <<= v{Y:X}"
+    },
+    {
+      "mask": "1001'XXXX YYYY'0000",
+      "mnemonic": "",
+      "format": "if v{X:X} == v{Y:X} then"
+    },
+    {
+      "mask": "1010'NNNN NNNN'NNNN",
+      "mnemonic": "",
+      "format": "i := 0x{N:03X}"
+    },
+    {
+      "mask": "1011'NNNN NNNN'NNNN",
+      "mnemonic": "jump0",
+      "format": "0x{N:03X}",
+      "metadata": [
+        {
+          "type": "jump",
+          "data": {
+            "destination": "N"
+          }
+        }
+      ]
+    },
+    {
+      "mask": "1100'XXXX NNNN'NNNN",
+      "mnemonic": "",
+      "format": "v{X:X} := random 0x{N:02X}"
+    },
+    {
+      "mask": "1101'XXXX YYYY'NNNN",
+      "mnemonic": "sprite",
+      "format": "v{X:X} v{Y:X} {N:X}"
+    },
+    {
+      "mask": "1110'XXXX 1001'1110",
+      "mnemonic": "",
+      "format": "if v{X:X} -key then"
+    },
+    {
+      "mask": "1110'XXXX 1010'0001",
+      "mnemonic": "",
+      "format": "if v{X:X} key then"
+    },
+    {
+      "mask": "1111'XXXX 0000'0111",
+      "mnemonic": "",
+      "format": "v{X:X} := delay"
+    },
+    {
+      "mask": "1111'XXXX 0000'1010",
+      "mnemonic": "",
+      "format": "v{X:X} := key"
+    },
+    {
+      "mask": "1111'XXXX 0001'0101",
+      "mnemonic": "",
+      "format": "delay := v{X:X}"
+    },
+    {
+      "mask": "1111'XXXX 0001'1000",
+      "mnemonic": "",
+      "format": "buzzer := v{X:X}"
+    },
+    {
+      "mask": "1111'XXXX 0001'1110",
+      "mnemonic": "",
+      "format": "i += v{X:X}"
+    },
+    {
+      "mask": "1111'XXXX 0010'1001",
+      "mnemonic": "",
+      "format": "i := hex v{X:X}"
+    },
+    {
+      "mask": "1111'XXXX 0011'0011",
+      "mnemonic": "bcd",
+      "format": "v{X:X}"
+    },
+    {
+      "mask": "1111'XXXX 0101'0101",
+      "mnemonic": "save",
+      "format": "v{X:X}"
+    },
+    {
+      "mask": "1111'XXXX 0110'0101",
+      "mnemonic": "load",
+      "format": "v{X:X}"
+    },
+    {
+      "mask": "AAAA'AAAA BBBB'BBBB",
+      "mnemonic": "invalid",
+      "format": ""
+    }
+  ]
+}
