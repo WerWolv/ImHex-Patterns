@@ -1,7 +1,7 @@
 {
   "name": "CHIP-8",
   "includes": [],
-  "options": [],
+  "settings": [],
   "opcodes": [
     {
       "mask": "0000'0000 1110'0000",
