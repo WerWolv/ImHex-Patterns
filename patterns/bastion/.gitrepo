@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://gitlab.com/EvelynTSMG/imhex-bastion-pats.git
+	branch = main
+	commit = e6deed433c4ba3e05e00e12fbef78c5d84e0ca18
+	parent = d38d5c7614e4e0d5a0960e14e00be768b5d5ad74
+	method = merge
+	cmdver = 0.4.9
