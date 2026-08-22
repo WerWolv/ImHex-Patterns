@@ -162,6 +162,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | LZ4 | `application/x-lz4` | [`patterns/lz4.hexpat`](patterns/lz4.hexpat) | LZ4 Frame Format |
 | LZNT1 | | [`patterns/lznt1.hexpat`](patterns/lznt1.hexpat) | LZNT1 compressed data format |
 | Mach-O | `application/x-mach-binary` | [`patterns/macho.hexpat`](patterns/macho.hexpat) | Mach-O executable |
+| Magic | `application/x-file` | [`patterns/magic.hexpat`](patterns/magic.hexpat) | file / libmagic Magic database |
 | MIDI | `audio/midi` | [`patterns/midi.hexpat`](patterns/midi.hexpat) | MIDI header, event fields provided |
 | MIFARE Classic 1K | `application/x-mifare-classic` | [`patterns/mifare/mifare-1k.hexpat`](patterns/mifare/mifare-1k.hexpat) | MIFARE Classic EV1 1K (MF1S50yyX/V1) |
 | MIFARE Classic 4K | `application/x-mifare-classic` | [`patterns/mifare/mifare-4k.hexpat`](patterns/mifare/mifare-4k.hexpat) | MIFARE Classic EV1 4K (MF1S70yyX/V1) |
