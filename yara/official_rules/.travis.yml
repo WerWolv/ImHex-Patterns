@@ -1,0 +1,26 @@
+language: c
+sudo: required
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y automake libtool make gcc pkg-config flex bison libjansson-dev libmagic-dev libssl-dev jq
+# Yara
+  - wget $(curl -s https://api.github.com/repos/VirusTotal/yara/releases/latest | jq -r ".tarball_url") -O yara-latest.tar.gz
+  - mkdir yara
+  - tar -xzvf yara-latest.tar.gz -C yara --strip-components 1
+# Compile Yara
+  - cd yara
+  # Update per issue 176
+  - sed -i 's/#define RE_MAX_SPLIT_ID     128/#define RE_MAX_SPLIT_ID     255/g' libyara/include/yara/limits.h
+  - ./bootstrap.sh
+  - ./configure --enable-cuckoo --enable-magic --with-crypto
+  - make
+  - sudo make install
+  - sudo ldconfig
+  - cd ../
+
+script:
+  - echo "test" > testfile
+  - FALLO=0
+  - for i in $(ls *_index.yar); do echo $i; yara -w $i testfile; if [[ $? -ne 0 ]]; then FALLO=1; fi; done
+  - exit $FALLO

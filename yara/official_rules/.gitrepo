@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/yara-rules/rules
+	branch = master
+	commit = 0f93570194a80d2f2032869055808b0ddcdfb360
+	parent = 223e47f26bcf2b82ca40767afa05206d7ccaa1e6
+	method = merge
+	cmdver = 0.4.9

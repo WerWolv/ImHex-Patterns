@@ -1,0 +1,39 @@
+/*
+    This Yara ruleset is under the GNU-GPLv2 license (http://www.gnu.org/licenses/gpl-2.0.html) and open to any user or organization, as    long as you use it under this license.
+
+*/
+
+/*
+	Rules that are included in several other files.
+*/
+
+private rule is__elf {
+	meta:
+		author = "@mmorenog,@yararules"
+	strings:
+		$header = { 7F 45 4C 46 }
+	condition:
+		$header at 0
+}
+
+
+rule is__Mirai_gen7 {
+        meta:
+                description = "Generic detection for MiraiX version 7"
+                reference = "http://blog.malwaremustdie.org/2016/08/mmd-0056-2016-linuxmirai-just.html"
+                author = "unixfreaxjp"
+                org = "MalwareMustDie"
+                date = "2018-01-05"
+
+        strings:
+                $st01 = "/bin/busybox rm" fullword nocase wide ascii
+                $st02 = "/bin/busybox echo" fullword nocase wide ascii
+                $st03 = "/bin/busybox wget" fullword nocase wide ascii
+                $st04 = "/bin/busybox tftp" fullword nocase wide ascii
+                $st05 = "/bin/busybox cp" fullword nocase wide ascii
+                $st06 = "/bin/busybox chmod" fullword nocase wide ascii
+                $st07 = "/bin/busybox cat" fullword nocase wide ascii
+
+        condition:
+                5 of them
+}

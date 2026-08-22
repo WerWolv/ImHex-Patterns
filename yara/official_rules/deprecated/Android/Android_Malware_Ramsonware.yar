@@ -1,0 +1,111 @@
+/*
+    This Yara ruleset is under the GNU-GPLv2 license (http://www.gnu.org/licenses/gpl-2.0.html) and open to any user or organization, as    long as you use it under this license.
+
+*/
+
+import "cuckoo"
+
+rule ransomware : svpeng android
+{
+	meta:
+		author = "Fernando Denis https://twitter.com/fdrg21"
+		reference = "https://koodous.com/"
+		description = "Ransomware"
+		in_the_wild = true
+
+	strings:
+		$a =  {6e 64 20 79 6f 75 72 27 73 20 64 65 76 69 63 65 20 77 69 6c 6c 20 72 65 62 6f 6f 74 20 61 6e 64}
+		$b = "ADD_DEVICE_ADMI"
+
+	condition:
+		$a and $b
+}
+
+
+rule Ransomware : banker android
+{
+	meta:
+		author = "Fernando Denis https://twitter.com/fdrg21"
+		reference = "https://koodous.com/"
+		description = "Ransomware Test 2"
+		thread_level = 3
+		in_the_wild = true
+
+	strings:
+
+		$strings_a = "!2,.B99^GGD&R-"
+		$strings_b = "22922222222222222222Q^SAAWA"
+		$strings_c = "t2222222222229222Q^SAAWA"
+
+	
+
+	condition:
+		any of ($strings_*)
+}
+
+rule koler_domains : android
+{
+	meta:
+ 		author = "https://twitter.com/jsmesa"
+		reference = "https://koodous.com/"
+		description = "Old Koler.A domains examples"
+		sample = "2e1ca3a9f46748e0e4aebdea1afe84f1015e3e7ce667a91e4cfabd0db8557cbf"
+
+	condition:
+		cuckoo.network.dns_lookup(/police-scan-mobile.com/) or
+		cuckoo.network.dns_lookup(/police-secure-mobile.com/) or
+		cuckoo.network.dns_lookup(/mobile-policeblock.com/) or
+		cuckoo.network.dns_lookup(/police-strong-mobile.com/) or
+		cuckoo.network.dns_lookup(/video-porno-gratuit.eu/) or
+		cuckoo.network.dns_lookup(/video-sartex.us/) or 
+		cuckoo.network.dns_lookup(/policemobile.biz/)
+}
+
+rule koler_builds : android
+{
+	meta:
+		author = "https://twitter.com/jsmesa"
+		reference = "https://koodous.com/"
+		description = "Koler.A builds"
+
+	strings:
+		$0 = "buildid"
+		$a = "DCEF055EEE3F76CABB27B3BD7233F6E3"
+		$b = "C143D55D996634D1B761709372042474"
+		
+	condition:
+		$0 and ($a or $b)
+		
+}
+
+rule koler_class : android
+{
+	meta:
+		author = "https://twitter.com/jsmesa"
+		reference = "https://koodous.com/"
+		description = "Koler.A class"
+
+	strings:
+		$0 = "FIND_VALID_DOMAIN"
+		$a = "6589y459"
+		
+	condition:
+		$0 and $a
+		
+}
+
+rule koler_D : android
+{
+	meta:
+		author = "https://twitter.com/jsmesa"
+		reference = "https://koodous.com/"
+		description = "Koler.D class"
+
+	strings:
+		$0 = "ZActivity"
+		$a = "Lcom/android/zics/ZRuntimeInterface"
+		
+	condition:
+		($0 and $a)
+		
+}
