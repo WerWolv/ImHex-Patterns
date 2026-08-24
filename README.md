@@ -87,6 +87,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | DEX | | [`patterns/dex.hexpat`](patterns/dex.hexpat) | Dalvik EXecutable Format |
 | Devil May Cry HD Collection | | [`patterns/Devil May Cry HD Collection`](patterns/Devil May Cry HD Collection) | 3D Model files used in Devil May Cry 3 HD Collection |
 | DICOM | `application/dicom` | [`patterns/dicom.hexpat`](patterns/dicom.hexpat) | DICOM image format |
+| Dig or Die Save | | [`patterns/dod-save.hexpat`](patterns/dod-save.hexpat) | Dig or Die uncompressed save file |
 | DISK_PARSER (DFIR) | `application/x-ima` | [`patterns/DFIR/DISK_PARSER.hexpat`](patterns/DFIR/DISK_PARSER.hexpat) | Recursive Disk/Volume/Filesystem parsing |
 | DMG | | [`patterns/dmg.hexpat`](patterns/dmg.hexpat) | Apple Disk Image Trailer (DMG) |
 | DMP | | [`patterns/dmp64.hexpat`](patterns/dmp64.hexpat) | Windows Kernel Dump(DMP64) |
