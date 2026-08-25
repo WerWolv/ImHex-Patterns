@@ -1,19 +1,33 @@
-#pragma description Dig Or Die Uncompressed Save File
+#pragma description Dig Or Die Save File
 #pragma endian little
-#pragma magic [ 09 53 41 56 45 20 46 49 4C 45 ] @ 0x00
+#pragma magic [ 1F 09 53 41 56 45 20 46 49 4C 45 ] @ 0x00
 #pragma author ddmitv
 
 // === Pattern for ImHex Editor ===
 //
-// This Dig or Die save file pattern is reverse engineered from game's C# disassembly of save's load and write functionality.
+// This Dig or Die save file pattern is reverse engineered from the game's C# disassembly of save's load and write functionality.
 // More specifically from methods:
 // - SDataSave.Save
 // - SDataSave.LoadData
 //
 // Dig or Die Steam page: https://store.steampowered.com/app/315460/Dig_or_Die
 //
-// The original save files are stored compressed form using the LZF compression algorithm (see CLZF2 class),
-// so you first need to decompress them to use this pattern.
+// This pattern supports both compressed and decompressed save files.
+// If the file is compressed, open the "Decompressed Save" section in the Pattern Data to view decompressed save file,
+// or alternatively open the virtual file that contains decompressed data (again, in the Pattern Data view).
+//
+// By default, World Data cells pattern is disabled.
+// You can enable it (show_world_data_pattern) via the Settings tab of the Pattern Editor view (WARNING: It will take ~10 seconds to load pattern data and ImHex could freeze).
+// If the save file uses non-ordinary world dimensions (not 1024x1024), set world_width and world_height
+// `in` variables via Settings tab of the Pattern Editor view.
+//
+// This pattern also supports game versions down to build 481 and includes some corruption checking functionality.
+//
+// General information about this binary format:
+// The file is split into 8 sections: Header, Params Data, Items Data, Players, Environments, World Data, Units Data, Vars Data.
+// Each section has its own magic string at the end of the section (and also every save file starts with the magic string).
+// Uses C# BinaryFormatter to serialize "CParams" and "GVars" classes.
+// The original save files are compressed using the LZF compression algorithm (see CLZF2 class).
 //
 // Original LZF algorithm: liblzf (by Marc Alexander Lehmann):
 // - http://software.schmorp.de/pkg/liblzf.html (use Wayback Machine to see since it may be unavailable)
@@ -21,21 +35,15 @@
 // - https://github.com/nemequ/liblzf
 // Possible C# implementation used in game:
 // - https://github.com/Chaser324/LZF/blob/master/CLZF2.cs (although some parts of code are different)
-//
-// By default, World Data cells pattern is disabled.
-// You can enable it (show_world_data_pattern) via Settings tab of the Pattern Editor view (WARNING: It will take ~10 seconds to load pattern data and ImHex could freeze).
-// If the save file uses non-ordinary world dimensions (not 1024x1024), set world_width and world_height
-// variables via Settings tab of the Pattern Editor view
-//
-// This pattern also supports game version down to build 481 and includes some corruption checking functionality.
-//
-// General information about this binary format:
-// The file is split into 8 sections: Header, Params Data, Items Data, Players, Environments, World Data, Units Data, Vars Data.
-// Each section has its own magic string at the end of section (and also every save file starts with the magic string).
-// Uses C# BinaryFormatter to serialize "CParams" and "GVars" classes.
 
 import type.magic;
 import std.core;
+
+#ifdef __IMHEX__
+    import hex.core;
+    import hex.provider;
+    import hex.dec;
+#endif
 
 bool show_world_data_pattern in;
 s32 world_width in;
@@ -45,9 +53,16 @@ s32 world_height in;
 if (world_width == 0) { world_width = 1024; }
 if (world_height == 0) { world_height = 1024; }
 
+// ImHex-Patterns test file settings (for unit testing)
+#ifdef __PL_UNIT_TESTS__
+    show_world_data_pattern = true;
+    world_width = 64;
+    world_height = 64;
+#endif
+
 // Reverse engineered from DigOrDie!DllGetSaveOffset@0x1470 function from helper library DigOrDie.dll,
 // provided in C# via SWorldDll.GetSaveOffset
-// Likely used as an anti-tamper measure (didn't worked)
+// Likely used as an anti-tamper measure (didn't work)
 fn get_save_offset(u32 x) {
     u32 hash = x * 0x9e3779b1U;
     hash = ((hash >> 15) ^ hash) * 0x85ebca77U;
@@ -66,9 +81,9 @@ fn total_save_offset(u32 x) {
 
 fn lookup_code_name(s16 id) {
     std::assert(id >= 1, std::format("Invalid item id: {}", id));
-    std::assert(id < data.items_data.count, std::format("Item id out of range: {} (max id: {})", id, data.items_data.count - 1));
+    std::assert(id < data.save.items_data.count, std::format("Item id out of range: {} (max id: {})", id, data.save.items_data.count - 1));
     // id - 1 for accounting for the 0th `null` item
-    return data.items_data.code_names[id - 1];
+    return data.save.items_data.code_names[id - 1];
 };
 
 // Layout of serialized 7-bit encoded int via System.IO.BinaryWriter.Write7BitEncodedInt
@@ -160,29 +175,29 @@ fn format_item_id(auto id) {
 
 // System.Runtime.Serialization.Formatters.Binary.BinaryElement
 enum NrbfElement : u8 {
-    Header                 = 0x00, // SerializationHeaderRecord
-    RefTypeObject          = 0x01, // ClassWithMembersAndTypes
-    UntypedRuntimeObject   = 0x02, // ClassWithMembers
-    UntypedExternalObject  = 0x03, // SystemClassWithMembers
-    RuntimeObject          = 0x04, // ClassWithId
-    ExternalObject         = 0x05, // SystemClassWithMembersAndTypes
-    String                 = 0x06, // BinaryObjectString
-    GenericArray           = 0x07, // ClassWithMembersAndTypes (array variant)
-    BoxedPrimitiveTypeValue= 0x08, // BinaryArray (primitive boxed types)
-    ObjectReference        = 0x09, // MemberReference
-    NullValue              = 0x0A, // NULL record
-    End                    = 0x0B, // MessageEnd
-    Assembly               = 0x0C, // Assembly
-    ArrayFiller8b          = 0x0D, // BinaryArray (8-bit filler)
-    ArrayFiller32b         = 0x0E, // BinaryArray (32-bit filler)
-    ArrayOfPrimitiveType   = 0x0F, // BinaryArray (primitive types)
-    ArrayOfObject          = 0x10, // BinaryArray (object references)
-    ArrayOfString          = 0x11, // BinaryArray (strings)
-    Method                 = 0x12, // MethodCall / MethodReturn wrapper
-    _Unknown4              = 0x13, // Reserved/unused in public specs
-    _Unknown5              = 0x14, // Reserved/unused in public specs
-    MethodCall             = 0x15, // MethodCall record
-    MethodResponse         = 0x16  // MethodReturn record
+    Header                  = 0x00, // SerializationHeaderRecord
+    RefTypeObject           = 0x01, // ClassWithMembersAndTypes
+    UntypedRuntimeObject    = 0x02, // ClassWithMembers
+    UntypedExternalObject   = 0x03, // SystemClassWithMembers
+    RuntimeObject           = 0x04, // ClassWithId
+    ExternalObject          = 0x05, // SystemClassWithMembersAndTypes
+    String                  = 0x06, // BinaryObjectString
+    GenericArray            = 0x07, // ClassWithMembersAndTypes (array variant)
+    BoxedPrimitiveTypeValue = 0x08, // BinaryArray (primitive boxed types)
+    ObjectReference         = 0x09, // MemberReference
+    NullValue               = 0x0A, // NULL record
+    End                     = 0x0B, // MessageEnd
+    Assembly                = 0x0C, // Assembly
+    ArrayFiller8b           = 0x0D, // BinaryArray (8-bit filler)
+    ArrayFiller32b          = 0x0E, // BinaryArray (32-bit filler)
+    ArrayOfPrimitiveType    = 0x0F, // BinaryArray (primitive types)
+    ArrayOfObject           = 0x10, // BinaryArray (object references)
+    ArrayOfString           = 0x11, // BinaryArray (strings)
+    Method                  = 0x12, // MethodCall / MethodReturn wrapper
+    _Unknown4               = 0x13, // Reserved/unused in public specs
+    _Unknown5               = 0x14, // Reserved/unused in public specs
+    MethodCall              = 0x15, // MethodCall record
+    MethodResponse          = 0x16  // MethodReturn record
 };
 
 // Layout of C# System.String serialized via BinaryFormatter (NRBF)
@@ -192,8 +207,8 @@ struct NrbfString {
     s32 object_id [[hidden]];
     std::assert(object_id > 0, "Invalid BinaryFormatter object id");
     String value [[inline]];
-} [[format("format_BFString")]];
-fn format_BFString(ref auto string) {
+} [[format("format_NrbfString")]];
+fn format_NrbfString(ref auto string) {
     return std::format("\"{}\"", string.value);
 };
 
@@ -489,7 +504,7 @@ struct Cell {
 // cannot use [[static]] since padding is changes dynamically
 struct CellsColumn {
     padding[get_save_offset(std::core::array_index())];
-    Cell row[world_height];
+    Cell row[world_height] [[inline]];
 };
 
 struct WorldData {
@@ -636,6 +651,30 @@ struct SaveData {
     VarsData vars_data [[name("Vars Data"), comment("Contains C# BinaryFormatter-serialized data")]];
 };
 
+struct MaybeCompressedSaveData {
+    String magic_test @ 0x00 [[hidden]];
+    if (magic_test == "SAVE FILE") {
+        SaveData save @ 0x00 [[inline]];
+    } else {
+        #ifdef __IMHEX__
+            u8 compressed_data[sizeof($)] [[hidden]];
+            std::mem::Section decompressed_section = std::mem::create_section("Decompressed Save");
+            hex::dec::lzf_decompress(compressed_data, decompressed_section);
+
+            u8 raw_data[std::mem::get_section_size(decompressed_section)] @ 0x00 in decompressed_section [[hidden]];
+            // do not pass `save` because it will output some weird bytes
+            hex::core::add_virtual_file(std::format("{}-uncompressed", hex::prv::get_information("file_name")), raw_data);
+
+            SaveData save @ 0x00 in decompressed_section [[inline]];
+
+            std::warning("!! Dig or Die save content is compressed !!\n!! Open the \"Decompressed Save\" tab in Pattern Data view or from the Virtual Filesystem tab open the decompressed file and run this pattern on it !!");
+        #endif
+        #ifndef __IMHEX__
+            std::error("Save file decompression is only supported in ImHex pattern language environment (requires plugin \"decompress\")");
+        #endif
+    }
+};
+
 s32 save_build = 0;
 
-SaveData data @ 0x00 [[inline]];
+MaybeCompressedSaveData data @ 0x00 [[inline]];
