@@ -72,4 +72,15 @@ namespace auto hex::dec {
         return builtin::hex::dec::lz4_decompress(pattern, section, frame);
     };
 
+    /**
+        Decompresses the bytes of a pattern into a section using the LZF algorithm.
+        The original algorithm implementation can be found at http://software.schmorp.de/pkg/liblzf.html (use the Wayback Machine if the link is currently unavailable).
+        @param pattern The pattern whose bytes should be decompressed
+        @param section The section to decompress the data into
+        @return The number of bytes read from the input if successful, 0 otherwise
+    */
+    fn lzf_decompress(ref auto pattern, std::mem::Section section) {
+        return builtin::hex::dec::lzf_decompress(pattern, section);
+    };
+
 }
