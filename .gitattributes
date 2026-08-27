@@ -1,4 +1,4 @@
-*.pat               linguist-language=Rust
-*.hexpat            linguist-language=Rust
+*.pat               linguist-language=ImHex
+*.hexpat            linguist-language=ImHex
 
 tests/patterns/test_data/**  binary
