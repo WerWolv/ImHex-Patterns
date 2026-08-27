@@ -2,3 +2,4 @@
 *.hexpat            linguist-language=ImHex
 
 tests/patterns/test_data/**  binary
+yara/official_rules/** linguist-vendored
