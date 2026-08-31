@@ -1,12 +1,15 @@
 // vim: set sts=4 sw=4 et :
-#pragma magic [ 05 02 ] @ 0x00
+#pragma magic [ 05 0? ?? 00 00 ] @ 0x00
 #pragma author Mikle_Bond
-#pragma description MIT Kerberos keytab file (version 5.2)
+#pragma description MIT Kerberos 5 keytab file
 
 import std.core;
 import std.sys;
 import std.mem;
+import std.io;
 import type.time;
+
+bool is_keytab_v1 = false;
 
 enum KRB5_NT : u32 {
     unassigned = 0x00000000 ... 0xFFFFFFFF,
@@ -55,7 +58,7 @@ enum EncType : u16 {
 };
 
 struct CountedString {
-    be u16 length;
+    u16 length;
     char value[length];
 } [[format("format_string")]];
 
@@ -74,10 +77,13 @@ fn join_components(ref CountedString d) {
 };
 
 struct Principal {
-    be u16 component_count;
+    u16 component_count;
     CountedString realm;
-    CountedString component[component_count] [[format("join_components")]];
-    be KRB5_NT name_type;
+    u16 component_count_real = component_count - (is_keytab_v1 ? 1 : 0);
+    CountedString component[component_count_real] [[format("join_components")]];
+    if (!is_keytab_v1) {
+        KRB5_NT name_type;
+    }
 } [[format("format_principal")]];
 
 fn format_principal(Principal p) {
@@ -88,19 +94,19 @@ fn format_principal(Principal p) {
 };
 
 struct Keyblock {
-    be EncType enctype;
-    be u16 length;
+    EncType enctype;
+    u16 length;
     u8 data[length];
 } [[hex::visualize("hex_viewer", data)]];
 
 struct EntryContents {
     auto entrystart = $;
     Principal principal;
-    be type::time32_t timestamp;
+    type::time32_t timestamp;
     u8 kvno;
     Keyblock key;
     if (4 + $ <= entrystart + parent.entry_size) {
-        be u32 kvno32;
+        u32 kvno32;
     }
 } [[inline,format("format_entry_contents")]];
 
@@ -114,17 +120,19 @@ fn format_entry_contents(ref EntryContents e) {
 };
 
 struct Entry {
-    be s32 entry_size;
+    s32 entry_size;
+    auto entry_start = $;
     if (entry_size == 0) {
         // end of entry list
-        return;
+        break;
     }
     else if (entry_size < 0) {
         u8 _gap[-entry_size];
         continue;
     }
     else {
-        EntryContents entry [[fixed_size(entry_size)]]; $ += entry_size;
+        EntryContents entry [[fixed_size(entry_size)]];
+        $ = entry_start + entry_size;
     }
 } [[format("format_entry")]];
 
@@ -137,13 +145,36 @@ fn format_entry(ref Entry e) {
         return "gap";
 };
 
+u8 keytab_version_1_endianness in;
+
 struct Keytab52 {
     u8 kerberos_ver;
     std::assert(kerberos_ver == 0x05, "only kerberos v5 is supported");
     u8 keytab_ver;
-    std::assert(keytab_ver == 0x02, "only keytab v2 is supported");
-    // TODO: keytab v5.1 is not that different though.
-    Entry entries[while(!std::mem::eof())];
+    if (keytab_ver == 0x01) {
+        is_keytab_v1 = true;
+        std::print("This keytab has older format version (v1) and thus\ndepends on the endianness of the host it was created for.");
+        std::print("Please, make sure the \"keytab_version_1_endianness\" is set correctly:");
+        std::print("0 - try to guess (default)");
+        std::print("1 - big endian");
+        std::print("2 - little endian");
+        match (keytab_version_1_endianness, std::mem::read_unsigned($, 2) == 0x0) {
+            (0,  true): {
+                std::print("Guessing: big endian");
+                be Entry entries[while(!std::mem::eof())];
+            }
+            (0,  false): {
+                std::print("Guessing: little endian");
+                le Entry entries[while(!std::mem::eof())];
+            }
+            (1, _): be Entry entries[while(!std::mem::eof())];
+            (2, _): le Entry entries[while(!std::mem::eof())];
+        }
+    } else if (keytab_ver == 0x02) {
+        be Entry entries[while(!std::mem::eof())];
+    } else {
+        break;
+    }
 };
 
 Keytab52 keytab @ 0x0;
