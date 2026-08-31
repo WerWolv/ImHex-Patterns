@@ -37,7 +37,7 @@ namespace auto type {
     /**
         A 64bit FILETIME value
     */
-    using FILETIME = u64 [[format("type::impl::format_filetime_as_unix")]];
+    using FILETIME = u64 [[format("type::impl::format_filetime")]];
 
     namespace impl {
 
@@ -53,8 +53,8 @@ namespace auto type {
             return std::time::format_dos_time(std::time::to_dos_time(value));
         };
 
-        fn format_filetime_as_unix(u64 value) {
-            return std::time::filetime_to_unix(value);
+        fn format_filetime(u64 value) {
+            return std::time::format(std::time::to_utc(std::time::filetime_to_unix(value)), "%c");
         };
 
     }
