@@ -150,6 +150,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Java Class | `application/x-java-applet` | [`patterns/java_class.hexpat`](patterns/java_class.hexpat) | Java Class files |
 | Job File   |  | [`patterns/job.hexpat`](patterns/job.hexpat) | TaskScheduler v1.0 Job File | 
 | JPEG | `image/jpeg` | [`patterns/jpeg.hexpat`](patterns/jpeg.hexpat) | JPEG Image Format |
+| keytab | | [`patterns/keytab.hexpat`](patterns/keytab.hexpat) | MIT Kerberos 5 keytab file |
 | Kindle Update | | [`patterns/kindle_update.hexpat`](patterns/kindle_update.hexpat) | Kindle Update Package |
 | KTX | `image/ktx` | [`patterns/ktx.hexpat`](patterns/ktx.hexpat) | Khronos TeXture 1.0 |
 | LOC | | [`patterns/loc.hexpat`](patterns/loc.hexpat) | Minecraft Legacy Console Edition Language file |
