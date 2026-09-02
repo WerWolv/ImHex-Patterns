@@ -45,13 +45,9 @@ import std.core;
     import hex.dec;
 #endif
 
-bool show_world_data_pattern in;
-s32 world_width in;
-s32 world_height in;
-
-// default values
-if (world_width == 0) { world_width = 1024; }
-if (world_height == 0) { world_height = 1024; }
+bool show_world_data_pattern in = false;
+s32 world_width in = 1024;
+s32 world_height in = 1024;
 
 // ImHex-Patterns test file settings (for unit testing)
 #ifdef __PL_UNIT_TESTS__
