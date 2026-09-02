@@ -353,6 +353,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Greek Windows | [`encodings/greek_windows.tbl`](encodings/greek_windows.tbl) | Greek Windows encoding |
 | Hebrew ISO | [`encodings/hebrew_iso.tbl`](encodings/hebrew_iso.tbl) | Hebrew ISO encoding |
 | Hebrew Windows | [`encodings/hebrew_windows.tbl`](encodings/hebrew_windows.tbl) | Hebrew Windows encoding |
+| IBM 273 | [`encodings/ibm_273.tbl`](encodings/ibm_273.tbl) | IBM 273 encoding (German Characters) |
 | ISO/IEC 646 | [`encodings/iso_646.tbl`](encodings/iso_646.tbl) | ISO/IEC 646 encoding, an older version of ASCII |
 | ISO/IEC 6937 | [`encodings/iso_6937.tbl`](encodings/iso_6937.tbl) | ISO/IEC 6937 encoding, an extension of ASCII containing additional character |
 | JIS 0201 | [`encodings/jis_x_0201.tbl`](encodings/jis_x_0201.tbl) | JIS X 0201 encoding in UTF-8 |
