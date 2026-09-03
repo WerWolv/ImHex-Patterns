@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://gitlab.com/EvelynTSMG/imhex-ffx-pats.git
+	branch = main
+	commit = 199879e24ac56fda9b6cb7e86a64d30f1290891e
+	parent = 786d00ceb465f5287531d1f75cf8b3d19ba3221a
+	method = merge
+	cmdver = 0.4.9

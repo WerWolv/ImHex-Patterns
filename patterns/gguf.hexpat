@@ -4,8 +4,10 @@
 #pragma description ggml GGUF v3
 #pragma authors @leonjza, jessie @ imhex discord
 #pragma magic [ 47 47 55 46 ] @ 0x00
+#pragma array_limit 300000
+#pragma pattern_limit 1000000
 
-#pragma pattern_limit 300000
+import std.string;
 
 enum ggml_type: u32 {
     GGML_TYPE_F32     = 0,
@@ -80,8 +82,11 @@ struct gguf_string_t {
     u64 len;
     // The string as a UTF-8 non-null-terminated string.
     char string[len];
-};
+} [[format("format_gguf_str")]];
 
+fn format_gguf_str(gguf_string_t val) {
+    return val.string;
+};
 
 struct gguf_metadata_value_t {
     gguf_metadata_value_type type;
@@ -120,7 +125,33 @@ struct gguf_metadata_value {
         (gguf_metadata_value_type::GGUF_METADATA_VALUE_TYPE_FLOAT64): double value;
         (gguf_metadata_value_type::GGUF_METADATA_VALUE_TYPE_ARRAY): gguf_metadata_value_t value;
     }
+} [[format("format_metadata_value")]];
+
+fn format_metadata_value(gguf_metadata_value val) {
+  str res = std::string::to_string(val.value);
+  res = only_first_line(res);
+  res = cut_to(res, 100);
+  return res;
 };
+
+fn only_first_line(str s) {
+  u32 len =  std::string::length(s);
+  for (u32 i = 0, i < len, i = i + 1) {
+    if (s[i] == '\n') {
+      return std::string::substr(s, 0, i) + " +LINES";
+    }
+  }
+  return s;
+};
+
+fn cut_to(str s, u32 max_len) {
+  u32 len = std::string::length(s);
+  if (len > max_len) {
+    return std::string::substr(s, 0, max_len - 3)  + "...";
+  }
+  return s;
+};
+
 
 struct gguf_metadata_kv_t {
     // The key of the metadata. It is a standard GGUF string, with the following caveats:
@@ -136,6 +167,10 @@ struct gguf_metadata_kv_t {
 
     // The value.
     gguf_metadata_value value;
+} [[format("format_metadata_kv")]];
+
+fn format_metadata_kv(gguf_metadata_kv_t kv) {
+  return std::format("{} = {}", kv.key, kv.value);
 };
 
 struct gguf_header_t {
@@ -182,7 +217,32 @@ struct gguf_tensor_info_t {
     //
     // Must be a multiple of `ALIGNMENT`. That is, `align_offset(offset) == offset`.
     u64 offset;
+} [[format("format_tensor_info")]];
+
+fn format_tensor_info(gguf_tensor_info_t info) {
+  str dim_str = format_dimensions(info);
+  str type_str = format_ggml_type(info.type);
+  return std::format("{} {} {}", info.name, dim_str, type_str);
 };
+
+fn format_dimensions(gguf_tensor_info_t info) {
+    str res = "";
+    for (u32 i = 0, i < info.n_dimensions, i = i + 1) {
+      res = res + std::string::to_string(info.dimensions[i]) + "x";
+    }
+    u32 len = std::string::length(res);
+    if (len > 0) {
+      res = std::string::substr(res, 0, len - 1);
+    }
+    return res;
+};
+
+fn format_ggml_type(ggml_type type) {
+  str res = std::string::to_string(type);
+  res = std::string::replace(res, "ggml_type::GGML_TYPE_", "");
+  return res;
+};
+
 
 struct gguf_file_t {
     // The header of the file.

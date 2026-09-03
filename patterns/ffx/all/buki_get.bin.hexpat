@@ -1,0 +1,161 @@
+#include "std/io.pat"
+
+enum GearType : u8 {
+    Weapon = 0,
+    Armor = 1,
+};
+
+enum GearAbilities : u16 {
+    Sensor = 0x8000,
+    FirstStrike,
+    Initiative,
+    Counterattack,
+    EvadeAndCounter,
+    MagicCounter,
+    MagicBooster,
+    Alchemy,
+    AutoPotion,
+    AutoMed,
+    AutoPhoenix,
+    Piercing,
+    HalfMpCost,
+    OneMpCost,
+    DoubleOverdrive,
+    TripleOverdrive,
+    OverdriveToAp,
+    DoubleAp,
+    TripleAp,
+    NoAp,
+    Pickpocket,
+    MasterThief,
+    BreakHpLimit,
+    BreakMpLimit,
+    BreakDamageLimit,
+    Gillionaire,
+    HpStroll,
+    MpStroll,
+    NoEncounters,
+    Firestrike,
+    FireWard,
+    Fireproof,
+    FireEater,
+    Icestrike,
+    IceWard,
+    Iceproof,
+    IceEater,
+    Lightningstrike,
+    LightningWard,
+    Lightningproof,
+    LightningEater,
+    Waterstrike,
+    WaterWard,
+    Waterproof,
+    WaterEater,
+    Deathstrike,
+    Deathtouch,
+    Deathproof,
+    DeathWard,
+    Zombiestrike,
+    Zombietouch,
+    Zombieproof,
+    ZombieWard,
+    Stonestrike,
+    Stonetouch,
+    Stoneproof,
+    StoneWard,
+    Poisonstrike,
+    Poisontouch,
+    Poisonproof,
+    PoisonWard,
+    Sleepstrike,
+    Sleeptouch,
+    Sleepproof,
+    SleepWard,
+    Silencestrike,
+    Silencetouch,
+    Silenceproof,
+    SilenceWard,
+    Darkstrike,
+    Darktouch,
+    Darkproof,
+    DarkWard,
+    Slowstrike,
+    Slowtouch,
+    Slowproof,
+    SlowWard,
+    Confuseproof,
+    ConfuseWard,
+    Berserkproof,
+    BerserkWard,
+    Curseproof,
+    Curseward,
+    AutoShell,
+    AutoProtect,
+    AutoHaste,
+    AutoRegen,
+    AutoReflect,
+    SosShell,
+    SosProtect,
+    SosHaste,
+    SosRegen,
+    SosReflect,
+    SosNulWater,
+    SosNulIce,
+    SosNulThunder,
+    SosNulFire,
+    Strength3,
+    Strength5,
+    Strength10,
+    Strength20,
+    Magic3,
+    Magic5,
+    Magic10,
+    Magic20,
+    Defense3,
+    Defense5,
+    Defense10,
+    Defense20,
+    MagicDefense3,
+    MagicDefense5,
+    MagicDefense10,
+    MagicDefense20,
+    Hp5,
+    Hp10,
+    Hp20,
+    Hp30,
+    Mp5,
+    Mp10,
+    Mp20,
+    Mp30,
+    Capture,
+    AeonImmunities,
+    DistillPower,
+    DistillMana,
+    DistillSpeed,
+    DistillAbility,
+    Ribbon,
+};
+
+bitfield GearProps {
+    flag1 : 1;
+    hidden : 1;
+    no_kaizou : 1;
+    brotherhood : 1;
+    padding : 4;
+};
+
+struct Gear {
+    GearProps properties;
+    u8 owner;
+    GearType type;
+    u8;
+    u8 dmg_formula;
+    u8 power;
+    u8 crit_bonus; 
+    u8 slot_count;
+    GearAbilities abilities[4];
+};
+
+u16 max_idx @ 0xA [[hidden]];
+u32 start_offset @ 0x10 [[hidden]];
+Gear gear[max_idx + 1] @ start_offset;

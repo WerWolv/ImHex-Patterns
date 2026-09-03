@@ -41,7 +41,7 @@ namespace format {
 	};
 
 	fn ram_type(u8 ramType) {
-		u16 ramSize;
+		u32 ramSize;
 		u16 ramBanks;
 		if(ramType == 2) {
 			ramSize = 8192;

@@ -18,7 +18,7 @@ namespace auto std::time {
         u8 hour;
         u8 mday;
         u8 mon;
-        u16 year;
+        s16 year;
         u8 wday;
         u16 yday;
         bool isdst;
@@ -91,7 +91,7 @@ namespace auto std::time {
         @param epoch_time The time in seconds since the epoch.
         @return The local time.
     */
-    fn to_local(EpochTime epoch_time) {
+    fn to_local(auto epoch_time) {
         le TimeConverter converter;
 
         converter.value = builtin::std::time::to_local(epoch_time);
@@ -104,7 +104,7 @@ namespace auto std::time {
         @param epoch_time The time in seconds since the epoch.
         @return The UTC time.
     */
-    fn to_utc(EpochTime epoch_time) {
+    fn to_utc(auto epoch_time) {
         le TimeConverter converter;
 
         converter.value = builtin::std::time::to_utc(epoch_time);
@@ -162,7 +162,7 @@ namespace auto std::time {
         @return Timestamp formatted as unix time.
     */
     fn filetime_to_unix(u64 value) {
-        return value / 10000000 - 11644473600;
+        return s64(value / 10000000) - s64(11644473600);
     };
 
     /**

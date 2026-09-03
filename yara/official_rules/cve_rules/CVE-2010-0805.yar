@@ -1,0 +1,19 @@
+/*
+    This Yara ruleset is under the GNU-GPLv2 license (http://www.gnu.org/licenses/gpl-2.0.html) and open to any user or organization, as    long as you use it under this license.
+
+*/
+
+rule MSIETabularActivex
+{
+        meta:
+                ref = "CVE-2010-0805"
+                impact = 7
+                hide = true
+                author = "@d3t0n4t0r"
+        strings:
+                $cve20100805_1 = "333C7BC4-460F-11D0-BC04-0080C7055A83" nocase fullword
+                $cve20100805_2 = "DataURL" nocase fullword
+                $cve20100805_3 = "true"
+        condition:
+                ($cve20100805_1 and $cve20100805_3) or (all of them)
+}
