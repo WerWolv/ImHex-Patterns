@@ -121,6 +121,9 @@ def handle_meta(meta):
         global top_level_struct_name
         top_level_struct_name = str(meta["id"]).capitalize()
 
+def handle_expr(expr):
+    return expr
+
 def handle_types(types, types_info):
     result = ""
     for type in types:
@@ -170,6 +173,18 @@ def handle_seq(seq, type_info, types_info):
 
         entry_type, array_size = get_entry_type_size(entry, type_info, types_info)
 
+        if "repeat" in entry:
+            repeat = entry["repeat"]
+            repeat_size = None
+            if array_size:
+                entry_type = f"std::Array<{entry_type}, {array_size}>"
+            if repeat == "eos":
+                repeat_size = "while(!std::mem::eof())"
+            elif "repeat-expr" in entry:
+                repeat_size = handle_expr(str(entry["repeat-expr"]))
+
+            array_size = repeat_size
+
         if re.compile("^b[0-9]+$").match(entry_type):
             is_bitfield = True
             bitfield_field_size = int(entry_type[1:])
@@ -193,7 +208,7 @@ def handle_seq(seq, type_info, types_info):
 def generate_imhex_pattern(data):
     global top_level_struct
 
-    add_line("import type.magic;\n")
+    add_line("import type.magic;\nimport std.array;\n")
 
     if "meta" in data:
        handle_meta(data["meta"])
