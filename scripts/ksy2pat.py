@@ -114,6 +114,14 @@ def handle_enums(enums, enums_info):
         result += "};\n\n"
     return result
 
+def handle_if(expr, enums_info):
+    enums = set(re.findall(r"(\w+)::", expr))
+    for enum_name in enums:
+        if enum_name in enums_info:
+            name = convert_enum_name(enum_name, enums_info[enum_name])
+            expr = expr.replace(enum_name + "::", name + "::")
+    return expr
+
 def handle_types(types, types_info, enums_info):
     result = ""
     for type in types:
@@ -204,7 +212,8 @@ def handle_seq(seq, type_info, types_info, enums_info):
         new_line = ""
 
         if "if" in entry:
-            new_line += f"    if ({entry['if']})\n    "
+            condition = handle_if(entry['if'], enums_info)
+            new_line += f"    if ({condition})\n    "
         
         if array_size != "":
             new_line += f"    {entry_type} {name}[{array_size}];"
