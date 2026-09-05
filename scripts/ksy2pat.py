@@ -8,6 +8,12 @@ output = ""
 top_level_struct_name = ""
 top_level_struct = ""
 
+TYPES = {
+    "u1": "u8", "u2": "u16", "u4": "u32", "u8": "u64",
+    "s1": "s8", "s2": "s16", "s4": "s32", "s8": "s64",
+    "f4": "float", "f8": "double",
+}
+
 def fixTypeName(name):
     name = name.replace("_", " ")
     name = string.capwords(name)
@@ -31,6 +37,20 @@ def struct_decl_header(type, is_bitfield):
     if is_bitfield:
         return f"bitfield {fixTypeName(type)} {{\n"
     return f"struct {fixTypeName(type)} {{\n"
+
+def convert_type(entry):
+    entry_type = entry["type"]
+    if entry_type == "str":
+        if entry["encoding"] == "UTF-16LE":
+            return "le char16"
+        elif entry["encoding"] == "UTF-16BE":
+            return "be char16"
+        return "char"
+
+    if entry_type in TYPES:
+        return TYPES[entry_type]
+
+    return fixTypeName(entry_type)
 
 def add_line(line, indent = 0):
     global output
@@ -107,38 +127,8 @@ def handle_seq(seq):
             docs = entry["doc"]
 
         if "type" in entry:
-            entry_type = entry["type"]
+            entry_type = convert_type(entry)
 
-        if entry_type == "str":
-            if entry["encoding"] == "UTF-16LE":
-                entry_type = "le char16"
-            elif entry["encoding"] == "UTF-16BE":
-                entry_type = "be char16"
-            else:
-                entry_type = "char"
-        elif entry_type == "u1":
-            entry_type = "u8"
-        elif entry_type == "u2":
-            entry_type = "u16"
-        elif entry_type == "u4":
-            entry_type = "u32"
-        elif entry_type == "u8":
-            entry_type = "u64"
-        elif entry_type == "s1":
-            entry_type = "s8"
-        elif entry_type == "s2":
-            entry_type = "s16"
-        elif entry_type == "s4":
-            entry_type = "s32"
-        elif entry_type == "s8":
-            entry_type = "s64"
-        elif entry_type == "f4":
-            entry_type = "float"
-        elif entry_type == "f8":
-            entry_type = "double"
-        else:
-            entry_type = fixTypeName(entry_type)
-        
         if "contents" in entry:
             if isinstance(entry["contents"], str):
                 entry_type = f"type::Magic<\"{entry['contents']}\">"
