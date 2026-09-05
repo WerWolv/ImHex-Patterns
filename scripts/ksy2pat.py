@@ -50,6 +50,10 @@ def convert_type(entry):
     if entry_type in TYPES:
         return TYPES[entry_type]
 
+    for suffix in ("le", "be"):
+        if entry_type.endswith(suffix) and entry_type[:-2] in TYPES:
+            return suffix + " " + TYPES[entry_type[:-2]]
+
     return fixTypeName(entry_type)
 
 def add_line(line, indent = 0):
