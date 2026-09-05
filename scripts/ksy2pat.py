@@ -137,7 +137,6 @@ def handle_seq(seq):
             if isinstance(entry["contents"], str):
                 entry_type = f"type::Magic<\"{entry['contents']}\">"
             else:
-                array_size = len(entry["contents"])
                 encoded_string = ""
                 for char in entry["contents"]:
                     encoded_string += f"\\x{char:02X}"
