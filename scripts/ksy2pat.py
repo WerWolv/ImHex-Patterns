@@ -15,6 +15,23 @@ def fixTypeName(name):
 
     return name
 
+def format_comment(comment):
+    if comment != "":
+        return " // " + comment.replace('\n', ' ')
+    return ""
+
+def declare_variable(name, entry_type, array_size, bitfield_field_size):
+    if array_size != "":
+        return f"{entry_type} {name}[{array_size}];"
+    if bitfield_field_size != "":
+        return f"{name} : {bitfield_field_size};"
+    return f"{entry_type} {name};"
+
+def struct_decl_header(type, is_bitfield):
+    if is_bitfield:
+        return f"bitfield {fixTypeName(type)} {{\n"
+    return f"struct {fixTypeName(type)} {{\n"
+
 def add_line(line, indent = 0):
     global output
     output += (" " * indent) + line + "\n"
@@ -54,10 +71,7 @@ def handle_types(types):
         if "instances" in entry:
             lines += handle_instances(entry["instances"])
 
-        if is_bitfield:
-            result += f"bitfield {fixTypeName(type)} {{\n"
-        else:
-            result += f"struct {fixTypeName(type)} {{\n"
+        result += struct_decl_header(type, is_bitfield)
 
         result += lines + "\n"
 
@@ -70,10 +84,7 @@ def handle_instances(instances):
     for name in instances:
         instance = instances[name]
         result += f"    auto {name} = {instance['value']} [[export]];"
-
-        if "doc" in instance:
-            result += " // " + instance["doc"].replace('\n', ' ')
-        
+        result += format_comment(instance.get("doc", ""))
         result += "\n"
 
     return result.rstrip()
@@ -90,7 +101,6 @@ def handle_seq(seq):
         entry_type = ""
         array_size = ""
         bitfield_field_size = ""
-        content_check = ""
         docs = ""
 
         if "doc" in entry:
@@ -154,15 +164,9 @@ def handle_seq(seq):
         if "if" in entry:
             new_line += f"    if ({entry['if']})\n    "
         
-        if array_size != "":
-            new_line += f"    {entry_type} {name}[{array_size}];"
-        elif bitfield_field_size != "":
-            new_line += f"    {name} : {bitfield_field_size};"
-        else:
-            new_line += f"    {entry_type} {name};"
+        new_line += "    " + declare_variable(name, entry_type, array_size, bitfield_field_size)
 
-        if docs != "":
-            new_line += " // " + docs.replace('\n', ' ')
+        new_line += format_comment(docs)
 
         lines.append(new_line)
 
