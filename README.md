@@ -111,6 +111,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | FAT32 (DFIR) | | [`patterns/DFIR/FAT32.hexpat`](patterns/DFIR/FAT32.hexpat) | Imported by DISK_PARSER.hexpat |
 | FBX | | [`patterns/fbx.hexpat`](patterns/fbx.hexpat) | Kaydara FBX Binary |
 | FDT | | [`patterns/fdt.hexpat`](patterns/fdt.hexpat) | Flat Linux Device Tree blob |
+| FEZ Save File | | [`patterns/fez.hexpat`](patterns/fez.hexpat) | Game Save File format for FEZ |
 | FFX | | [`patterns/ffx/*`](https://gitlab.com/EvelynTSMG/imhex-ffx-pats) | Various Final Fantasy X files |
 | File System | `application/x-ima` | [`patterns/fs/pattern.hexpat`](patterns/fs/pattern.hexpat) | Drive File System |
 | FLAC | `audio/flac` | [`patterns/flac.hexpat`](patterns/flac.hexpat) | Free Lossless Audio Codec, FLAC Audio Format |
