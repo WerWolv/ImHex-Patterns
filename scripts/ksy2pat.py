@@ -52,6 +52,24 @@ def convert_type(entry):
 
     return fixTypeName(entry_type)
 
+def fetch_type_info(type_name, types_info):
+    return types_info.setdefault(type_name, {"type": type_name})
+
+def collect_seq_type_info(seq, parent_type, types_info):
+    if not seq:
+        return
+
+    type_info = fetch_type_info(parent_type, types_info)
+
+def collect_type_info(data, top_level_struct_name):
+    types_info = {}
+
+    collect_seq_type_info(data.get("seq"), top_level_struct_name, types_info)
+    for parent_type, entry in data.get("types", {}).items():
+        collect_seq_type_info(entry.get("seq"), parent_type, types_info)
+
+    return types_info
+
 def add_line(line, indent = 0):
     global output
     output += (" " * indent) + line + "\n"
@@ -78,16 +96,17 @@ def handle_meta(meta):
         global top_level_struct_name
         top_level_struct_name = str(meta["id"]).capitalize()
 
-def handle_types(types):
+def handle_types(types, types_info):
     result = ""
     for type in types:
         entry = types[type]
 
+        type_info = types_info.get(type, {})
         is_bitfield = False
         lines = ""
 
         if "seq" in entry:
-            is_bitfield, lines = handle_seq(entry["seq"])
+            is_bitfield, lines = handle_seq(entry["seq"], type_info, types_info)
         if "instances" in entry:
             lines += handle_instances(entry["instances"])
 
@@ -110,7 +129,7 @@ def handle_instances(instances):
     return result.rstrip()
 
 
-def handle_seq(seq):
+def handle_seq(seq, type_info, types_info):
     result = ""
 
     is_bitfield = False
@@ -173,13 +192,14 @@ def generate_imhex_pattern(data):
     if "meta" in data:
        handle_meta(data["meta"])
 
+    types_info = collect_type_info(data, top_level_struct_name)
     add_line("")
 
     if "types" in data:
-        add_line(handle_types(data["types"]))
+        add_line(handle_types(data["types"], types_info))
     
     if "seq" in data:
-        add_line(handle_types({ top_level_struct_name: { "seq": data["seq"] } }))
+        add_line(handle_types({ top_level_struct_name: { "seq": data["seq"] } }, types_info))
 
     add_line(f"{fixTypeName(top_level_struct_name)} {fixTypeName(top_level_struct_name).lower()} @ 0x00;\n")
 
