@@ -57,8 +57,9 @@ def convert_type(entry):
     return fixTypeName(entry_type)
 
 def translate_size(array_size):
-    if isinstance(array_size, str):
-        array_size = array_size.replace("_root", "parent")
+    array_size = array_size.replace("_io.size", "std::mem::size()")
+    array_size = array_size.replace("_io.pos", "($ - std::mem::base_address())")
+    array_size = array_size.replace("_root", "parent")
 
     return array_size
 
@@ -160,7 +161,7 @@ def handle_seq(seq):
 
                 entry_type = f"type::Magic<\"{encoded_string}\">"
         elif "size" in entry:
-            array_size = translate_size(entry["size"])
+            array_size = translate_size(str(entry["size"]))
             entry_type, array_size = update_type_size(entry_type, array_size, entry)
 
         if re.compile("^b[0-9]+$").match(entry_type):
