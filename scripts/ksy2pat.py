@@ -27,7 +27,7 @@ def format_comment(comment):
     return ""
 
 def declare_variable(name, entry_type, array_size, bitfield_field_size):
-    if array_size != "":
+    if array_size:
         return f"{entry_type} {name}[{array_size}];"
     if bitfield_field_size != "":
         return f"{name} : {bitfield_field_size};"
@@ -55,6 +55,12 @@ def convert_type(entry):
             return suffix + " " + TYPES[entry_type[:-2]]
 
     return fixTypeName(entry_type)
+
+def translate_size(array_size):
+    if isinstance(array_size, str):
+        array_size = array_size.replace("_root", "parent")
+
+    return array_size
 
 def add_line(line, indent = 0):
     global output
@@ -123,7 +129,7 @@ def handle_seq(seq):
     for entry in seq:
         name = entry["id"]
         entry_type = ""
-        array_size = ""
+        array_size = None
         bitfield_field_size = ""
         docs = ""
 
@@ -143,9 +149,7 @@ def handle_seq(seq):
 
                 entry_type = f"type::Magic<\"{encoded_string}\">"
         elif "size" in entry:
-            array_size = entry["size"]
-            if isinstance(array_size, str):
-                array_size = array_size.replace("_root", "parent")
+            array_size = translate_size(entry["size"])
             entry_type = "u8"
 
         if re.compile("^b[0-9]+$").match(entry_type):
