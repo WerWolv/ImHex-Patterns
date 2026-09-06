@@ -62,6 +62,17 @@ def translate_size(array_size):
 
     return array_size
 
+def update_type_size(entry_type, array_size, entry):
+    if "type" not in entry or entry.get("type") == "str":
+        if entry_type == "":
+            entry_type = "u8"
+        elif entry.get("encoding").startswith("UTF-16"):
+            array_size = "(" + str(array_size) + ") / 2"
+
+        return entry_type, array_size
+
+    return entry_type, None
+
 def add_line(line, indent = 0):
     global output
     output += (" " * indent) + line + "\n"
@@ -150,7 +161,7 @@ def handle_seq(seq):
                 entry_type = f"type::Magic<\"{encoded_string}\">"
         elif "size" in entry:
             array_size = translate_size(entry["size"])
-            entry_type = "u8"
+            entry_type, array_size = update_type_size(entry_type, array_size, entry)
 
         if re.compile("^b[0-9]+$").match(entry_type):
             is_bitfield = True
