@@ -33,10 +33,19 @@ def declare_variable(name, entry_type, array_size, bitfield_field_size):
         return f"{name} : {bitfield_field_size};"
     return f"{entry_type} {name};"
 
-def struct_decl_header(type, is_bitfield):
+def struct_decl_header(type, is_bitfield, types_info):
     if is_bitfield:
         return f"bitfield {fixTypeName(type)} {{\n"
-    return f"struct {fixTypeName(type)} {{\n"
+    template = ""
+    if "as_substream" in types_info.get(type, {}):
+        template = "<auto offset, auto size>"
+    return f"struct {fixTypeName(type)}{template} {{\n"
+
+def union_decl_header(type, with_size):
+    template = ""
+    if with_size:
+        template = "<auto size>"
+    return f"union {fixTypeName(type)}{template} {{\n"
 
 def convert_type(entry):
     entry_type = entry["type"]
@@ -56,9 +65,13 @@ def convert_type(entry):
 
     return fixTypeName(entry_type)
 
-def translate_size(array_size):
-    array_size = array_size.replace("_io.size", "std::mem::size()")
-    array_size = array_size.replace("_io.pos", "($ - std::mem::base_address())")
+def translate_size(array_size, is_substream):
+    if is_substream:
+        array_size = array_size.replace("_io.size", "size")
+        array_size = array_size.replace("_io.pos", "($ - offset)")
+    else:
+        array_size = array_size.replace("_io.size", "std::mem::size()")
+        array_size = array_size.replace("_io.pos", "($ - std::mem::base_address())")
     array_size = array_size.replace("_root", "parent")
 
     return array_size
@@ -72,7 +85,68 @@ def update_type_size(entry_type, array_size, entry):
 
         return entry_type, array_size
 
+    entry_type += f"Padded<{array_size}>"
+
     return entry_type, None
+
+def fetch_type_info(type_name, types_info):
+    return types_info.setdefault(type_name, {"type": type_name})
+
+def is_entry_substream(entry):
+    names = {"size", "size-eos", "terminator"}
+    return not entry.keys().isdisjoint(names)
+
+def mark_type_substream(type_info, types_info, seen):
+    any_substream = False
+    for parent_type in type_info.get("parents", []):
+        if parent_type in seen:
+            if seen[parent_type]:
+                type_info["as_substream"] = True
+                any_substream = True
+            continue
+        seen[parent_type] = False
+        parent_type_info = fetch_type_info(parent_type, types_info)
+        for entry in parent_type_info.get("seq", []):
+            if entry.get("type") == type_info["type"]:
+                if is_entry_substream(entry) or mark_type_substream(parent_type_info, types_info, seen):
+                    type_info["as_substream"] = True
+                    seen[parent_type] = True
+                    any_substream = True
+
+    return any_substream
+
+def collect_seq_type_info(seq, parent_type, types_info):
+    if not seq:
+        return
+
+    type_info = fetch_type_info(parent_type, types_info)
+    type_info["seq"] = seq
+
+    for entry in seq:
+        child_type_info = None
+        type_name = entry.get("type")
+        if type_name and isinstance(type_name, str):
+            child_type_info = fetch_type_info(type_name, types_info)
+            child_type_info.setdefault("parents", set()).add(parent_type)
+
+        if "size" in entry:
+            if "_io." in str(entry["size"]):
+                type_info["uses_io"] = True
+
+            if child_type_info:
+                child_type_info["as_padded"] = True
+
+def collect_type_info(data, top_level_struct_name):
+    types_info = {}
+    collect_seq_type_info(data.get("seq"), top_level_struct_name, types_info)
+    for parent_type, entry in data.get("types", {}).items():
+        collect_seq_type_info(entry.get("seq"), parent_type, types_info)
+
+    for type_info in types_info.values():
+        if type_info.get("uses_io", False):
+            mark_type_substream(type_info, types_info, {})
+
+    return types_info
 
 def add_line(line, indent = 0):
     global output
@@ -100,24 +174,43 @@ def handle_meta(meta):
         global top_level_struct_name
         top_level_struct_name = str(meta["id"]).capitalize()
 
-def handle_types(types):
+def handle_padded_type(type_info):
+    if "as_padded" not in type_info:
+        return ""
+
+    type_name = type_info["type"]
+    template = ""
+    if "as_substream" in type_info:
+        template = "<addressof(this), size>"
+
+    result = union_decl_header(type_name + "_padded", True)
+    result += "    " + fixTypeName(type_name) + template + ";\n"
+    result += "    u8 _padding[size];\n"
+    result += "};\n\n"
+
+    return result
+
+def handle_types(types, types_info):
     result = ""
     for type in types:
         entry = types[type]
 
+        type_info = types_info.get(type, {})
         is_bitfield = False
         lines = ""
 
         if "seq" in entry:
-            is_bitfield, lines = handle_seq(entry["seq"])
+            is_bitfield, lines = handle_seq(entry["seq"], type_info, types_info)
         if "instances" in entry:
             lines += handle_instances(entry["instances"])
 
-        result += struct_decl_header(type, is_bitfield)
+        result += struct_decl_header(type, is_bitfield, types_info)
 
         result += lines + "\n"
 
         result += "};\n\n"
+
+        result += handle_padded_type(type_info)
 
     return result
 
@@ -132,9 +225,10 @@ def handle_instances(instances):
     return result.rstrip()
 
 
-def handle_seq(seq):
+def handle_seq(seq, type_info, types_info):
     result = ""
 
+    is_substream = "as_substream" in type_info
     is_bitfield = False
     lines = []
 
@@ -161,8 +255,12 @@ def handle_seq(seq):
 
                 entry_type = f"type::Magic<\"{encoded_string}\">"
         elif "size" in entry:
-            array_size = translate_size(str(entry["size"]))
+            array_size = translate_size(str(entry["size"]), is_substream)
             entry_type, array_size = update_type_size(entry_type, array_size, entry)
+        elif "as_substream" in types_info.get(entry.get("type"), {}):
+            offset = "offset" if is_substream else "std::mem::base_address()"
+            size = "size" if is_substream else "std::mem::size()"
+            entry_type += f"<{offset}, {size}>"
 
         if re.compile("^b[0-9]+$").match(entry_type):
             is_bitfield = True
@@ -192,13 +290,15 @@ def generate_imhex_pattern(data):
     if "meta" in data:
        handle_meta(data["meta"])
 
+    types_info = collect_type_info(data, top_level_struct_name)
+
     add_line("")
 
     if "types" in data:
-        add_line(handle_types(data["types"]))
+        add_line(handle_types(data["types"], types_info))
     
     if "seq" in data:
-        add_line(handle_types({ top_level_struct_name: { "seq": data["seq"] } }))
+        add_line(handle_types({ top_level_struct_name: { "seq": data["seq"] } }, types_info))
 
     add_line(f"{fixTypeName(top_level_struct_name)} {fixTypeName(top_level_struct_name).lower()} @ 0x00;\n")
 
