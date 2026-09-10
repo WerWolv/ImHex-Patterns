@@ -13,12 +13,13 @@ struct PascalString<auto W> {
     u16 size;
     char data[size];
     padding[W - size];
-} [[sealed, format("format_pascal_string")]];
+} [[sealed, format("format_pascal_string"), transform("format_pascal_string")]];
 fn format_pascal_string(auto s) {
-    return std::format("\"{}\"", type::escape_bytes(s.data));
+    // return std::format("\"{}\"", type::escape_bytes(s.data));
+    return s.data;
 };
 
-using PascalString_xor_ff<auto W> = PascalString<W> [[format("format_pascal_string_xor_ff")]];
+using PascalString_xor_ff<auto W> = PascalString<W> [[format("format_pascal_string_xor_ff"), transform("format_pascal_string_xor_ff")]];
 fn format_pascal_string_xor_ff(auto s) {
     str deobfuscated = s.data;
     auto i = 0;
@@ -26,7 +27,8 @@ fn format_pascal_string_xor_ff(auto s) {
         deobfuscated[i] = deobfuscated[i] ^ 0xff;
         i += 1;
     }
-    return std::format("\"{}\"", type::escape_bytes(deobfuscated));
+    // return std::format("\"{}\"", type::escape_bytes(deobfuscated));
+    return deobfuscated;
 };
 
 //using SMyUserAccess = u64;
