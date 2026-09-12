@@ -194,6 +194,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | NTFS (DFIR) | | [`patterns/DFIR/NTFS.hexpat`](patterns/DFIR/NTFS.hexpat) | Imported by DISK_PARSER.hexpat |
 | OGG | `audio/ogg` | [`patterns/ogg.hexpat`](patterns/ogg.hexpat) | OGG Audio format |
 | ORP / ORS | | [`patterns/orp.hexpat`](patterns/orp.hexpat) | OpenRGB profile format |
+| OSR | `application/x-osu-replay` | [`patterns/osr.hexpat`](patterns/osr.hexpat) | osu! replay file |
 | PACK | | [`patterns/roblox_pack.hexpat`](patterns/roblox_pack.hexpat) | Roblox shader archive format |
 | PAK | | [`patterns/xgspak.hexpat`](patterns/xgspak.hexpat) | Exient XGS Engine Pak files |
 | PCAP | `application/vnd.tcpdump.pcap` | [`patterns/pcap.hexpat`](patterns/pcap.hexpat) | pcap header and packets |
