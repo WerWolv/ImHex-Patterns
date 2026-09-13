@@ -56,11 +56,11 @@ CODEC_ENCODINGS = {
     "shift_jis": ("Shift_JIS", "Shift-JIS encoding"),
 }
 
-# No stdlib codec for JIS X 0201. Its Roman set and half-width katakana equal
-# shift_jis's single-byte range (see all_files()).
-JIS_X0201_INFO = ("JIS_X0201", "JIS X 0201 encoding (half-width katakana; Roman set "
-                  "generated from shift_jis, so it matches ASCII rather than true "
-                  "JIS X0201 Roman at 0x5C/0x7E)")
+# No stdlib codec for JIS X 0201. Its half-width katakana equal shift_jis's
+# single-byte range (see all_files()). Roman set is ASCII except two yen/overline
+# positions, patched in below since shift_jis maps those to backslash/tilde.
+JIS_X0201_INFO = ("JIS_X0201", "JIS X 0201 encoding (half-width katakana and Roman set)")
+JIS_X0201_OVERRIDES = {"5C": "¥", "7E": "‾"}
 
 
 def normalize(name):
@@ -159,6 +159,7 @@ def all_files():
     entries_by_key = {codec: gen_codec_entries(codec) for codec in CODEC_ENCODINGS}
     entries_by_key["jis_x0201"] = {k: v for k, v in entries_by_key["shift_jis"].items()
                                     if len(k) == 2}
+    entries_by_key["jis_x0201"].update(JIS_X0201_OVERRIDES)
 
     stems = {key: normalize(codecs.lookup(key).name if key in CODEC_ENCODINGS else key)
              for key in entries_by_key}
