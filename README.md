@@ -331,37 +331,18 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 
 ### Encoding files
 
-[`scripts/generate.py`](scripts/generate.py) generates every file here except
-the two Pokémon tables (see below). It reads Python's stdlib
-`codecs`/`encodings` modules. Nothing here is hand-transcribed.
+Except for the two Pokémon tables, every file here is generated from Python's
+stdlib `codecs` by [`scripts/generate.py`](scripts/generate.py). Run it to
+regenerate the directory. Run it with `--check` to verify the directory
+without writing anything. There is no file for UTF-8. ImHex decodes UTF-8
+algorithmically.
 
-Run `python3 scripts/generate.py` to regenerate this directory. Run
-`python3 scripts/generate.py --check` to verify it without writing anything;
-this also fails if the directory has extra files.
-
-UTF-8 has no file here. ImHex decodes UTF-8 algorithmically.
-
-Each filename is the Python codec's own name. Filenames are lowercase, so
-each file's first line is `-name`, the properly-capitalized IANA name. Most
-files also have a `-description` line.
-
-Some files have an `-include <base-name>` line: the base file's entries also
-apply to this file. The generator adds `-include` only when one encoding's
-entries are an exact superset of another's, with no value ever needing to
-change — it checks every pair of encodings for this, not a fixed list. In
-practice, every ASCII-transparent encoding includes `ascii`, and
-`Windows-31J`/`Shift_JIS` both include `JIS_X0201`. Nothing else qualifies:
-a few single-byte encodings overlap by coincidence, but always disagree on
-some value, so they never become a base.
-
-Every other name a codec is known by gets its own file too, containing only
-one line, `-alias <primary-name>`, so ImHex can resolve any known name
-without reading the full primary file. The table below links to each
-primary file; use its `-name` line as the display name.
-
-The two Pokémon tables are hand-authored. No codec or library covers them.
-The generator leaves them alone — see `HAND_AUTHORED_FILES` in
-`scripts/generate.py`.
+Filenames match each codec's own Python name. Each file has a
+properly-capitalized IANA name on its `-name` line. If one encoding's entries
+are an exact superset of another's, it uses `-include` instead of repeating
+them. For example, every ASCII-transparent encoding includes `ascii`. Every
+other name a codec is known by gets its own one-line `-alias` file, so ImHex
+can resolve it too.
 
 | Name | Description |
 |------|-------------|
@@ -396,7 +377,6 @@ The generator leaves them alone — see `HAND_AUTHORED_FILES` in
 | [KOI8-U](encodings/koi8_u.tbl) | Cyrillic KOI8-U encoding (Ukrainian characters) |
 | [macintosh](encodings/mac_roman.tbl) | Classic Mac OS Roman character encoding |
 | [Shift_JIS](encodings/shift_jis.tbl) | Shift-JIS encoding |
-| [JIS X 0211](encodings/jis_x_0211.tbl) | JIS X 0211 encoding in UTF-8 — no IANA charset registration (JIS X 0211 is a control-function standard, not a charset); content preserved as-is, unverified |
 | [Pokémon (English, Generation 1)](encodings/pokegen1_en.tbl) | Character encoding used by the English generation 1 Pokémon games |
 | [Pokémon (English, Generation 3)](encodings/pokegen3_en.tbl) | Character encoding used by the English generation 3 Pokémon games |
 
