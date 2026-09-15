@@ -26,12 +26,15 @@ def format_comment(comment):
         return " // " + comment.replace('\n', ' ')
     return ""
 
-def declare_variable(name, entry_type, array_size, bitfield_field_size):
-    if array_size != "":
-        return f"{entry_type} {name}[{array_size}];"
+def declare_variable(name, entry_type, array_size, bitfield_field_size, address = None):
+    location = ""
+    if address:
+        location = f" @ {address}"
+    if array_size:
+        return f"{entry_type} {name}[{array_size}]{location};"
     if bitfield_field_size != "":
-        return f"{name} : {bitfield_field_size};"
-    return f"{entry_type} {name};"
+        return f"{name} : {bitfield_field_size}{location};"
+    return f"{entry_type} {name}{location};"
 
 def struct_decl_header(type, is_bitfield):
     if is_bitfield:
@@ -60,6 +63,15 @@ def collect_seq_type_info(seq, parent_type, types_info):
         return
 
     type_info = fetch_type_info(parent_type, types_info)
+    type_info["repeats"] = {}
+
+    for entry in seq:
+        if "repeat-until" in entry:
+            until_checks = []
+            for match in re.finditer(r"(?<!\w)_(?:\[\s*\d+\s*\]|\.[a-zA-Z]\w*)*(?!\w)", str(entry["repeat-until"])):
+                until_checks.append({"check": match.group(), "start": match.start(), "end": match.end()})
+
+            type_info["repeats"][entry["id"]] = {"entry": entry, "until": until_checks}
 
 def collect_type_info(data, top_level_struct_name):
     types_info = {}
@@ -98,6 +110,24 @@ def get_entry_type_size(entry, type_info, types_info):
         entry_type = "u8"
 
     return entry_type, array_size
+
+def add_repeat_checks(types_info):
+    for type_name, type_info in types_info.items():
+        repeats = type_info.get("repeats", {})
+        for id, repeat_info in repeats.items():
+            entry = repeat_info.get("entry", {})
+            until_checks = repeat_info.get("until", [])
+            entry_type, array_size = get_entry_type_size(entry, type_info, types_info)
+            check_args = ["auto address"]
+            if array_size:
+                check_args.append("auto size")
+                array_size = "size"
+            for index, check_info in enumerate(until_checks):
+                line = f"fn {fixTypeName(type_name)}_{id}_check{index}({', '.join(check_args)}) {{\n"
+                line += "    " + declare_variable("value", entry_type, array_size, "", "address")
+                line += f"\n    return value{check_info['check'][1:]};\n"
+                line += "};\n"
+                add_line(line)
 
 def handle_meta_xref(xref):
     if "mime" in xref:
@@ -167,6 +197,7 @@ def handle_seq(seq, type_info, types_info):
         name = entry["id"]
         bitfield_field_size = ""
         docs = ""
+        new_line = ""
 
         if "doc" in entry:
             docs = entry["doc"]
@@ -176,20 +207,31 @@ def handle_seq(seq, type_info, types_info):
         if "repeat" in entry:
             repeat = entry["repeat"]
             repeat_size = None
+            check_args = ["$"]
             if array_size:
+                check_args.append(str(array_size))
                 entry_type = f"std::Array<{entry_type}, {array_size}>"
             if repeat == "eos":
                 repeat_size = "while(!std::mem::eof())"
             elif "repeat-expr" in entry:
                 repeat_size = handle_expr(str(entry["repeat-expr"]))
+            elif "repeat-until" in entry:
+                until_expr = handle_expr(str(entry["repeat-until"]))
+                repeat_info = type_info.get("repeats", {}).get(name, {})
+                until_checks = list(enumerate(repeat_info.get("until", [])))
+                for index, check_info in sorted(until_checks, key=lambda check: check[1]["start"], reverse=True):
+                    check_fn = f"{fixTypeName(type_info['type'])}_{name}_check{index}({', '.join(check_args)})"
+                    until_expr = until_expr[:check_info["start"]] + check_fn + until_expr[check_info["end"]:]
+
+                start_name = f"_{name}_start"
+                new_line = f"    auto {start_name} = $;\n"
+                repeat_size = f"while($ == {start_name} || !({until_expr}))"
 
             array_size = repeat_size
 
         if re.compile("^b[0-9]+$").match(entry_type):
             is_bitfield = True
             bitfield_field_size = int(entry_type[1:])
-
-        new_line = ""
 
         if "if" in entry:
             new_line += f"    if ({entry['if']})\n    "
@@ -215,6 +257,8 @@ def generate_imhex_pattern(data):
 
     types_info = collect_type_info(data, top_level_struct_name)
     add_line("")
+
+    add_repeat_checks(types_info)
 
     if "types" in data:
         add_line(handle_types(data["types"], types_info))
