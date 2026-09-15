@@ -56,6 +56,31 @@ def add_line(line, indent = 0):
     global output
     output += (" " * indent) + line + "\n"
 
+def get_entry_type_size(entry):
+    entry_type = ""
+    array_size = ""
+
+    if "type" in entry:
+        entry_type = convert_type(entry)
+
+    if "contents" in entry:
+        if isinstance(entry["contents"], str):
+            entry_type = f"type::Magic<\"{entry['contents']}\">"
+        else:
+            array_size = len(entry["contents"])
+            encoded_string = ""
+            for char in entry["contents"]:
+                encoded_string += f"\\x{char:02X}"
+
+            entry_type = f"type::Magic<\"{encoded_string}\">"
+    elif "size" in entry:
+        array_size = entry["size"]
+        if isinstance(array_size, str):
+            array_size = array_size.replace("_root", "parent")
+        entry_type = "u8"
+
+    return entry_type, array_size
+
 def handle_meta_xref(xref):
     if "mime" in xref:
         add_line(f"#pragma MIME {xref['mime']}")
@@ -118,32 +143,13 @@ def handle_seq(seq):
 
     for entry in seq:
         name = entry["id"]
-        entry_type = ""
-        array_size = ""
         bitfield_field_size = ""
         docs = ""
 
         if "doc" in entry:
             docs = entry["doc"]
 
-        if "type" in entry:
-            entry_type = convert_type(entry)
-
-        if "contents" in entry:
-            if isinstance(entry["contents"], str):
-                entry_type = f"type::Magic<\"{entry['contents']}\">"
-            else:
-                array_size = len(entry["contents"])
-                encoded_string = ""
-                for char in entry["contents"]:
-                    encoded_string += f"\\x{char:02X}"
-
-                entry_type = f"type::Magic<\"{encoded_string}\">"
-        elif "size" in entry:
-            array_size = entry["size"]
-            if isinstance(array_size, str):
-                array_size = array_size.replace("_root", "parent")
-            entry_type = "u8"
+        entry_type, array_size = get_entry_type_size(entry)
 
         if re.compile("^b[0-9]+$").match(entry_type):
             is_bitfield = True
