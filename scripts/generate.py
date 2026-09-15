@@ -184,9 +184,18 @@ def build_alias_body(primary_stem):
 
 
 def useful_aliases(key, aliases):
-    """Aliases worth a file: not the primary's own stem, and useful."""
+    """Aliases worth a file: useful, not the primary's own stem, and not
+    just the stem with a suffix tacked on (e.g. "iso_8859_8_1988" for
+    "iso8859_8")."""
     stem = stem_for(key)
-    return sorted(a for a in aliases if is_useful_alias(a) and normalize(a) != stem)
+    stem_bare = stem.replace("_", "")
+
+    def is_stem_plus_suffix(alias_bare):
+        return len(alias_bare) > len(stem_bare) and alias_bare.startswith(stem_bare)
+
+    return sorted(a for a in aliases if is_useful_alias(a)
+                  and normalize(a) != stem
+                  and not is_stem_plus_suffix(normalize(a).replace("_", "")))
 
 
 def all_encodings():

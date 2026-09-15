@@ -374,12 +374,12 @@ Each of these has one byte per character. Use these as the file encoding or as a
 | IBM437 | [`encodings/cp437.tbl`](encodings/cp437.tbl) | Original IBM PC encoding, with box-drawing and symbol characters | 256 | `ibm437` |
 | IBM866 | [`encodings/cp866.tbl`](encodings/cp866.tbl) | DOS encoding for Cyrillic languages (Russian and others) | 256 | `ibm866` |
 | windows-874 | [`encodings/cp874.tbl`](encodings/cp874.tbl) | Windows encoding for the Thai language | 225 | (none) |
-| ISO-8859-2 | [`encodings/iso8859_2.tbl`](encodings/iso8859_2.tbl) | ISO encoding for Central European languages (Polish, Czech, Hungarian, and others) | 256 | `iso_8859_2`, `iso_8859_2_1987`, `iso_ir_101`, `l2`, `latin2` |
-| ISO-8859-5 | [`encodings/iso8859_5.tbl`](encodings/iso8859_5.tbl) | ISO encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others) | 256 | `cyrillic`, `iso_8859_5`, `iso_8859_5_1988`, `iso_ir_144` |
-| ISO-8859-6 | [`encodings/iso8859_6.tbl`](encodings/iso8859_6.tbl) | ISO encoding for the Arabic language | 211 | `arabic`, `asmo_708`, `ecma_114`, `iso_8859_6`, `iso_8859_6_1987`, `iso_ir_127` |
-| ISO-8859-7 | [`encodings/iso8859_7.tbl`](encodings/iso8859_7.tbl) | ISO encoding for the Greek language | 253 | `ecma_118`, `elot_928`, `greek`, `greek8`, `iso_8859_7`, `iso_8859_7_1987`, `iso_ir_126` |
-| ISO-8859-8 | [`encodings/iso8859_8.tbl`](encodings/iso8859_8.tbl) | ISO encoding for the Hebrew language | 220 | `hebrew`, `iso_8859_8`, `iso_8859_8_1988`, `iso_ir_138` |
-| ISO-8859-9 | [`encodings/iso8859_9.tbl`](encodings/iso8859_9.tbl) | ISO encoding for the Turkish language | 256 | `iso_8859_9`, `iso_8859_9_1989`, `iso_ir_148`, `l5`, `latin5` |
+| ISO-8859-2 | [`encodings/iso8859_2.tbl`](encodings/iso8859_2.tbl) | ISO encoding for Central European languages (Polish, Czech, Hungarian, and others) | 256 | `iso_8859_2`, `iso_ir_101`, `l2`, `latin2` |
+| ISO-8859-5 | [`encodings/iso8859_5.tbl`](encodings/iso8859_5.tbl) | ISO encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others) | 256 | `cyrillic`, `iso_8859_5`, `iso_ir_144` |
+| ISO-8859-6 | [`encodings/iso8859_6.tbl`](encodings/iso8859_6.tbl) | ISO encoding for the Arabic language | 211 | `arabic`, `asmo_708`, `ecma_114`, `iso_8859_6`, `iso_ir_127` |
+| ISO-8859-7 | [`encodings/iso8859_7.tbl`](encodings/iso8859_7.tbl) | ISO encoding for the Greek language | 253 | `ecma_118`, `elot_928`, `greek`, `greek8`, `iso_8859_7`, `iso_ir_126` |
+| ISO-8859-8 | [`encodings/iso8859_8.tbl`](encodings/iso8859_8.tbl) | ISO encoding for the Hebrew language | 220 | `hebrew`, `iso_8859_8`, `iso_ir_138` |
+| ISO-8859-9 | [`encodings/iso8859_9.tbl`](encodings/iso8859_9.tbl) | ISO encoding for the Turkish language | 256 | `iso_8859_9`, `iso_ir_148`, `l5`, `latin5` |
 | ISO-8859-13 | [`encodings/iso8859_13.tbl`](encodings/iso8859_13.tbl) | ISO encoding for Baltic languages (Estonian, Latvian, Lithuanian) | 256 | `iso_8859_13`, `l7`, `latin7` |
 | KOI8-R | [`encodings/koi8_r.tbl`](encodings/koi8_r.tbl) | Cyrillic KOI8-R encoding (Russian characters) | 256 | (none) |
 | KOI8-U | [`encodings/koi8_u.tbl`](encodings/koi8_u.tbl) | Cyrillic KOI8-U encoding (Ukrainian characters) | 256 | (none) |
