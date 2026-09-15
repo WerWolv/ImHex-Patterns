@@ -1,5 +1,5 @@
 -name EUC-KR
--description EUC-KR encoding (generated from the cp949/UHC codec, a superset of EUC-KR)
+-description Extended Unix Code encoding for the Korean language
 -include ascii
 8141=갂
 8142=갃

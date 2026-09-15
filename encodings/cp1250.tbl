@@ -1,5 +1,5 @@
 -name windows-1250
--description Eastern Europe Windows encoding
+-description Windows encoding for Central European languages (Polish, Czech, Hungarian, and others)
 -include ascii
 80=€
 82=‚

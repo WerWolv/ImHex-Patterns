@@ -1,5 +1,5 @@
 -name Shift_JIS
--description Shift-JIS encoding
+-description Encoding for Japanese text
 -include ascii
 A1=｡
 A2=｢

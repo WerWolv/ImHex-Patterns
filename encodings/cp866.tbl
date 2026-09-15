@@ -1,5 +1,5 @@
 -name IBM866
--description Cyrillic DOS/OEM encoding
+-description DOS encoding for Cyrillic languages (Russian and others)
 -include ascii
 80=А
 81=Б

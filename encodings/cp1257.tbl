@@ -1,5 +1,5 @@
 -name windows-1257
--description Baltic Windows encoding
+-description Windows encoding for Baltic languages (Estonian, Latvian, Lithuanian)
 -include ascii
 80=€
 82=‚

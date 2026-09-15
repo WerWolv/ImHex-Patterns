@@ -1,5 +1,5 @@
 -name EUC-JP
--description EUC-JP encoding
+-description Extended Unix Code encoding for the Japanese language
 -include ascii
 8EA1=｡
 8EA2=｢

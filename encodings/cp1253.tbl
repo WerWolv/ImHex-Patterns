@@ -1,5 +1,5 @@
 -name windows-1253
--description Greek Windows encoding
+-description Windows encoding for the Greek language
 -include ascii
 80=€
 82=‚

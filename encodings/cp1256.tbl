@@ -1,5 +1,5 @@
 -name windows-1256
--description Arabic Windows encoding
+-description Windows encoding for the Arabic language
 -include ascii
 80=€
 81=پ

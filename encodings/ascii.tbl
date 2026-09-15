@@ -1,5 +1,5 @@
 -name US-ASCII
--description Regular ASCII encoding
+-description Basic 7-bit encoding for English text
 00=\u0000
 01=\u0001
 02=\u0002

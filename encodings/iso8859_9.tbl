@@ -1,5 +1,5 @@
 -name ISO-8859-9
--description Turkish ISO encoding
+-description ISO encoding for the Turkish language
 -include ascii
 80=\u0080
 81=\u0081

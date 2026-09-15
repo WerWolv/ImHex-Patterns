@@ -1,5 +1,5 @@
 -name ISO-8859-7
--description Greek ISO encoding
+-description ISO encoding for the Greek language
 -include ascii
 80=\u0080
 81=\u0081

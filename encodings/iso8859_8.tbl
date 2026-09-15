@@ -1,5 +1,5 @@
 -name ISO-8859-8
--description Hebrew ISO encoding
+-description ISO encoding for the Hebrew language
 -include ascii
 80=\u0080
 81=\u0081

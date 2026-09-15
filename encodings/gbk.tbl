@@ -1,5 +1,5 @@
 -name GBK
--description GBK encoding for Simplified Chinese
+-description Encoding for Simplified Chinese text
 -include ascii
 8140=丂
 8141=丄

@@ -1,5 +1,5 @@
 -name windows-1252
--description Extended ASCII encoding (Western Windows codepage)
+-description Windows encoding for Western European languages (English, French, German, and others)
 -include ascii
 80=€
 82=‚

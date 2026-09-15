@@ -1,5 +1,5 @@
 -name windows-1251
--description Cyrillic Windows encoding
+-description Windows encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others)
 -include ascii
 80=Ђ
 81=Ѓ

@@ -1,5 +1,5 @@
 -name windows-1254
--description Turkish Windows encoding
+-description Windows encoding for the Turkish language
 -include ascii
 80=€
 82=‚

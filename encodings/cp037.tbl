@@ -1,5 +1,5 @@
 -name IBM037
--description Extended Binary Coded Decimal Interchange Code, developed by IBM for their Main Frames
+-description Extended Binary Coded Decimal Interchange Code
 00=\u0000
 01=\u0001
 02=\u0002

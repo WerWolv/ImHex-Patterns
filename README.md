@@ -331,54 +331,81 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 
 ### Encoding files
 
-Except for the two Pokémon tables, every file here is generated from Python's
-stdlib `codecs` by [`scripts/generate.py`](scripts/generate.py). Run it to
-regenerate the directory. Run it with `--check` to verify the directory
-without writing anything. There is no file for UTF-8. ImHex decodes UTF-8
-algorithmically.
+Two Pokémon tables are hand-authored. All other files come from
+[`scripts/generate.py`](scripts/generate.py). It reads Python's stdlib
+`codecs`. Run it to regenerate the directory. Run it with `--check` to
+verify the directory. `--check` writes nothing.
 
 Filenames match each codec's own Python name. Each file has a
-properly-capitalized IANA name on its `-name` line. If one encoding's entries
-are an exact superset of another's, it uses `-include` instead of repeating
-them. For example, every ASCII-transparent encoding includes `ascii`. Every
-other name a codec is known by gets its own one-line `-alias` file, so ImHex
-can resolve it too.
+properly-capitalized IANA name on its `-name` line: a label for display,
+not a file identity. Some encodings include another encoding's entries
+with an `-include` line, instead of repeating them. This only happens
+when the entries match exactly. For example, every ASCII-transparent
+encoding includes `ascii`. Every other name a codec is known by gets its
+own `-alias` file. This lets ImHex resolve those names too.
 
-| Name | Description |
-|------|-------------|
-| [US-ASCII](encodings/ascii.tbl) | Regular ASCII encoding |
-| [Big5](encodings/big5hkscs.tbl) | Big5 encoding for Traditional Chinese (generated from the big5hkscs codec, a superset including the Hong Kong Supplementary Character Set) |
-| [IBM037](encodings/cp037.tbl) | Extended Binary Coded Decimal Interchange Code, developed by IBM for their Main Frames |
-| [windows-1250](encodings/cp1250.tbl) | Eastern Europe Windows encoding |
-| [windows-1251](encodings/cp1251.tbl) | Cyrillic Windows encoding |
-| [windows-1252](encodings/cp1252.tbl) | Extended ASCII encoding (Western Windows codepage) |
-| [windows-1253](encodings/cp1253.tbl) | Greek Windows encoding |
-| [windows-1254](encodings/cp1254.tbl) | Turkish Windows encoding |
-| [windows-1255](encodings/cp1255.tbl) | Hebrew Windows encoding |
-| [windows-1256](encodings/cp1256.tbl) | Arabic Windows encoding |
-| [windows-1257](encodings/cp1257.tbl) | Baltic Windows encoding |
-| [windows-1258](encodings/cp1258.tbl) | Vietnamese character encoding |
-| [IBM437](encodings/cp437.tbl) | ASCII encoding with the original IBM PC OEM characters |
-| [IBM866](encodings/cp866.tbl) | Cyrillic DOS/OEM encoding |
-| [windows-874](encodings/cp874.tbl) | Thai character encoding |
-| [Windows-31J](encodings/cp932.tbl) | Shift-JIS with Microsoft/NEC/IBM extensions (aka MS932/CP932) |
-| [EUC-KR](encodings/cp949.tbl) | EUC-KR encoding (generated from the cp949/UHC codec, a superset of EUC-KR) |
-| [EUC-JP](encodings/euc_jp.tbl) | EUC-JP encoding |
-| [GBK](encodings/gbk.tbl) | GBK encoding for Simplified Chinese |
-| [ISO-8859-2](encodings/iso8859_2.tbl) | Eastern Europe ISO encoding |
-| [ISO-8859-5](encodings/iso8859_5.tbl) | Cyrillic ISO encoding |
-| [ISO-8859-6](encodings/iso8859_6.tbl) | Arabic ISO encoding |
-| [ISO-8859-7](encodings/iso8859_7.tbl) | Greek ISO encoding |
-| [ISO-8859-8](encodings/iso8859_8.tbl) | Hebrew ISO encoding |
-| [ISO-8859-9](encodings/iso8859_9.tbl) | Turkish ISO encoding |
-| [ISO-8859-13](encodings/iso8859_13.tbl) | Baltic ISO encoding |
-| [JIS_X0201](encodings/jis_x0201.tbl) | JIS X 0201 encoding (half-width katakana; Roman set generated from shift_jis, so it matches ASCII rather than true JIS X0201 Roman at 0x5C/0x7E) |
-| [KOI8-R](encodings/koi8_r.tbl) | Cyrillic KOI8-R encoding (Russian characters) |
-| [KOI8-U](encodings/koi8_u.tbl) | Cyrillic KOI8-U encoding (Ukrainian characters) |
-| [macintosh](encodings/mac_roman.tbl) | Classic Mac OS Roman character encoding |
-| [Shift_JIS](encodings/shift_jis.tbl) | Shift-JIS encoding |
-| [Pokémon (English, Generation 1)](encodings/pokegen1_en.tbl) | Character encoding used by the English generation 1 Pokémon games |
-| [Pokémon (English, Generation 3)](encodings/pokegen3_en.tbl) | Character encoding used by the English generation 3 Pokémon games |
+Every encoding below works as a string encoding. `#pragma encoding <name>`
+sets the file encoding. It also sets the default string encoding for the
+whole pattern. Only codepages can be used this way. The
+`[[encoding("...")]]` attribute overrides the string encoding for one
+field. If neither is present, ImHex assumes `UTF-8`.
+
+The tables below are split the same way: file encodings first, then
+encodings that only work as a string encoding.
+
+<!-- generate.py: start of encoding table. Edit scripts/generate.py, not this table. -->
+#### File encodings
+
+Each of these has one byte per character. Use these as the file encoding or as a string encoding.
+
+| IANA Name | Path | Description | Entries | Aliases |
+|------|------|-------------|---------|---------|
+| US-ASCII | [`encodings/ascii.tbl`](encodings/ascii.tbl) | Basic 7-bit encoding for English text | 128 | `ansi_x3.4_1968`, `ansi_x3.4_1986`, `ansi_x3_4_1968`, `cp367`, `ibm367`, `iso646_us`, `iso_646.irv_1991`, `iso_ir_6`, `us`, `us_ascii` |
+| IBM037 | [`encodings/cp037.tbl`](encodings/cp037.tbl) | Extended Binary Coded Decimal Interchange Code | 256 | `ebcdic_cp_ca`, `ebcdic_cp_nl`, `ebcdic_cp_us`, `ebcdic_cp_wt`, `ibm037`, `ibm039` |
+| windows-1250 | [`encodings/cp1250.tbl`](encodings/cp1250.tbl) | Windows encoding for Central European languages (Polish, Czech, Hungarian, and others) | 251 | `windows_1250` |
+| windows-1251 | [`encodings/cp1251.tbl`](encodings/cp1251.tbl) | Windows encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others) | 255 | `windows_1251` |
+| windows-1252 | [`encodings/cp1252.tbl`](encodings/cp1252.tbl) | Windows encoding for Western European languages (English, French, German, and others) | 251 | `windows_1252` |
+| windows-1253 | [`encodings/cp1253.tbl`](encodings/cp1253.tbl) | Windows encoding for the Greek language | 239 | `windows_1253` |
+| windows-1254 | [`encodings/cp1254.tbl`](encodings/cp1254.tbl) | Windows encoding for the Turkish language | 249 | `windows_1254` |
+| windows-1255 | [`encodings/cp1255.tbl`](encodings/cp1255.tbl) | Windows encoding for the Hebrew language | 233 | `windows_1255` |
+| windows-1256 | [`encodings/cp1256.tbl`](encodings/cp1256.tbl) | Windows encoding for the Arabic language | 256 | `windows_1256` |
+| windows-1257 | [`encodings/cp1257.tbl`](encodings/cp1257.tbl) | Windows encoding for Baltic languages (Estonian, Latvian, Lithuanian) | 244 | `windows_1257` |
+| windows-1258 | [`encodings/cp1258.tbl`](encodings/cp1258.tbl) | Windows encoding for the Vietnamese language | 247 | `windows_1258` |
+| IBM437 | [`encodings/cp437.tbl`](encodings/cp437.tbl) | Original IBM PC encoding, with box-drawing and symbol characters | 256 | `ibm437` |
+| IBM866 | [`encodings/cp866.tbl`](encodings/cp866.tbl) | DOS encoding for Cyrillic languages (Russian and others) | 256 | `ibm866` |
+| windows-874 | [`encodings/cp874.tbl`](encodings/cp874.tbl) | Windows encoding for the Thai language | 225 | (none) |
+| ISO-8859-2 | [`encodings/iso8859_2.tbl`](encodings/iso8859_2.tbl) | ISO encoding for Central European languages (Polish, Czech, Hungarian, and others) | 256 | `iso_8859_2`, `iso_8859_2_1987`, `iso_ir_101`, `l2`, `latin2` |
+| ISO-8859-5 | [`encodings/iso8859_5.tbl`](encodings/iso8859_5.tbl) | ISO encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others) | 256 | `cyrillic`, `iso_8859_5`, `iso_8859_5_1988`, `iso_ir_144` |
+| ISO-8859-6 | [`encodings/iso8859_6.tbl`](encodings/iso8859_6.tbl) | ISO encoding for the Arabic language | 211 | `arabic`, `asmo_708`, `ecma_114`, `iso_8859_6`, `iso_8859_6_1987`, `iso_ir_127` |
+| ISO-8859-7 | [`encodings/iso8859_7.tbl`](encodings/iso8859_7.tbl) | ISO encoding for the Greek language | 253 | `ecma_118`, `elot_928`, `greek`, `greek8`, `iso_8859_7`, `iso_8859_7_1987`, `iso_ir_126` |
+| ISO-8859-8 | [`encodings/iso8859_8.tbl`](encodings/iso8859_8.tbl) | ISO encoding for the Hebrew language | 220 | `hebrew`, `iso_8859_8`, `iso_8859_8_1988`, `iso_ir_138` |
+| ISO-8859-9 | [`encodings/iso8859_9.tbl`](encodings/iso8859_9.tbl) | ISO encoding for the Turkish language | 256 | `iso_8859_9`, `iso_8859_9_1989`, `iso_ir_148`, `l5`, `latin5` |
+| ISO-8859-13 | [`encodings/iso8859_13.tbl`](encodings/iso8859_13.tbl) | ISO encoding for Baltic languages (Estonian, Latvian, Lithuanian) | 256 | `iso_8859_13`, `l7`, `latin7` |
+| KOI8-R | [`encodings/koi8_r.tbl`](encodings/koi8_r.tbl) | Cyrillic KOI8-R encoding (Russian characters) | 256 | (none) |
+| KOI8-U | [`encodings/koi8_u.tbl`](encodings/koi8_u.tbl) | Cyrillic KOI8-U encoding (Ukrainian characters) | 256 | (none) |
+| macintosh | [`encodings/mac_roman.tbl`](encodings/mac_roman.tbl) | Classic Mac OS encoding for Western European languages | 256 | `macintosh`, `macroman` |
+| JIS_X0201 | [`encodings/jis_x0201.tbl`](encodings/jis_x0201.tbl) | JIS X 0201 encoding (half-width katakana and Roman set) | 191 | `X0201` |
+
+#### Multi-byte encodings
+
+Some of these use more than one byte per character. Others map one byte to more than one character. Some have no file, since ImHex decodes them directly. Use these as a string encoding, not as the file encoding.
+
+| IANA Name | Path | Description | Entries | Aliases |
+|------|------|-------------|---------|---------|
+| Big5 | [`encodings/big5hkscs.tbl`](encodings/big5hkscs.tbl) | Encoding for Traditional Chinese text | 18530 | `big5_hkscs`, `hkscs` |
+| Windows-31J | [`encodings/cp932.tbl`](encodings/cp932.tbl) | Shift-JIS with Microsoft/NEC/IBM extensions (aka MS932/CP932) | 9800 | `ms932`, `ms_kanji`, `mskanji` |
+| EUC-KR | [`encodings/cp949.tbl`](encodings/cp949.tbl) | Extended Unix Code encoding for the Korean language | 17176 | `ms949`, `uhc` |
+| EUC-JP | [`encodings/euc_jp.tbl`](encodings/euc_jp.tbl) | Extended Unix Code encoding for the Japanese language | 13137 | `eucjp`, `u_jis`, `ujis` |
+| GBK | [`encodings/gbk.tbl`](encodings/gbk.tbl) | Encoding for Simplified Chinese text | 21919 | `cp936`, `ms936`, `windows-936` |
+| Shift_JIS | [`encodings/shift_jis.tbl`](encodings/shift_jis.tbl) | Encoding for Japanese text | 7070 | `s_jis`, `shiftjis`, `sjis`, `x_mac_japanese` |
+| Pokémon (English, Generation 1) | [`encodings/pokegen1_en.tbl`](encodings/pokegen1_en.tbl) | Character encoding used by the English generation 1 Pokémon games | 143 | (none) |
+| Pokémon (English, Generation 3) | [`encodings/pokegen3_en.tbl`](encodings/pokegen3_en.tbl) | Character encoding used by the English generation 3 Pokémon games | 144 | (none) |
+| UTF-8 | `UTF-8` (Algorithmic) | Unicode Transformation Format, 8-bit | Universal | (none) |
+| UTF-16BE | `UTF-16BE` (Algorithmic) | Unicode Transformation Format, 16-bit, big-endian | Universal | (none) |
+| UTF-16LE | `UTF-16LE` (Algorithmic) | Unicode Transformation Format, 16-bit, little-endian | Universal | (none) |
+| UTF-32BE | `UTF-32BE` (Algorithmic) | Unicode Transformation Format, 32-bit, big-endian | Universal | (none) |
+| UTF-32LE | `UTF-32LE` (Algorithmic) | Unicode Transformation Format, 32-bit, little-endian | Universal | (none) |
+<!-- generate.py: end of encoding table -->
 
 ### Data Processor Nodes
 

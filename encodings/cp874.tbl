@@ -1,5 +1,5 @@
 -name windows-874
--description Thai character encoding
+-description Windows encoding for the Thai language
 -include ascii
 80=€
 85=…

@@ -1,5 +1,5 @@
 -name ISO-8859-5
--description Cyrillic ISO encoding
+-description ISO encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others)
 -include ascii
 80=\u0080
 81=\u0081

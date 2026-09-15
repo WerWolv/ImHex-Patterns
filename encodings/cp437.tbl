@@ -1,5 +1,5 @@
 -name IBM437
--description ASCII encoding with the original IBM PC OEM characters
+-description Original IBM PC encoding, with box-drawing and symbol characters
 -include ascii
 80=Ç
 81=ü

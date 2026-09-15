@@ -1,5 +1,5 @@
 -name Big5
--description Big5 encoding for Traditional Chinese (generated from the big5hkscs codec, a superset including the Hong Kong Supplementary Character Set)
+-description Encoding for Traditional Chinese text
 -include ascii
 8740=䏰
 8741=䰲

@@ -1,5 +1,5 @@
 -name windows-1258
--description Vietnamese character encoding
+-description Windows encoding for the Vietnamese language
 -include ascii
 80=€
 82=‚

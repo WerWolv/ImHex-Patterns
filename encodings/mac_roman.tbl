@@ -1,5 +1,5 @@
 -name macintosh
--description Classic Mac OS Roman character encoding
+-description Classic Mac OS encoding for Western European languages
 -include ascii
 80=Ä
 81=Å

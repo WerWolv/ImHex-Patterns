@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-# Regenerates encodings/*.tbl from Python's stdlib codecs. Run from anywhere:
-#   python3 scripts/generate.py            (re)writes encodings/
-#   python3 scripts/generate.py --check    verifies encodings/, writes nothing
+# Regenerates encodings/*.tbl and the README table from Python's stdlib codecs.
+# Run from anywhere:
+#   python3 scripts/generate.py            (re)writes encodings/ and README.md
+#   python3 scripts/generate.py --check    verifies both, writes nothing
 import argparse
 import codecs
 import encodings.aliases
@@ -9,62 +10,92 @@ import os
 import re
 import sys
 
-ENCODINGS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "encodings")
+REPO_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+ENCODINGS_DIR = os.path.join(REPO_ROOT, "encodings")
+README_PATH = os.path.join(REPO_ROOT, "README.md")
 
-# Hand-authored game-text tables. No codec covers them. Left untouched.
+README_START = "<!-- generate.py: start of encoding table. Edit scripts/generate.py, not this table. -->"
+README_END = "<!-- generate.py: end of encoding table -->"
+
+# Hand-authored game-text tables; no codec covers them, but still listed below.
 HAND_AUTHORED_FILES = {
-    "pokegen1_en.tbl",
-    "pokegen3_en.tbl",
+    "pokegen1_en.tbl": ("Pokémon (English, Generation 1)",
+                         "Character encoding used by the English generation 1 Pokémon games"),
+    "pokegen3_en.tbl": ("Pokémon (English, Generation 3)",
+                         "Character encoding used by the English generation 3 Pokémon games"),
 }
 
-# codec name -> (IANA name, description). Filenames are lowercase, so this is
-# the only place with real capitalization. No library provides these fields.
+# codec -> (IANA name, description). Name is a display label, not the
+# filename. No library provides these fields.
 CODEC_ENCODINGS = {
-    "ascii": ("US-ASCII", "Regular ASCII encoding"),
-    "big5hkscs": ("Big5", "Big5 encoding for Traditional Chinese (generated from the "
-                  "big5hkscs codec, a superset including the Hong Kong Supplementary "
-                  "Character Set)"),
-    "cp037": ("IBM037", "Extended Binary Coded Decimal Interchange Code, developed by "
-              "IBM for their Main Frames"),
-    "cp1250": ("windows-1250", "Eastern Europe Windows encoding"),
-    "cp1251": ("windows-1251", "Cyrillic Windows encoding"),
-    "cp1252": ("windows-1252", "Extended ASCII encoding (Western Windows codepage)"),
-    "cp1253": ("windows-1253", "Greek Windows encoding"),
-    "cp1254": ("windows-1254", "Turkish Windows encoding"),
-    "cp1255": ("windows-1255", "Hebrew Windows encoding"),
-    "cp1256": ("windows-1256", "Arabic Windows encoding"),
-    "cp1257": ("windows-1257", "Baltic Windows encoding"),
-    "cp1258": ("windows-1258", "Vietnamese character encoding"),
-    "cp437": ("IBM437", "ASCII encoding with the original IBM PC OEM characters"),
-    "cp866": ("IBM866", "Cyrillic DOS/OEM encoding"),
-    "cp874": ("windows-874", "Thai character encoding"),
+    "ascii": ("US-ASCII", "Basic 7-bit encoding for English text"),
+    "big5hkscs": ("Big5", "Encoding for Traditional Chinese text"),
+    "cp037": ("IBM037", "Extended Binary Coded Decimal Interchange Code"),
+    "cp1250": ("windows-1250", "Windows encoding for Central European languages (Polish, Czech, Hungarian, and others)"),
+    "cp1251": ("windows-1251", "Windows encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others)"),
+    "cp1252": ("windows-1252", "Windows encoding for Western European languages (English, French, German, and others)"),
+    "cp1253": ("windows-1253", "Windows encoding for the Greek language"),
+    "cp1254": ("windows-1254", "Windows encoding for the Turkish language"),
+    "cp1255": ("windows-1255", "Windows encoding for the Hebrew language"),
+    "cp1256": ("windows-1256", "Windows encoding for the Arabic language"),
+    "cp1257": ("windows-1257", "Windows encoding for Baltic languages (Estonian, Latvian, Lithuanian)"),
+    "cp1258": ("windows-1258", "Windows encoding for the Vietnamese language"),
+    "cp437": ("IBM437", "Original IBM PC encoding, with box-drawing and symbol characters"),
+    "cp866": ("IBM866", "DOS encoding for Cyrillic languages (Russian and others)"),
+    "cp874": ("windows-874", "Windows encoding for the Thai language"),
     "cp932": ("Windows-31J", "Shift-JIS with Microsoft/NEC/IBM extensions (aka MS932/CP932)"),
-    "cp949": ("EUC-KR", "EUC-KR encoding (generated from the cp949/UHC codec, a superset "
-              "of EUC-KR)"),
-    "euc_jp": ("EUC-JP", "EUC-JP encoding"),
-    "gbk": ("GBK", "GBK encoding for Simplified Chinese"),
-    "iso8859_2": ("ISO-8859-2", "Eastern Europe ISO encoding"),
-    "iso8859_5": ("ISO-8859-5", "Cyrillic ISO encoding"),
-    "iso8859_6": ("ISO-8859-6", "Arabic ISO encoding"),
-    "iso8859_7": ("ISO-8859-7", "Greek ISO encoding"),
-    "iso8859_8": ("ISO-8859-8", "Hebrew ISO encoding"),
-    "iso8859_9": ("ISO-8859-9", "Turkish ISO encoding"),
-    "iso8859_13": ("ISO-8859-13", "Baltic ISO encoding"),
+    "cp949": ("EUC-KR", "Extended Unix Code encoding for the Korean language"),
+    "euc_jp": ("EUC-JP", "Extended Unix Code encoding for the Japanese language"),
+    "gbk": ("GBK", "Encoding for Simplified Chinese text"),
+    "iso8859_2": ("ISO-8859-2", "ISO encoding for Central European languages (Polish, Czech, Hungarian, and others)"),
+    "iso8859_5": ("ISO-8859-5", "ISO encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others)"),
+    "iso8859_6": ("ISO-8859-6", "ISO encoding for the Arabic language"),
+    "iso8859_7": ("ISO-8859-7", "ISO encoding for the Greek language"),
+    "iso8859_8": ("ISO-8859-8", "ISO encoding for the Hebrew language"),
+    "iso8859_9": ("ISO-8859-9", "ISO encoding for the Turkish language"),
+    "iso8859_13": ("ISO-8859-13", "ISO encoding for Baltic languages (Estonian, Latvian, Lithuanian)"),
     "koi8_r": ("KOI8-R", "Cyrillic KOI8-R encoding (Russian characters)"),
     "koi8_u": ("KOI8-U", "Cyrillic KOI8-U encoding (Ukrainian characters)"),
-    "mac_roman": ("macintosh", "Classic Mac OS Roman character encoding"),
-    "shift_jis": ("Shift_JIS", "Shift-JIS encoding"),
+    "mac_roman": ("macintosh", "Classic Mac OS encoding for Western European languages"),
+    "shift_jis": ("Shift_JIS", "Encoding for Japanese text"),
 }
 
-# No stdlib codec for JIS X 0201. Its half-width katakana equal shift_jis's
-# single-byte range (see all_files()). Roman set is ASCII except two yen/overline
-# positions, patched in below since shift_jis maps those to backslash/tilde.
-JIS_X0201_INFO = ("JIS_X0201", "JIS X 0201 encoding (half-width katakana and Roman set)")
-JIS_X0201_OVERRIDES = {"5C": "¥", "7E": "‾"}
+# Encodings derived from another one's entries plus overrides; add an
+# entry here instead of writing code. source: key to copy entries from.
+# key_filter: keep only matching keys. overrides: entries to add/replace.
+DERIVED_ENCODINGS = {
+    "jis_x0201": {
+        "name": "JIS_X0201",
+        "description": "JIS X 0201 encoding (half-width katakana and Roman set)",
+        "aliases": ["X0201"],
+        "source": "shift_jis",
+        "key_filter": lambda k: len(k) == 2,
+        "overrides": {"5C": "¥", "7E": "‾"},
+    },
+}
+
+# IANA aliases missing from Python's table. Skip cs-prefixed/numeric ones:
+# is_useful_alias() drops them anyway.
+EXTRA_ALIASES = {
+    "gbk": ["windows-936"],
+}
+
+
+def is_useful_alias(alias):
+    """False for numeric or "cs"-prefixed aliases (e.g. "1250", "csBig5"): too generic."""
+    a = alias.lower()
+    return not (a.isdigit() or a.startswith("cs"))
 
 
 def normalize(name):
     return re.sub(r"[-: ]", "_", name.lower())
+
+
+def stem_for(key):
+    """Filename stem for a codec or derived key. Never the IANA name."""
+    if key in CODEC_ENCODINGS:
+        return normalize(codecs.lookup(key).name)
+    return normalize(key)
 
 
 def library_aliases_for(codec_name):
@@ -76,7 +107,6 @@ def library_aliases_for(codec_name):
                 found.add(alias)
         except LookupError:
             continue
-    found.discard(codec_name)
     return sorted(found)
 
 
@@ -114,12 +144,8 @@ def gen_codec_entries(codec_name):
 
 
 def find_bases(full_by_stem):
-    """For each stem, the largest stem it is a safe superset of, or None.
-
-    X is a safe superset of Y if every key/value pair in Y also occurs in X.
-    -include must never need X to redefine a value from Y, since ImHex may
-    not support that. Processing stems smallest-first, and only comparing
-    against already-processed stems, prevents include cycles."""
+    """Largest stem each stem safely supersets (or None): -include must
+    never redefine a value. Smallest-first order avoids cycles."""
     bases = {}
     processed = {}
     for stem in sorted(full_by_stem, key=lambda s: (len(full_by_stem[s]), s)):
@@ -155,26 +181,134 @@ def build_alias_body(primary_stem):
     return f"-alias {primary_stem}\n"
 
 
-def all_files():
+def useful_aliases(key, aliases):
+    """Aliases worth a file: not the primary's own stem, and useful."""
+    stem = stem_for(key)
+    return sorted(a for a in aliases if is_useful_alias(a) and normalize(a) != stem)
+
+
+def all_encodings():
+    """(key, name, description, aliases) for every generated primary file."""
+    items = [(codec, name, description,
+              useful_aliases(codec, set(library_aliases_for(codec)) | set(EXTRA_ALIASES.get(codec, []))))
+             for codec, (name, description) in CODEC_ENCODINGS.items()]
+    items += [(key, cfg["name"], cfg["description"], useful_aliases(key, cfg["aliases"]))
+              for key, cfg in DERIVED_ENCODINGS.items()]
+    return items
+
+
+def build_entries():
     entries_by_key = {codec: gen_codec_entries(codec) for codec in CODEC_ENCODINGS}
-    entries_by_key["jis_x0201"] = {k: v for k, v in entries_by_key["shift_jis"].items()
-                                    if len(k) == 2}
-    entries_by_key["jis_x0201"].update(JIS_X0201_OVERRIDES)
+    for key, cfg in DERIVED_ENCODINGS.items():
+        entries = {k: v for k, v in entries_by_key[cfg["source"]].items()
+                   if cfg["key_filter"](k)}
+        entries.update(cfg["overrides"])
+        entries_by_key[key] = entries
 
-    stems = {key: normalize(codecs.lookup(key).name if key in CODEC_ENCODINGS else key)
-             for key in entries_by_key}
-    full = {stems[key]: entries for key, entries in entries_by_key.items()}
+    stems = {key: stem_for(key) for key in entries_by_key}
+    full = {stems[key]: entries_by_key[key] for key in entries_by_key}
+    return stems, full
+
+
+def count_entries(fname):
+    with open(fname, encoding="utf-8", newline="") as f:
+        return sum(1 for line in f if line.strip() and not line.startswith("-"))
+
+
+def is_codepage(entries):
+    """True if every key is one byte and every value is one codepoint
+    (what #pragma encoding accepts)."""
+    return all(len(k) == 2 for k in entries) and all(len(v) == 1 for v in entries.values())
+
+
+# ImHex decodes these without a table file.
+ALGORITHMIC_ENCODINGS = [
+    ("UTF-8", "Unicode Transformation Format, 8-bit"),
+    ("UTF-16BE", "Unicode Transformation Format, 16-bit, big-endian"),
+    ("UTF-16LE", "Unicode Transformation Format, 16-bit, little-endian"),
+    ("UTF-32BE", "Unicode Transformation Format, 32-bit, big-endian"),
+    ("UTF-32LE", "Unicode Transformation Format, 32-bit, little-endian"),
+]
+
+
+def readme_rows(stems, full):
+    file_encodings, multi_byte = [], []
+
+    for key, name, description, aliases in all_encodings():
+        stem = stems[key]
+        entries = full[stem]
+        row = (name, stem, description, len(entries), aliases)
+        (file_encodings if is_codepage(entries) else multi_byte).append(row)
+
+    for fname, (name, description) in HAND_AUTHORED_FILES.items():
+        stem = fname[:-len(".tbl")]
+        multi_byte.append((name, stem, description, count_entries(fname), []))
+
+    for name, description in ALGORITHMIC_ENCODINGS:
+        multi_byte.append((name, None, description, None, []))
+
+    return file_encodings, multi_byte
+
+
+def build_readme_table(rows):
+    lines = ["| IANA Name | Path | Description | Entries | Aliases |",
+              "|------|------|-------------|---------|---------|"]
+    for name, stem, description, entries, aliases in rows:
+        alias_text = ", ".join(f"`{a}`" for a in aliases) if aliases else "(none)"
+        if stem is None:
+            path = f"`{name}` (Algorithmic)"
+            entries_text = "Universal"
+        else:
+            link = f"encodings/{stem}.tbl"
+            path = f"[`{link}`]({link})"
+            entries_text = str(entries)
+        lines.append(f"| {name} | {path} | {description} | {entries_text} | {alias_text} |")
+    return "\n".join(lines) + "\n"
+
+
+def build_readme_section(file_encodings, multi_byte):
+    return "\n".join([
+        "#### File encodings",
+        "",
+        "Each of these has one byte per character. Use these as the file "
+        "encoding or as a string encoding.",
+        "",
+        build_readme_table(file_encodings).rstrip("\n"),
+        "",
+        "#### Multi-byte encodings",
+        "",
+        "Some of these use more than one byte per character. Others map "
+        "one byte to more than one character. Some have no file, since "
+        "ImHex decodes them directly. Use these as a string encoding, "
+        "not as the file encoding.",
+        "",
+        build_readme_table(multi_byte).rstrip("\n"),
+    ]) + "\n"
+
+
+def apply_readme_table(content, table):
+    pattern = re.compile(re.escape(README_START) + r"\n.*?\n" + re.escape(README_END),
+                          re.DOTALL)
+    replacement = f"{README_START}\n{table}{README_END}"
+    new_content, count = pattern.subn(replacement, content, count=1)
+    if count == 0:
+        raise SystemExit(f"README.md: markers not found (expected {README_START!r})")
+    return new_content
+
+
+def all_files(stems, full):
     bases = find_bases(full)
-
     files = {}
     alias_targets = {}
 
-    def register(display_key, name, description, aliases):
-        stem = stems[display_key]
-        entries = entries_by_key[display_key]
+    for key, name, description, aliases in all_encodings():
+        stem = stems[key]
+        entries = full[stem]
         base_stem = bases[stem]
         own = entries if base_stem is None else \
             {k: v for k, v in entries.items() if k not in full[base_stem]}
+        if stem + ".tbl" in files:
+            raise SystemExit(f"primary collision: two encodings both normalize to {stem}.tbl")
         files[stem + ".tbl"] = build_primary_body(name, description, base_stem, own)
 
         for alias in aliases:
@@ -187,24 +321,20 @@ def all_files():
             alias_targets[alias_fname] = stem
             files[alias_fname] = build_alias_body(stem)
 
-    for codec, (name, description) in CODEC_ENCODINGS.items():
-        register(codec, name, description, library_aliases_for(codec))
-    name, description = JIS_X0201_INFO
-    register("jis_x0201", name, description, ["X0201", "csHalfWidthKatakana"])
-
     return files
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true",
-                         help="verify encodings/ matches, write nothing")
+                         help="verify encodings/ and README.md match, write nothing")
     args = parser.parse_args()
 
     os.chdir(ENCODINGS_DIR)
 
-    expected = all_files()
-    actual_names = {f for f in os.listdir(".") if f.endswith(".tbl")} - HAND_AUTHORED_FILES
+    stems, full = build_entries()
+    expected = all_files(stems, full)
+    actual_names = {f for f in os.listdir(".") if f.endswith(".tbl")}.difference(HAND_AUTHORED_FILES)
     expected_names = set(expected)
 
     problems = []
@@ -224,12 +354,20 @@ def main():
     if mismatched:
         problems.append("out of date: " + ", ".join(mismatched))
 
+    with open(README_PATH, encoding="utf-8", newline="") as f:
+        readme_current = f.read()
+    file_encodings, multi_byte = readme_rows(stems, full)
+    readme_expected = apply_readme_table(readme_current,
+                                          build_readme_section(file_encodings, multi_byte))
+    if readme_current != readme_expected:
+        problems.append("README.md is out of date")
+
     if args.check:
         if problems:
             for p in problems:
                 print("generate.py --check:", p, file=sys.stderr)
             sys.exit(1)
-        print("encodings/ is up to date with generate.py")
+        print("encodings/ and README.md are up to date with generate.py")
         return
 
     for fname, content in expected.items():
@@ -237,7 +375,9 @@ def main():
             f.write(content)
     for fname in extra:
         os.remove(fname)
-    print(f"wrote {len(expected)} files")
+    with open(README_PATH, "w", encoding="utf-8", newline="") as f:
+        f.write(readme_expected)
+    print(f"wrote {len(expected)} files and README.md")
 
 
 if __name__ == "__main__":

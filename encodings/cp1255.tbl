@@ -1,5 +1,5 @@
 -name windows-1255
--description Hebrew Windows encoding
+-description Windows encoding for the Hebrew language
 -include ascii
 80=€
 82=‚
