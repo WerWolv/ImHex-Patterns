@@ -353,11 +353,11 @@ field. If neither is present, ImHex assumes `UTF-8`.
 The tables below are split the same way: file encodings first, then
 encodings that only work as a string encoding.
 
-<!-- generate.py: start of encoding table. Edit scripts/generate.py, not this table. -->
 #### File encodings
 
 Each of these has one byte per character. Use these as the file encoding or as a string encoding.
 
+<!-- generate.py: start of File encodings table -->
 | IANA Name | Path | Description | Entries | Aliases |
 |------|------|-------------|---------|---------|
 | US-ASCII | [`encodings/ascii.tbl`](encodings/ascii.tbl) | Basic 7-bit encoding for English text | 128 | `ansi_x3.4_1968`, `ansi_x3.4_1986`, `ansi_x3_4_1968`, `cp367`, `ibm367`, `iso646_us`, `iso_646.irv_1991`, `iso_ir_6`, `us`, `us_ascii` |
@@ -385,11 +385,13 @@ Each of these has one byte per character. Use these as the file encoding or as a
 | KOI8-U | [`encodings/koi8_u.tbl`](encodings/koi8_u.tbl) | Cyrillic KOI8-U encoding (Ukrainian characters) | 256 | (none) |
 | macintosh | [`encodings/mac_roman.tbl`](encodings/mac_roman.tbl) | Classic Mac OS encoding for Western European languages | 256 | `macintosh`, `macroman` |
 | JIS_X0201 | [`encodings/jis_x0201.tbl`](encodings/jis_x0201.tbl) | JIS X 0201 encoding (half-width katakana and Roman set) | 191 | `X0201` |
+<!-- generate.py: end of File encodings table -->
 
 #### Multi-byte encodings
 
 Some of these use more than one byte per character. Others map one byte to more than one character. Some have no file, since ImHex decodes them directly. Use these as a string encoding, not as the file encoding.
 
+<!-- generate.py: start of Multi-byte encodings table -->
 | IANA Name | Path | Description | Entries | Aliases |
 |------|------|-------------|---------|---------|
 | Big5 | [`encodings/big5hkscs.tbl`](encodings/big5hkscs.tbl) | Encoding for Traditional Chinese text | 18530 | `big5_hkscs`, `hkscs` |
@@ -405,7 +407,7 @@ Some of these use more than one byte per character. Others map one byte to more 
 | UTF-16LE | `UTF-16LE` (Algorithmic) | Unicode Transformation Format, 16-bit, little-endian | Universal | (none) |
 | UTF-32BE | `UTF-32BE` (Algorithmic) | Unicode Transformation Format, 32-bit, big-endian | Universal | (none) |
 | UTF-32LE | `UTF-32LE` (Algorithmic) | Unicode Transformation Format, 32-bit, little-endian | Universal | (none) |
-<!-- generate.py: end of encoding table -->
+<!-- generate.py: end of Multi-byte encodings table -->
 
 ### Data Processor Nodes
 

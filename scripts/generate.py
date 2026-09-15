@@ -14,8 +14,10 @@ REPO_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 ENCODINGS_DIR = os.path.join(REPO_ROOT, "encodings")
 README_PATH = os.path.join(REPO_ROOT, "README.md")
 
-README_START = "<!-- generate.py: start of encoding table. Edit scripts/generate.py, not this table. -->"
-README_END = "<!-- generate.py: end of encoding table -->"
+FILE_TABLE_START = "<!-- generate.py: start of File encodings table -->"
+FILE_TABLE_END = "<!-- generate.py: end of File encodings table -->"
+MULTI_BYTE_TABLE_START = "<!-- generate.py: start of Multi-byte encodings table -->"
+MULTI_BYTE_TABLE_END = "<!-- generate.py: end of Multi-byte encodings table -->"
 
 # Hand-authored game-text tables; no codec covers them, but still listed below.
 HAND_AUTHORED_FILES = {
@@ -266,33 +268,12 @@ def build_readme_table(rows):
     return "\n".join(lines) + "\n"
 
 
-def build_readme_section(file_encodings, multi_byte):
-    return "\n".join([
-        "#### File encodings",
-        "",
-        "Each of these has one byte per character. Use these as the file "
-        "encoding or as a string encoding.",
-        "",
-        build_readme_table(file_encodings).rstrip("\n"),
-        "",
-        "#### Multi-byte encodings",
-        "",
-        "Some of these use more than one byte per character. Others map "
-        "one byte to more than one character. Some have no file, since "
-        "ImHex decodes them directly. Use these as a string encoding, "
-        "not as the file encoding.",
-        "",
-        build_readme_table(multi_byte).rstrip("\n"),
-    ]) + "\n"
-
-
-def apply_readme_table(content, table):
-    pattern = re.compile(re.escape(README_START) + r"\n.*?\n" + re.escape(README_END),
-                          re.DOTALL)
-    replacement = f"{README_START}\n{table}{README_END}"
+def apply_table(content, start, end, table):
+    pattern = re.compile(re.escape(start) + r"\n.*?\n" + re.escape(end), re.DOTALL)
+    replacement = f"{start}\n{table}{end}"
     new_content, count = pattern.subn(replacement, content, count=1)
     if count == 0:
-        raise SystemExit(f"README.md: markers not found (expected {README_START!r})")
+        raise SystemExit(f"README.md: markers not found (expected {start!r})")
     return new_content
 
 
@@ -357,8 +338,10 @@ def main():
     with open(README_PATH, encoding="utf-8", newline="") as f:
         readme_current = f.read()
     file_encodings, multi_byte = readme_rows(stems, full)
-    readme_expected = apply_readme_table(readme_current,
-                                          build_readme_section(file_encodings, multi_byte))
+    readme_expected = apply_table(readme_current, FILE_TABLE_START, FILE_TABLE_END,
+                                   build_readme_table(file_encodings))
+    readme_expected = apply_table(readme_expected, MULTI_BYTE_TABLE_START, MULTI_BYTE_TABLE_END,
+                                   build_readme_table(multi_byte))
     if readme_current != readme_expected:
         problems.append("README.md is out of date")
 
