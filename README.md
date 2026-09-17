@@ -337,7 +337,7 @@ Two Pokémon tables are hand-authored. All other files come from
 verify the directory. `--check` writes nothing.
 
 Filenames match each codec's own Python name. Each file has a
-properly-capitalized IANA name on its `-name` line: a label for display,
+canonical name on its `-name` line: a label for display,
 not a file identity. Some encodings include another encoding's entries
 with an `-include` line, instead of repeating them. This only happens
 when the entries match exactly. For example, every ASCII-transparent
@@ -358,7 +358,7 @@ encodings that only work as a string encoding.
 Each of these has one byte per character. Use these as the file encoding or as a string encoding.
 
 <!-- generate.py: start of File encodings table -->
-| IANA Name | Path | Description | Entries | Aliases |
+| Name | Path | Description | Entries | Aliases |
 |------|------|-------------|---------|---------|
 | US-ASCII | [`encodings/ascii.tbl`](encodings/ascii.tbl) | Basic 7-bit encoding for English text | 128 | `ansi_x3.4_1968`, `ansi_x3.4_1986`, `ansi_x3_4_1968`, `cp367`, `ibm367`, `iso646_us`, `iso_646.irv_1991`, `iso_ir_6`, `us`, `us_ascii` |
 | IBM037 | [`encodings/cp037.tbl`](encodings/cp037.tbl) | Extended Binary Coded Decimal Interchange Code | 256 | `ebcdic_cp_ca`, `ebcdic_cp_nl`, `ebcdic_cp_us`, `ebcdic_cp_wt`, `ibm037`, `ibm039` |
@@ -413,7 +413,7 @@ Each of these has one byte per character. Use these as the file encoding or as a
 Some of these use more than one byte per character. Others map one byte to more than one character. Some have no file, since ImHex decodes them directly. Use these as a string encoding, not as the file encoding.
 
 <!-- generate.py: start of Multi-byte encodings table -->
-| IANA Name | Path | Description | Entries | Aliases |
+| Name | Path | Description | Entries | Aliases |
 |------|------|-------------|---------|---------|
 | Big5 | [`encodings/big5.tbl`](encodings/big5.tbl) | Encoding for Traditional Chinese text | 13838 | `x_mac_trad_chinese` |
 | Big5-HKSCS | [`encodings/big5hkscs.tbl`](encodings/big5hkscs.tbl) | Extended Big5 encoding with the Hong Kong Supplementary Character Set | 18530 | `big5_hkscs`, `hkscs` |
