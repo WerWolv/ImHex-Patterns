@@ -89,4 +89,4 @@ jobs:
         cd ..
 
     - name: 🔤 Validate Encoding Tables
-      run: python3 scripts/generate.py --check
+      run: python3 scripts/generate_encodings.py --check
