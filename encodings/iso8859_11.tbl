@@ -1,0 +1,4 @@
+-name ISO-8859-11
+-description ISO encoding for the Thai language
+-include tis_620
+A0=\u00A0

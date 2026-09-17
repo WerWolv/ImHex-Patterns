@@ -31,7 +31,8 @@ HAND_AUTHORED_FILES = {
 # filename. No library provides these fields.
 CODEC_ENCODINGS = {
     "ascii": ("US-ASCII", "Basic 7-bit encoding for English text"),
-    "big5hkscs": ("Big5", "Encoding for Traditional Chinese text"),
+    "big5": ("Big5", "Encoding for Traditional Chinese text"),
+    "big5hkscs": ("Big5-HKSCS", "Extended Big5 encoding with the Hong Kong Supplementary Character Set"),
     "cp037": ("IBM037", "Extended Binary Coded Decimal Interchange Code"),
     "cp1250": ("windows-1250", "Windows encoding for Central European languages (Polish, Czech, Hungarian, and others)"),
     "cp1251": ("windows-1251", "Windows encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others)"),
@@ -43,23 +44,46 @@ CODEC_ENCODINGS = {
     "cp1257": ("windows-1257", "Windows encoding for Baltic languages (Estonian, Latvian, Lithuanian)"),
     "cp1258": ("windows-1258", "Windows encoding for the Vietnamese language"),
     "cp437": ("IBM437", "Original IBM PC encoding, with box-drawing and symbol characters"),
+    "cp775": ("IBM775", "DOS encoding for Baltic languages (Estonian, Latvian, Lithuanian)"),
+    "cp850": ("IBM850", "DOS encoding for Western European languages (English, French, German, and others)"),
+    "cp852": ("IBM852", "DOS encoding for Central European languages (Polish, Czech, Hungarian, and others)"),
+    "cp855": ("IBM855", "DOS encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others)"),
+    "cp857": ("IBM857", "DOS encoding for the Turkish language"),
+    "cp860": ("IBM860", "DOS encoding for the Portuguese language"),
+    "cp861": ("IBM861", "DOS encoding for the Icelandic language"),
+    "cp862": ("IBM862", "DOS encoding for the Hebrew language"),
+    "cp863": ("IBM863", "DOS encoding for the Canadian French language"),
+    "cp864": ("IBM864", "DOS encoding for the Arabic language"),
+    "cp865": ("IBM865", "DOS encoding for Nordic languages (Danish, Norwegian, and others)"),
     "cp866": ("IBM866", "DOS encoding for Cyrillic languages (Russian and others)"),
+    "cp869": ("IBM869", "DOS encoding for the Greek language"),
     "cp874": ("windows-874", "Windows encoding for the Thai language"),
     "cp932": ("Windows-31J", "Shift-JIS with Microsoft/NEC/IBM extensions (aka MS932/CP932)"),
-    "cp949": ("EUC-KR", "Extended Unix Code encoding for the Korean language"),
     "euc_jp": ("EUC-JP", "Extended Unix Code encoding for the Japanese language"),
+    "euc_kr": ("EUC-KR", "Extended Unix Code encoding for the Korean language"),
+    "gb18030": ("GB18030", "Encoding for Simplified Chinese text, the mandatory national standard and a superset of GBK"),
+    "gb2312": ("GB2312", "Older encoding for Simplified Chinese text"),
     "gbk": ("GBK", "Encoding for Simplified Chinese text"),
     "iso8859_2": ("ISO-8859-2", "ISO encoding for Central European languages (Polish, Czech, Hungarian, and others)"),
+    "iso8859_3": ("ISO-8859-3", "ISO encoding for South European languages (Turkish, Maltese, Esperanto)"),
+    "iso8859_4": ("ISO-8859-4", "ISO encoding for North European languages (Estonian, Latvian, Lithuanian, Greenlandic, Sami)"),
     "iso8859_5": ("ISO-8859-5", "ISO encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others)"),
     "iso8859_6": ("ISO-8859-6", "ISO encoding for the Arabic language"),
     "iso8859_7": ("ISO-8859-7", "ISO encoding for the Greek language"),
     "iso8859_8": ("ISO-8859-8", "ISO encoding for the Hebrew language"),
     "iso8859_9": ("ISO-8859-9", "ISO encoding for the Turkish language"),
+    "iso8859_10": ("ISO-8859-10", "ISO encoding for Nordic languages (Icelandic, Sami, and others)"),
+    "iso8859_11": ("ISO-8859-11", "ISO encoding for the Thai language"),
     "iso8859_13": ("ISO-8859-13", "ISO encoding for Baltic languages (Estonian, Latvian, Lithuanian)"),
+    "iso8859_14": ("ISO-8859-14", "ISO encoding for Celtic languages (Irish Gaelic, Scottish Gaelic, Welsh, Breton)"),
+    "iso8859_15": ("ISO-8859-15", "ISO encoding for Western European languages, a revision of ISO-8859-1 adding the Euro sign"),
+    "iso8859_16": ("ISO-8859-16", "ISO encoding for South-Eastern European languages (Romanian, and others), includes the Euro sign"),
     "koi8_r": ("KOI8-R", "Cyrillic KOI8-R encoding (Russian characters)"),
     "koi8_u": ("KOI8-U", "Cyrillic KOI8-U encoding (Ukrainian characters)"),
+    "latin_1": ("ISO-8859-1", "ISO encoding for Western European languages (English, French, German, and others)"),
     "mac_roman": ("macintosh", "Classic Mac OS encoding for Western European languages"),
     "shift_jis": ("Shift_JIS", "Encoding for Japanese text"),
+    "tis_620": ("TIS-620", "Thai national standard character encoding"),
 }
 
 # Encodings derived from another one's entries plus overrides; add an
@@ -84,9 +108,10 @@ EXTRA_ALIASES = {
 
 
 def is_useful_alias(alias):
-    """False for numeric or "cs"-prefixed aliases (e.g. "1250", "csBig5"): too generic."""
+    """False for aliases too terse to mean anything on their own, like
+    "1250", "csBig5", or "l1"."""
     a = alias.lower()
-    return not (a.isdigit() or a.startswith("cs"))
+    return not (a.isdigit() or a.startswith("cs") or re.fullmatch(r"l\d+", a))
 
 
 def normalize(name):
@@ -166,7 +191,7 @@ def find_bases(full_by_stem):
 def dump_entries(entries):
     lines = [f"{k}={format_value(entries[k])}"
              for k in sorted(entries, key=lambda k: (len(k), int(k, 16)))]
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines)
 
 
 def build_primary_body(name, description, include_stem, entries):
@@ -175,7 +200,9 @@ def build_primary_body(name, description, include_stem, entries):
         lines.append(f"-description {description}")
     if include_stem:
         lines.append(f"-include {include_stem}")
-    lines.append(dump_entries(entries).rstrip("\n"))
+    body = dump_entries(entries)
+    if body:
+        lines.append(body)
     return "\n".join(lines) + "\n"
 
 
