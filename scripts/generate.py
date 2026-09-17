@@ -6,6 +6,7 @@
 import argparse
 import codecs
 import encodings.aliases
+import hashlib
 import os
 import re
 import sys
@@ -105,6 +106,10 @@ DERIVED_ENCODINGS = {
 EXTRA_ALIASES = {
     "gbk": ["windows-936"],
 }
+
+# Prefix for de-dup tables from discover_shared_bases(): not real
+# codecs, just -include targets, named by content hash.
+SHARED_BASE_PREFIX = "__imhex_"
 
 
 def is_useful_alias(alias):
@@ -206,6 +211,19 @@ def build_primary_body(name, description, include_stem, entries):
     return "\n".join(lines) + "\n"
 
 
+def build_hidden_body(description, include_stem, entries):
+    """Like build_primary_body, but -hidden instead of -name, and a
+    plain comment instead of -description: not a selectable encoding,
+    just an -include target."""
+    lines = [f"# {description}", "-hidden"]
+    if include_stem:
+        lines.append(f"-include {include_stem}")
+    body = dump_entries(entries)
+    if body:
+        lines.append(body)
+    return "\n".join(lines) + "\n"
+
+
 def build_alias_body(primary_stem):
     return f"-alias {primary_stem}\n"
 
@@ -235,6 +253,89 @@ def all_encodings():
     return items
 
 
+def shared_stem(entries):
+    """Content-hash name for a de-dup table: same content, same name."""
+    digest = hashlib.sha256(dump_entries(entries).encode()).hexdigest()[:12]
+    return SHARED_BASE_PREFIX + digest
+
+
+def discover_shared_bases(real_full):
+    """Pair up encodings that mostly but not fully agree, and factor
+    out just the keys they share into one de-dup table. Each encoding
+    switches to at most one such table, and only when that beats its
+    plain best base, so we don't chase tiny coincidences.
+
+    Stems other real files already -include (ascii, gbk, ...) are
+    never switched themselves, so they stay simple leaves - but they
+    can still be compared against, so e.g. gb2312 can share with gbk
+    without gbk itself changing.
+
+    Returns (entries by shared stem, {shared stem: (a, b)},
+    {real stem: base stem})."""
+    real_bases = find_bases(real_full)
+    fixed = {b for b in real_bases.values() if b is not None}
+
+    def base_size(stem):
+        base = real_bases[stem]
+        return len(real_full[base]) if base else 0
+
+    pool = sorted(real_full)
+
+    candidates = []
+    for i, a in enumerate(pool):
+        for b in pool[i + 1:]:
+            if a in fixed and b in fixed:
+                continue
+            da, db = real_full[a], real_full[b]
+            agree = {k: v for k, v in da.items() if db.get(k) == v}
+            improves = (a not in fixed and len(agree) > base_size(a)) or \
+                       (b not in fixed and len(agree) > base_size(b))
+            if improves:
+                candidates.append((len(agree), a, b, agree))
+    candidates.sort(key=lambda c: (-c[0], c[1], c[2]))
+
+    claimed = set()
+    shared_entries, shared_sources = {}, {}
+    for _size, a, b, agree in candidates:
+        switchable = [s for s in (a, b) if s not in fixed and s not in claimed
+                      and len(agree) > base_size(s)]
+        if not switchable:
+            continue
+        stem = shared_stem(agree)
+        shared_entries[stem] = agree
+        shared_sources[stem] = (a, b)
+        for s in switchable:
+            real_bases[s] = stem
+            claimed.add(s)
+
+    return shared_entries, shared_sources, real_bases
+
+
+def prune_single_use_shared(full, bases, shared_entries, shared_sources):
+    """Drop shared tables with fewer than 2 direct includers: they add
+    a file and a header but dedupe nothing. Point the lone includer,
+    if any, straight at the dropped table's own base instead."""
+    changed = True
+    while changed:
+        changed = False
+        counts = {}
+        for base in bases.values():
+            if base is not None:
+                counts[base] = counts.get(base, 0) + 1
+        for stem in list(shared_entries):
+            if counts.get(stem, 0) >= 2:
+                continue
+            redirect_to = bases[stem]
+            for s, b in list(bases.items()):
+                if b == stem:
+                    bases[s] = redirect_to
+            del shared_entries[stem]
+            del shared_sources[stem]
+            del full[stem]
+            del bases[stem]
+            changed = True
+
+
 def build_entries():
     entries_by_key = {codec: gen_codec_entries(codec) for codec in CODEC_ENCODINGS}
     for key, cfg in DERIVED_ENCODINGS.items():
@@ -244,8 +345,19 @@ def build_entries():
         entries_by_key[key] = entries
 
     stems = {key: stem_for(key) for key in entries_by_key}
-    full = {stems[key]: entries_by_key[key] for key in entries_by_key}
-    return stems, full
+    real_full = {stems[key]: entries_by_key[key] for key in entries_by_key}
+
+    shared_entries, shared_sources, bases = discover_shared_bases(real_full)
+
+    # a shared table can itself -include a real base, e.g. ascii
+    trial = {**real_full, **shared_entries}
+    shared_bases = find_bases(trial)
+    bases.update({stem: shared_bases[stem] for stem in shared_entries})
+
+    full = {**real_full, **shared_entries}
+    prune_single_use_shared(full, bases, shared_entries, shared_sources)
+
+    return stems, full, bases, shared_sources
 
 
 def count_entries(fname):
@@ -313,8 +425,38 @@ def apply_table(content, start, end, table):
     return new_content
 
 
-def all_files(stems, full):
-    bases = find_bases(full)
+def shared_dependents(full, bases):
+    """Map each shared stem to every real stem that -includes it,
+    directly or through a chain of other shared stems."""
+    dependents = {s: set() for s in full if s.startswith(SHARED_BASE_PREFIX)}
+    for real_stem in full:
+        if real_stem.startswith(SHARED_BASE_PREFIX):
+            continue
+        stem = bases.get(real_stem)
+        while stem is not None:
+            if stem not in dependents:
+                break
+            dependents[stem].add(real_stem)
+            stem = bases.get(stem)
+    return dependents
+
+
+def build_shared_base_files(full, shared_sources, bases):
+    """Primary .tbl files for the pairs discover_shared_bases() found."""
+    dependents = shared_dependents(full, bases)
+    files = {}
+    for stem in shared_sources:
+        names = ", ".join(sorted(dependents[stem]))
+        description = f"Entries shared by {names}"
+        base_stem = bases[stem]
+        entries = full[stem]
+        own = entries if base_stem is None else \
+            {k: v for k, v in entries.items() if k not in full[base_stem]}
+        files[stem + ".tbl"] = build_hidden_body(description, base_stem, own)
+    return files
+
+
+def all_files(stems, full, bases):
     files = {}
     alias_targets = {}
 
@@ -349,8 +491,9 @@ def main():
 
     os.chdir(ENCODINGS_DIR)
 
-    stems, full = build_entries()
-    expected = all_files(stems, full)
+    stems, full, bases, shared_sources = build_entries()
+    expected = all_files(stems, full, bases)
+    expected.update(build_shared_base_files(full, shared_sources, bases))
     actual_names = {f for f in os.listdir(".") if f.endswith(".tbl")}.difference(HAND_AUTHORED_FILES)
     expected_names = set(expected)
 

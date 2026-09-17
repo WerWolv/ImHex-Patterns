@@ -1,0 +1,32 @@
+# Entries shared by iso8859_1, iso8859_9
+-hidden
+-include __imhex_4fa454d63732
+A1=¡
+A2=¢
+A5=¥
+A6=¦
+A9=©
+AA=ª
+AB=«
+AC=¬
+AE=®
+AF=¯
+B1=±
+B6=¶
+B9=¹
+BA=º
+BB=»
+BC=¼
+BE=¾
+BF=¿
+C3=Ã
+C5=Å
+C6=Æ
+D5=Õ
+D8=Ø
+E3=ã
+E5=å
+E6=æ
+F5=õ
+F8=ø
+FF=ÿ

@@ -1,0 +1,37 @@
+# Entries shared by cp852, cp855
+-hidden
+-include ascii
+AE=«
+AF=»
+B0=░
+B1=▒
+B2=▓
+B3=│
+B4=┤
+B9=╣
+BA=║
+BB=╗
+BC=╝
+BF=┐
+C0=└
+C1=┴
+C2=┬
+C3=├
+C4=─
+C5=┼
+C8=╚
+C9=╔
+CA=╩
+CB=╦
+CC=╠
+CD=═
+CE=╬
+CF=¤
+D9=┘
+DA=┌
+DB=█
+DC=▄
+DF=▀
+F0=\u00AD
+FE=■
+FF=\u00A0

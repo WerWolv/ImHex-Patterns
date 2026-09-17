@@ -1,6 +1,6 @@
 -name macintosh
 -description Classic Mac OS encoding for Western European languages
--include ascii
+-include __imhex_3d4758933007
 80=Ä
 81=Å
 82=Ç
@@ -35,14 +35,11 @@
 9F=ü
 A0=†
 A1=°
-A2=¢
-A3=£
 A4=§
 A5=•
 A6=¶
 A7=ß
 A8=®
-A9=©
 AA=™
 AB=´
 AC=¨
@@ -50,11 +47,9 @@ AD=≠
 AE=Æ
 AF=Ø
 B0=∞
-B1=±
 B2=≤
 B3=≥
 B4=¥
-B5=µ
 B6=∂
 B7=∑
 B8=∏
