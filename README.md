@@ -352,7 +352,7 @@ Codepages: one byte per character. Usable as: file, string, or custom encoding.
 <!-- generate_encodings.py: start of File encodings table -->
 | Name | Path | Description | Entries | Aliases |
 |------|------|-------------|---------|---------|
-| ASCII | [`encodings/ascii.tbl`](encodings/ascii.tbl) | Basic 7-bit encoding for English text | 128 | `ansi_x3.4_1968`, `ansi_x3.4_1986`, `ansi_x3_4_1968`, `cp367`, `ibm367`, `iso646_us`, `iso_646.irv_1991`, `iso_ir_6`, `us`, `us_ascii` |
+| ASCII | [`encodings/ascii.tbl`](encodings/ascii.tbl) | Basic 7-bit encoding for English text | 128 | `ansi_x3_4_1968`, `ansi_x3_4_1986`, `cp367`, `ibm367`, `iso646_us`, `iso_646_irv_1991`, `iso_ir_6`, `us`, `us_ascii` |
 | IBM 037 | [`encodings/cp037.tbl`](encodings/cp037.tbl) | Extended Binary Coded Decimal Interchange Code | 256 | `ebcdic_cp_ca`, `ebcdic_cp_nl`, `ebcdic_cp_us`, `ebcdic_cp_wt`, `ibm037`, `ibm039` |
 | IBM 437 | [`encodings/cp437.tbl`](encodings/cp437.tbl) | Original IBM PC encoding, with box-drawing and symbol characters | 256 | `ibm437` |
 | IBM 775 | [`encodings/cp775.tbl`](encodings/cp775.tbl) | DOS encoding for Baltic languages (Estonian, Latvian, Lithuanian) | 256 | `ibm775` |
@@ -387,15 +387,15 @@ Codepages: one byte per character. Usable as: file, string, or custom encoding.
 | KOI8-R | [`encodings/koi8r.tbl`](encodings/koi8r.tbl) | Cyrillic KOI8-R encoding (Russian characters) | 256 | (none) |
 | KOI8-U | [`encodings/koi8u.tbl`](encodings/koi8u.tbl) | Cyrillic KOI8-U encoding (Ukrainian characters) | 256 | (none) |
 | Mac OS Arabic | [`encodings/mac_arabic.tbl`](encodings/mac_arabic.tbl) | Classic Mac OS encoding for the Arabic language | 256 | (none) |
-| Mac OS Central European | [`encodings/mac_latin2.tbl`](encodings/mac_latin2.tbl) | Classic Mac OS encoding for Central European languages (Czech, Slovak, Hungarian, Polish, and others) | 256 | `mac_centeuro`, `maccentraleurope`, `maclatin2` |
+| Mac OS Central European | [`encodings/mac_latin2.tbl`](encodings/mac_latin2.tbl) | Classic Mac OS encoding for Central European languages (Czech, Slovak, Hungarian, Polish, and others) | 256 | `mac_centeuro`, `maccentraleurope` |
 | Mac OS Croatian | [`encodings/mac_croatian.tbl`](encodings/mac_croatian.tbl) | Classic Mac OS encoding for the Croatian language | 256 | (none) |
-| Mac OS Cyrillic | [`encodings/mac_cyrillic.tbl`](encodings/mac_cyrillic.tbl) | Classic Mac OS encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others) | 256 | `maccyrillic` |
+| Mac OS Cyrillic | [`encodings/mac_cyrillic.tbl`](encodings/mac_cyrillic.tbl) | Classic Mac OS encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others) | 256 | (none) |
 | Mac OS Farsi | [`encodings/mac_farsi.tbl`](encodings/mac_farsi.tbl) | Classic Mac OS encoding for the Persian (Farsi) language | 256 | (none) |
-| Mac OS Greek | [`encodings/mac_greek.tbl`](encodings/mac_greek.tbl) | Classic Mac OS encoding for the Greek language | 256 | `macgreek` |
-| Mac OS Icelandic | [`encodings/mac_iceland.tbl`](encodings/mac_iceland.tbl) | Classic Mac OS encoding for the Icelandic language | 256 | `maciceland` |
-| Mac OS Roman | [`encodings/mac_roman.tbl`](encodings/mac_roman.tbl) | Classic Mac OS encoding for Western European languages | 256 | `macintosh`, `macroman` |
+| Mac OS Greek | [`encodings/mac_greek.tbl`](encodings/mac_greek.tbl) | Classic Mac OS encoding for the Greek language | 256 | (none) |
+| Mac OS Icelandic | [`encodings/mac_iceland.tbl`](encodings/mac_iceland.tbl) | Classic Mac OS encoding for the Icelandic language | 256 | (none) |
+| Mac OS Roman | [`encodings/mac_roman.tbl`](encodings/mac_roman.tbl) | Classic Mac OS encoding for Western European languages | 256 | `macintosh` |
 | Mac OS Romanian | [`encodings/mac_romanian.tbl`](encodings/mac_romanian.tbl) | Classic Mac OS encoding for the Romanian language | 256 | (none) |
-| Mac OS Turkish | [`encodings/mac_turkish.tbl`](encodings/mac_turkish.tbl) | Classic Mac OS encoding for the Turkish language | 256 | `macturkish` |
+| Mac OS Turkish | [`encodings/mac_turkish.tbl`](encodings/mac_turkish.tbl) | Classic Mac OS encoding for the Turkish language | 256 | (none) |
 | TIS-620 | [`encodings/tis620.tbl`](encodings/tis620.tbl) | Thai national standard character encoding | 247 | `iso_ir_166` |
 | Windows 874 | [`encodings/cp874.tbl`](encodings/cp874.tbl) | Windows encoding for the Thai language | 225 | (none) |
 | Windows 1250 | [`encodings/cp1250.tbl`](encodings/cp1250.tbl) | Windows encoding for Central European languages (Polish, Czech, Hungarian, and others) | 251 | `windows_1250` |
@@ -418,12 +418,12 @@ Generated from Python's stdlib `codecs`, but not codepages. Usable as: string or
 |------|------|-------------|---------|---------|
 | Big5 | [`encodings/big5.tbl`](encodings/big5.tbl) | Encoding for Traditional Chinese text | 13838 | `x_mac_trad_chinese` |
 | Big5-HKSCS | [`encodings/big5hkscs.tbl`](encodings/big5hkscs.tbl) | Extended Big5 encoding with the Hong Kong Supplementary Character Set | 18530 | `hkscs` |
-| EUC-JP | [`encodings/euc_jp.tbl`](encodings/euc_jp.tbl) | Extended Unix Code encoding for the Japanese language | 13137 | `eucjp`, `u_jis`, `ujis` |
-| EUC-KR | [`encodings/euc_kr.tbl`](encodings/euc_kr.tbl) | Extended Unix Code encoding for the Korean language | 8353 | `euckr`, `korean`, `ks_c_5601`, `ks_c_5601_1987`, `ks_x_1001`, `ksc5601`, `ksx1001`, `x_mac_korean` |
+| EUC-JP | [`encodings/euc_jp.tbl`](encodings/euc_jp.tbl) | Extended Unix Code encoding for the Japanese language | 13137 | `u_jis`, `ujis` |
+| EUC-KR | [`encodings/euc_kr.tbl`](encodings/euc_kr.tbl) | Extended Unix Code encoding for the Korean language | 8353 | `korean`, `ks_c_5601`, `ks_c_5601_1987`, `ks_x_1001`, `ksc5601`, `ksx1001`, `x_mac_korean` |
 | GB2312 | [`encodings/gb2312.tbl`](encodings/gb2312.tbl) | Older encoding for Simplified Chinese text | 7573 | `chinese`, `euc_cn`, `euccn`, `eucgb2312_cn`, `iso_ir_58`, `x_mac_simp_chinese` |
 | GB18030 | [`encodings/gb18030.tbl`](encodings/gb18030.tbl) | Encoding for Simplified Chinese text, the mandatory national standard and a superset of GBK | 24068 | (none) |
 | GBK | [`encodings/gbk.tbl`](encodings/gbk.tbl) | Encoding for Simplified Chinese text | 21919 | `cp936`, `ms936`, `windows-936` |
-| Shift_JIS | [`encodings/shift_jis.tbl`](encodings/shift_jis.tbl) | Encoding for Japanese text | 7070 | `s_jis`, `shiftjis`, `sjis`, `x_mac_japanese` |
+| Shift_JIS | [`encodings/shift_jis.tbl`](encodings/shift_jis.tbl) | Encoding for Japanese text | 7070 | `s_jis`, `sjis`, `x_mac_japanese` |
 | Windows 31J | [`encodings/cp932.tbl`](encodings/cp932.tbl) | Shift-JIS with Microsoft/NEC/IBM extensions (aka MS932/CP932) | 9800 | `ms932`, `ms_kanji`, `mskanji` |
 <!-- generate_encodings.py: end of Generated encodings table -->
 
