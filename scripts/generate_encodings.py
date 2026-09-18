@@ -251,7 +251,7 @@ def build_primary_body(name, description, include_stem, entries):
     if description:
         lines.append(f"-description {description}")
     if include_stem:
-        lines.append(f"-include {include_stem}")
+        lines.append(f"-include {include_stem}.tbl")
     body = dump_entries(entries)
     if body:
         lines.append(body)
@@ -263,7 +263,7 @@ def build_include_body(description, include_stem, entries):
     encodings/includes/, not meant to be selected directly."""
     lines = [GENERATED_COMMENT, f"# {description}"]
     if include_stem:
-        lines.append(f"-include {include_stem}")
+        lines.append(f"-include {include_stem}.tbl")
     body = dump_entries(entries)
     if body:
         lines.append(body)
