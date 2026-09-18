@@ -396,7 +396,16 @@ as a string encoding (`[[encoding("...")]]`).
 | KOI8-R | [`encodings/koi8_r.tbl`](encodings/koi8_r.tbl) | Cyrillic KOI8-R encoding (Russian characters) | 256 | (none) |
 | KOI8-U | [`encodings/koi8_u.tbl`](encodings/koi8_u.tbl) | Cyrillic KOI8-U encoding (Ukrainian characters) | 256 | (none) |
 | ISO-8859-1 | [`encodings/iso8859_1.tbl`](encodings/iso8859_1.tbl) | ISO encoding for Western European languages (English, French, German, and others) | 256 | `cp819`, `ibm819`, `iso8859`, `iso_8859_1`, `iso_ir_100`, `latin`, `latin1` |
-| macintosh | [`encodings/mac_roman.tbl`](encodings/mac_roman.tbl) | Classic Mac OS encoding for Western European languages | 256 | `macintosh`, `macroman` |
+| Mac OS Arabic | [`encodings/mac_arabic.tbl`](encodings/mac_arabic.tbl) | Classic Mac OS encoding for the Arabic language | 256 | (none) |
+| Mac OS Croatian | [`encodings/mac_croatian.tbl`](encodings/mac_croatian.tbl) | Classic Mac OS encoding for the Croatian language | 256 | (none) |
+| Mac OS Cyrillic | [`encodings/mac_cyrillic.tbl`](encodings/mac_cyrillic.tbl) | Classic Mac OS encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others) | 256 | `maccyrillic` |
+| Mac OS Farsi | [`encodings/mac_farsi.tbl`](encodings/mac_farsi.tbl) | Classic Mac OS encoding for the Persian (Farsi) language | 256 | (none) |
+| Mac OS Greek | [`encodings/mac_greek.tbl`](encodings/mac_greek.tbl) | Classic Mac OS encoding for the Greek language | 256 | `macgreek` |
+| Mac OS Icelandic | [`encodings/mac_iceland.tbl`](encodings/mac_iceland.tbl) | Classic Mac OS encoding for the Icelandic language | 256 | `maciceland` |
+| Mac OS Central European | [`encodings/mac_latin2.tbl`](encodings/mac_latin2.tbl) | Classic Mac OS encoding for Central European languages (Czech, Slovak, Hungarian, Polish, and others) | 256 | `mac_centeuro`, `maccentraleurope`, `maclatin2` |
+| Mac OS Roman | [`encodings/mac_roman.tbl`](encodings/mac_roman.tbl) | Classic Mac OS encoding for Western European languages | 256 | `macintosh`, `macroman` |
+| Mac OS Romanian | [`encodings/mac_romanian.tbl`](encodings/mac_romanian.tbl) | Classic Mac OS encoding for the Romanian language | 256 | (none) |
+| Mac OS Turkish | [`encodings/mac_turkish.tbl`](encodings/mac_turkish.tbl) | Classic Mac OS encoding for the Turkish language | 256 | `macturkish` |
 | TIS-620 | [`encodings/tis_620.tbl`](encodings/tis_620.tbl) | Thai national standard character encoding | 247 | `iso_ir_166`, `tis620` |
 | JIS_X0201 | [`encodings/jis_x0201.tbl`](encodings/jis_x0201.tbl) | JIS X 0201 encoding (half-width katakana and Roman set) | 191 | `X0201` |
 <!-- generate_encodings.py: end of File encodings table -->

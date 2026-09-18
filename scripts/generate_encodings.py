@@ -89,7 +89,16 @@ CODEC_ENCODINGS = {
     "koi8_r": ("KOI8-R", "Cyrillic KOI8-R encoding (Russian characters)"),
     "koi8_u": ("KOI8-U", "Cyrillic KOI8-U encoding (Ukrainian characters)"),
     "latin_1": ("ISO-8859-1", "ISO encoding for Western European languages (English, French, German, and others)"),
-    "mac_roman": ("macintosh", "Classic Mac OS encoding for Western European languages"),
+    "mac_arabic": ("Mac OS Arabic", "Classic Mac OS encoding for the Arabic language"),
+    "mac_croatian": ("Mac OS Croatian", "Classic Mac OS encoding for the Croatian language"),
+    "mac_cyrillic": ("Mac OS Cyrillic", "Classic Mac OS encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others)"),
+    "mac_farsi": ("Mac OS Farsi", "Classic Mac OS encoding for the Persian (Farsi) language"),
+    "mac_greek": ("Mac OS Greek", "Classic Mac OS encoding for the Greek language"),
+    "mac_iceland": ("Mac OS Icelandic", "Classic Mac OS encoding for the Icelandic language"),
+    "mac_latin2": ("Mac OS Central European", "Classic Mac OS encoding for Central European languages (Czech, Slovak, Hungarian, Polish, and others)"),
+    "mac_roman": ("Mac OS Roman", "Classic Mac OS encoding for Western European languages"),
+    "mac_romanian": ("Mac OS Romanian", "Classic Mac OS encoding for the Romanian language"),
+    "mac_turkish": ("Mac OS Turkish", "Classic Mac OS encoding for the Turkish language"),
     "shift_jis": ("Shift_JIS", "Encoding for Japanese text"),
     "tis_620": ("TIS-620", "Thai national standard character encoding"),
 }
@@ -120,6 +129,7 @@ MIN_SHARED_ENTRIES = 48
 # Friendly names for shared tables, keyed by content hash.
 # Unlisted tables are named after their hash instead.
 KNOWN_SHARED_NAMES = {
+    "30a1371392fa": "arabic_common",
     "0e166e4cc71e": "baltic",
     "26547374c76a": "box_drawing",
     "8da30839c26c": "central_european",
@@ -132,8 +142,12 @@ KNOWN_SHARED_NAMES = {
     "73f090c0b0f0": "japanese_kanji",
     "733be1b6d236": "koi8",
     "c8d8be2c999e": "latin_greek_math",
+    "ef502e17ae0e": "mac_central_european",
+    "9d4c91e34171": "mac_latin",
+    "ee297dd4450f": "mac_rtl",
     "4adec219b5e9": "nordic",
     "f03083f77bbc": "traditional_chinese",
+    "f90e30177902": "windows_latin",
 }
 
 
