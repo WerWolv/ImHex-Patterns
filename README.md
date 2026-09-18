@@ -345,16 +345,9 @@ entries share them via an `-include` line instead of repeating them (every
 ASCII-transparent encoding includes `ascii`, for example), and every other
 name a codec is known by gets its own `-alias` file.
 
-ImHex accepts an encoding in three places: the file encoding
-(`#pragma encoding <name>`), which only accepts a codepage; the string
-encoding (`[[encoding("...")]]`), which accepts a custom encoding or one
-of ImHex's built-in algorithmic encodings; and a custom encoding, which
-accepts any `.tbl` file.
-
 #### Generated file encodings
 
-Codepages: one byte per character. Usable as the file encoding, the string
-encoding, or a custom encoding.
+Codepages: one byte per character. Usable as: file, string, or custom encoding.
 
 <!-- generate_encodings.py: start of File encodings table -->
 | Name | Path | Description | Entries | Aliases |
@@ -418,8 +411,7 @@ encoding, or a custom encoding.
 
 #### Generated string encodings
 
-Generated from Python's stdlib `codecs`, but not codepages. Usable as the
-string encoding or a custom encoding, not the file encoding.
+Generated from Python's stdlib `codecs`, but not codepages. Usable as: string or custom encoding.
 
 <!-- generate_encodings.py: start of Generated encodings table -->
 | Name | Path | Description | Entries | Aliases |
@@ -438,7 +430,7 @@ string encoding or a custom encoding, not the file encoding.
 #### Custom encodings
 
 No codec covers these, so `generate_encodings.py` never touches them.
-Usable as the string encoding or a custom encoding, not the file encoding.
+Usable as: string or custom encoding.
 
 <!-- generate_encodings.py: start of Custom encodings table -->
 | Name | Path | Description | Entries | Aliases |
@@ -449,9 +441,8 @@ Usable as the string encoding or a custom encoding, not the file encoding.
 
 #### Algorithmic encodings
 
-Built into ImHex, with no `.tbl` file here, so usable as the string encoding
-but not as a custom encoding or the file encoding. The `UTF-*` family is an
-example; see the ImHex documentation for the full list.
+Built into ImHex, with no `.tbl` file here. Usable as: string encoding.
+The `UTF-*` family is an example; see the ImHex documentation for the full list.
 
 ### Data Processor Nodes
 
