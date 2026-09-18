@@ -246,24 +246,24 @@ def dump_entries(entries):
     return "\n".join(lines)
 
 
-def build_primary_body(name, description, include_stem, entries):
+def build_primary_body(name, description, include, entries):
     lines = [GENERATED_COMMENT, f"-name {name}"]
     if description:
         lines.append(f"-description {description}")
-    if include_stem:
-        lines.append(f"-include {include_stem}.tbl")
+    if include:
+        lines.append(f"-include {include}")
     body = dump_entries(entries)
     if body:
         lines.append(body)
     return "\n".join(lines) + "\n"
 
 
-def build_include_body(description, include_stem, entries):
+def build_include_body(description, include, entries):
     """Like build_primary_body, but no -name. Lives in
     encodings/includes/, not meant to be selected directly."""
     lines = [GENERATED_COMMENT, f"# {description}"]
-    if include_stem:
-        lines.append(f"-include {include_stem}.tbl")
+    if include:
+        lines.append(f"-include {include}")
     body = dump_entries(entries)
     if body:
         lines.append(body)
@@ -472,19 +472,21 @@ def apply_table(content, start, end, table):
     return new_content
 
 
-def include_path(stem, shared_stems):
-    """-include value for stem: shared tables live under includes/,
-    real encodings live at the top level."""
-    if stem in shared_stems:
-        return f"{INCLUDES_DIR}/{stem}"
-    return stem
-
-
 def file_path(stem, shared_stems):
     """.tbl file path to write stem to."""
     if stem in shared_stems:
         return f"{INCLUDES_DIR}/{stem}.tbl"
     return f"{stem}.tbl"
+
+
+def relative_include(includer_stem, target_stem, shared_stems):
+    """-include value naming target_stem's file, relative to includer_stem's
+    own file. ImHex reads -include the way one source file includes
+    another, so a table under includes/ needs "../" to reach a top-level
+    one, not just the top-level one's bare name."""
+    includer_dir = os.path.dirname(file_path(includer_stem, shared_stems))
+    target = file_path(target_stem, shared_stems)
+    return os.path.relpath(target, includer_dir) if includer_dir else target
 
 
 def shared_dependents(full, bases, shared_stems):
@@ -516,7 +518,7 @@ def build_shared_base_files(full, shared_sources, bases):
         entries = full[stem]
         own = entries if base_stem is None else \
             {k: v for k, v in entries.items() if k not in full[base_stem]}
-        include = include_path(base_stem, shared_stems) if base_stem else None
+        include = relative_include(stem, base_stem, shared_stems) if base_stem else None
         files[file_path(stem, shared_stems)] = build_include_body(description, include, own)
     return files
 
@@ -533,7 +535,7 @@ def all_files(stems, full, bases, shared_stems):
             {k: v for k, v in entries.items() if k not in full[base_stem]}
         if stem + ".tbl" in files:
             raise SystemExit(f"primary collision: two encodings both normalize to {stem}.tbl")
-        include = include_path(base_stem, shared_stems) if base_stem else None
+        include = relative_include(stem, base_stem, shared_stems) if base_stem else None
         files[stem + ".tbl"] = build_primary_body(name, description, include, own)
 
         for alias in aliases:
