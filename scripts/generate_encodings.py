@@ -159,7 +159,15 @@ def is_useful_alias(alias):
 
 
 def normalize(name):
-    return re.sub(r"[-: ]", "_", name.lower())
+    """Filename-safe version of a codec or alias name. Separators only
+    matter between two letters or two digits, e.g. "iso8859_2" needs
+    the "_" to keep "8859" and "2" apart, but "koi8-r" doesn't, since
+    the digit/letter boundary already separates "koi8" from "r". "." is
+    just another separator here, not a decimal point, e.g. Python's own
+    "ansi_x3.4_1968" and "ansi_x3_4_1968" aliases should collapse into
+    one file, not two."""
+    name = re.sub(r"[-.: ]", "_", name.lower())
+    return re.sub(r"(?<=[a-z])_(?=\d)|(?<=\d)_(?=[a-z])", "", name)
 
 
 def stem_for(key):
