@@ -120,20 +120,20 @@ MIN_SHARED_ENTRIES = 48
 # Friendly names for shared tables, keyed by content hash.
 # Unlisted tables are named after their hash instead.
 KNOWN_SHARED_NAMES = {
-    "26547374c76a": "dos",
-    "e9ab4a6a1d2c": "shift_jis_shared",
-    "733be1b6d236": "koi8",
-    "f03083f77bbc": "big5_shared",
-    "d4a14d7516bd": "greek",
+    "0e166e4cc71e": "baltic",
+    "26547374c76a": "box_drawing",
     "8da30839c26c": "central_european",
     "333c7d4a7806": "cjk_symbols",
-    "73f090c0b0f0": "shift_jis_windows",
-    "0e166e4cc71e": "baltic",
-    "4adec219b5e9": "nordic",
-    "293ab09ade86": "iso8859_extended",
-    "4fa454d63732": "iso8859_latin",
     "7032f8c44e34": "dos_latin",
-    "c8d8be2c999e": "dos_symbols",
+    "d4a14d7516bd": "greek",
+    "e9ab4a6a1d2c": "halfwidth_katakana",
+    "4fa454d63732": "iso8859_latin",
+    "293ab09ade86": "iso8859_western",
+    "73f090c0b0f0": "japanese_kanji",
+    "733be1b6d236": "koi8",
+    "c8d8be2c999e": "latin_greek_math",
+    "4adec219b5e9": "nordic",
+    "f03083f77bbc": "traditional_chinese",
 }
 
 
