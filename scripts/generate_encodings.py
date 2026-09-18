@@ -416,6 +416,13 @@ def is_codepage(entries):
     return all(len(k) == 2 for k in entries) and all(len(v) == 1 for v in entries.values())
 
 
+def natural_sort_key(name):
+    """Sorts number groups by value, so "ISO-8859-2" comes before
+    "ISO-8859-10"."""
+    return [int(chunk) if chunk.isdigit() else chunk.casefold()
+            for chunk in re.split(r"(\d+)", name)]
+
+
 def readme_rows(stems, full):
     file_encodings, generated_string, custom = [], [], []
 
@@ -429,6 +436,10 @@ def readme_rows(stems, full):
     for fname, (name, description) in HAND_AUTHORED_FILES.items():
         custom.append((name, fname, description, count_entries(fname), []))
 
+    by_name = lambda row: natural_sort_key(row[0])
+    file_encodings.sort(key=by_name)
+    generated_string.sort(key=by_name)
+    custom.sort(key=by_name)
     return file_encodings, generated_string, custom
 
 
