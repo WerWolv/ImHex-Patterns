@@ -501,11 +501,11 @@ def build_shared_base_files(full, shared_sources, bases):
     files = {}
     for stem in shared_sources:
         names = ", ".join(sorted(dependents[stem]))
-        description = f"Entries shared by {names}"
         base_stem = bases[stem]
         entries = full[stem]
         own = entries if base_stem is None else \
             {k: v for k, v in entries.items() if k not in full[base_stem]}
+        description = f"{len(entries)} entries shared by {names}"
         include = relative_include(stem, base_stem, shared_stems) if base_stem else None
         files[file_path(stem, shared_stems)] = build_include_body(description, include, own)
     return files
