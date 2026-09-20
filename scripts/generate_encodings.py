@@ -159,15 +159,12 @@ def is_useful_alias(alias):
 
 
 def normalize(name):
-    """Filename-safe version of a codec or alias name. Separators only
-    matter between two letters or two digits, e.g. "iso8859_2" needs
-    the "_" to keep "8859" and "2" apart, but "koi8-r" doesn't, since
-    the digit/letter boundary already separates "koi8" from "r". "." is
-    just another separator here, not a decimal point, e.g. Python's own
-    "ansi_x3.4_1968" and "ansi_x3_4_1968" aliases should collapse into
-    one file, not two."""
-    name = re.sub(r"[-.: ]", "_", name.lower())
-    return re.sub(r"(?<=[a-z])_(?=\d)|(?<=\d)_(?=[a-z])", "", name)
+    """Filename stem for a codec or alias name. Lowercasing is the whole
+    transform: every name gets its own file, so "#pragma encoding X"
+    always means "encodings/x.tbl" with no rules to memorize. Separators
+    are left alone, which is why "iso8859-1" and "iso_8859_1" are two
+    files rather than one - cheaper than a rule that folds them."""
+    return name.lower()
 
 
 def stem_for(key):
@@ -275,25 +272,21 @@ def build_alias_body(primary_stem):
 
 
 def useful_aliases(key, aliases):
-    """Aliases worth a file: useful, not the primary's own stem (regardless
-    of "_" placement, e.g. "maccyrillic" for "mac_cyrillic"), and not just
-    the stem with a suffix tacked on (e.g. "iso_8859_8_1988" for
-    "iso8859_8")."""
+    """Aliases worth a file: useful, and not the primary's own stem.
+    Near-misses like "iso8859_1" next to "iso8859-1" are kept, since
+    each spelling needs its own file to be usable in #pragma encoding."""
     stem = stem_for(key)
-    stem_bare = stem.replace("_", "")
-
-    def is_stem_plus_suffix(alias_bare):
-        return len(alias_bare) > len(stem_bare) and alias_bare.startswith(stem_bare)
-
-    return sorted({a.replace(".", "_") for a in aliases if is_useful_alias(a)
-                   and normalize(a).replace("_", "") != stem_bare
-                   and not is_stem_plus_suffix(normalize(a).replace("_", ""))})
+    return sorted({normalize(a) for a in aliases
+                   if is_useful_alias(a) and normalize(a) != stem})
 
 
 def all_encodings():
     """(key, name, description, aliases) for every generated primary file."""
+    # The codec key joins its own aliases: "iso8859_2" is what you write
+    # in Python, but the canonical name it looks up is "iso8859-2".
     items = [(codec, name, description,
-              useful_aliases(codec, set(library_aliases_for(codec)) | set(EXTRA_ALIASES.get(codec, []))))
+              useful_aliases(codec, {codec} | set(library_aliases_for(codec))
+                                    | set(EXTRA_ALIASES.get(codec, []))))
              for codec, (name, description) in CODEC_ENCODINGS.items()]
     items += [(key, cfg["name"], cfg["description"], useful_aliases(key, cfg["aliases"]))
               for key, cfg in DERIVED_ENCODINGS.items()]
@@ -524,10 +517,12 @@ def build_shared_base_files(full, shared_sources, bases):
 
 
 def all_files(stems, full, bases, shared_stems):
+    encodings_ = all_encodings()
+    primary_names = {stems[key] + ".tbl" for key, *_ in encodings_}
     files = {}
     alias_targets = {}
 
-    for key, name, description, aliases in all_encodings():
+    for key, name, description, aliases in encodings_:
         stem = stems[key]
         entries = full[stem]
         base_stem = bases[stem]
@@ -542,6 +537,11 @@ def all_files(stems, full, bases, shared_stems):
             alias_fname = normalize(alias) + ".tbl"
             if alias_fname == stem + ".tbl":
                 continue
+            # An alias file must never stand where a primary goes: it
+            # would replace a real table with a stub pointing elsewhere.
+            if alias_fname in primary_names:
+                raise SystemExit(f"alias collision: {stem}'s alias {alias_fname} is "
+                                  "another encoding's own file")
             if alias_fname in alias_targets and alias_targets[alias_fname] != stem:
                 raise SystemExit(f"alias collision: {alias_fname} wants both "
                                   f"{alias_targets[alias_fname]} and {stem}")
