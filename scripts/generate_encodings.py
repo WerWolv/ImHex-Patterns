@@ -280,13 +280,17 @@ def useful_aliases(key, aliases):
                    if is_useful_alias(a) and normalize(a) != stem})
 
 
+def aliases_for(codec):
+    """Every name a codec answers to, besides its own stem. The codec
+    key counts as one of them: "iso8859_2" is what you write in Python,
+    but the canonical name it looks up is "iso8859-2"."""
+    names = {codec} | set(library_aliases_for(codec)) | set(EXTRA_ALIASES.get(codec, []))
+    return useful_aliases(codec, names)
+
+
 def all_encodings():
     """(key, name, description, aliases) for every generated primary file."""
-    # The codec key joins its own aliases: "iso8859_2" is what you write
-    # in Python, but the canonical name it looks up is "iso8859-2".
-    items = [(codec, name, description,
-              useful_aliases(codec, {codec} | set(library_aliases_for(codec))
-                                    | set(EXTRA_ALIASES.get(codec, []))))
+    items = [(codec, name, description, aliases_for(codec))
              for codec, (name, description) in CODEC_ENCODINGS.items()]
     items += [(key, cfg["name"], cfg["description"], useful_aliases(key, cfg["aliases"]))
               for key, cfg in DERIVED_ENCODINGS.items()]
