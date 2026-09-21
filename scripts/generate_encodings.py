@@ -10,6 +10,7 @@ import codecs
 import encodings.aliases
 import hashlib
 import os
+import posixpath
 import re
 import sys
 
@@ -469,12 +470,11 @@ def file_path(stem, shared_stems):
 
 def relative_include(includer_stem, target_stem, shared_stems):
     """-include value naming target_stem's file, relative to includer_stem's
-    own file. ImHex reads -include the way one source file includes
-    another, so a table under includes/ needs "../" to reach a top-level
-    one."""
-    includer_dir = os.path.dirname(file_path(includer_stem, shared_stems))
+    own file. file_path() returns "/"-separated paths, so posixpath (not
+    os.path) preserves that on Windows too."""
+    includer_dir = posixpath.dirname(file_path(includer_stem, shared_stems))
     target = file_path(target_stem, shared_stems)
-    return os.path.relpath(target, includer_dir) if includer_dir else target
+    return posixpath.relpath(target, includer_dir) if includer_dir else target
 
 
 def shared_dependents(full, bases, shared_stems):
