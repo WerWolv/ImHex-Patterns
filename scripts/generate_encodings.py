@@ -350,10 +350,27 @@ def discover_shared_bases(real_full):
     return shared_entries, shared_sources, real_bases
 
 
-def prune_single_use_shared(full, bases, shared_entries, shared_sources):
-    """Drop shared tables with fewer than 2 direct includers, or with
-    fewer than MIN_SHARED_ENTRIES entries of their own. Point the lone
-    includer, if any, at the dropped table's own base instead."""
+def build_entries():
+    entries_by_key = {codec: gen_codec_entries(codec) for codec in CODEC_ENCODINGS}
+    for key, cfg in DERIVED_ENCODINGS.items():
+        entries = {k: v for k, v in entries_by_key[cfg["source"]].items()
+                   if cfg["key_filter"](k)}
+        entries.update(cfg["overrides"])
+        entries_by_key[key] = entries
+
+    stems = {key: stem_for(key) for key in entries_by_key}
+    real_full = {stems[key]: entries_by_key[key] for key in entries_by_key}
+
+    shared_entries, shared_sources, bases = discover_shared_bases(real_full)
+
+    # a shared table can itself -include a real base, e.g. ascii
+    trial = {**real_full, **shared_entries}
+    shared_bases = find_bases(trial)
+    bases.update({stem: shared_bases[stem] for stem in shared_entries})
+
+    full = {**real_full, **shared_entries}
+
+    # Drop shared tables with too few users or too little content of their own.
     changed = True
     while changed:
         changed = False
@@ -377,28 +394,6 @@ def prune_single_use_shared(full, bases, shared_entries, shared_sources):
             del full[stem]
             del bases[stem]
             changed = True
-
-
-def build_entries():
-    entries_by_key = {codec: gen_codec_entries(codec) for codec in CODEC_ENCODINGS}
-    for key, cfg in DERIVED_ENCODINGS.items():
-        entries = {k: v for k, v in entries_by_key[cfg["source"]].items()
-                   if cfg["key_filter"](k)}
-        entries.update(cfg["overrides"])
-        entries_by_key[key] = entries
-
-    stems = {key: stem_for(key) for key in entries_by_key}
-    real_full = {stems[key]: entries_by_key[key] for key in entries_by_key}
-
-    shared_entries, shared_sources, bases = discover_shared_bases(real_full)
-
-    # a shared table can itself -include a real base, e.g. ascii
-    trial = {**real_full, **shared_entries}
-    shared_bases = find_bases(trial)
-    bases.update({stem: shared_bases[stem] for stem in shared_entries})
-
-    full = {**real_full, **shared_entries}
-    prune_single_use_shared(full, bases, shared_entries, shared_sources)
 
     return stems, full, bases, shared_sources
 
