@@ -13,6 +13,7 @@ import os
 import posixpath
 import re
 import sys
+from typing import NamedTuple
 
 REPO_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 ENCODINGS_DIR = os.path.join(REPO_ROOT, "encodings")
@@ -284,11 +285,18 @@ def aliases_for(codec):
     return useful_aliases(codec, names)
 
 
+class EncodingSpec(NamedTuple):
+    key: str
+    name: str
+    description: str
+    aliases: list
+
+
 def all_encodings():
-    """(key, name, description, aliases) for every generated primary file."""
-    items = [(codec, name, description, aliases_for(codec))
+    """EncodingSpec for every generated primary file."""
+    items = [EncodingSpec(codec, name, description, aliases_for(codec))
              for codec, (name, description) in CODEC_ENCODINGS.items()]
-    items += [(key, cfg["name"], cfg["description"], useful_aliases(key, cfg["aliases"]))
+    items += [EncodingSpec(key, cfg["name"], cfg["description"], useful_aliases(key, cfg["aliases"]))
               for key, cfg in DERIVED_ENCODINGS.items()]
     return items
 
@@ -425,20 +433,27 @@ def natural_sort_key(name):
             for chunk in re.split(r"(\d+)", name)]
 
 
+class ReadmeRow(NamedTuple):
+    name: str
+    link: str
+    description: str
+    entries: int
+    aliases: list
+
+
 def readme_rows(stems, full):
     file_encodings, generated_string, custom = [], [], []
 
-    for key, name, description, aliases in all_encodings():
-        stem = stems[key]
+    for spec in all_encodings():
+        stem = stems[spec.key]
         entries = full[stem]
-        link = f"{stem}.tbl"
-        row = (name, link, description, len(entries), aliases)
+        row = ReadmeRow(spec.name, f"{stem}.tbl", spec.description, len(entries), spec.aliases)
         (file_encodings if is_codepage(entries) else generated_string).append(row)
 
     for fname, (name, description) in HAND_AUTHORED_FILES.items():
-        custom.append((name, fname, description, count_entries(fname), []))
+        custom.append(ReadmeRow(name, fname, description, count_entries(fname), []))
 
-    by_name = lambda row: natural_sort_key(row[0])
+    by_name = lambda row: natural_sort_key(row.name)
     file_encodings.sort(key=by_name)
     generated_string.sort(key=by_name)
     custom.sort(key=by_name)
@@ -448,11 +463,11 @@ def readme_rows(stems, full):
 def build_readme_table(rows):
     lines = ["| Name | Path | Description | Entries | Aliases |",
              "|------|------|-------------|---------|---------|"]
-    for name, link, description, entries, aliases in rows:
-        alias_text = ", ".join(f"`{a}`" for a in aliases) if aliases else "(none)"
-        full_link = f"encodings/{link}"
+    for row in rows:
+        alias_text = ", ".join(f"`{a}`" for a in row.aliases) if row.aliases else "(none)"
+        full_link = f"encodings/{row.link}"
         path = f"[`{full_link}`]({full_link})"
-        lines.append(f"| {name} | {path} | {description} | {entries} | {alias_text} |")
+        lines.append(f"| {row.name} | {path} | {row.description} | {row.entries} | {alias_text} |")
     return "\n".join(lines) + "\n"
 
 
@@ -517,12 +532,12 @@ def build_shared_base_files(full, shared_sources, bases):
 
 def all_files(stems, full, bases, shared_stems):
     encodings_ = all_encodings()
-    primary_names = {stems[key] + ".tbl" for key, *_ in encodings_}
+    primary_names = {stems[spec.key] + ".tbl" for spec in encodings_}
     files = {}
     alias_targets = {}
 
-    for key, name, description, aliases in encodings_:
-        stem = stems[key]
+    for spec in encodings_:
+        stem = stems[spec.key]
         entries = full[stem]
         base_stem = bases[stem]
         own = entries if base_stem is None else \
@@ -530,9 +545,9 @@ def all_files(stems, full, bases, shared_stems):
         if stem + ".tbl" in files:
             raise SystemExit(f"primary collision: two encodings both normalize to {stem}.tbl")
         include = relative_include(stem, base_stem, shared_stems) if base_stem else None
-        files[stem + ".tbl"] = build_primary_body(name, description, include, own)
+        files[stem + ".tbl"] = build_primary_body(spec.name, spec.description, include, own)
 
-        for alias in aliases:
+        for alias in spec.aliases:
             alias_fname = normalize(alias) + ".tbl"
             if alias_fname == stem + ".tbl":
                 continue
