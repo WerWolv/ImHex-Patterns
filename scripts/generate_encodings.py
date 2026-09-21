@@ -60,7 +60,6 @@ CODEC_ENCODINGS = {
     "cp932": ("Windows 31J", "Shift-JIS with Microsoft/NEC/IBM extensions (aka MS932/CP932)"),
     "euc_jp": ("EUC-JP", "Extended Unix Code encoding for the Japanese language"),
     "euc_kr": ("EUC-KR", "Extended Unix Code encoding for the Korean language"),
-    "gb18030": ("GB18030", "Encoding for Simplified Chinese text, the mandatory national standard and a superset of GBK"),
     "gb2312": ("GB2312", "Older encoding for Simplified Chinese text"),
     "gbk": ("GBK", "Encoding for Simplified Chinese text"),
     "iso8859_2": ("ISO 8859-2", "ISO encoding for Central European languages (Polish, Czech, Hungarian, and others)"),
@@ -133,6 +132,7 @@ KNOWN_SHARED_NAMES = {
     "9d4c91e34171": "mac_latin",
     "ee297dd4450f": "mac_rtl",
     "4adec219b5e9": "nordic",
+    "f6a9c1205582": "simplified_chinese",
     "f03083f77bbc": "traditional_chinese",
     "f90e30177902": "windows_latin",
 }

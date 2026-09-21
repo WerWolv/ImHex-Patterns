@@ -422,7 +422,6 @@ Generated from Python's stdlib `codecs`, but not codepages. Usable as: string or
 | EUC-JP | [`encodings/euc_jp.tbl`](encodings/euc_jp.tbl) | Extended Unix Code encoding for the Japanese language | 13137 | `eucjp`, `u_jis`, `ujis` |
 | EUC-KR | [`encodings/euc_kr.tbl`](encodings/euc_kr.tbl) | Extended Unix Code encoding for the Korean language | 8353 | `euckr`, `korean`, `ks_c_5601`, `ks_c_5601_1987`, `ks_x_1001`, `ksc5601`, `ksx1001`, `x_mac_korean` |
 | GB2312 | [`encodings/gb2312.tbl`](encodings/gb2312.tbl) | Older encoding for Simplified Chinese text | 7573 | `chinese`, `euc_cn`, `euccn`, `eucgb2312_cn`, `gb2312_1980`, `gb2312_80`, `iso_ir_58`, `x_mac_simp_chinese` |
-| GB18030 | [`encodings/gb18030.tbl`](encodings/gb18030.tbl) | Encoding for Simplified Chinese text, the mandatory national standard and a superset of GBK | 24068 | `gb18030_2000` |
 | GBK | [`encodings/gbk.tbl`](encodings/gbk.tbl) | Encoding for Simplified Chinese text | 21919 | `cp936`, `ms936`, `windows-936` |
 | Shift_JIS | [`encodings/shift_jis.tbl`](encodings/shift_jis.tbl) | Encoding for Japanese text | 7070 | `s_jis`, `shiftjis`, `sjis`, `x_mac_japanese` |
 | Windows 31J | [`encodings/cp932.tbl`](encodings/cp932.tbl) | Shift-JIS with Microsoft/NEC/IBM extensions (aka MS932/CP932) | 9800 | `ms932`, `ms_kanji`, `mskanji` |
