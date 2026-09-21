@@ -14,7 +14,7 @@ import posixpath
 import re
 import sys
 
-REPO_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+REPO_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 ENCODINGS_DIR = os.path.join(REPO_ROOT, "encodings")
 README_PATH = os.path.join(REPO_ROOT, "README.md")
 INCLUDES_DIR = "includes"
@@ -549,12 +549,121 @@ def all_files(stems, full, bases, shared_stems):
     return files
 
 
-def has_generated_header(fname):
+def has_generated_header(path):
     try:
-        with open(encodings_path(fname), encoding="utf-8", newline="") as f:
+        with open(path, encoding="utf-8", newline="") as f:
             return f.readline().rstrip("\n") == GENERATED_COMMENT
     except (FileNotFoundError, UnicodeDecodeError):
         return False
+
+
+def existing_tbl_paths():
+    """Every .tbl path on disk, under encodings/ and encodings/includes/."""
+    paths = {encodings_path(f) for f in os.listdir(encodings_path()) if f.endswith(".tbl")}
+    if os.path.isdir(encodings_path(INCLUDES_DIR)):
+        paths |= {encodings_path(INCLUDES_DIR, f)
+                  for f in os.listdir(encodings_path(INCLUDES_DIR)) if f.endswith(".tbl")}
+    return paths
+
+
+def check_no_hand_authored_conflicts(expected_paths, all_paths, generated_paths):
+    """Exits if a wanted path is held by a file with no generated header:
+    never overwrite a hand-authored file."""
+    conflicts = sorted((expected_paths & all_paths) - generated_paths)
+    if not conflicts:
+        return
+    for path in conflicts:
+        print(f"generate_encodings.py: {path} exists but has no generated-file "
+              "header, so it looks hand-authored - rename it or the encoding "
+              "it collides with", file=sys.stderr)
+    sys.exit(1)
+
+
+def build_expected(stems, full, bases, shared_sources):
+    """Every path this script produces, mapped to its expected content:
+    every .tbl file plus README.md."""
+    shared_stems = set(shared_sources)
+    tbl_files = all_files(stems, full, bases, shared_stems)
+    tbl_files.update(build_shared_base_files(full, shared_sources, bases))
+    expected = {encodings_path(name): content for name, content in tbl_files.items()}
+
+    with open(README_PATH, encoding="utf-8", newline="") as f:
+        readme_expected = f.read()
+    file_encodings, generated_string, custom = readme_rows(stems, full)
+    readme_expected = apply_table(readme_expected, FILE_TABLE_START, FILE_TABLE_END,
+                                   build_readme_table(file_encodings))
+    readme_expected = apply_table(readme_expected, GENERATED_STRING_TABLE_START, GENERATED_STRING_TABLE_END,
+                                   build_readme_table(generated_string))
+    readme_expected = apply_table(readme_expected, CUSTOM_TABLE_START, CUSTOM_TABLE_END,
+                                   build_readme_table(custom))
+    expected[README_PATH] = readme_expected
+
+    return expected
+
+
+def sync_files(expected, existing):
+    """Compares expected {path: content} against the paths this script
+    already owns. Returns (missing, mismatched, extra) path lists."""
+    missing = sorted(set(expected) - existing)
+    extra = sorted(existing - set(expected))
+    mismatched = []
+    for path in sorted(set(expected) & existing):
+        with open(path, encoding="utf-8", newline="") as f:
+            current = f.read()
+        if current != expected[path]:
+            mismatched.append(path)
+    return missing, mismatched, extra
+
+
+def sync_report(expected, missing, mismatched, extra, check):
+    """In check mode, diagnoses each problem. Otherwise writes each change
+    and removes what is no longer expected. Either way: one line per path,
+    then a one-line summary. Returns whether there was anything to report."""
+    prefix = "generate_encodings.py --check:"
+
+    if check:
+        for path in sorted(missing):
+            print(f"{prefix} missing {path}", file=sys.stderr)
+        for path in sorted(mismatched):
+            print(f"{prefix} out of date {path}", file=sys.stderr)
+        for path in extra:
+            print(f"{prefix} unexpected {path} (not produced by generate_encodings.py)", file=sys.stderr)
+    else:
+        for path in sorted(missing):
+            with open(path, "w", encoding="utf-8", newline="") as f:
+                f.write(expected[path])
+            print(f"created {path}")
+        for path in sorted(mismatched):
+            with open(path, "w", encoding="utf-8", newline="") as f:
+                f.write(expected[path])
+            print(f"updated {path}")
+        for path in extra:
+            os.remove(path)
+            print(f"removed {path}")
+
+    total = len(missing) + len(mismatched) + len(extra)
+    if not total:
+        return False
+
+    if check:
+        summary = count_summary([
+            ("missing", len(missing)),
+            ("out of date", len(mismatched)),
+            ("unexpected", len(extra))])
+        noun = "problem" if total == 1 else "problems"
+        print(f"{prefix} {total} {noun} ({summary})", file=sys.stderr)
+    else:
+        summary = count_summary([
+            ("new", len(missing)),
+            ("updated", len(mismatched)),
+            ("removed", len(extra))])
+        print(f"wrote {total} files, {summary}")
+    return True
+
+
+def count_summary(labeled_counts):
+    """Joins non-zero (label, count) pairs like "2 new, 1 removed"."""
+    return ", ".join(f"{n} {label}" for label, n in labeled_counts if n)
 
 
 def main():
@@ -564,74 +673,31 @@ def main():
     args = parser.parse_args()
 
     stems, full, bases, shared_sources = build_entries()
-    shared_stems = set(shared_sources)
-    expected = all_files(stems, full, bases, shared_stems)
-    expected.update(build_shared_base_files(full, shared_sources, bases))
-    expected_names = set(expected)
+    expected = build_expected(stems, full, bases, shared_sources)
 
-    all_tbl_names = {f for f in os.listdir(encodings_path()) if f.endswith(".tbl")}
-    if os.path.isdir(encodings_path(INCLUDES_DIR)):
-        all_tbl_names |= {f"{INCLUDES_DIR}/{f}" for f in os.listdir(encodings_path(INCLUDES_DIR)) if f.endswith(".tbl")}
-    generated_names = {f for f in all_tbl_names if has_generated_header(f)}
+    all_tbl_paths = existing_tbl_paths()
+    generated_paths = {p for p in all_tbl_paths if has_generated_header(p)}
+    check_no_hand_authored_conflicts(set(expected), all_tbl_paths, generated_paths)
 
-    # A name we want, held by a file with no header, is always fatal:
-    # we never overwrite a hand-authored file.
-    conflicts = sorted((expected_names & all_tbl_names) - generated_names)
-    if conflicts:
-        for name in conflicts:
-            print(f"generate_encodings.py: {name} exists but has no generated-file "
-                  "header, so it looks hand-authored - rename it or the encoding "
-                  "it collides with", file=sys.stderr)
-        sys.exit(1)
+    existing = generated_paths | {README_PATH}
 
-    problems = []
-    missing = sorted(expected_names - all_tbl_names)
-    extra = sorted(generated_names - expected_names)
-    if missing:
-        problems.append("missing files: " + ", ".join(missing))
-    if extra:
-        problems.append("unexpected files (not produced by generate_encodings.py): " + ", ".join(extra))
+    missing, mismatched, extra = sync_files(expected, existing)
 
-    mismatched = []
-    for fname in sorted(expected_names & generated_names):
-        with open(encodings_path(fname), encoding="utf-8", newline="") as f:
-            current = f.read()
-        if current != expected[fname]:
-            mismatched.append(fname)
-    if mismatched:
-        problems.append("out of date: " + ", ".join(mismatched))
+    prefix = "generate_encodings.py --check:" if args.check else "generate_encodings.py:"
+    other_problems = check_known_shared_names(full, shared_sources)
+    for problem in other_problems:
+        print(f"{prefix} {problem}", file=sys.stderr)
 
-    with open(README_PATH, encoding="utf-8", newline="") as f:
-        readme_current = f.read()
-    file_encodings, generated_string, custom = readme_rows(stems, full)
-    readme_expected = apply_table(readme_current, FILE_TABLE_START, FILE_TABLE_END,
-                                   build_readme_table(file_encodings))
-    readme_expected = apply_table(readme_expected, GENERATED_STRING_TABLE_START, GENERATED_STRING_TABLE_END,
-                                   build_readme_table(generated_string))
-    readme_expected = apply_table(readme_expected, CUSTOM_TABLE_START, CUSTOM_TABLE_END,
-                                   build_readme_table(custom))
-    if readme_current != readme_expected:
-        problems.append("README.md is out of date")
-
-    problems.extend(check_known_shared_names(full, shared_sources))
-
-    if args.check:
-        if problems:
-            for p in problems:
-                print("generate_encodings.py --check:", p, file=sys.stderr)
-            sys.exit(1)
-        print("encodings/ and README.md are up to date with generate_encodings.py")
+    if not (missing or mismatched or extra or other_problems):
+        print(f"{len(existing)} files are up to date")
         return
 
-    os.makedirs(encodings_path(INCLUDES_DIR), exist_ok=True)
-    for fname, content in expected.items():
-        with open(encodings_path(fname), "w", encoding="utf-8", newline="") as f:
-            f.write(content)
-    for fname in extra:
-        os.remove(encodings_path(fname))
-    with open(README_PATH, "w", encoding="utf-8", newline="") as f:
-        f.write(readme_expected)
-    print(f"wrote {len(expected)} files and README.md")
+    if not args.check:
+        os.makedirs(encodings_path(INCLUDES_DIR), exist_ok=True)
+
+    found_problems = sync_report(expected, missing, mismatched, extra, args.check) or other_problems
+    if args.check:
+        sys.exit(1 if found_problems else 0)
 
 
 if __name__ == "__main__":
