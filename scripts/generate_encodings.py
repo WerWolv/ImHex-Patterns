@@ -403,6 +403,19 @@ def build_entries():
     return stems, full, bases, shared_sources
 
 
+def check_known_shared_names(full, shared_sources):
+    """Problems for KNOWN_SHARED_NAMES entries no shared table produces
+    anymore, e.g. after a codec change shifts the pairing and strands a
+    stale hash -> name mapping."""
+    produced = {hashlib.sha256(dump_entries(full[stem]).encode()).hexdigest()[:12]
+                for stem in shared_sources}
+    stale = sorted(set(KNOWN_SHARED_NAMES) - produced)
+    if not stale:
+        return []
+    entries = ", ".join(f"{digest} ({KNOWN_SHARED_NAMES[digest]})" for digest in stale)
+    return [f"KNOWN_SHARED_NAMES has stale entries no longer produced by any shared table: {entries}"]
+
+
 def count_entries(fname):
     with open(fname, encoding="utf-8", newline="") as f:
         return sum(1 for line in f if line.strip() and not line.startswith("-"))
@@ -610,6 +623,8 @@ def main():
                                    build_readme_table(custom))
     if readme_current != readme_expected:
         problems.append("README.md is out of date")
+
+    problems.extend(check_known_shared_names(full, shared_sources))
 
     if args.check:
         if problems:
