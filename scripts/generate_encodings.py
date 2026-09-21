@@ -150,6 +150,11 @@ KNOWN_SHARED_NAMES = {
 }
 
 
+def encodings_path(*parts):
+    """Absolute path for a name under encodings/, like ascii.tbl."""
+    return os.path.join(ENCODINGS_DIR, *parts)
+
+
 def is_useful_alias(alias):
     """False for aliases too terse to mean anything on their own, like
     "1250", "csBig5", or "l1"."""
@@ -412,7 +417,7 @@ def check_known_shared_names(full, shared_sources):
 
 
 def count_entries(fname):
-    with open(fname, encoding="utf-8", newline="") as f:
+    with open(encodings_path(fname), encoding="utf-8", newline="") as f:
         return sum(1 for line in f if line.strip() and not line.startswith("-"))
 
 
@@ -555,7 +560,7 @@ def all_files(stems, full, bases, shared_stems):
 
 def has_generated_header(fname):
     try:
-        with open(fname, encoding="utf-8", newline="") as f:
+        with open(encodings_path(fname), encoding="utf-8", newline="") as f:
             return f.readline().rstrip("\n") == GENERATED_COMMENT
     except (FileNotFoundError, UnicodeDecodeError):
         return False
@@ -567,17 +572,15 @@ def main():
                          help="verify encodings/ and README.md match, write nothing")
     args = parser.parse_args()
 
-    os.chdir(ENCODINGS_DIR)
-
     stems, full, bases, shared_sources = build_entries()
     shared_stems = set(shared_sources)
     expected = all_files(stems, full, bases, shared_stems)
     expected.update(build_shared_base_files(full, shared_sources, bases))
     expected_names = set(expected)
 
-    all_tbl_names = {f for f in os.listdir(".") if f.endswith(".tbl")}
-    if os.path.isdir(INCLUDES_DIR):
-        all_tbl_names |= {f"{INCLUDES_DIR}/{f}" for f in os.listdir(INCLUDES_DIR) if f.endswith(".tbl")}
+    all_tbl_names = {f for f in os.listdir(encodings_path()) if f.endswith(".tbl")}
+    if os.path.isdir(encodings_path(INCLUDES_DIR)):
+        all_tbl_names |= {f"{INCLUDES_DIR}/{f}" for f in os.listdir(encodings_path(INCLUDES_DIR)) if f.endswith(".tbl")}
     generated_names = {f for f in all_tbl_names if has_generated_header(f)}
 
     # A name we want, held by a file with no header, is always fatal:
@@ -600,7 +603,7 @@ def main():
 
     mismatched = []
     for fname in sorted(expected_names & generated_names):
-        with open(fname, encoding="utf-8", newline="") as f:
+        with open(encodings_path(fname), encoding="utf-8", newline="") as f:
             current = f.read()
         if current != expected[fname]:
             mismatched.append(fname)
@@ -629,12 +632,12 @@ def main():
         print("encodings/ and README.md are up to date with generate_encodings.py")
         return
 
-    os.makedirs(INCLUDES_DIR, exist_ok=True)
+    os.makedirs(encodings_path(INCLUDES_DIR), exist_ok=True)
     for fname, content in expected.items():
-        with open(fname, "w", encoding="utf-8", newline="") as f:
+        with open(encodings_path(fname), "w", encoding="utf-8", newline="") as f:
             f.write(content)
     for fname in extra:
-        os.remove(fname)
+        os.remove(encodings_path(fname))
     with open(README_PATH, "w", encoding="utf-8", newline="") as f:
         f.write(readme_expected)
     print(f"wrote {len(expected)} files and README.md")
