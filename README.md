@@ -430,15 +430,14 @@ Generated from Python's stdlib `codecs`, but not codepages. Usable as: string or
 
 #### Custom encodings
 
-No codec covers these, so `generate_encodings.py` never touches them.
-Usable as: string or custom encoding.
+No codec covers these, and this whole section is hand-authored;
+`generate_encodings.py` never touches it. Usable as: string or custom
+encoding.
 
-<!-- generate_encodings.py: start of Custom encodings table -->
 | Name | Path | Description | Entries | Aliases |
 |------|------|-------------|---------|---------|
 | Pokémon (English, Generation 1) | [`encodings/pokegen1_en.tbl`](encodings/pokegen1_en.tbl) | Character encoding used by the English generation 1 Pokémon games | 143 | (none) |
 | Pokémon (English, Generation 3) | [`encodings/pokegen3_en.tbl`](encodings/pokegen3_en.tbl) | Character encoding used by the English generation 3 Pokémon games | 144 | (none) |
-<!-- generate_encodings.py: end of Custom encodings table -->
 
 #### Algorithmic encodings
 

@@ -26,14 +26,6 @@ FILE_TABLE_START = "<!-- generate_encodings.py: start of File encodings table --
 FILE_TABLE_END = "<!-- generate_encodings.py: end of File encodings table -->"
 GENERATED_STRING_TABLE_START = "<!-- generate_encodings.py: start of Generated encodings table -->"
 GENERATED_STRING_TABLE_END = "<!-- generate_encodings.py: end of Generated encodings table -->"
-CUSTOM_TABLE_START = "<!-- generate_encodings.py: start of Custom encodings table -->"
-CUSTOM_TABLE_END = "<!-- generate_encodings.py: end of Custom encodings table -->"
-
-# Hand-authored game-text tables; no codec covers them, but still listed below.
-HAND_AUTHORED_FILES = {
-    "pokegen1_en.tbl": ("Pokémon (English, Generation 1)", "Character encoding used by the English generation 1 Pokémon games"),
-    "pokegen3_en.tbl": ("Pokémon (English, Generation 3)", "Character encoding used by the English generation 3 Pokémon games"),
-}
 
 # codec -> (display name, description), both hand-curated; the name is a label, not the filename.
 CODEC_ENCODINGS = {
@@ -415,11 +407,6 @@ def check_known_shared_names(full, shared_sources):
     return [f"KNOWN_SHARED_NAMES has stale entries no longer produced by any shared table: {entries}"]
 
 
-def count_entries(fname):
-    with open(encodings_path(fname), encoding="utf-8", newline="") as f:
-        return sum(1 for line in f if line.strip() and not line.startswith("-"))
-
-
 def is_codepage(entries):
     """True if every key is one byte and every value is one codepoint
     (what #pragma encoding accepts)."""
@@ -442,7 +429,7 @@ class ReadmeRow(NamedTuple):
 
 
 def readme_rows(stems, full):
-    file_encodings, generated_string, custom = [], [], []
+    file_encodings, generated_string = [], []
 
     for spec in all_encodings():
         stem = stems[spec.key]
@@ -450,14 +437,10 @@ def readme_rows(stems, full):
         row = ReadmeRow(spec.name, f"{stem}.tbl", spec.description, len(entries), spec.aliases)
         (file_encodings if is_codepage(entries) else generated_string).append(row)
 
-    for fname, (name, description) in HAND_AUTHORED_FILES.items():
-        custom.append(ReadmeRow(name, fname, description, count_entries(fname), []))
-
     by_name = lambda row: natural_sort_key(row.name)
     file_encodings.sort(key=by_name)
     generated_string.sort(key=by_name)
-    custom.sort(key=by_name)
-    return file_encodings, generated_string, custom
+    return file_encodings, generated_string
 
 
 def build_readme_table(rows):
@@ -604,13 +587,11 @@ def build_expected(stems, full, bases, shared_sources):
 
     with open(README_PATH, encoding="utf-8", newline="") as f:
         readme_expected = f.read()
-    file_encodings, generated_string, custom = readme_rows(stems, full)
+    file_encodings, generated_string = readme_rows(stems, full)
     readme_expected = apply_table(readme_expected, FILE_TABLE_START, FILE_TABLE_END,
                                    build_readme_table(file_encodings))
     readme_expected = apply_table(readme_expected, GENERATED_STRING_TABLE_START, GENERATED_STRING_TABLE_END,
                                    build_readme_table(generated_string))
-    readme_expected = apply_table(readme_expected, CUSTOM_TABLE_START, CUSTOM_TABLE_END,
-                                   build_readme_table(custom))
     expected[README_PATH] = readme_expected
 
     return expected
