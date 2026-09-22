@@ -275,6 +275,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | WAS | | [`patterns/was_oskasoftware.hexpat`](patterns/was_oskasoftware.hexpat) | Oska Software DeskMates WAS/WA3 (WAVE/MP3 Set) file
 | WAD | | [`patterns/wad.hexpat`](patterns/wad.hexpat) | DOOM WAD Archive |
 | WebP | `image/webp` | [`patterns/webp.hexpat`](patterns/webp.hexpat) | Google WebP image |
+| WFM | | [`patterns/wfm.hexpat`](patterns/wfm.hexpat) | Tektronix waveform file |
 | XBEH | `audio/x-xbox-executable` | [`patterns/xbeh.hexpat`](patterns/xbeh.hexpat) | Xbox executable |
 | XCI | | [`patterns/xci.hexpat`](patterns/xci.hexpat) | Nintendo Switch XCI cartridge ROM |
 | XGT | | [`patterns/xgt.hexpat`](patterns/xgstexture.hexpat) | Exient XGS Engine Texture |
