@@ -378,7 +378,7 @@ Codepages: one byte per character. Usable as: file, string, or custom encoding.
 | ISO 8859-5 | [`encodings/iso8859-5.tbl`](encodings/iso8859-5.tbl) | ISO encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others) | 256 | `cyrillic`, `iso8859_5`, `iso_8859_5`, `iso_8859_5_1988`, `iso_ir_144` |
 | ISO 8859-6 | [`encodings/iso8859-6.tbl`](encodings/iso8859-6.tbl) | ISO encoding for the Arabic language | 211 | `arabic`, `asmo_708`, `ecma_114`, `iso8859_6`, `iso_8859_6`, `iso_8859_6_1987`, `iso_ir_127` |
 | ISO 8859-7 | [`encodings/iso8859-7.tbl`](encodings/iso8859-7.tbl) | ISO encoding for the Greek language | 253 | `ecma_118`, `elot_928`, `greek`, `greek8`, `iso8859_7`, `iso_8859_7`, `iso_8859_7_1987`, `iso_ir_126` |
-| ISO 8859-8 | [`encodings/iso8859-8.tbl`](encodings/iso8859-8.tbl) | ISO encoding for the Hebrew language | 220 | `hebrew`, `iso8859_8`, `iso_8859_8`, `iso_8859_8_1988`, `iso_ir_138` |
+| ISO 8859-8 | [`encodings/iso8859-8.tbl`](encodings/iso8859-8.tbl) | ISO encoding for the Hebrew language | 220 | `hebrew`, `iso8859_8`, `iso_8859_8`, `iso_8859_8_1988`, `iso_8859_8_e`, `iso_8859_8_i`, `iso_ir_138` |
 | ISO 8859-9 | [`encodings/iso8859-9.tbl`](encodings/iso8859-9.tbl) | ISO encoding for the Turkish language | 256 | `iso8859_9`, `iso_8859_9`, `iso_8859_9_1989`, `iso_ir_148`, `latin5` |
 | ISO 8859-10 | [`encodings/iso8859-10.tbl`](encodings/iso8859-10.tbl) | ISO encoding for Nordic languages (Icelandic, Sami, and others) | 256 | `iso8859_10`, `iso_8859_10`, `iso_8859_10_1992`, `iso_ir_157`, `latin6` |
 | ISO 8859-11 | [`encodings/iso8859-11.tbl`](encodings/iso8859-11.tbl) | ISO encoding for the Thai language | 248 | `iso8859_11`, `iso_8859_11`, `iso_8859_11_2001`, `thai` |
@@ -400,7 +400,7 @@ Codepages: one byte per character. Usable as: file, string, or custom encoding.
 | Mac OS Romanian | [`encodings/mac-romanian.tbl`](encodings/mac-romanian.tbl) | Classic Mac OS encoding for the Romanian language | 256 | `mac_romanian` |
 | Mac OS Turkish | [`encodings/mac-turkish.tbl`](encodings/mac-turkish.tbl) | Classic Mac OS encoding for the Turkish language | 256 | `mac_turkish`, `macturkish` |
 | TIS-620 | [`encodings/tis-620.tbl`](encodings/tis-620.tbl) | Thai national standard character encoding | 247 | `iso_ir_166`, `tis620`, `tis_620`, `tis_620_0`, `tis_620_2529_0`, `tis_620_2529_1` |
-| Windows 874 | [`encodings/cp874.tbl`](encodings/cp874.tbl) | Windows encoding for the Thai language | 225 | (none) |
+| Windows 874 | [`encodings/cp874.tbl`](encodings/cp874.tbl) | Windows encoding for the Thai language | 225 | `ms874`, `windows_874` |
 | Windows 1250 | [`encodings/cp1250.tbl`](encodings/cp1250.tbl) | Windows encoding for Central European languages (Polish, Czech, Hungarian, and others) | 251 | `windows_1250` |
 | Windows 1251 | [`encodings/cp1251.tbl`](encodings/cp1251.tbl) | Windows encoding for Cyrillic languages (Russian, Bulgarian, Serbian, and others) | 255 | `windows_1251` |
 | Windows 1252 | [`encodings/cp1252.tbl`](encodings/cp1252.tbl) | Windows encoding for Western European languages (English, French, German, and others) | 251 | `windows_1252` |
@@ -426,7 +426,7 @@ Generated from Python's stdlib `codecs`, but not codepages. Usable as: string or
 | GB2312 | [`encodings/gb2312.tbl`](encodings/gb2312.tbl) | Older encoding for Simplified Chinese text | 7573 | `chinese`, `euc_cn`, `euccn`, `eucgb2312_cn`, `gb2312_1980`, `gb2312_80`, `iso_ir_58`, `x_mac_simp_chinese` |
 | GBK | [`encodings/gbk.tbl`](encodings/gbk.tbl) | Encoding for Simplified Chinese text | 21919 | `cp936`, `ms936`, `windows-936` |
 | Shift_JIS | [`encodings/shift_jis.tbl`](encodings/shift_jis.tbl) | Encoding for Japanese text | 7070 | `s_jis`, `shiftjis`, `sjis`, `x_mac_japanese` |
-| Windows 31J | [`encodings/cp932.tbl`](encodings/cp932.tbl) | Shift-JIS with Microsoft/NEC/IBM extensions (aka MS932/CP932) | 9800 | `ms932`, `ms_kanji`, `mskanji` |
+| Windows 31J | [`encodings/cp932.tbl`](encodings/cp932.tbl) | Shift-JIS with Microsoft/NEC/IBM extensions (aka MS932/CP932) | 9800 | `ms932`, `ms_kanji`, `mskanji`, `windows_31j` |
 <!-- generate_encodings.py: end of Generated encodings table -->
 
 #### Custom encodings
