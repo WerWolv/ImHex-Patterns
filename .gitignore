@@ -11,3 +11,5 @@ cmake-build-*/
 .DS_Store
 
 compile_commands.json
+
+scripts/__pycache__/
