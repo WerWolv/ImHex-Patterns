@@ -16,7 +16,7 @@ import sys
 from typing import NamedTuple
 
 REPO_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-ENCODINGS_DIR = os.path.join(REPO_ROOT, "encodings")
+ENCODINGS_DIR = os.path.join(REPO_ROOT, "encodings", "builtin")
 README_PATH = os.path.join(REPO_ROOT, "README.md")
 INCLUDES_DIR = "includes"
 
