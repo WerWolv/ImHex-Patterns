@@ -214,6 +214,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | Protobuf | | [`patterns/protobuf.hexpat`](patterns/protobuf.hexpat) | Google Protobuf encoding |
 | PSP SELF | | [`patterns/psp_self.hexpat`](patterns/psp_self.hexpat) | PlayStation Portable SELF |
 | psafe3 | | [`patterns/psafe3.hexpat`](patterns/psafe3.hexpat`) | Password Safe V3 |
+| PUZ  | | [`patterns/puz.hexpat`](patterns/puz.hexpat) | PUZ crossword format |
 | PyInstaller | | [`patterns/pyinstaller.hexpat`](patterns/pyinstaller.hexpat) | PyInstaller binray files |
 | PYC | `application/x-bytecode.python` | [`patterns/pyc.hexpat`](patterns/pyc.hexpat) | Python bytecode files |
 | QBCL | | [`patterns/qbcl.hexpat`](patterns/qbcl.hexpat) | Qubicle voxel scene project file |
