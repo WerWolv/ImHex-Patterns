@@ -197,6 +197,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | OSR | `application/x-osu-replay` | [`patterns/osr.hexpat`](patterns/osr.hexpat) | osu! replay file |
 | PACK | | [`patterns/roblox_pack.hexpat`](patterns/roblox_pack.hexpat) | Roblox shader archive format |
 | PAK | | [`patterns/xgspak.hexpat`](patterns/xgspak.hexpat) | Exient XGS Engine Pak files |
+| PAK | | [`patterns/pak/arx-fatalis.hexpat`](patterns/pak/arx-fatalis.hexpat) | Arx Fatalis Pak files |
 | PCAP | `application/vnd.tcpdump.pcap` | [`patterns/pcap.hexpat`](patterns/pcap.hexpat) | pcap header and packets |
 | PcapNG | `application/vnd.tcpdump.pcap` | [`patterns/pcapng.hexpat`](patterns/pcapng.hexpat) | pcapng header and packets |
 | PCK | | [`patterns/pck.hexpat`](patterns/pck.hexpat) | Minecraft Legacy Console Edition .pck file |
