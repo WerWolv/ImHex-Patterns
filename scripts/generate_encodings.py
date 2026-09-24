@@ -107,7 +107,10 @@ DERIVED_ENCODINGS = {
 
 # Aliases missing from Python's table. is_useful_alias() still applies.
 EXTRA_ALIASES = {
+    "cp874": ["ms874", "windows_874"],
+    "cp932": ["windows_31j"],
     "gbk": ["windows-936"],
+    "iso8859_8": ["iso_8859_8_e", "iso_8859_8_i"],
 }
 
 # Minimum overlap for a shared table to be worth creating at all.
