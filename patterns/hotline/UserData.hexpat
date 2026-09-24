@@ -1,7 +1,7 @@
 #pragma author Scott Anderson
-#pragma descrption
+#pragma description Hotline Connect Server UserData file
 #pragma endian big
-#pragma encoding mac
+#pragma encoding macintosh
 
 import std.io;
 import std.file;

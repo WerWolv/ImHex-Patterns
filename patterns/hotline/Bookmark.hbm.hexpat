@@ -2,7 +2,7 @@
 #pragma description Hotline Client bookmark
 #pragma magic [ 48 54 73 63 ] @ 0x00
 #pragma endian big
-#pragma encoding mac
+#pragma encoding macintosh
 
 import type.magic;
 import type.size;

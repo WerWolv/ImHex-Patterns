@@ -1,7 +1,8 @@
+#pragma author Scott Anderson
 #pragma description Hotline/AppWarrior "AWRZ" flat resource file (*.dat)
 #pragma magic [ 41 57 52 5a 00 01 ] @ 0x00
 #pragma endian big
-#pragma encoding mac
+#pragma encoding macintosh
 
 import std.core;
 import type.size;
