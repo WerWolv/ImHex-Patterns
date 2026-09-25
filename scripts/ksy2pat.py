@@ -8,12 +8,68 @@ output = ""
 top_level_struct_name = ""
 top_level_struct = ""
 
+TYPES = {
+    "u1": "u8", "u2": "u16", "u4": "u32", "u8": "u64",
+    "s1": "s8", "s2": "s16", "s4": "s32", "s8": "s64",
+    "f4": "float", "f8": "double",
+}
+
 def fixTypeName(name):
     name = name.replace("_", " ")
     name = string.capwords(name)
     name = name.replace(" ", "")
 
     return name
+
+def convert_type(entry):
+    entry_type = entry["type"]
+    if entry_type == "str":
+        if entry["encoding"] == "UTF-16LE":
+            return "le char16"
+        elif entry["encoding"] == "UTF-16BE":
+            return "be char16"
+        return "char"
+
+    if entry_type in TYPES:
+        return TYPES[entry_type]
+
+    return fixTypeName(entry_type)
+
+def fetch_type_info(type_name, types_info):
+    return types_info.setdefault(type_name, {"type": type_name})
+
+def collect_seq_type_info(seq, parent_type, types_info, enums_info):
+    if not seq:
+        return
+
+    type_info = fetch_type_info(parent_type, types_info)
+
+    for entry in seq:
+        type_name = entry.get("type")
+        if type_name and isinstance(type_name, str):
+            child_type_info = fetch_type_info(type_name, types_info)
+
+        if "enum" in entry:
+            enum_name = entry["enum"]
+            enum_type = enums_info.get(enum_name, {}).get("type")
+            if enum_type and enum_type != type_name:
+                raise NotImplementedError("Not implemented! Same enum used as different types!")
+            enums_info[enum_name] = entry
+
+def collect_type_info(data, top_level_struct_name):
+    types_info = {}
+    enums_info = {enum_name: {} for enum_name in data.get("enums", {})}
+
+    collect_seq_type_info(data.get("seq"), top_level_struct_name, types_info, enums_info)
+    for parent_type, entry in data.get("types", {}).items():
+        collect_seq_type_info(entry.get("seq"), parent_type, types_info, enums_info)
+
+    for type_info in types_info.values():
+        type_name = type_info["type"]
+        if type_name in enums_info:
+            enums_info[type_name]["suffix"] = "Enum"
+
+    return types_info, enums_info
 
 def add_line(line, indent = 0):
     global output
@@ -41,7 +97,32 @@ def handle_meta(meta):
         global top_level_struct_name
         top_level_struct_name = str(meta["id"]).capitalize()
 
-def handle_types(types):
+def convert_enum_name(enum_name, enum_info):
+    suffix = enum_info["suffix"] if "suffix" in enum_info else ""
+    return fixTypeName(enum_name) + suffix
+
+def handle_enums(enums, enums_info):
+    result = ""
+    for enum_name, fields in enums.items():
+        enum_info = dict(enums_info[enum_name])
+        if "type" not in enum_info:
+            enum_info["type"] = "u1"
+        enum_type = convert_type(enum_info).split(" ")[-1]
+        result += f"enum {convert_enum_name(enum_name, enum_info)} : {enum_type} {{\n"
+        for value, name in fields.items():
+            result += f"    {name} = {value},\n"
+        result += "};\n\n"
+    return result
+
+def handle_if(expr, enums_info):
+    enums = set(re.findall(r"(\w+)::", expr))
+    for enum_name in enums:
+        if enum_name in enums_info:
+            name = convert_enum_name(enum_name, enums_info[enum_name])
+            expr = expr.replace(enum_name + "::", name + "::")
+    return expr
+
+def handle_types(types, types_info, enums_info):
     result = ""
     for type in types:
         entry = types[type]
@@ -50,7 +131,7 @@ def handle_types(types):
         lines = ""
 
         if "seq" in entry:
-            is_bitfield, lines = handle_seq(entry["seq"])
+            is_bitfield, lines = handle_seq(entry["seq"], None, types_info, enums_info)
         if "instances" in entry:
             lines += handle_instances(entry["instances"])
 
@@ -79,7 +160,7 @@ def handle_instances(instances):
     return result.rstrip()
 
 
-def handle_seq(seq):
+def handle_seq(seq, type_info, types_info, enums_info):
     result = ""
 
     is_bitfield = False
@@ -97,38 +178,17 @@ def handle_seq(seq):
             docs = entry["doc"]
 
         if "type" in entry:
-            entry_type = entry["type"]
+            entry_type = convert_type(entry)
 
-        if entry_type == "str":
-            if entry["encoding"] == "UTF-16LE":
-                entry_type = "le char16"
-            elif entry["encoding"] == "UTF-16BE":
-                entry_type = "be char16"
-            else:
-                entry_type = "char"
-        elif entry_type == "u1":
-            entry_type = "u8"
-        elif entry_type == "u2":
-            entry_type = "u16"
-        elif entry_type == "u4":
-            entry_type = "u32"
-        elif entry_type == "u8":
-            entry_type = "u64"
-        elif entry_type == "s1":
-            entry_type = "s8"
-        elif entry_type == "s2":
-            entry_type = "s16"
-        elif entry_type == "s4":
-            entry_type = "s32"
-        elif entry_type == "s8":
-            entry_type = "s64"
-        elif entry_type == "f4":
-            entry_type = "float"
-        elif entry_type == "f8":
-            entry_type = "double"
-        else:
-            entry_type = fixTypeName(entry_type)
-        
+        if "enum" in entry:
+            enum_name = entry["enum"]
+            type_parts = entry_type.split(" ", 1)
+            endian = ""
+            if len(type_parts) >= 2:
+                endian = type_parts[0] + " "
+
+            entry_type = endian + convert_enum_name(enum_name, enums_info.get(enum_name))
+
         if "contents" in entry:
             if isinstance(entry["contents"], str):
                 entry_type = f"type::Magic<\"{entry['contents']}\">"
@@ -152,7 +212,8 @@ def handle_seq(seq):
         new_line = ""
 
         if "if" in entry:
-            new_line += f"    if ({entry['if']})\n    "
+            condition = handle_if(entry['if'], enums_info)
+            new_line += f"    if ({condition})\n    "
         
         if array_size != "":
             new_line += f"    {entry_type} {name}[{array_size}];"
@@ -179,13 +240,17 @@ def generate_imhex_pattern(data):
     if "meta" in data:
        handle_meta(data["meta"])
 
+    types_info, enums_info = collect_type_info(data, top_level_struct_name)
     add_line("")
 
+    if "enums" in data:
+        add_line(handle_enums(data["enums"], enums_info))
+
     if "types" in data:
-        add_line(handle_types(data["types"]))
+        add_line(handle_types(data["types"], types_info, enums_info))
     
     if "seq" in data:
-        add_line(handle_types({ top_level_struct_name: { "seq": data["seq"] } }))
+        add_line(handle_types({ top_level_struct_name: { "seq": data["seq"] } }, types_info, enums_info))
 
     add_line(f"{fixTypeName(top_level_struct_name)} {fixTypeName(top_level_struct_name).lower()} @ 0x00;\n")
 
