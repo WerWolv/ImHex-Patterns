@@ -9,6 +9,7 @@ import std.io;
 import std.math;
 import std.mem;
 import std.string;
+import std.hash;
 import type.size;
 import type.magic;
 #ifdef __IMHEX__
@@ -18,13 +19,16 @@ import hex.dec;
 
 // Container layout, names format, and payload formats follow the openline
 // sources: URez.cp (AWRZ + '%_nm'), UPixmap.cp (AWPX), USound.cp (AWSN),
-// UIDVarArray.cp (IVA1), HotlineArchiveStruct.h (harc) and HLProtocol.md (FILP).
+// UIDVarArray.cp (IVA1), MsgBox.r (MSGB), HotlineArchiveStruct.h (harc) and
+// HLProtocol.md (FILP).
 
-// ImHex's visualizers take raw bytes, but AWPX colours are stored R,G,B,0 and
-// AWSN samples as unsigned 8-bit. Converted copies are appended to this
-// section so the originals can still be shown as they are stored.
+// ImHex's visualizers take raw bytes, but AWPX images aren't in a format they
+// read and AWSN samples are unsigned 8-bit. Converted copies (PNG/BMP files,
+// 16-bit samples, text) are appended to this section, so the originals can
+// still be shown as they are stored.
 std::mem::Section previews = std::mem::create_section("Hotline previews");
 u32 previewSectionCount = 1;
+str exportBase = "";            // virtual file path (minus extension) of the pixmap being parsed
 
 // Returns the offset the next converted block of `size` bytes will start at.
 // Placements are bounds-checked against the size of the *main* data even in
@@ -45,12 +49,6 @@ fn preview_begin(u128 size) {
 fn preview_append(str bytes) {
     u128 offset = std::mem::get_section_size(previews);
     std::mem::copy_value_to_section(bytes, previews, offset);
-    return offset;
-};
-
-fn preview_copy(ref auto pattern, u128 size) {
-    u128 offset = preview_begin(size);
-    std::mem::copy_value_to_section(pattern, previews, offset);
     return offset;
 };
 
@@ -85,6 +83,8 @@ fn clean_name(str name) {
     str s = std::string::replace(name, "\x00", " ");
     while (std::string::starts_with(s, " "))
         s = std::string::substr(s, 1, std::string::length(s) - 1);
+    while (std::string::ends_with(s, " "))             // padding to an even length
+        s = std::string::substr(s, 0, std::string::length(s) - 1);
     return s;
 };
 
@@ -182,39 +182,6 @@ fn format_rgba(u32 color) {
 
 using Color = u32 [[format("format_rgba")]];   // bytes R, G, B, A (A unused)
 
-// Copies the colour table with alpha forced to 0xFF (0x00 for the
-// transparent colour) and returns its offset in the previews section.
-fn awpx_palette(u128 address, u16 count, u32 transColor, bool useTrans) {
-    // Hot loop (runs for every icon): calls builtins directly, as each
-    // user-function call layer adds noticeably to load time.
-    str bytes = "";
-    for (u16 i = 0, i < count, i += 1) {
-        u32 color = builtin::std::mem::read_unsigned(address + i * 4, 4, std::mem::Endian::Big);
-        bytes = bytes + std::format("{:c}{:c}{:c}{:c}",
-            char((color >> 24) & 0xFF), char((color >> 16) & 0xFF), char((color >> 8) & 0xFF),
-            char((useTrans && color == transColor) ? 0x00 : 0xFF));
-    }
-    preview_begin(count * 4);
-    return preview_append(bytes);
-};
-
-// Unpacks 1/2/4/8-bit pixel rows (most significant bits first, rows padded
-// to rowBytes) into one index byte per pixel, and returns the offset.
-fn awpx_indices(u128 address, u32 width, u32 height, u32 rowBytes, u8 depth) {
-    u128 offset = preview_begin(width * height);
-    u8 mask = (1 << depth) - 1;
-    for (u32 y = 0, y < height, y += 1) {
-        str row = "";
-        for (u32 x = 0, x < width, x += 1) {
-            u32 bit = x * depth;
-            u8 byte = builtin::std::mem::read_unsigned(address + y * rowBytes + bit / 8, 1, std::mem::Endian::Big);
-            row = row + std::format("{:c}", char((byte >> (8 - depth - bit % 8)) & mask));
-        }
-        preview_append(row);
-    }
-    return offset;
-};
-
 // Converts 24/32-bit RGB(x) pixel rows into tightly packed RGBA.
 fn awpx_direct(u128 address, u32 width, u32 height, u32 rowBytes, u8 depth, u32 transColor, bool useTrans) {
     u8 bytesPerPixel = depth / 8;
@@ -229,6 +196,195 @@ fn awpx_direct(u128 address, u32 width, u32 height, u32 rowBytes, u8 depth, u32 
         }
         preview_append(row);
     }
+    return offset;
+};
+
+// -- Exporting pixmaps: PNG for colour-table images, BMP for direct colour --
+
+fn bytes_le16(u16 value) {
+    return std::format("{:c}{:c}", char(value & 0xFF), char((value >> 8) & 0xFF));
+};
+
+fn bytes_be32(u32 value) {
+    return bytes_rgba((value >> 24) & 0xFF, (value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
+};
+
+// Unused palette entries, so any index a pixel can hold has a colour
+str pngBlack = "";
+for (u16 i = 0, i < 256 * 3, i += 1)
+    pngBlack = pngBlack + std::format("{:c}", char(0));
+str pngOpaque = "";             // and fully opaque alpha values
+for (u16 j = 0, j < 256, j += 1)
+    pngOpaque = pngOpaque + std::format("{:c}", char(0xFF));
+
+fn read_be_section(u128 at) {
+    u8 bytes[4] @ at in previews;
+    return (u32(bytes[0]) << 24) | (u32(bytes[1]) << 16) | (u32(bytes[2]) << 8) | bytes[3];
+};
+
+fn png_crc_piece(u128 at, u32 size, u32 init) {
+    u8 bytes[size] @ at in previews;
+    return std::hash::crc32(bytes, init, 0x04C11DB7, 0xFFFFFFFF, true, true);
+};
+
+// Appends a chunk's CRC; `at` is where its length field was appended. Arrays
+// declared in functions are limited to 65536 entries in ImHex, so the CRC is
+// taken 64 KiB at a time: each piece starts from the previous CRC with the
+// final XOR undone and its bits reversed (the builtin reflects its init).
+fn png_end_chunk(u128 at) {
+    u32 remaining = read_be_section(at) + 4;
+    u128 piece = at + 4;
+    u32 crc = std::math::min(remaining, 0x10000);
+    crc = png_crc_piece(piece, crc, 0xFFFFFFFF);
+    remaining -= std::math::min(remaining, 0x10000);
+    while (remaining > 0) {
+        piece += 0x10000;
+        u32 state = crc ^ 0xFFFFFFFF;
+        u32 init = 0;
+        for (u8 i = 0, i < 32, i += 1)
+            init = init | (((state >> i) & 1) << (31 - i));
+        crc = png_crc_piece(piece, std::math::min(remaining, 0x10000), init);
+        remaining -= std::math::min(remaining, 0x10000);
+    }
+    preview_append(bytes_be32(crc));
+};
+
+fn png_chunk(str type, str data) {
+    png_end_chunk(preview_append(bytes_be32(std::string::length(data)) + type + data));
+};
+
+// A palette PNG. AWPX rows are packed MSB-first like PNG's 1/2/4/8-bit ones,
+// so each row is copied as it is behind a "no filter" byte, and the zlib
+// stream uses stored (uncompressed) blocks. The Adler-32 of the rows is
+// summed 16 bytes at a time: split into even and odd bytes, each u128 holds
+// eight 16-bit lanes, and multiplying by 1s (or by 8..1) adds the lanes (or
+// weights them) into the top lane. The modulo waits until the end.
+fn awpx_png(u128 pixelAddr, u32 width, u32 height, u32 rowBytes, u8 depth,
+            u128 colorAddr, u16 colorCount, u32 transColor, bool useTrans) {
+    // Colours are stored R,G,B,0: four at a time, then any left over
+    u16 entries = 1 << depth;
+    u16 used = std::math::min(colorCount, entries);
+    str palette = "";
+    u128 color = 0;
+    for (u16 i = 0, i < used / 4 * 4, i += 4) {
+        color = builtin::std::mem::read_unsigned(colorAddr + i * 4, 16, std::mem::Endian::Big);
+        palette = palette + std::format("{:c}{:c}{:c}{:c}{:c}{:c}{:c}{:c}{:c}{:c}{:c}{:c}",
+            char(color >> 120), char(color >> 112), char(color >> 104),
+            char(color >> 88), char(color >> 80), char(color >> 72),
+            char(color >> 56), char(color >> 48), char(color >> 40),
+            char(color >> 24), char(color >> 16), char(color >> 8));
+    }
+    for (u16 i = used / 4 * 4, i < used, i += 1) {
+        color = builtin::std::mem::read_unsigned(colorAddr + i * 4, 4, std::mem::Endian::Big);
+        palette = palette + std::format("{:c}{:c}{:c}", char(color >> 24), char(color >> 16), char(color >> 8));
+    }
+    palette = palette + std::string::substr(pngBlack, 0, (entries - used) * 3);
+
+    // Alpha for the entries up to the last transparent one
+    str alpha = "";
+    if (useTrans) {
+        for (u16 k = 0, k < used, k += 1) {
+            s128 found = builtin::std::mem::find_sequence_in_range(k, colorAddr, colorAddr + used * 4,
+                (transColor >> 24) & 0xFF, (transColor >> 16) & 0xFF, (transColor >> 8) & 0xFF, transColor & 0xFF);
+            if (found < 0)
+                break;
+            if ((found - colorAddr) % 4 == 0)
+                alpha = alpha + std::string::substr(pngOpaque, 0, (found - colorAddr) / 4 - std::string::length(alpha))
+                    + std::format("{:c}", char(0));
+        }
+    }
+    u16 alphaCount = std::string::length(alpha);
+
+    u32 lineBytes = (width * depth + 7) / 8;
+    u32 rowsPerBlock = 65535 / (lineBytes + 1);
+    u32 blocks = (height + rowsPerBlock - 1) / rowsPerBlock;
+    u32 idatSize = 2 + blocks * 5 + height * (lineBytes + 1) + 4;
+    preview_begin(8 + 25 + 12 + entries * 3 + (alphaCount > 0 ? 12 + alphaCount : 0) + 12 + idatSize + 12);
+
+    u128 offset = preview_append(std::format("{:c}PNG{:c}{:c}{:c}{:c}",
+        char(0x89), char(0x0D), char(0x0A), char(0x1A), char(0x0A)));
+    png_chunk("IHDR", bytes_be32(width) + bytes_be32(height)
+        + std::format("{:c}{:c}{:c}{:c}{:c}", char(depth), char(3), char(0), char(0), char(0)));
+    png_chunk("PLTE", palette);
+    if (alphaCount > 0)
+        png_chunk("tRNS", alpha);
+
+    str filter = std::format("{:c}", char(0));
+    u128 idatAt = preview_append(bytes_be32(idatSize) + "IDAT"
+        + std::format("{:c}{:c}", char(0x78), char(0x01)));
+    // The per-chunk statements are kept few and the variables declared once:
+    // this loop runs over every pixel byte.
+    // Two 16-byte halves per step: the lane sums are linear, so the halves'
+    // lanes are added before weighting, and the first half's bytes get 16
+    // more each. Lanes stay below 65536 (four bytes each, weighted by <= 36).
+    u32 pairBytes = lineBytes / 32 * 32;
+    u8 tail = lineBytes % 16;
+    u128 a = 1;
+    u128 b = 0;
+    u128 rowAddr = 0;
+    u128 x = 0;
+    u128 x2 = 0;
+    u128 odd = 0;
+    u128 lanes = 0;
+    str block = "";
+    for (u32 y = 0, y < height, y += rowsPerBlock) {
+        u32 rows = std::math::min(rowsPerBlock, height - y);
+        u16 length = rows * (lineBytes + 1);
+        block = std::format("{:c}", char(y + rows == height ? 1 : 0)) + bytes_le16(length) + bytes_le16(~length);
+        for (u32 r = y, r < y + rows, r += 1) {
+            rowAddr = pixelAddr + r * rowBytes;
+            block = block + filter + std::mem::read_string(rowAddr, lineBytes);
+            b = b + a;                      // the filter byte (0)
+            for (u32 c = 0, c < pairBytes, c += 32) {
+                x = builtin::std::mem::read_unsigned(rowAddr + c, 16, 2);
+                x2 = builtin::std::mem::read_unsigned(rowAddr + c + 16, 16, 2);
+                odd = ((x >> 8) & 0x00FF00FF00FF00FF00FF00FF00FF00FF) + ((x2 >> 8) & 0x00FF00FF00FF00FF00FF00FF00FF00FF);
+                lanes = (x & 0x00FF00FF00FF00FF00FF00FF00FF00FF) + (x2 & 0x00FF00FF00FF00FF00FF00FF00FF00FF) + odd;
+                b = b + 32 * a + 16 * ((((x & 0x00FF00FF00FF00FF00FF00FF00FF00FF) + ((x >> 8) & 0x00FF00FF00FF00FF00FF00FF00FF00FF)) * 0x00010001000100010001000100010001) >> 112)
+                    + 2 * ((lanes * 0x00080007000600050004000300020001) >> 112) - ((odd * 0x00010001000100010001000100010001) >> 112);
+                a = a + ((lanes * 0x00010001000100010001000100010001) >> 112);
+            }
+            if (lineBytes - pairBytes >= 16) {
+                x = builtin::std::mem::read_unsigned(rowAddr + pairBytes, 16, 2);
+                odd = (x >> 8) & 0x00FF00FF00FF00FF00FF00FF00FF00FF;
+                lanes = (x & 0x00FF00FF00FF00FF00FF00FF00FF00FF) + odd;
+                b = b + 16 * a + 2 * ((lanes * 0x00080007000600050004000300020001) >> 112) - ((odd * 0x00010001000100010001000100010001) >> 112);
+                a = a + ((lanes * 0x00010001000100010001000100010001) >> 112);
+            }
+            if (tail > 0) {                 // as if padded with zeros, less their weight
+                x = builtin::std::mem::read_unsigned(rowAddr + lineBytes - tail, tail, 2);
+                odd = (x >> 8) & 0x00FF00FF00FF00FF00FF00FF00FF00FF;
+                lanes = (x & 0x00FF00FF00FF00FF00FF00FF00FF00FF) + odd;
+                x2 = (lanes * 0x00010001000100010001000100010001) >> 112;
+                b = b + tail * a + 2 * ((lanes * 0x00080007000600050004000300020001) >> 112) - ((odd * 0x00010001000100010001000100010001) >> 112) - (16 - tail) * x2;
+                a = a + x2;
+            }
+        }
+        preview_append(block);
+    }
+    preview_append(bytes_be32(((b % 65521) << 16) | (a % 65521)));
+    png_end_chunk(idatAt);
+    png_chunk("IEND", "");
+    return offset;
+};
+
+// A top-down 32-bit BMP with an alpha channel (BITMAPV4HEADER), whose bit
+// masks let the RGBA preview bytes be used as they are.
+fn awpx_bmp(std::mem::Section rgbaSection, u128 rgbaAt, u32 width, u32 height) {
+    u32 imageSize = width * height * 4;
+    str header = "BM" + bytes_le32(14 + 108 + imageSize) + bytes_le32(0) + bytes_le32(14 + 108)
+        + bytes_le32(108) + bytes_le32(width) + bytes_le32(-height)       // negative = top-down
+        + bytes_le16(1) + bytes_le16(32) + bytes_le32(3)                  // BI_BITFIELDS
+        + bytes_le32(imageSize) + bytes_le32(2835) + bytes_le32(2835)    // 72 dpi
+        + bytes_le32(0) + bytes_le32(0)
+        + bytes_le32(0x000000FF) + bytes_le32(0x0000FF00)                // R, G
+        + bytes_le32(0x00FF0000) + bytes_le32(0xFF000000)                // B, A
+        + bytes_le32(0x73524742);                                         // 'sRGB'
+    for (u8 i = 0, i < 12, i += 1)                                        // endpoints, gamma
+        header = header + bytes_le32(0);
+    preview_begin(14 + 108 + imageSize);
+    u128 offset = preview_append(header);
+    std::mem::copy_section_to_section(rgbaSection, rgbaAt, previews, offset + 14 + 108, imageSize);
     return offset;
 };
 
@@ -264,50 +420,47 @@ struct PixmapLayer {
     u128 pixelAddr = dataStart + pixelDataOffset;
     u128 pixelSize = rowBytes * height;
 
-    // Notes on the previews:
+    // The image is written out as a PNG (colour table) or BMP (direct colour)
+    // in the previews section. ImHex's "image" visualizer decodes that and
+    // opens it about 200 px wide, where the "bitmap" one opens at 1:1 - tiny
+    // for a 16x16 icon. Notes:
     // - an `@ ... in previews` address is evaluated with previews as the
-    //   current section, so the converters must run (reading the file) first;
+    //   current section, so the writers must run (reading the file) first;
     // - patterns placed in another section are listed under that section, not
-    //   as struct members, so the visualizers go on the in-file `pixels`
-    //   (visualizers draw their first argument, not the pattern they're on);
-    // - the preview* locals describe the converted image for PixmapItem, which
-    //   shows the first layer's image on the item's own row.
-    u128 paletteAt = 0;
-    std::mem::Section paletteSection = previews;
-    u16 previewColors = 0;      // palette entries; 0 = the preview is RGBA
-    u128 previewAt = 0;
-    std::mem::Section previewSection = previews;
-    u32 previewWidth = width;
-    u32 previewHeight = height;
-
-    if (plain && depth == 8 && rowBytes == width && colorCount > 0) {
-        paletteAt = awpx_palette(dataStart + colorDataOffset, colorCount, transColor, useTrans);
-        paletteSection = previews;
-        u32 palette[colorCount] @ paletteAt in paletteSection;
-        u8 pixels[pixelSize] @ pixelAddr [[sealed, hex::visualize("bitmap", this, width, height, palette)]];
-        previewColors = colorCount;
-        previewAt = preview_copy(pixels, pixelSize);
-        previewSection = previews;
-    } else if (plain && (depth == 1 || depth == 2 || depth == 4 || depth == 8) && colorCount > 0) {
-        paletteAt = awpx_palette(dataStart + colorDataOffset, colorCount, transColor, useTrans);
-        paletteSection = previews;
-        previewColors = colorCount;
-        previewAt = awpx_indices(pixelAddr, width, height, rowBytes, depth);
-        previewSection = previews;
-        u32 palette[colorCount] @ paletteAt in paletteSection;
-        u8 preview[width * height] @ previewAt in previewSection [[sealed]];
-        u8 pixels[pixelSize] @ pixelAddr [[sealed, hex::visualize("bitmap", preview, width, height, palette)]];
+    //   as struct members, so the visualizer goes on the in-file `pixels`;
+    // - the file* locals are for PixmapItem, which shows the first layer's
+    //   image on the item's own row.
+    u128 fileAt = 0;
+    std::mem::Section fileSection = previews;
+    u128 fileSize = 0;
+    str fileExt = "";
+    if (plain && (depth == 1 || depth == 2 || depth == 4 || depth == 8) && colorCount > 0) {
+        fileAt = awpx_png(pixelAddr, width, height, rowBytes, depth,
+                          dataStart + colorDataOffset, colorCount, transColor, useTrans);
+        fileSection = previews;
+        fileSize = std::mem::get_section_size(fileSection) - fileAt;
+        fileExt = ".png";
     } else if (plain && (depth == 24 || depth == 32)) {
-        previewAt = awpx_direct(pixelAddr, width, height, rowBytes, depth, transColor, useTrans);
-        previewSection = previews;
-        u8 preview[width * height * 4] @ previewAt in previewSection [[sealed]];
-        u8 pixels[pixelSize] @ pixelAddr [[sealed, hex::visualize("bitmap", preview, width, height)]];
+        u128 rgbaAt = awpx_direct(pixelAddr, width, height, rowBytes, depth, transColor, useTrans);
+        std::mem::Section rgbaSection = previews;
+        fileAt = awpx_bmp(rgbaSection, rgbaAt, width, height);
+        fileSection = previews;
+        fileSize = 14 + 108 + width * height * 4;
+        fileExt = ".bmp";
+    }
+
+    if (fileSize > 0) {
+        u8 file[fileSize] @ fileAt in fileSection [[sealed]];
+        u8 pixels[pixelSize] @ pixelAddr [[sealed, hex::visualize("image", file)]];
+#ifdef __IMHEX__
+        // Also listed in the Virtual Filesystem tab (exportBase is set by ItemData)
+        str exportName = exportBase;
+        if (std::core::array_index() > 0)
+            exportName = std::format("{} layer {}", exportBase, std::core::array_index() + 1);
+        hex::core::add_virtual_file(exportName + fileExt, file);
+#endif
     } else {
-        u8 pixels[pixelSize] @ pixelAddr [[sealed]];  // 16-bit, RLE or interlaced: no preview
-        previewAt = preview_blank(4);                 // a transparent pixel instead
-        previewSection = previews;
-        previewWidth = 1;
-        previewHeight = 1;
+        u8 pixels[pixelSize] @ pixelAddr [[sealed]];  // 16-bit, RLE or interlaced: no image
     }
 } [[format("format_pixmap_layer")]];
 
@@ -322,25 +475,14 @@ struct Pixmap {
     u16 layerCount;
     PixmapLayer layers[layerCount];
 
-    // The image PixmapItem shows: the first layer's, or a transparent pixel.
-    u128 shownPaletteAt = 0;
-    std::mem::Section shownPaletteSection = previews;
-    u16 shownColors = 0;
+    // The image file PixmapItem shows: the first layer's (none if unsupported)
     u128 shownAt = 0;
     std::mem::Section shownSection = previews;
-    u32 shownWidth = 1;
-    u32 shownHeight = 1;
+    u128 shownSize = 0;
     if (layerCount > 0) {
-        shownPaletteAt = layers[0].paletteAt;
-        shownPaletteSection = layers[0].paletteSection;
-        shownColors = layers[0].previewColors;
-        shownAt = layers[0].previewAt;
-        shownSection = layers[0].previewSection;
-        shownWidth = layers[0].previewWidth;
-        shownHeight = layers[0].previewHeight;
-    } else {
-        shownAt = preview_blank(4);
-        shownSection = previews;
+        shownAt = layers[0].fileAt;
+        shownSection = layers[0].fileSection;
+        shownSize = layers[0].fileSize;
     }
 } [[format("format_pixmap")]];
 
@@ -442,8 +584,19 @@ fn format_sound(ref Sound s) {
         s.compType == SoundCompression::None ? "" : ", IMA ADPCM");
 };
 
-// -- IVA1: AppWarrior ID -> variable-size item array ('EMSG') --
+// ImHex has no text visualizer, so text resources are previewed with the
+// "table" one, which shows the formatted value of each entry of an array.
+// These zero-size cells (placed on top of their owner, hidden) supply the
+// entries: cell i is column i % 2 of row i / 2.
+fn format_table_cell(ref auto cell) {
+    return cell.text;
+};
 
+// -- IVA1: AppWarrior ID -> variable-size item array ('EMSG') --
+//
+// 'EMSG' resources hold the error messages UError shows: the resource ID is
+// the error type (3 = memory, 4 = file system, ...) and each item ID an error
+// code of that type.
 struct IDVarOffset {
     u32 id;
     u32 offset;                 // from end of the offset table
@@ -459,6 +612,15 @@ fn format_id_var_item(ref IDVarItem i) {
     return std::format("\"{}\"", type::escape_bytes(i.text));
 };
 
+struct IDVarCell {
+    u32 row = std::core::array_index() / 2;
+    str text = "";
+    if (std::core::array_index() % 2 == 0)
+        text = std::format("{}", parent.items[row].id);
+    else
+        text = parent.items[row].text;
+} [[format("format_table_cell")]];
+
 struct IDVarArray {
     type::Magic<"IVA1"> magic;
     padding[4];
@@ -466,10 +628,109 @@ struct IDVarArray {
     u32 itemCount;
     IDVarOffset offsets[itemCount + 1] [[hidden]];
     IDVarItem items[itemCount];
-} [[format("format_id_var_array")]];
+    IDVarCell cells[itemCount * 2] @ addressof(this) [[hidden]];
+    u32 tableRows = itemCount;
+} [[format("format_id_var_array"), hex::visualize("table", cells, 2, itemCount)]];
 
 fn format_id_var_array(ref IDVarArray a) {
     return std::format("{} items", a.itemCount);
+};
+
+// "id<tab>message" lines, for the Virtual Filesystem
+fn id_var_text(ref IDVarArray a) {
+    str text = "";
+    for (u32 i = 0, i < a.itemCount, i += 1)
+        text = text + a.cells[i * 2].text + "\t" + a.cells[i * 2 + 1].text + "\n";
+    return text;
+};
+
+// -- MSGB: message box (AppWarrior MsgBox.r / MsgBox.cp) --
+
+enum MsgBoxIcon : s16 {
+    None     = 0,
+    Stop     = 1000,
+    Note     = 1001,
+    Caution  = 1002,
+    Question = 1003
+};
+
+struct PString {
+    u8 size;
+    char data[size];
+} [[sealed, format("format_pstring")]];
+
+fn format_pstring(ref PString p) {
+    return std::format("\"{}\"", p.data);
+};
+
+fn msgbox_cell_text(u8 cell, s16 icon, s16 sound, str title, str message, str button1, str button2, str button3) {
+    if (cell == 0) return "Title";
+    if (cell == 1) return title;
+    if (cell == 2) return "Message";
+    if (cell == 3) return message;
+    if (cell == 4) return "Buttons";
+    if (cell == 5) {
+        str buttons = button1 != "" ? button1 : "OK";    // MsgBox's default
+        if (button2 != "") buttons = buttons + " | " + button2;
+        if (button3 != "") buttons = buttons + " | " + button3;
+        return buttons;
+    }
+    if (cell == 6) return "Icon";
+    if (cell == 7) {
+        if (icon == 0) return "None";
+        if (icon == 1000) return "Stop (ICON 1000)";
+        if (icon == 1001) return "Note (ICON 1001)";
+        if (icon == 1002) return "Caution (ICON 1002)";
+        if (icon == 1003) return "Question (ICON 1003)";
+        return std::format("ICON {}", icon);
+    }
+    if (cell == 8) return "Sound";
+    if (sound == 0) return "None";
+    if (sound == 1) return "Beep";
+    return std::format("SOUN {}", sound);
+};
+
+struct MsgBoxCell {
+    str text = msgbox_cell_text(std::core::array_index(), s16(parent.icon), parent.sound,
+        parent.title.data, parent.message.data, parent.button1.data, parent.button2.data, parent.button3.data);
+} [[format("format_table_cell")]];
+
+struct MessageBox {
+    MsgBoxIcon icon;
+    s16 picture;
+    s16 sound;                  // 0 = none, 1 = beep, else a 'SOUN' ID
+    s16 textStyle;
+    s16 buttonTextStyle;
+    s16 script;
+    PString title;
+    PString message;            // may hold UText::FormatArg directives (%#s)
+    PString button1;            // empty = "OK"
+    PString button2;            // empty = no button
+    PString button3;
+    MsgBoxCell cells[10] @ addressof(this) [[hidden]];
+    u32 tableRows = 5;
+} [[format("format_message_box"), hex::visualize("table", cells, 2, 5)]];
+
+fn format_message_box(ref MessageBox m) {
+    if (m.title.size > 0)
+        return std::format("\"{}\" - \"{}\"", m.title.data, m.message.data);
+    return std::format("\"{}\"", m.message.data);
+};
+
+// "Field: value" lines, for the Virtual Filesystem
+fn message_box_text(ref MessageBox m) {
+    str text = "";
+    for (u8 i = 0, i < 10, i += 2)
+        text = text + m.cells[i].text + ": " + m.cells[i + 1].text + "\n";
+    return text;
+};
+
+// Stores text in the previews section and lists it as a file
+fn add_text_file(str path, str text) {
+    preview_begin(std::string::length(text));
+    u128 at = preview_append(text);
+    u8 bytes[std::string::length(text)] @ at in previews;
+    hex::core::add_virtual_file(path, bytes);
 };
 
 // -- harc: Hotline archive ('harc'), each file a zlib-compressed FILP --
@@ -617,6 +878,8 @@ fn virtual_file_name(u32 type, s32 id, str extension) {
         extension = "";
     else if (std::string::ends_with(name, ".awsn"))
         name = std::string::substr(name, 0, std::string::length(name) - 5);
+    else if (std::string::ends_with(name, ".dat"))      // 'EMSG': "UMemory().dat"
+        name = std::string::substr(name, 0, std::string::length(name) - 4);
     return std::format("{}/{} {}{}", fourcc(type), id, name, extension);
 };
 
@@ -628,6 +891,9 @@ struct ItemData {
     if (typeCode == 0x255F6E6D) {            // '%_nm'
         NameTable bytes;
     } else if (typeCode == 0x49434F4E || typeCode == 0x5049584D) { // 'ICON', 'PIXM'
+        // Exported icons are named by ID only: looking up ~1300 names from
+        // '%_nm' (a linear scan each) would add many seconds to every load.
+        exportBase = std::format("{}/{}", fourcc(typeCode), parent.id);
         Pixmap bytes;
     } else if (typeCode == 0x534F554E) {     // 'SOUN'
         Sound bytes;
@@ -640,6 +906,14 @@ struct ItemData {
 #endif
     } else if (typeCode == 0x454D5347) {     // 'EMSG'
         IDVarArray bytes;
+#ifdef __IMHEX__
+        add_text_file(virtual_file_name(typeCode, parent.id, ".txt"), id_var_text(bytes));
+#endif
+    } else if (typeCode == 0x4D534742) {     // 'MSGB'
+        MessageBox bytes;
+#ifdef __IMHEX__
+        add_text_file(virtual_file_name(typeCode, parent.id, ".txt"), message_box_text(bytes));
+#endif
     } else if (typeCode == 0x68617263) {     // 'harc'
         Archive bytes;
     } else if (typeCode == 0x47494666) {     // 'GIFf'
@@ -681,6 +955,7 @@ fn format_item_summary(ref auto item) {
     if (t == 0x49434F4E || t == 0x5049584D) return format_pixmap(item.data.bytes);
     if (t == 0x534F554E) return format_sound(item.data.bytes);
     if (t == 0x454D5347) return format_id_var_array(item.data.bytes);
+    if (t == 0x4D534742) return format_message_box(item.data.bytes);
     if (t == 0x68617263) return format_archive(item.data.bytes);
     if (t == 0x47494666) return std::format("GIF image, {} bytes", item.dataSize);
     if (t == 0x4D6F6F56) return std::format("QuickTime movie, {} bytes", item.dataSize);
@@ -700,15 +975,13 @@ fn format_item_entry(ref auto item) {
 
 // Items whose row itself carries the preview (an eye button before the value),
 // so there's no digging down to a layer's pixels. The previews live in other
-// sections, so they're re-declared here from the payload's shown* locals -
+// sections, so they're re-declared here from the payload's shown* locals (or
+// the text tables' cells) -
 // under names nothing nested reuses, as the attribute resolves a
 // section-placed name to the most recently declared pattern with that name.
 struct PixmapItem : ItemEntry {
-    u32 itemPalette[data.bytes.shownColors] @ data.bytes.shownPaletteAt in data.bytes.shownPaletteSection;
-    u8 itemImage[data.bytes.shownWidth * data.bytes.shownHeight * (data.bytes.shownColors > 0 ? 1 : 4)]
-        @ data.bytes.shownAt in data.bytes.shownSection [[sealed]];
-} [[name(format_item_id(this)), format("format_item_entry"),
-    hex::visualize("bitmap", itemImage, data.bytes.shownWidth, data.bytes.shownHeight, itemPalette)]];
+    u8 itemImage[data.bytes.shownSize] @ data.bytes.shownAt in data.bytes.shownSection [[sealed]];
+} [[name(format_item_id(this)), format("format_item_entry"), hex::visualize("image", itemImage)]];
 
 struct SoundItem : ItemEntry {
     le s16 itemSound[data.bytes.shownSamples] @ data.bytes.shownAt in data.bytes.shownSection [[sealed]];
@@ -717,6 +990,10 @@ struct SoundItem : ItemEntry {
 
 struct ImageItem : ItemEntry {
 } [[name(format_item_id(this)), format("format_item_entry"), hex::visualize("image", data.bytes)]];
+
+struct TableItem : ItemEntry {
+} [[name(format_item_id(this)), format("format_item_entry"),
+    hex::visualize("table", data.bytes.cells, 2, data.bytes.tableRows)]];
 
 struct TypeEntry {
     char type[4] [[hidden]];     // 4-char type code (e.g. "PICT", "cicn", "%_nm")
@@ -727,6 +1004,8 @@ struct TypeEntry {
         SoundItem items[itemCount] [[inline]];
     else if (type == "GIFf")
         ImageItem items[itemCount] [[inline]];
+    else if (type == "EMSG" || type == "MSGB")
+        TableItem items[itemCount] [[inline]];
     else
         ItemEntry items[itemCount] [[inline]];
 } [[name(type), format("format_type_entry")]];
