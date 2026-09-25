@@ -77,14 +77,26 @@ fn fourcc(u32 code) {
         char((code >> 8) & 0xFF), char(code & 0xFF));
 };
 
+// The `size`-byte name at `address`, with each NUL between words as a space.
 // Names in the sample files start with a NUL and use NUL between words
 // ("\0logged\0in.awsn"); URez itself just copies them as opaque bytes.
-fn clean_name(str name) {
-    str s = std::string::replace(name, "\x00", " ");
-    while (std::string::starts_with(s, " "))
-        s = std::string::substr(s, 1, std::string::length(s) - 1);
-    while (std::string::ends_with(s, " "))             // padding to an even length
-        s = std::string::substr(s, 0, std::string::length(s) - 1);
+fn clean_name(u128 address, u16 size) {
+    u128 end = address + size;
+    str s = "";
+    str gap = "";
+    u128 start = address;
+    while (start < end) {
+        s128 nul = std::mem::find_sequence_in_range(0, start, end, 0x00);
+        if (nul < 0 || nul >= end)                      // the search can match past `end`
+            nul = end;
+        if (nul > start) {
+            s = s + (s == "" ? "" : gap) + std::mem::read_string(start, nul - start);
+            gap = "";
+        }
+        if (nul < end)
+            gap = gap + " ";
+        start = nul + 1;
+    }
     return s;
 };
 
@@ -113,7 +125,7 @@ fn find_resource_name(u32 type, u32 id) {
                     cursor = table + ((cursor - table + 3) & ~3);
                     u16 size = read_be(cursor + 4, 2);
                     if (read_be(cursor, 4) == id)
-                        return clean_name(std::mem::read_string(cursor + 6, size));
+                        return clean_name(cursor + 6, size);
                     cursor += 6 + size;
                 }
                 return "";
@@ -143,7 +155,7 @@ struct NameEntry {
     s32 id;
     u16 size;
     char data[size];
-} [[name(clean_name(data)), format("format_name_entry")]];
+} [[name(clean_name(addressof(data), size)), format("format_name_entry")]];
 
 fn format_name_entry(ref NameEntry e) {
     return std::format("{} = \"{}\"", e.id, type::escape_bytes(e.data));
