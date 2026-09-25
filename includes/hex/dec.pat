@@ -83,4 +83,27 @@ namespace auto hex::dec {
         return builtin::hex::dec::lzf_decompress(pattern, section);
     };
 
+    /**
+        Decodes a byte sequence into a string using a custom Thingy encoding definition
+        @param bytes The bytes to decode
+        @param encoding A string containing a Thingy encoding definition, e.g. as loaded through std::file
+        @return The decoded string
+    */
+    fn decode(auto bytes, str encoding) {
+        return builtin::hex::dec::decode(bytes, encoding);
+    };
+
+    /**
+        Encodes a string into a byte sequence using a custom Thingy encoding definition.
+        Throws an error if the encoding is ambiguous (multiple byte sequences decoding to the
+        same value, or one decoded value being a prefix of another one), or if the string
+        contains a character sequence that has no representation in the given encoding.
+        @param string The string to encode
+        @param encoding A string containing a Thingy encoding definition, e.g. as loaded through std::file
+        @return A string containing the raw encoded bytes (not necessarily valid text)
+    */
+    fn encode(str string, str encoding) {
+        return builtin::hex::dec::encode(string, encoding);
+    };
+
 }

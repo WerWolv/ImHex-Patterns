@@ -87,3 +87,6 @@ jobs:
         cd tips
         for file in ./[!_]*; do jsonschema -i $file _schema.json; done
         cd ..
+
+    - name: 🔤 Validate Encoding Tables
+      run: python3 scripts/generate_encodings.py --check
