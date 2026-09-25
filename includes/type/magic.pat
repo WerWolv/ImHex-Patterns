@@ -37,7 +37,8 @@ namespace auto type
     */
     struct Magic<auto ExpectedValue> {
         char value[std::string::length(ExpectedValue)];
-        std::assert(value == ExpectedValue, std::format("Invalid magic value! Expected \"{}\", got \"{}\" at position 0x{:X}", type::escape_bytes(ExpectedValue), type::escape_bytes(value), $ - std::string::length(ExpectedValue)));
+        if (value != ExpectedValue)   // builds the message only on a mismatch
+            std::error(std::format("Invalid magic value! Expected \"{}\", got \"{}\" at position 0x{:X}", type::escape_bytes(ExpectedValue), type::escape_bytes(value), $ - std::string::length(ExpectedValue)));
     } [[sealed, format("type::impl::format_magic")]];
     namespace impl {
         fn format_magic(ref auto magic) {
