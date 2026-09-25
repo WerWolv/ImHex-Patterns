@@ -24,6 +24,20 @@ import hex.dec;
 // AWSN samples as unsigned 8-bit. Converted copies are appended to this
 // section so the originals can still be shown as they are stored.
 std::mem::Section previews = std::mem::create_section("Hotline previews");
+u32 previewSectionCount = 1;
+
+// Returns the offset the next converted block of `size` bytes will start at.
+// Placements are bounds-checked against the size of the *main* data even in
+// custom sections, so start a new section before offsets could pass it.
+// Callers must read `previews` again afterwards, as it may have changed.
+fn preview_begin(u128 size) {
+    u128 used = std::mem::get_section_size(previews);
+    if (used > 0 && used + size > std::mem::size()) {
+        previewSectionCount += 1;
+        previews = std::mem::create_section(std::format("Hotline previews {}", previewSectionCount));
+    }
+    return std::mem::get_section_size(previews);
+};
 
 // copy_value_to_section only takes patterns or strings, and strings are copied
 // byte-for-byte - so converted data is built up as strings of "{:c}" bytes,
@@ -31,6 +45,19 @@ std::mem::Section previews = std::mem::create_section("Hotline previews");
 fn preview_append(str bytes) {
     u128 offset = std::mem::get_section_size(previews);
     std::mem::copy_value_to_section(bytes, previews, offset);
+    return offset;
+};
+
+fn preview_copy(ref auto pattern, u128 size) {
+    u128 offset = preview_begin(size);
+    std::mem::copy_value_to_section(pattern, previews, offset);
+    return offset;
+};
+
+// Zero-filled block: a transparent pixel or silence for unsupported formats.
+fn preview_blank(u128 size) {
+    u128 offset = preview_begin(size);
+    std::mem::set_section_size(previews, offset + size);
     return offset;
 };
 
@@ -167,13 +194,14 @@ fn awpx_palette(u128 address, u16 count, u32 transColor, bool useTrans) {
             char((color >> 24) & 0xFF), char((color >> 16) & 0xFF), char((color >> 8) & 0xFF),
             char((useTrans && color == transColor) ? 0x00 : 0xFF));
     }
+    preview_begin(count * 4);
     return preview_append(bytes);
 };
 
 // Unpacks 1/2/4/8-bit pixel rows (most significant bits first, rows padded
 // to rowBytes) into one index byte per pixel, and returns the offset.
 fn awpx_indices(u128 address, u32 width, u32 height, u32 rowBytes, u8 depth) {
-    u128 offset = std::mem::get_section_size(previews);
+    u128 offset = preview_begin(width * height);
     u8 mask = (1 << depth) - 1;
     for (u32 y = 0, y < height, y += 1) {
         str row = "";
@@ -190,7 +218,7 @@ fn awpx_indices(u128 address, u32 width, u32 height, u32 rowBytes, u8 depth) {
 // Converts 24/32-bit RGB(x) pixel rows into tightly packed RGBA.
 fn awpx_direct(u128 address, u32 width, u32 height, u32 rowBytes, u8 depth, u32 transColor, bool useTrans) {
     u8 bytesPerPixel = depth / 8;
-    u128 offset = std::mem::get_section_size(previews);
+    u128 offset = preview_begin(width * height * 4);
     for (u32 y = 0, y < height, y += 1) {
         str row = "";
         for (u32 x = 0, x < width, x += 1) {
@@ -241,23 +269,45 @@ struct PixmapLayer {
     //   current section, so the converters must run (reading the file) first;
     // - patterns placed in another section are listed under that section, not
     //   as struct members, so the visualizers go on the in-file `pixels`
-    //   (visualizers draw their first argument, not the pattern they're on).
+    //   (visualizers draw their first argument, not the pattern they're on);
+    // - the preview* locals describe the converted image for PixmapItem, which
+    //   shows the first layer's image on the item's own row.
+    u128 paletteAt = 0;
+    std::mem::Section paletteSection = previews;
+    u16 previewColors = 0;      // palette entries; 0 = the preview is RGBA
+    u128 previewAt = 0;
+    std::mem::Section previewSection = previews;
+    u32 previewWidth = width;
+    u32 previewHeight = height;
+
     if (plain && depth == 8 && rowBytes == width && colorCount > 0) {
-        u128 paletteAt = awpx_palette(dataStart + colorDataOffset, colorCount, transColor, useTrans);
-        u32 palette[colorCount] @ paletteAt in previews;
+        paletteAt = awpx_palette(dataStart + colorDataOffset, colorCount, transColor, useTrans);
+        paletteSection = previews;
+        u32 palette[colorCount] @ paletteAt in paletteSection;
         u8 pixels[pixelSize] @ pixelAddr [[sealed, hex::visualize("bitmap", this, width, height, palette)]];
+        previewColors = colorCount;
+        previewAt = preview_copy(pixels, pixelSize);
+        previewSection = previews;
     } else if (plain && (depth == 1 || depth == 2 || depth == 4 || depth == 8) && colorCount > 0) {
-        u128 paletteAt = awpx_palette(dataStart + colorDataOffset, colorCount, transColor, useTrans);
-        u128 previewAt = awpx_indices(pixelAddr, width, height, rowBytes, depth);
-        u32 palette[colorCount] @ paletteAt in previews;
-        u8 preview[width * height] @ previewAt in previews [[sealed]];
+        paletteAt = awpx_palette(dataStart + colorDataOffset, colorCount, transColor, useTrans);
+        paletteSection = previews;
+        previewColors = colorCount;
+        previewAt = awpx_indices(pixelAddr, width, height, rowBytes, depth);
+        previewSection = previews;
+        u32 palette[colorCount] @ paletteAt in paletteSection;
+        u8 preview[width * height] @ previewAt in previewSection [[sealed]];
         u8 pixels[pixelSize] @ pixelAddr [[sealed, hex::visualize("bitmap", preview, width, height, palette)]];
     } else if (plain && (depth == 24 || depth == 32)) {
-        u128 previewAt = awpx_direct(pixelAddr, width, height, rowBytes, depth, transColor, useTrans);
-        u8 preview[width * height * 4] @ previewAt in previews [[sealed]];
+        previewAt = awpx_direct(pixelAddr, width, height, rowBytes, depth, transColor, useTrans);
+        previewSection = previews;
+        u8 preview[width * height * 4] @ previewAt in previewSection [[sealed]];
         u8 pixels[pixelSize] @ pixelAddr [[sealed, hex::visualize("bitmap", preview, width, height)]];
     } else {
         u8 pixels[pixelSize] @ pixelAddr [[sealed]];  // 16-bit, RLE or interlaced: no preview
+        previewAt = preview_blank(4);                 // a transparent pixel instead
+        previewSection = previews;
+        previewWidth = 1;
+        previewHeight = 1;
     }
 } [[format("format_pixmap_layer")]];
 
@@ -271,6 +321,27 @@ struct Pixmap {
     padding[8];
     u16 layerCount;
     PixmapLayer layers[layerCount];
+
+    // The image PixmapItem shows: the first layer's, or a transparent pixel.
+    u128 shownPaletteAt = 0;
+    std::mem::Section shownPaletteSection = previews;
+    u16 shownColors = 0;
+    u128 shownAt = 0;
+    std::mem::Section shownSection = previews;
+    u32 shownWidth = 1;
+    u32 shownHeight = 1;
+    if (layerCount > 0) {
+        shownPaletteAt = layers[0].paletteAt;
+        shownPaletteSection = layers[0].paletteSection;
+        shownColors = layers[0].previewColors;
+        shownAt = layers[0].previewAt;
+        shownSection = layers[0].previewSection;
+        shownWidth = layers[0].previewWidth;
+        shownHeight = layers[0].previewHeight;
+    } else {
+        shownAt = preview_blank(4);
+        shownSection = previews;
+    }
 } [[format("format_pixmap")]];
 
 fn format_pixmap(ref Pixmap p) {
@@ -292,7 +363,7 @@ enum SoundCompression : u32 {
 // ImHex's sound visualizer plays little-endian s16 and refuses clips shorter
 // than a few thousand bytes, so widen the samples and pad with silence.
 fn awsn_s16(u128 address, u32 count, u8 sampleSize) {
-    u128 offset = std::mem::get_section_size(previews);
+    u128 offset = preview_begin(std::math::max(count * 2, 9600));
     for (u32 chunk = 0, chunk < count, chunk += 1024) {
         str bytes = "";
         u32 end = std::math::min(count, chunk + 1024);
@@ -321,6 +392,7 @@ fn awsn_s16(u128 address, u32 count, u8 sampleSize) {
 
 // Wraps 8-bit samples in a RIFF/WAVE header so the virtual file plays anywhere.
 fn awsn_wav(ref auto samples, u32 size, u8 channels, u32 rate) {
+    preview_begin(44 + size);
     u128 offset = preview_append("RIFF" + bytes_le32(36 + size) + "WAVEfmt " + bytes_le32(16)
         + bytes_le32(1 | (channels << 16))      // PCM, channel count
         + bytes_le32(rate) + bytes_le32(rate * channels)
@@ -341,13 +413,26 @@ struct Sound {
     SoundCompression compType;
     type::Size32 dataSize;
 
+    // What SoundItem plays on the item's own row (silence if unsupported).
+    u128 shownAt = 0;
+    std::mem::Section shownSection = previews;
+    u32 shownSamples = 4800;
+    u8 shownChannels = 1;
+    u32 shownRate = 22050;
+
     if (compType == SoundCompression::None && (sampleSize == 1 || sampleSize == 2) && chanCount > 0 && sampleRate > 0) {
         u32 sampleValues = dataSize / sampleSize;
-        u128 previewAt = awsn_s16($, sampleValues, sampleSize);
-        le s16 preview[std::math::max(sampleValues, 4800)] @ previewAt in previews [[sealed]];
+        shownAt = awsn_s16($, sampleValues, sampleSize);
+        shownSection = previews;
+        shownSamples = std::math::max(sampleValues, 4800);
+        shownChannels = chanCount;
+        shownRate = sampleRate;
+        le s16 preview[shownSamples] @ shownAt in shownSection [[sealed]];
         u8 samples[dataSize] [[sealed, hex::visualize("sound", preview, chanCount, sampleRate)]];
     } else {
-        u8 samples[dataSize] [[sealed]];
+        u8 samples[dataSize] [[sealed]];  // IMA ADPCM: no preview
+        shownAt = preview_blank(shownSamples * 2);
+        shownSection = previews;
     }
 } [[format("format_sound")]];
 
@@ -573,21 +658,24 @@ struct ItemData {
 };
 
 struct ItemEntry {
+    // Items follow their TypeEntry's 8-byte header, 16 bytes each. (Not read
+    // via parent.type: in the derived item types below, `parent` in this
+    // base body isn't the TypeEntry.)
+    u32 typeCode = read_be($ - 8 - std::core::array_index() * 16, 4);
     s32 id [[hidden]];
     u32 attrib;
     type::Size32 dataSize;
     u32 dataPtr [[hidden]];
-    u32 typeCode = read_be(addressof(parent.type), 4);
     ItemData data @ dataPtr [[inline]];
 } [[name(format_item_id(this)), format("format_item_entry")]];
 
-fn format_item_id(ref ItemEntry item) {
+fn format_item_id(ref auto item) {
     if (item.typeCode == 0x255F6E6D)
         return std::format("'{}' names", fourcc(item.id));
     return std::format("{}", item.id);
 };
 
-fn format_item_summary(ref ItemEntry item) {
+fn format_item_summary(ref auto item) {
     u32 t = item.typeCode;
     if (t == 0x255F6E6D) return format_name_table(item.data.bytes);
     if (t == 0x49434F4E || t == 0x5049584D) return format_pixmap(item.data.bytes);
@@ -601,7 +689,7 @@ fn format_item_summary(ref ItemEntry item) {
 
 // The '%_nm' lookup is a linear scan, so it lives in the (lazily evaluated)
 // format rather than [[name]], which is evaluated eagerly for every item.
-fn format_item_entry(ref ItemEntry item) {
+fn format_item_entry(ref auto item) {
     str name = "";
     if (item.typeCode != 0x255F6E6D)
         name = find_resource_name(item.typeCode, item.id);
@@ -610,10 +698,37 @@ fn format_item_entry(ref ItemEntry item) {
     return std::format("\"{}\" - {}", name, format_item_summary(item));
 };
 
+// Items whose row itself carries the preview (an eye button before the value),
+// so there's no digging down to a layer's pixels. The previews live in other
+// sections, so they're re-declared here from the payload's shown* locals -
+// under names nothing nested reuses, as the attribute resolves a
+// section-placed name to the most recently declared pattern with that name.
+struct PixmapItem : ItemEntry {
+    u32 itemPalette[data.bytes.shownColors] @ data.bytes.shownPaletteAt in data.bytes.shownPaletteSection;
+    u8 itemImage[data.bytes.shownWidth * data.bytes.shownHeight * (data.bytes.shownColors > 0 ? 1 : 4)]
+        @ data.bytes.shownAt in data.bytes.shownSection [[sealed]];
+} [[name(format_item_id(this)), format("format_item_entry"),
+    hex::visualize("bitmap", itemImage, data.bytes.shownWidth, data.bytes.shownHeight, itemPalette)]];
+
+struct SoundItem : ItemEntry {
+    le s16 itemSound[data.bytes.shownSamples] @ data.bytes.shownAt in data.bytes.shownSection [[sealed]];
+} [[name(format_item_id(this)), format("format_item_entry"),
+    hex::visualize("sound", itemSound, data.bytes.shownChannels, data.bytes.shownRate)]];
+
+struct ImageItem : ItemEntry {
+} [[name(format_item_id(this)), format("format_item_entry"), hex::visualize("image", data.bytes)]];
+
 struct TypeEntry {
     char type[4] [[hidden]];     // 4-char type code (e.g. "PICT", "cicn", "%_nm")
     u32 itemCount [[hidden]];
-    ItemEntry items[itemCount] [[inline]];
+    if (type == "ICON" || type == "PIXM")
+        PixmapItem items[itemCount] [[inline]];
+    else if (type == "SOUN")
+        SoundItem items[itemCount] [[inline]];
+    else if (type == "GIFf")
+        ImageItem items[itemCount] [[inline]];
+    else
+        ItemEntry items[itemCount] [[inline]];
 } [[name(type), format("format_type_entry")]];
 
 fn format_type_entry(ref TypeEntry t) {
