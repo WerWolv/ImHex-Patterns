@@ -30,6 +30,35 @@ std::mem::Section previews = std::mem::create_section("Hotline previews");
 u32 previewSectionCount = 1;
 str exportBase = "";            // virtual file path (minus extension) of the pixmap being parsed
 
+// The unit tests convert only the first few previews of each kind, as each
+// one takes the same code path and large files hold hundreds.
+u32 pngPreviewsLeft = 0xFFFFFFFF;
+u32 bmpPreviewsLeft = 0xFFFFFFFF;
+u32 soundPreviewsLeft = 0xFFFFFFFF;
+#ifdef __PL_UNIT_TESTS__
+pngPreviewsLeft = 8;
+bmpPreviewsLeft = 8;
+soundPreviewsLeft = 2;
+#endif
+
+fn take_png_preview() {
+    if (pngPreviewsLeft == 0) return false;
+    pngPreviewsLeft -= 1;
+    return true;
+};
+
+fn take_bmp_preview() {
+    if (bmpPreviewsLeft == 0) return false;
+    bmpPreviewsLeft -= 1;
+    return true;
+};
+
+fn take_sound_preview() {
+    if (soundPreviewsLeft == 0) return false;
+    soundPreviewsLeft -= 1;
+    return true;
+};
+
 // Returns the offset the next converted block of `size` bytes will start at.
 // Placements are bounds-checked against the size of the *main* data even in
 // custom sections, so start a new section before offsets could pass it.
@@ -446,13 +475,13 @@ struct PixmapLayer {
     std::mem::Section fileSection = previews;
     u128 fileSize = 0;
     str fileExt = "";
-    if (plain && (depth == 1 || depth == 2 || depth == 4 || depth == 8) && colorCount > 0) {
+    if (plain && (depth == 1 || depth == 2 || depth == 4 || depth == 8) && colorCount > 0 && take_png_preview()) {
         fileAt = awpx_png(pixelAddr, width, height, rowBytes, depth,
                           dataStart + colorDataOffset, colorCount, transColor, useTrans);
         fileSection = previews;
         fileSize = std::mem::get_section_size(fileSection) - fileAt;
         fileExt = ".png";
-    } else if (plain && (depth == 24 || depth == 32)) {
+    } else if (plain && (depth == 24 || depth == 32) && take_bmp_preview()) {
         if (depth == 32 && !useTrans && rowBytes == width * 4) {
             fileAt = awpx_bmp(0, pixelAddr, width, height, 0);   // stored rows as they are
         } else {
@@ -577,7 +606,7 @@ struct Sound {
     u8 shownChannels = 1;
     u32 shownRate = 22050;
 
-    if (compType == SoundCompression::None && (sampleSize == 1 || sampleSize == 2) && chanCount > 0 && sampleRate > 0) {
+    if (compType == SoundCompression::None && (sampleSize == 1 || sampleSize == 2) && chanCount > 0 && sampleRate > 0 && take_sound_preview()) {
         u32 sampleValues = dataSize / sampleSize;
         shownAt = awsn_s16($, sampleValues, sampleSize);
         shownSection = previews;
