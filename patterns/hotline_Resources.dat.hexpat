@@ -368,9 +368,9 @@ fn awpx_png(u128 pixelAddr, u32 width, u32 height, u32 rowBytes, u8 depth,
     return offset;
 };
 
-// A top-down 32-bit BMP with an alpha channel (BITMAPV4HEADER), whose bit
-// masks let the RGBA preview bytes be used as they are.
-fn awpx_bmp(std::mem::Section rgbaSection, u128 rgbaAt, u32 width, u32 height) {
+// A top-down 32-bit BMP (BITMAPV4HEADER) whose pixels are the R,G,B,x bytes at
+// `pixelsAt` in `pixelSection`, used as they are. A zero `alphaMask` means opaque.
+fn awpx_bmp(std::mem::Section pixelSection, u128 pixelsAt, u32 width, u32 height, u32 alphaMask) {
     u32 imageSize = width * height * 4;
     str header = "BM" + bytes_le32(14 + 108 + imageSize) + bytes_le32(0) + bytes_le32(14 + 108)
         + bytes_le32(108) + bytes_le32(width) + bytes_le32(-height)       // negative = top-down
@@ -378,13 +378,13 @@ fn awpx_bmp(std::mem::Section rgbaSection, u128 rgbaAt, u32 width, u32 height) {
         + bytes_le32(imageSize) + bytes_le32(2835) + bytes_le32(2835)    // 72 dpi
         + bytes_le32(0) + bytes_le32(0)
         + bytes_le32(0x000000FF) + bytes_le32(0x0000FF00)                // R, G
-        + bytes_le32(0x00FF0000) + bytes_le32(0xFF000000)                // B, A
+        + bytes_le32(0x00FF0000) + bytes_le32(alphaMask)                 // B, A
         + bytes_le32(0x73524742);                                         // 'sRGB'
     for (u8 i = 0, i < 12, i += 1)                                        // endpoints, gamma
         header = header + bytes_le32(0);
     preview_begin(14 + 108 + imageSize);
     u128 offset = preview_append(header);
-    std::mem::copy_section_to_section(rgbaSection, rgbaAt, previews, offset + 14 + 108, imageSize);
+    std::mem::copy_section_to_section(pixelSection, pixelsAt, previews, offset + 14 + 108, imageSize);
     return offset;
 };
 
@@ -441,9 +441,12 @@ struct PixmapLayer {
         fileSize = std::mem::get_section_size(fileSection) - fileAt;
         fileExt = ".png";
     } else if (plain && (depth == 24 || depth == 32)) {
-        u128 rgbaAt = awpx_direct(pixelAddr, width, height, rowBytes, depth, transColor, useTrans);
-        std::mem::Section rgbaSection = previews;
-        fileAt = awpx_bmp(rgbaSection, rgbaAt, width, height);
+        if (depth == 32 && !useTrans && rowBytes == width * 4) {
+            fileAt = awpx_bmp(0, pixelAddr, width, height, 0);   // stored rows as they are
+        } else {
+            u128 rgbaAt = awpx_direct(pixelAddr, width, height, rowBytes, depth, transColor, useTrans);
+            fileAt = awpx_bmp(previews, rgbaAt, width, height, 0xFF000000);
+        }
         fileSection = previews;
         fileSize = 14 + 108 + width * height * 4;
         fileExt = ".bmp";
