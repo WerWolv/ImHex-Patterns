@@ -8,6 +8,12 @@ output = ""
 top_level_struct_name = ""
 top_level_struct = ""
 
+TYPES = {
+    "u1": "u8", "u2": "u16", "u4": "u32", "u8": "u64",
+    "s1": "s8", "s2": "s16", "s4": "s32", "s8": "s64",
+    "f4": "float", "f8": "double",
+}
+
 def fixTypeName(name):
     name = name.replace("_", " ")
     name = string.capwords(name)
@@ -15,9 +21,113 @@ def fixTypeName(name):
 
     return name
 
+def format_comment(comment):
+    if comment != "":
+        return " // " + comment.replace('\n', ' ')
+    return ""
+
+def declare_variable(name, entry_type, array_size, bitfield_field_size, address = None):
+    location = ""
+    if address:
+        location = f" @ {address}"
+    if array_size:
+        return f"{entry_type} {name}[{array_size}]{location};"
+    if bitfield_field_size != "":
+        return f"{name} : {bitfield_field_size}{location};"
+    return f"{entry_type} {name}{location};"
+
+def struct_decl_header(type, is_bitfield):
+    if is_bitfield:
+        return f"bitfield {fixTypeName(type)} {{\n"
+    return f"struct {fixTypeName(type)} {{\n"
+
+def convert_type(entry):
+    entry_type = entry["type"]
+    if entry_type == "str":
+        if entry["encoding"] == "UTF-16LE":
+            return "le char16"
+        elif entry["encoding"] == "UTF-16BE":
+            return "be char16"
+        return "char"
+
+    if entry_type in TYPES:
+        return TYPES[entry_type]
+
+    return fixTypeName(entry_type)
+
+def fetch_type_info(type_name, types_info):
+    return types_info.setdefault(type_name, {"type": type_name})
+
+def collect_seq_type_info(seq, parent_type, types_info):
+    if not seq:
+        return
+
+    type_info = fetch_type_info(parent_type, types_info)
+    type_info["repeats"] = {}
+
+    for entry in seq:
+        if "repeat-until" in entry:
+            until_checks = []
+            for match in re.finditer(r"(?<!\w)_(?:\[\s*\d+\s*\]|\.[a-zA-Z]\w*)*(?!\w)", str(entry["repeat-until"])):
+                until_checks.append({"check": match.group(), "start": match.start(), "end": match.end()})
+
+            type_info["repeats"][entry["id"]] = {"entry": entry, "until": until_checks}
+
+def collect_type_info(data, top_level_struct_name):
+    types_info = {}
+
+    collect_seq_type_info(data.get("seq"), top_level_struct_name, types_info)
+    for parent_type, entry in data.get("types", {}).items():
+        collect_seq_type_info(entry.get("seq"), parent_type, types_info)
+
+    return types_info
+
 def add_line(line, indent = 0):
     global output
     output += (" " * indent) + line + "\n"
+
+def get_entry_type_size(entry, type_info, types_info):
+    entry_type = ""
+    array_size = None
+
+    if "type" in entry:
+        entry_type = convert_type(entry)
+
+    if "contents" in entry:
+        if isinstance(entry["contents"], str):
+            entry_type = f"type::Magic<\"{entry['contents']}\">"
+        else:
+            array_size = len(entry["contents"])
+            encoded_string = ""
+            for char in entry["contents"]:
+                encoded_string += f"\\x{char:02X}"
+
+            entry_type = f"type::Magic<\"{encoded_string}\">"
+    elif "size" in entry:
+        array_size = entry["size"]
+        if isinstance(array_size, str):
+            array_size = array_size.replace("_root", "parent")
+        entry_type = "u8"
+
+    return entry_type, array_size
+
+def add_repeat_checks(types_info):
+    for type_name, type_info in types_info.items():
+        repeats = type_info.get("repeats", {})
+        for id, repeat_info in repeats.items():
+            entry = repeat_info.get("entry", {})
+            until_checks = repeat_info.get("until", [])
+            entry_type, array_size = get_entry_type_size(entry, type_info, types_info)
+            check_args = ["auto address"]
+            if array_size:
+                check_args.append("auto size")
+                array_size = "size"
+            for index, check_info in enumerate(until_checks):
+                line = f"fn {fixTypeName(type_name)}_{id}_check{index}({', '.join(check_args)}) {{\n"
+                line += "    " + declare_variable("value", entry_type, array_size, "", "address")
+                line += f"\n    return value{check_info['check'][1:]};\n"
+                line += "};\n"
+                add_line(line)
 
 def handle_meta_xref(xref):
     if "mime" in xref:
@@ -41,23 +151,24 @@ def handle_meta(meta):
         global top_level_struct_name
         top_level_struct_name = str(meta["id"]).capitalize()
 
-def handle_types(types):
+def handle_expr(expr):
+    return expr
+
+def handle_types(types, types_info):
     result = ""
     for type in types:
         entry = types[type]
 
+        type_info = types_info.get(type, {})
         is_bitfield = False
         lines = ""
 
         if "seq" in entry:
-            is_bitfield, lines = handle_seq(entry["seq"])
+            is_bitfield, lines = handle_seq(entry["seq"], type_info, types_info)
         if "instances" in entry:
             lines += handle_instances(entry["instances"])
 
-        if is_bitfield:
-            result += f"bitfield {fixTypeName(type)} {{\n"
-        else:
-            result += f"struct {fixTypeName(type)} {{\n"
+        result += struct_decl_header(type, is_bitfield)
 
         result += lines + "\n"
 
@@ -70,16 +181,13 @@ def handle_instances(instances):
     for name in instances:
         instance = instances[name]
         result += f"    auto {name} = {instance['value']} [[export]];"
-
-        if "doc" in instance:
-            result += " // " + instance["doc"].replace('\n', ' ')
-        
+        result += format_comment(instance.get("doc", ""))
         result += "\n"
 
     return result.rstrip()
 
 
-def handle_seq(seq):
+def handle_seq(seq, type_info, types_info):
     result = ""
 
     is_bitfield = False
@@ -87,82 +195,50 @@ def handle_seq(seq):
 
     for entry in seq:
         name = entry["id"]
-        entry_type = ""
-        array_size = ""
         bitfield_field_size = ""
-        content_check = ""
         docs = ""
+        new_line = ""
 
         if "doc" in entry:
             docs = entry["doc"]
 
-        if "type" in entry:
-            entry_type = entry["type"]
+        entry_type, array_size = get_entry_type_size(entry, type_info, types_info)
 
-        if entry_type == "str":
-            if entry["encoding"] == "UTF-16LE":
-                entry_type = "le char16"
-            elif entry["encoding"] == "UTF-16BE":
-                entry_type = "be char16"
-            else:
-                entry_type = "char"
-        elif entry_type == "u1":
-            entry_type = "u8"
-        elif entry_type == "u2":
-            entry_type = "u16"
-        elif entry_type == "u4":
-            entry_type = "u32"
-        elif entry_type == "u8":
-            entry_type = "u64"
-        elif entry_type == "s1":
-            entry_type = "s8"
-        elif entry_type == "s2":
-            entry_type = "s16"
-        elif entry_type == "s4":
-            entry_type = "s32"
-        elif entry_type == "s8":
-            entry_type = "s64"
-        elif entry_type == "f4":
-            entry_type = "float"
-        elif entry_type == "f8":
-            entry_type = "double"
-        else:
-            entry_type = fixTypeName(entry_type)
-        
-        if "contents" in entry:
-            if isinstance(entry["contents"], str):
-                entry_type = f"type::Magic<\"{entry['contents']}\">"
-            else:
-                array_size = len(entry["contents"])
-                encoded_string = ""
-                for char in entry["contents"]:
-                    encoded_string += f"\\x{char:02X}"
+        if "repeat" in entry:
+            repeat = entry["repeat"]
+            repeat_size = None
+            check_args = ["$"]
+            if array_size:
+                check_args.append(str(array_size))
+                entry_type = f"std::Array<{entry_type}, {array_size}>"
+            if repeat == "eos":
+                repeat_size = "while(!std::mem::eof())"
+            elif "repeat-expr" in entry:
+                repeat_size = handle_expr(str(entry["repeat-expr"]))
+            elif "repeat-until" in entry:
+                until_expr = handle_expr(str(entry["repeat-until"]))
+                repeat_info = type_info.get("repeats", {}).get(name, {})
+                until_checks = list(enumerate(repeat_info.get("until", [])))
+                for index, check_info in sorted(until_checks, key=lambda check: check[1]["start"], reverse=True):
+                    check_fn = f"{fixTypeName(type_info['type'])}_{name}_check{index}({', '.join(check_args)})"
+                    until_expr = until_expr[:check_info["start"]] + check_fn + until_expr[check_info["end"]:]
 
-                entry_type = f"type::Magic<\"{encoded_string}\">"
-        elif "size" in entry:
-            array_size = entry["size"]
-            if isinstance(array_size, str):
-                array_size = array_size.replace("_root", "parent")
-            entry_type = "u8"
+                start_name = f"_{name}_start"
+                new_line = f"    auto {start_name} = $;\n"
+                repeat_size = f"while($ == {start_name} || !({until_expr}))"
+
+            array_size = repeat_size
 
         if re.compile("^b[0-9]+$").match(entry_type):
             is_bitfield = True
             bitfield_field_size = int(entry_type[1:])
 
-        new_line = ""
-
         if "if" in entry:
             new_line += f"    if ({entry['if']})\n    "
         
-        if array_size != "":
-            new_line += f"    {entry_type} {name}[{array_size}];"
-        elif bitfield_field_size != "":
-            new_line += f"    {name} : {bitfield_field_size};"
-        else:
-            new_line += f"    {entry_type} {name};"
+        new_line += "    " + declare_variable(name, entry_type, array_size, bitfield_field_size)
 
-        if docs != "":
-            new_line += " // " + docs.replace('\n', ' ')
+        new_line += format_comment(docs)
 
         lines.append(new_line)
 
@@ -174,18 +250,21 @@ def handle_seq(seq):
 def generate_imhex_pattern(data):
     global top_level_struct
 
-    add_line("import type.magic;\n")
+    add_line("import type.magic;\nimport std.array;\n")
 
     if "meta" in data:
        handle_meta(data["meta"])
 
+    types_info = collect_type_info(data, top_level_struct_name)
     add_line("")
 
+    add_repeat_checks(types_info)
+
     if "types" in data:
-        add_line(handle_types(data["types"]))
+        add_line(handle_types(data["types"], types_info))
     
     if "seq" in data:
-        add_line(handle_types({ top_level_struct_name: { "seq": data["seq"] } }))
+        add_line(handle_types({ top_level_struct_name: { "seq": data["seq"] } }, types_info))
 
     add_line(f"{fixTypeName(top_level_struct_name)} {fixTypeName(top_level_struct_name).lower()} @ 0x00;\n")
 
