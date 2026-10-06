@@ -8,6 +8,12 @@ output = ""
 top_level_struct_name = ""
 top_level_struct = ""
 
+TYPES = {
+    "u1": "u8", "u2": "u16", "u4": "u32", "u8": "u64",
+    "s1": "s8", "s2": "s16", "s4": "s32", "s8": "s64",
+    "f4": "float", "f8": "double",
+}
+
 def fixTypeName(name):
     name = name.replace("_", " ")
     name = string.capwords(name)
@@ -15,9 +21,84 @@ def fixTypeName(name):
 
     return name
 
+def format_comment(comment, indent = " "):
+    if comment != "":
+        return indent + "// " + comment.replace('\n', ' ')
+    return ""
+
+def declare_variable(name, entry_type, array_size, bitfield_field_size):
+    if array_size != "":
+        return f"{entry_type} {name}[{array_size}];"
+    if bitfield_field_size != "":
+        return f"{name} : {bitfield_field_size};"
+    return f"{entry_type} {name};"
+
+def struct_decl_header(type, is_bitfield):
+    if is_bitfield:
+        return f"bitfield {fixTypeName(type)} {{\n"
+    return f"struct {fixTypeName(type)} {{\n"
+
+def convert_type(entry):
+    entry_type = entry["type"]
+    if entry_type == "str":
+        if entry["encoding"] == "UTF-16LE":
+            return "le char16"
+        elif entry["encoding"] == "UTF-16BE":
+            return "be char16"
+        return "char"
+
+    if entry_type in TYPES:
+        return TYPES[entry_type]
+
+    return fixTypeName(entry_type)
+
+def translate_expr(expr):
+    expr = str(expr)
+
+    return expr
+
 def add_line(line, indent = 0):
     global output
     output += (" " * indent) + line + "\n"
+
+def get_entry_type_size(entry):
+    entry_type = ""
+    array_size = ""
+
+    if "type" in entry:
+        entry_type = convert_type(entry)
+
+    if "contents" in entry:
+        if isinstance(entry["contents"], str):
+            entry_type = f"type::Magic<\"{entry['contents']}\">"
+        else:
+            array_size = len(entry["contents"])
+            encoded_string = ""
+            for char in entry["contents"]:
+                encoded_string += f"\\x{char:02X}"
+
+            entry_type = f"type::Magic<\"{encoded_string}\">"
+    elif "size" in entry:
+        array_size = entry["size"]
+        if isinstance(array_size, str):
+            array_size = array_size.replace("_root", "parent")
+        entry_type = "u8"
+
+    return entry_type, array_size
+
+def get_entry_types(entry):
+    entry_types = {}
+    array_size = None
+    if isinstance(entry.get("type"), dict):
+        for expr, type in entry["type"].get("cases", {}).items():
+            type_entry = dict(entry)
+            type_entry["type"] = type
+            expr = translate_expr(expr)
+            entry_types[expr], array_size = get_entry_type_size(type_entry)
+    else:
+        entry_types[None], array_size = get_entry_type_size(entry)
+
+    return entry_types, array_size
 
 def handle_meta_xref(xref):
     if "mime" in xref:
@@ -54,10 +135,7 @@ def handle_types(types):
         if "instances" in entry:
             lines += handle_instances(entry["instances"])
 
-        if is_bitfield:
-            result += f"bitfield {fixTypeName(type)} {{\n"
-        else:
-            result += f"struct {fixTypeName(type)} {{\n"
+        result += struct_decl_header(type, is_bitfield)
 
         result += lines + "\n"
 
@@ -70,10 +148,7 @@ def handle_instances(instances):
     for name in instances:
         instance = instances[name]
         result += f"    auto {name} = {instance['value']} [[export]];"
-
-        if "doc" in instance:
-            result += " // " + instance["doc"].replace('\n', ' ')
-        
+        result += format_comment(instance.get("doc", ""))
         result += "\n"
 
     return result.rstrip()
@@ -87,82 +162,46 @@ def handle_seq(seq):
 
     for entry in seq:
         name = entry["id"]
-        entry_type = ""
-        array_size = ""
-        bitfield_field_size = ""
-        content_check = ""
         docs = ""
+        new_line = ""
+        indent = "    "
+        indent_count = 1
 
         if "doc" in entry:
             docs = entry["doc"]
 
-        if "type" in entry:
-            entry_type = entry["type"]
+        entry_types, array_size = get_entry_types(entry)
+        match = None
+        if isinstance(entry.get("type"), dict):
+            match = entry["type"]["switch-on"]
 
-        if entry_type == "str":
-            if entry["encoding"] == "UTF-16LE":
-                entry_type = "le char16"
-            elif entry["encoding"] == "UTF-16BE":
-                entry_type = "be char16"
-            else:
-                entry_type = "char"
-        elif entry_type == "u1":
-            entry_type = "u8"
-        elif entry_type == "u2":
-            entry_type = "u16"
-        elif entry_type == "u4":
-            entry_type = "u32"
-        elif entry_type == "u8":
-            entry_type = "u64"
-        elif entry_type == "s1":
-            entry_type = "s8"
-        elif entry_type == "s2":
-            entry_type = "s16"
-        elif entry_type == "s4":
-            entry_type = "s32"
-        elif entry_type == "s8":
-            entry_type = "s64"
-        elif entry_type == "f4":
-            entry_type = "float"
-        elif entry_type == "f8":
-            entry_type = "double"
-        else:
-            entry_type = fixTypeName(entry_type)
+        type_index = 0
+        for expr, entry_type in entry_types.items():
+            bitfield_field_size = ""
+            if re.compile("^b[0-9]+$").match(entry_type):
+                is_bitfield = True
+                bitfield_field_size = int(entry_type[1:])
+
+            if "if" in entry and type_index == 0:
+                condition = translate_expr(entry['if'])
+                new_line += indent * indent_count + f"if ({condition})\n"
+                indent_count += 1
         
-        if "contents" in entry:
-            if isinstance(entry["contents"], str):
-                entry_type = f"type::Magic<\"{entry['contents']}\">"
+            if match:
+                if type_index == 0:
+                    if docs != "":
+                        new_line += format_comment(docs, indent * indent_count) + "\n"
+                    new_line += indent * indent_count + f"match ({match}) {{\n"
+                new_line += indent * (indent_count + 1) + f"({expr}): " + declare_variable(name, entry_type, array_size, bitfield_field_size) + "\n"
             else:
-                array_size = len(entry["contents"])
-                encoded_string = ""
-                for char in entry["contents"]:
-                    encoded_string += f"\\x{char:02X}"
+                new_line += indent * indent_count + declare_variable(name, entry_type, array_size, bitfield_field_size)
 
-                entry_type = f"type::Magic<\"{encoded_string}\">"
-        elif "size" in entry:
-            array_size = entry["size"]
-            if isinstance(array_size, str):
-                array_size = array_size.replace("_root", "parent")
-            entry_type = "u8"
+            type_index += 1
 
-        if re.compile("^b[0-9]+$").match(entry_type):
-            is_bitfield = True
-            bitfield_field_size = int(entry_type[1:])
-
-        new_line = ""
-
-        if "if" in entry:
-            new_line += f"    if ({entry['if']})\n    "
-        
-        if array_size != "":
-            new_line += f"    {entry_type} {name}[{array_size}];"
-        elif bitfield_field_size != "":
-            new_line += f"    {name} : {bitfield_field_size};"
+        if match:
+            new_line += indent * indent_count + "}"
         else:
-            new_line += f"    {entry_type} {name};"
-
-        if docs != "":
-            new_line += " // " + docs.replace('\n', ' ')
+            new_line += format_comment(docs)
 
         lines.append(new_line)
 
