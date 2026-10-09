@@ -107,6 +107,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | EXFAT (DFIR) | | [`patterns/DFIR/exFAT.hexpat`](patterns/DFIR/exFAT.hexpat) | Imported by DISK_PARSER.hexpat |
 | EXT4 | | [`patterns/fs/ext4.hexpat`](patterns/fs/ext4.hexpat) | Ext4 File System |
 | FAS | | [`patterns/fas_oskasoftware.hexpat`](patterns/fas_oskasoftware.hexpat) [`patterns/fas_oskasoftware_old.hexpat`](patterns/fas_oskasoftware_old.hexpat) (Old versions of Oska DeskMate) | Oska Software DeskMates FAS (Frames and Sequences) file |
+| FAT12/FAT16 | | [`patterns/fs/fat16.hexpat`](patterns/fs/fat16.hexpat) | FAT12 / FAT16 File System |
 | FAT32 | | [`patterns/fs/fat32.hexpat`](patterns/fs/fat32.hexpat) | FAT32 File System |
 | FAT32 (DFIR) | | [`patterns/DFIR/FAT32.hexpat`](patterns/DFIR/FAT32.hexpat) | Imported by DISK_PARSER.hexpat |
 | FBX | | [`patterns/fbx.hexpat`](patterns/fbx.hexpat) | Kaydara FBX Binary |
