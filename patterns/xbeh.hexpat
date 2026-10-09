@@ -298,9 +298,11 @@ struct KernelImageThunk {
     padding[4];
 };
 
-union KernelImageThunkAddress {
+// A struct rather than a union: a union's size includes members placed with `@`, which
+// would make this 4-byte field as large as the thunk table and shift every field after it
+struct KernelImageThunkAddress {
     u32 debugAddress [[format("format_debug_kernel_image_thunk_address")]];
-    u32 retailAddress [[format("format_retail_kernel_image_thunk_address")]];
+    u32 retailAddress @ addressof(debugAddress) [[format("format_retail_kernel_image_thunk_address")]];
 
     if ((debugAddress ^ 0xEFB1F152) - parent.baseAddress < std::mem::size())
         KernelImageThunk debug    @ (debugAddress ^ 0xEFB1F152) - parent.baseAddress;
@@ -380,27 +382,50 @@ struct XBEH {
     SectionHeader *sectionHeader[numSections] : u32 [[pointer_base("relative_to_base")]];
     InitializationFlags initializationFlags;
     EntryPoint entrypoint;
-    TLS *tls : u32 [[pointer_base("relative_to_base")]];
+    if (std::mem::read_unsigned($, 4) != 0x00)
+        TLS *tls : u32 [[pointer_base("relative_to_base")]];
+    else
+        u32 tls [[comment("No TLS directory")]];
 
     type::Size<u32> stackSize;
     u32 peHeapReserve, peHeapCommit, peBaseAddress;
     type::Size<u32> peImageSize;
     u32 peChecksum;
     type::time32_t peTimeDate;
-    char *debugPathNameAddress[] : u32 [[pointer_base("relative_to_base")]];
-    char *debugFileNameAddress[] : u32 [[pointer_base("relative_to_base")]];
-    char16 *utf16DebugFileNameAddress[] : u32 [[pointer_base("relative_to_base")]];
+    if (std::mem::read_unsigned($, 4) != 0x00)
+        char *debugPathNameAddress[] : u32 [[pointer_base("relative_to_base")]];
+    else
+        u32 debugPathNameAddress [[comment("No debug path name")]];
+    if (std::mem::read_unsigned($, 4) != 0x00)
+        char *debugFileNameAddress[] : u32 [[pointer_base("relative_to_base")]];
+    else
+        u32 debugFileNameAddress [[comment("No debug file name")]];
+    if (std::mem::read_unsigned($, 4) != 0x00)
+        char16 *utf16DebugFileNameAddress[] : u32 [[pointer_base("relative_to_base")]];
+    else
+        u32 utf16DebugFileNameAddress [[comment("No UTF-16 debug file name")]];
     KernelImageThunkAddress kernelImageThunkAddress;
     u32 nonKernelImportDirectoryAddress;
     u32 numLibraryVersions;
-    LibraryVersion *libraryVersonTable[numLibraryVersions] : u32 [[pointer_base("relative_to_base")]];
-    LibraryVersion *kernelLibraryVersion : u32 [[pointer_base("relative_to_base")]];
-    LibraryVersion *xapiLibraryVersion : u32 [[pointer_base("relative_to_base")]];
+    // Library version pointers are 0 in executables built without the XDK libraries (e.g. nxdk)
+    if (numLibraryVersions != 0 && std::mem::read_unsigned($, 4) != 0x00)
+        LibraryVersion *libraryVersonTable[numLibraryVersions] : u32 [[pointer_base("relative_to_base")]];
+    else
+        u32 libraryVersonTable [[comment("No library version table")]];
+    if (std::mem::read_unsigned($, 4) != 0x00)
+        LibraryVersion *kernelLibraryVersion : u32 [[pointer_base("relative_to_base")]];
+    else
+        u32 kernelLibraryVersion [[comment("No kernel library version")]];
+    if (std::mem::read_unsigned($, 4) != 0x00)
+        LibraryVersion *xapiLibraryVersion : u32 [[pointer_base("relative_to_base")]];
+    else
+        u32 xapiLibraryVersion [[comment("No XAPI library version")]];
     u32 logoBitMapAddress, logoBitmapSize;
     u64 unknown1;
     u32 unknown2;
 
-    u8 logoBitmap[logoBitmapSize] @ logoBitMapAddress - baseAddress;
+    if (logoBitMapAddress >= baseAddress && logoBitMapAddress - baseAddress + logoBitmapSize <= std::mem::size())
+        u8 logoBitmap[logoBitmapSize] @ logoBitMapAddress - baseAddress;
 };
 
 XBEH xbeh @ 0x00;
