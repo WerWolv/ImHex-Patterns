@@ -41,7 +41,7 @@ namespace auto type {
             double sizeFloat = size;
             
             u32 i = 0;
-            while (sizeFloat >= 1024 && i <= 6) {
+            while (sizeFloat >= 1024 && i < 6) {
                 i += 1;
                 sizeFloat /= 1024;
             }
