@@ -42,7 +42,12 @@ import type.guid;
 // --- GUIDs ---
 
 #define NVRAM_FV       "{FFF12B8D-7696-4C8B-A985-2747075B4F50}"
-#define NVRAM_VARSTORE "{AAF32C78-947B-439A-A180-2E144EC37792}"
+
+// The Variable Store signature selects the variable header layout:
+// gEfiVariableGuid uses VARIABLE_HEADER, gEfiAuthenticatedVariableGuid
+// uses AUTHENTICATED_VARIABLE_HEADER.
+#define NVRAM_VARSTORE      "{DDCF3616-3275-4164-98B6-FE85707FFE7D}"
+#define NVRAM_VARSTORE_AUTH "{AAF32C78-947B-439A-A180-2E144EC37792}"
 
 
 // --- Enumerations and Bitfields ---
@@ -182,8 +187,13 @@ struct AUTHENTICATED_VARIABLE_HEADER {
     type::GUID VendorGuid;
 };
 
+bool IsAuthenticatedVarStore = true;
+
 struct UEFI_VARIABLE {
-    AUTHENTICATED_VARIABLE_HEADER Header; // TODO: Check authenticated vs normal variable...
+    if (IsAuthenticatedVarStore)
+        AUTHENTICATED_VARIABLE_HEADER Header;
+    else
+        VARIABLE_HEADER Header;
     char16 Name[Header.NameSize / 2];     // Name is a UTF-16 string
     u8 Data[Header.DataSize];
     // Align to the next 4-byte boundary for the next variable.
@@ -195,14 +205,18 @@ struct UEFI_VARIABLE {
 
 EFI_FIRMWARE_VOLUME_HEADER FV_Header @ 0;
 
-if (std::core::formatted_value(FV_Header.FileSystemGuid) != "{FFF12B8D-7696-4C8B-A985-2747075B4F50}") {
+if (std::core::formatted_value(FV_Header.FileSystemGuid) != NVRAM_FV) {
   std::error(std::format("Unknown FV_Header.FileSystemGuid {}", std::core::formatted_value(FV_Header.FileSystemGuid)));
 }
 
 // The next structure should be the Variable Store Header
 VARIABLE_STORE_HEADER VarStore @ $;
 
-if (std::core::formatted_value(VarStore.Signature) != NVRAM_VARSTORE) {
+if (std::core::formatted_value(VarStore.Signature) == NVRAM_VARSTORE_AUTH) {
+  IsAuthenticatedVarStore = true;
+} else if (std::core::formatted_value(VarStore.Signature) == NVRAM_VARSTORE) {
+  IsAuthenticatedVarStore = false;
+} else {
   std::error(std::format("Unknown VarStore.Signature {}", std::core::formatted_value(VarStore.Signature)));
 }
 
