@@ -137,13 +137,16 @@ namespace auto std::mem {
     };
 
     /**
-        Reads a string value from the memory
+        Reads a string value from the memory, as UTF-8 text
+        An `[[encoding]]` attribute does not apply. This function reads no field.
+        Bytes that do not decode under the encoding stop the pattern with an error.
         @param address The address to read from
-        @param size The size of the value to read
+        @param size The number of bytes to read
+        @param [encoding] The encoding to decode the bytes with. Defaults to the `#pragma encoding` encoding. `"UTF-8"` returns the bytes unchanged, for binary data.
         @return The value read
     */
-    fn read_string(u128 address, u128 size) {
-        return builtin::std::mem::read_string(address, size);
+    fn read_string(u128 address, u128 size, str encoding = "") {
+        return builtin::std::mem::read_string(address, size, 0xFFFFFFFFFFFFFFFF, encoding);
     };
 
     /**
