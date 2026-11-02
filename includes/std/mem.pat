@@ -146,6 +146,10 @@ namespace auto std::mem {
         @return The value read
     */
     fn read_string(u128 address, u128 size, str encoding = "") {
+        // The 2-argument form also works with a runtime that has no encoding parameter.
+        if (encoding == "")
+            return builtin::std::mem::read_string(address, size);
+
         return builtin::std::mem::read_string(address, size, 0xFFFFFFFFFFFFFFFF, encoding);
     };
 
