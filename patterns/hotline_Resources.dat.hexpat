@@ -644,7 +644,7 @@ fn format_table_cell(ref auto cell) {
 struct IDVarOffset {
     u32 id;
     u32 offset;                 // from end of the offset table
-};
+} [[static]];
 
 struct IDVarItem {
     u32 index = std::core::array_index();
