@@ -24,6 +24,25 @@ import type.time;
 // Subdirectories nest, their depth is bounded by MaxDirectoryDepth below
 #pragma eval_depth 0
 
+// On-disk signatures, directory markers and FAT type boundaries (fatgen103)
+const u8 ExtendedBootSignatureDOS4 = 0x28;
+const u8 ExtendedBootSignature = 0x29;
+const u16 BootSignatureOffset = 0x1FE;
+const u16 BootSignature = 0xAA55;
+const u8 DeletedEntryMarker = 0xE5;
+const u8 EscapedDeletedEntryMarker = 0x05;
+const u8 LongNameAttributeMask = 0x3F;
+const u8 LongNameAttributes = 0x0F;
+const u8 DirectoryEntrySize = 32;
+const u8 LongNameFirstPartLength = 5;
+const u8 LongNameSecondPartLength = 6;
+const u8 LongNameThirdPartLength = 2;
+const u8 LongNameLength = LongNameFirstPartLength + LongNameSecondPartLength + LongNameThirdPartLength;
+const u16 LongNameTerminator = 0x0000;
+const u16 LongNamePadding = 0xFFFF;
+const u32 FAT12ClusterLimit = 4085;
+const u32 FAT16ClusterLimit = 65525;
+
 // Volume geometry, set once the boot sector has been parsed
 u32 bytesPerSector;
 u32 bytesPerCluster;
@@ -73,16 +92,16 @@ struct BIOSParameterBlock {
     u16 numHeads;
     u32 hiddenSectors;
     u32 totalSectors32;
-};
+} [[static]];
 
 // Extended BPB, fields after bootSignature are only valid if it is 0x29 (or 0x28 for DOS 4.0)
 struct ExtendedBIOSParameterBlock {
     u8  driveNumber;
     u8  reserved;
     u8  bootSignature;
-    if (bootSignature == 0x29 || bootSignature == 0x28) {
+    if (bootSignature == ExtendedBootSignature || bootSignature == ExtendedBootSignatureDOS4) {
         u32 volumeID;
-        if (bootSignature == 0x29) {
+        if (bootSignature == ExtendedBootSignature) {
             char volumeLabel[11];
             char fileSystemType[8];
         }
@@ -94,7 +113,7 @@ struct BootSector {
     char oemName[8];
     BIOSParameterBlock bpb;
     ExtendedBIOSParameterBlock ebpb;
-    u8   bootCode[0x1FE - ($ - addressof(this))];
+    u8   bootCode[BootSignatureOffset - ($ - addressof(this))];
     u16  signature;
 };
 
@@ -201,30 +220,30 @@ bitfield LFNOrdinal {
 
 struct LongNameEntry {
     LFNOrdinal ordinal;
-    char16 name1[5];
+    char16 name1[LongNameFirstPartLength];
     Attributes attributes;
     u8  type;
     u8  checksum;
-    char16 name2[6];
+    char16 name2[LongNameSecondPartLength];
     u16 firstCluster;
-    char16 name3[2];
-} [[format("format_lfn")]];
+    char16 name3[LongNameThirdPartLength];
+} [[static, format("format_lfn")]];
 
 // LFN fragments end with 0x0000 and are padded with 0xFFFF
 fn lfn_char(ref LongNameEntry entry, u8 index) {
-    if (index < 5)
+    if (index < LongNameFirstPartLength)
         return entry.name1[index];
-    else if (index < 11)
-        return entry.name2[index - 5];
+    else if (index < LongNameFirstPartLength + LongNameSecondPartLength)
+        return entry.name2[index - LongNameFirstPartLength];
     else
-        return entry.name3[index - 11];
+        return entry.name3[index - LongNameFirstPartLength - LongNameSecondPartLength];
 };
 
 fn format_lfn(ref LongNameEntry entry) {
     str name = "";
-    for (u8 i = 0, i < 13, i += 1) {
+    for (u8 i = 0, i < LongNameLength, i += 1) {
         char16 c = lfn_char(entry, i);
-        if (u16(c) == 0x0000 || u16(c) == 0xFFFF)
+        if (u16(c) == LongNameTerminator || u16(c) == LongNamePadding)
             break;
         name += std::format("{}", c);
     }
@@ -258,7 +277,7 @@ struct ShortNameEntry {
     u16 firstCluster;
     u32 fileSize;
 
-    bool deleted = u8(name[0]) == 0xE5;
+    bool deleted = u8(name[0]) == DeletedEntryMarker;
     bool dotEntry = name[0] == '.';
 
     bool inImage = is_valid_cluster(firstCluster) && cluster_address(firstCluster) < std::mem::size();
@@ -303,7 +322,7 @@ fn format_short_name(ref ShortNameEntry entry) {
     u8 first = u8(entry.name[0]);
 
     // 0xE5 marks a deleted entry, 0x05 stands for a real leading 0xE5 byte
-    if (first == 0xE5 || first == 0x05)
+    if (first == DeletedEntryMarker || first == EscapedDeletedEntryMarker)
         name = "?" + std::string::substr(name, 1, std::string::length(name) - 1);
     if (entry.caseFlags.lowerBase)
         name = std::string::to_lower(name);
@@ -314,7 +333,7 @@ fn format_short_name(ref ShortNameEntry entry) {
 
     if (entry.attributes.volumeLabel)
         return std::format("Volume label \"{}\"", trim_padding(std::string::to_string(entry.name) + std::string::to_string(entry.extension)));
-    else if (first == 0xE5)
+    else if (first == DeletedEntryMarker)
         return std::format("Deleted: {}", name);
     else if (entry.attributes.subdirectory)
         return std::format("<DIR> {}", name);
@@ -326,7 +345,7 @@ struct DirectoryEntry {
     u8 firstByte @ addressof(this) [[hidden]];
     u8 attributeByte @ addressof(this) + 11 [[hidden]];
 
-    if ((attributeByte & 0x3F) == 0x0F && firstByte != 0xE5)
+    if ((attributeByte & LongNameAttributeMask) == LongNameAttributes && firstByte != DeletedEntryMarker)
         LongNameEntry longName;
     else
         ShortNameEntry entry;
@@ -338,7 +357,7 @@ fn is_end_of_directory(u64 address) {
 
 // The fixed size root directory of FAT12/16, up to the 0x00 end marker
 struct RootDirectory<auto End> {
-    DirectoryEntry entries[while($ + 32 <= End && !is_end_of_directory($))] [[inline]];
+    DirectoryEntry entries[while($ + DirectoryEntrySize <= End && !is_end_of_directory($))] [[inline]];
 } [[name("Root Directory")]];
 
 // Decides where the chain continues after a run, and stops it on a cycle or a broken link
@@ -359,7 +378,7 @@ fn chain_advance(u32 cluster, u32 runLength, bool wantMore) {
 };
 
 struct DirectoryEntries<auto End> {
-    DirectoryEntry entries[while($ + 32 <= End && !is_end_of_directory($))] [[inline]];
+    DirectoryEntry entries[while($ + DirectoryEntrySize <= End && !is_end_of_directory($))] [[inline]];
 } [[inline]];
 
 // One run of physically consecutive clusters of a directory
@@ -429,7 +448,7 @@ struct FATVolume {
     bytesPerSector = bootSector.bpb.bytesPerSector;
     bytesPerCluster = bytesPerSector * bootSector.bpb.sectorsPerCluster;
 
-    if (bootSector.signature != 0xAA55)
+    if (bootSector.signature != BootSignature)
         std::warning(std::format("Unexpected boot sector signature 0x{:04X}", bootSector.signature));
     if (bytesPerCluster == 0)
         std::error("Invalid BIOS Parameter Block: bytes per cluster is zero");
@@ -437,7 +456,7 @@ struct FATVolume {
         std::error("fatSize16 is zero, this is a FAT32 volume. Use fs/fat32.hexpat instead");
 
     u32 totalSectors = bootSector.bpb.totalSectors16 != 0 ? bootSector.bpb.totalSectors16 : bootSector.bpb.totalSectors32;
-    u32 rootDirSectors = (u32(bootSector.bpb.rootEntryCount) * 32 + bytesPerSector - 1) / bytesPerSector;
+    u32 rootDirSectors = (u32(bootSector.bpb.rootEntryCount) * DirectoryEntrySize + bytesPerSector - 1) / bytesPerSector;
     u32 firstRootDirSector = bootSector.bpb.reservedSectorCount + u32(bootSector.bpb.numFats) * bootSector.bpb.fatSize16;
     u32 firstDataSector = firstRootDirSector + rootDirSectors;
 
@@ -447,9 +466,9 @@ struct FATVolume {
     clusterCount = (totalSectors - firstDataSector) / bootSector.bpb.sectorsPerCluster;
 
     // The FAT type depends on the cluster count only (fatgen103, "FAT Type Determination")
-    if (clusterCount < 4085)
+    if (clusterCount < FAT12ClusterLimit)
         fatBits = 12;
-    else if (clusterCount < 65525)
+    else if (clusterCount < FAT16ClusterLimit)
         fatBits = 16;
     else
         std::error(std::format("{} clusters is too many for FAT12/16, this is a FAT32 volume. Use fs/fat32.hexpat instead", clusterCount));
@@ -469,7 +488,7 @@ struct FATVolume {
     FileAllocationTable fats[fatsInImage] @ fatAddress;
 
     u64 rootDirAddress = addressof(this) + u64(firstRootDirSector) * bytesPerSector;
-    u64 rootDirEnd = std::math::min(rootDirAddress + u64(bootSector.bpb.rootEntryCount) * 32, std::mem::size());
+    u64 rootDirEnd = std::math::min(rootDirAddress + u64(bootSector.bpb.rootEntryCount) * DirectoryEntrySize, std::mem::size());
     if (rootDirAddress < rootDirEnd)
         RootDirectory<rootDirEnd> rootDirectory @ rootDirAddress;
 } [[format("format_volume")]];
