@@ -11,6 +11,11 @@ import std.string;
 // The directory tree is walked recursively, its depth is bounded by MaxDirectoryDepth below
 #pragma eval_depth 0
 
+// Volume descriptors occupy fixed 2048-byte sectors after the 32 KiB system area.
+// This size is independent of the logical block size declared by each volume.
+const u32 VolumeDescriptorSize = 0x800;
+const u32 SystemAreaSize = 0x8000;
+
 // Set from the volume descriptor that is currently being parsed
 u32 blockSize = 2048;
 bool inJoliet = false;
@@ -113,7 +118,7 @@ using Directory<auto Address, auto Size>;
 // the gaps are skipped as padding instead of being shown as file data.
 struct InterleavedFileUnit {
   u64 size = std::math::min(interleaveUnitBytes, interleaveRemaining);
-  u8 data[size] [[sealed]];
+  std::mem::Bytes<size> data;
   interleaveRemaining -= size;
   if (interleaveRemaining > 0)
     padding[interleaveGapBytes];
@@ -326,20 +331,20 @@ struct VolumeDescriptor {
     inJoliet = false;
   }
 
-  padding[0x800 - $ % 0x800];
+  padding[VolumeDescriptorSize - $ % VolumeDescriptorSize];
 };
 
 // Volume descriptors start after the 32 KiB system area; a cut off image shows the
 // descriptors it still holds completely and the rest as bytes
 fn DescriptorFits(u128 address) {
-  return address + 0x800 <= std::mem::size();
+  return address + VolumeDescriptorSize <= std::mem::size();
 };
 
 struct ISOImage {
-  if (std::mem::size() <= 0x8000) {
+  if (std::mem::size() <= SystemAreaSize) {
     u8 systemArea[std::mem::size()];
   } else {
-    padding[0x8000];
+    padding[SystemAreaSize];
     VolumeDescriptor descriptors[while(DescriptorFits($) && std::mem::read_unsigned($, 1) != 0xFF)];
     if (DescriptorFits($))
       VolumeDescriptor terminator;
