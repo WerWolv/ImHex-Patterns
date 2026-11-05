@@ -3,6 +3,9 @@
 #pragma magic [ 75 63 66 62 ] @ 0x00
 #pragma endian little
 
+import std.core;
+import std.mem;
+
 // Munged game data of Pandemic Studios' Zero engine, as used by the PC versions of
 // Star Wars: Battlefront (2004) and Star Wars: Battlefront II (2005): the .lvl archives,
 // the .mvs movie archives and the common.bnk sound bank.
@@ -18,85 +21,92 @@
 // A lvl_ sub-level starts with its name hash and the size of the chunks that follow.
 // Format notes: https://github.com/centrevilletech/battlefront-eternal/blob/19ea2b38c9943ee93309a500cc1024e094374853/docs/formats.md
 
+// Tags of the chunks that hold other chunks. The last four are hashed names.
+enum ContainerTag : u32 {
+    ucfb          = 0x62666375,
+    LVL_          = 0x5f4c564c,
+    lvl_          = 0x5f6c766c,
+    INFO          = 0x4f464e49,
+    DATA          = 0x41544144,
+    FMT_          = 0x5f544d46,
+    FACE          = 0x45434146,
+    tex_          = 0x5f786574,
+    modl          = 0x6c646f6d,
+    segm          = 0x6d676573,
+    skel          = 0x6c656b73,
+    gmod          = 0x646f6d67,
+    shdw          = 0x77646873,
+    GSHD          = 0x44485347,
+    CSHD          = 0x44485343,
+    zaa_          = 0x5f61617a,
+    zaf_          = 0x5f66617a,
+    FFAZ          = 0x5a414646,
+    SLTM          = 0x4d544c53,
+    STSJ          = 0x4a535453,
+    SNKS          = 0x534b4e53,
+    LEKS          = 0x534b454c,
+    entc          = 0x63746e65,
+    wpnc          = 0x636e7077,
+    ordc          = 0x6364726f,
+    expc          = 0x63707865,
+    fx__          = 0x5f5f7866,
+    coll          = 0x6c6c6f63,
+    TREE          = 0x45455254,
+    prim          = 0x6d697270,
+    tern          = 0x6e726574,
+    PCHS          = 0x53484350,
+    PTCH          = 0x48435450,
+    LPTC          = 0x4354504c,
+    WATR          = 0x52544157,
+    CUTS          = 0x53545543,
+    CUTR          = 0x52545543,
+    prp_          = 0x5f707270,
+    wrld          = 0x646c7277,
+    inst          = 0x74736e69,
+    regn          = 0x6e676572,
+    BARR          = 0x52524142,
+    Hint          = 0x746e6948,
+    PATH          = 0x48544150,
+    path          = 0x68746170,
+    plan          = 0x6e616c70,
+    LOWR          = 0x52574f4c,
+    COMN          = 0x4e4d4f43,
+    STAT          = 0x54415453,
+    PASS          = 0x53534150,
+    SHDR          = 0x52444853,
+    PIPE          = 0x45504950,
+    VSP_          = 0x5f505356,
+    PSP_          = 0x5f505350,
+    sky_          = 0x5f796b73,
+    bnd_          = 0x5f646e62,
+    load          = 0x64616f6c,
+    mcfg          = 0x6766636d,
+    snd_          = 0x5f646e73,
+    mus_          = 0x5f73756d,
+    ffx_          = 0x5f786666,
+    SCOP          = 0x504f4353,
+    scr_          = 0x5f726373,
+    Locl          = 0x6c636f4c,
+    font          = 0x746e6f66,
+    FTEX          = 0x58455446,
+    StreamList    = 0x5bb97f21,
+    Stream        = 0x5f6f6d65,
+    SoundBankList = 0x5e262256,
+    SampleBank    = 0x9a644d15
+};
+
 union Tag {
     char text[4];
     u32 value;
+    ContainerTag container [[hidden]];
 };
 
-fn is_container(u32 t, u32 parent_tag) {
-    if (t == 0x4f464e49)    // INFO
-        return parent_tag == 0x52524142 || parent_tag == 0x74736e69 || parent_tag == 0x746e6948 || parent_tag == 0x6e676572;
-    if (t == 0x41544144)    // DATA
-        return parent_tag == 0x44485343;
-    return
-        t == 0x62666375 ||  // ucfb
-        t == 0x5f4c564c ||  // LVL_
-        t == 0x5f544d46 ||  // FMT_
-        t == 0x45434146 ||  // FACE
-        t == 0x5f786574 ||  // tex_
-        t == 0x6c646f6d ||  // modl
-        t == 0x6d676573 ||  // segm
-        t == 0x6c656b73 ||  // skel
-        t == 0x646f6d67 ||  // gmod
-        t == 0x77646873 ||  // shdw
-        t == 0x44485347 ||  // GSHD
-        t == 0x44485343 ||  // CSHD
-        t == 0x5f61617a ||  // zaa_
-        t == 0x5f66617a ||  // zaf_
-        t == 0x5a414646 ||  // FFAZ
-        t == 0x4d544c53 ||  // SLTM
-        t == 0x4a535453 ||  // STSJ
-        t == 0x534b4e53 ||  // SNKS
-        t == 0x534b454c ||  // LEKS
-        t == 0x63746e65 ||  // entc
-        t == 0x636e7077 ||  // wpnc
-        t == 0x6364726f ||  // ordc
-        t == 0x63707865 ||  // expc
-        t == 0x5f5f7866 ||  // fx__
-        t == 0x6c6c6f63 ||  // coll
-        t == 0x45455254 ||  // TREE
-        t == 0x6d697270 ||  // prim
-        t == 0x6e726574 ||  // tern
-        t == 0x53484350 ||  // PCHS
-        t == 0x48435450 ||  // PTCH
-        t == 0x4354504c ||  // LPTC
-        t == 0x52544157 ||  // WATR
-        t == 0x53545543 ||  // CUTS
-        t == 0x52545543 ||  // CUTR
-        t == 0x5f707270 ||  // prp_
-        t == 0x646c7277 ||  // wrld
-        t == 0x74736e69 ||  // inst
-        t == 0x6e676572 ||  // regn
-        t == 0x52524142 ||  // BARR
-        t == 0x746e6948 ||  // Hint
-        t == 0x48544150 ||  // PATH
-        t == 0x68746170 ||  // path
-        t == 0x6e616c70 ||  // plan
-        t == 0x52574f4c ||  // LOWR
-        t == 0x4e4d4f43 ||  // COMN
-        t == 0x54415453 ||  // STAT
-        t == 0x53534150 ||  // PASS
-        t == 0x52444853 ||  // SHDR
-        t == 0x45504950 ||  // PIPE
-        t == 0x5f505356 ||  // VSP_
-        t == 0x5f505350 ||  // PSP_
-        t == 0x5f796b73 ||  // sky_
-        t == 0x5f646e62 ||  // bnd_
-        t == 0x64616f6c ||  // load
-        t == 0x6766636d ||  // mcfg
-        t == 0x5f646e73 ||  // snd_
-        t == 0x5f73756d ||  // mus_
-        t == 0x5f786666 ||  // ffx_
-        t == 0x504f4353 ||  // SCOP
-        t == 0x5f726373 ||  // scr_
-        t == 0x6c636f4c ||  // Locl
-        t == 0x746e6f66 ||  // font
-        t == 0x58455446 ||  // FTEX
-        t == 0x5bb97f21 ||  // StreamList
-        t == 0x5f6f6d65 ||  // Stream
-        t == 0x5e262256 ||  // SoundBankList
-        t == 0x9a644d15 ||  // SampleBank
-        t == 0x44485343;    // CSHD
+fn is_container(ref auto tag, u32 parent_tag) {
+    if (tag.value == ContainerTag::INFO)
+        return parent_tag == ContainerTag::BARR || parent_tag == ContainerTag::inst || parent_tag == ContainerTag::Hint || parent_tag == ContainerTag::regn;
+    if (tag.value == ContainerTag::DATA)
+        return parent_tag == ContainerTag::CSHD;
+    return std::core::is_valid_enum(tag.container);
 };
 
 struct Chunk {
@@ -104,14 +114,14 @@ struct Chunk {
     if (tag.value != 0) {
         u32 size;
         u64 end = $ + size;
-        if (tag.value == 0x5f6c766c) {    // lvl_: a sub-level
+        if (tag.value == ContainerTag::lvl_) {    // a sub-level
             u32 name_hash;
             u32 chunks_size;
             Chunk chunks[while($ < end)];
-        } else if (is_container(tag.value, parent.tag.value)) {
+        } else if (is_container(tag, parent.tag.value)) {
             Chunk chunks[while($ < end)];
         } else {
-            u8 data[size];
+            std::mem::Bytes<size> data;
         }
         padding[(4 - (size % 4)) % 4];
     }
