@@ -698,15 +698,6 @@ enum MsgBoxIcon : s16 {
     Question = 1003
 };
 
-struct PString {
-    u8 size;
-    char data[size];
-} [[sealed, format("format_pstring")]];
-
-fn format_pstring(ref PString p) {
-    return std::format("\"{}\"", p.data);
-};
-
 fn msgbox_cell_text(u8 cell, s16 icon, s16 sound, str title, str message, str button1, str button2, str button3) {
     if (cell == 0) return "Title";
     if (cell == 1) return title;
@@ -738,6 +729,8 @@ struct MsgBoxCell {
     str text = msgbox_cell_text(std::core::array_index(), s16(parent.icon), parent.sound,
         parent.title.data, parent.message.data, parent.button1.data, parent.button2.data, parent.button3.data);
 } [[format("format_table_cell")]];
+
+using PString = std::string::SizedString<u8>;
 
 struct MessageBox {
     MsgBoxIcon icon;
