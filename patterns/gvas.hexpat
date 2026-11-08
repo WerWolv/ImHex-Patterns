@@ -1,11 +1,14 @@
+#ifndef GVAS_USE_LIB
 #pragma author Scott Anderson
 #pragma description Unreal Engine Save Game
 
 #pragma magic [ 47 56 41 53 0? 00 00 00 ] @ 0x00
-#pragma endian little
 
 // Subnautica 2
 #pragma magic [ 47 53 57 55 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 47 56 41 53 0? 00 00 00 ] @ 0x00
+#endif
+
+#pragma endian little
 
 #pragma eval_depth         64
 #pragma array_limit    300000
@@ -257,7 +260,7 @@ struct FCustomVersionContainer {
 };
 
 struct FSaveGameHeader {
-    if (std::mem::read_unsigned($, 4, std::mem::Endian::Little) == 0x55575347) {
+    if (unknownWorlds) {
         padding[16];
     }
     type::Magic<"GVAS"> fileTypeTag;
@@ -272,7 +275,18 @@ struct FSaveGameHeader {
 
 // ====== Save Game Header ======
 
-FSaveGameHeader header @ 0;
+// To place the save game elsewhere, define GVAS_USE_LIB and set these before including this file
+#ifndef GVAS_USE_LIB
+const std::mem::Section gvasSection = 0;
+const u128 gvasAddress = 0;
+const u128 gvasSize = std::mem::size();
+#endif
+
+/// Subnautica 2 saves start with 'UWSG' (Unknown Worlds Save Game) as a C multi-character constant
+const bool unknownWorlds = gvasSection == 0 &&
+    std::mem::read_unsigned(gvasAddress, 4, std::mem::Endian::Little) == 0x55575347;
+
+FSaveGameHeader header @ gvasAddress in gvasSection;
 
 // ====== Property serialization logic ======
 
@@ -953,6 +967,7 @@ struct SaveGameFile {
     TaggedProperties properties;
     type::Magic<"\x00\x00\x00\x00"> footer;
 };
-SaveGameFile file @ $ [[inline]];
+SaveGameFile file @ addressof(header) + sizeof(header) in gvasSection [[inline]];
 
-std::assert_warn(std::mem::eof(), std::format("Expected EOF @ 0x{:04X}", $));
+const u128 gvasEnd = addressof(file) + sizeof(file);
+std::assert_warn(gvasEnd == gvasAddress + gvasSize, std::format("Expected EOF @ 0x{:04X}", gvasEnd));
