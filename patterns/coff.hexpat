@@ -24,6 +24,7 @@ enum Machine : u16 {
     MIPSFPU16   = 0x0466,
     POWERPC     = 0x01F0,
     POWERPCFP   = 0x01F0,
+    XENON       = 0x01F2,
     R4000       = 0x0166,
     RISCV32     = 0x5032,
     RISCV64     = 0x5064,
