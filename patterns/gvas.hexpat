@@ -7,11 +7,14 @@
 // Subnautica 2
 #pragma magic [ 47 53 57 55 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 47 56 41 53 0? 00 00 00 ] @ 0x00
 
+#pragma eval_depth         64
 #pragma array_limit    300000
 #pragma pattern_limit 2000000
 
+import std.core;
 import std.io;
 import std.math;
+import std.mem;
 import std.time;
 import type.magic;
 import type.size;
@@ -671,15 +674,13 @@ struct SetProperty<auto T> {
     FProperty<T> entries[count] [[inline]];
 };
 
+/// The header that precedes each property value.
+/// See: Engine/Source/Runtime/CoreUObject/Private/UObject/PropertyTag.cpp
 struct FPropertyTag {
-    const auto dollar = $;
     FString name;
     if (name.length == 0 || name.data == "None") {
         break;
     }
-    const str prefix = std::format(
-        "FPropertyTag {} @ 0x{:X};",
-        name.data, dollar);
     if (propertyTagCompleteTypeName) {
         TypeTreeNode type;
         type::Size32 size;
@@ -688,113 +689,154 @@ struct FPropertyTag {
             u32 arrayIndex;
         }
         if (flags.hasPropertyGuid) {
-            Guid guid;
+            Guid propertyGuid;
         }
         if (flags.hasPropertyExtensions) {
             std::error(std::format(
-                "{} hasPropertyExtensions not supported", prefix));
+                "FPropertyTag {} @ 0x{:X}; hasPropertyExtensions not supported",
+                name.data, addressof(name)));
         }
+        const str typeName = type.name.data;
+        const str innerType = type.children > 0 ? type.child[0].name.data : "";
+        const str valueType = type.children > 1 ? type.child[1].name.data : "";
+        if (typeName == "StructProperty") {
+            const str structName = type.child[0].name.data;
+        } else if (typeName == "ArrayProperty" && innerType == "StructProperty") {
+            const str structName = type.child[0].child[0].name.data;
+        } else {
+            const str structName = "";
+        }
+        const bool boolValue = flags.boolTrue;
     } else {
         FString type;
         type::Size32 size;
         u32 arrayIndex;
         match (type.data) {
-            ("ArrayProperty"): FString propertyType;
-            ("BoolProperty"): bool value;
-            ("ByteProperty"): FString enumName;
-            ("EnumProperty"): FString enumType;
+            ("StructProperty"): {
+                FString structName;
+                Guid structGuid;
+            }
+            ("BoolProperty"): bool boolVal;
+            ("ByteProperty" | "EnumProperty"): FString enumName;
+            ("ArrayProperty" | "SetProperty" | "OptionalProperty"): FString innerType;
             ("MapProperty"): {
-                FString keyType;
+                FString innerType;
                 FString valueType;
             }
-            ("SetProperty"): FString propertyType;
-            ("StructProperty"): {
-                FString typeName;
-                Guid guid;
-            }
         }
-        type::Magic<"\x00"> terminator;
+        bool hasPropertyGuid;
+        if (hasPropertyGuid) {
+            Guid propertyGuid;
+        }
+        const str typeName = type.data;
     }
+} [[format("format_fpropertytag")]];
 
-    u32 start = $;
-    match (propertyTagCompleteTypeName ? type.name.data : type.data) {
-        ("ArrayProperty"): {
-            u32 count;
-            match (propertyTagCompleteTypeName ? type.child[0].name.data : propertyType.data) {
-                ("BoolProperty"): bool values[count];
-                ("ByteProperty"): {
-                    if (count + 4 == size) {
-                       std::mem::Bytes<count> values;
-                    } else {
-                        FString values[count];
-                    }
-                }
-                ("DoubleProperty"): double values[count];
-                ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString values[count];
-                ("FloatProperty"): float values[count];
-                ("IntProperty"): s32 values[count];
-                ("SoftObjectProperty"): SoftObject values[count];
-                ("StructProperty"): {
-                    if (!propertyTagCompleteTypeName) {
-                        FString fieldName;
-                        type::Magic<"\x0F\x00\x00\x00StructProperty\x00"> propertyType;
-                        u32 propertySize, arrayIndex;
-                        FString structName;
-                        Guid guid;
-                        type::Magic<"\x00"> terminator;
-                        u32 propertyStart = $;
-                    }
-                    try {
-                        match (propertyTagCompleteTypeName ? type.child[0].child[0].name.data : structName.data) {
-                            ("DateTime"): DateTime values[count];
-                            ("GameplayTagContainer"): GameplayTagContainer values[count];
-                            ("Guid"): Guid values[count];
-                            ("IntPoint"): IntPoint values[count];
-                            ("LinearColor"): LinearColor values[count];
-                            ("Quat"): Quat values[count];
-                            ("Rotator"): Rotator values[count];
-                            ("Timespan"): Timespan values[count];
-                            ("Vector"): Vector values[count];
-                            ("Vector2D"): Vector2D values[count];
-                            (_): Properties values[count];
-                        }
-                    } catch {
-                        std::warning(std::format(
-                            "{} Failed to parse array of structs size {} in {}",
-                            prefix, size,
-                            propertyTagCompleteTypeName ? type.child[0].child[0] : structName));
-                        // Wrap the unknown data
-                        std::mem::Bytes<size-4> values;
-                    }
-                    if (!propertyTagCompleteTypeName) {
-                        s32 propertyBytesRemaining = propertySize + propertyStart - $;
-                        if (propertyBytesRemaining != 0) {
-                            std::print(std::format(
-                                "Struct parsing failed for {}. Bytes {}: {}",
-                                structName,
-                                propertyBytesRemaining < 0 ? "overrun" : "remaining",
-                                std::math::abs(propertyBytesRemaining)));
-                            std::mem::Bytes<propertyBytesRemaining> warning;
-                        }
-                    }
-                }
-                ("TextProperty"): FText values[count];
-                (_): {
-                    std::warning(std::format(
-                        "Unknown array element type {} in {}",
-                        propertyTagCompleteTypeName ? type.child[0].name : propertyType, name));
-                    // Wrap the unknown data
-                    std::mem::Bytes<size-4> values;
-                }
+fn format_fpropertytag(FPropertyTag tag) {
+    if (propertyTagCompleteTypeName) {
+        return tag.type;
+    }
+    match (tag.typeName) {
+        ("ArrayProperty" | "SetProperty" | "OptionalProperty"):
+            return std::format("{}<{}>", tag.typeName, tag.innerType.data);
+        ("MapProperty"):
+            return std::format("{}<{}, {}>", tag.typeName, tag.innerType.data, tag.valueType.data);
+        ("StructProperty"):
+            return std::format("{}<{}>", tag.typeName, tag.structName.data);
+        ("ByteProperty" | "EnumProperty"):
+            return std::format("{}<{}>", tag.typeName, tag.enumName.data);
+    }
+    return tag.typeName;
+};
+
+fn tag_inner_type(FPropertyTag tag) {
+    return propertyTagCompleteTypeName ? tag.innerType : tag.innerType.data;
+};
+
+fn tag_value_type(FPropertyTag tag) {
+    return propertyTagCompleteTypeName ? tag.valueType : tag.valueType.data;
+};
+
+fn tag_struct_name(FPropertyTag tag) {
+    return propertyTagCompleteTypeName ? tag.structName : tag.structName.data;
+};
+
+struct ArrayProperty<auto tag> {
+    const u128 end = $ + tag.size;
+    u32 count;
+    match (tag_inner_type(tag)) {
+        ("BoolProperty"): bool values[count];
+        ("ByteProperty"): {
+            if (count + 4 == tag.size) {
+                std::mem::Bytes<count> values;
+            } else {
+                FString values[count];
             }
         }
-        ("BoolProperty"): {
+        ("DoubleProperty"): double values[count];
+        ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString values[count];
+        ("FloatProperty"): float values[count];
+        ("IntProperty"): s32 values[count];
+        ("SoftObjectProperty"): SoftObject values[count];
+        ("StructProperty"): {
             if (propertyTagCompleteTypeName) {
-                const bool value = flags.boolTrue;
+                const str structName = tag.structName;
+            } else {
+                // Arrays of structs repeat the tag once, for all elements
+                FPropertyTag innerTag;
+                std::assert(innerTag.typeName == "StructProperty", std::format(
+                    "Array {} @ 0x{:X}; expected StructProperty, got {}",
+                    tag.name.data, addressof(innerTag), innerTag.typeName));
+                const str structName = innerTag.structName.data;
             }
+            try {
+                match (structName) {
+                    ("DateTime"): DateTime values[count];
+                    ("GameplayTagContainer"): GameplayTagContainer values[count];
+                    ("Guid"): Guid values[count];
+                    ("IntPoint"): IntPoint values[count];
+                    ("LinearColor"): LinearColor values[count];
+                    ("Quat"): Quat values[count];
+                    ("Rotator"): Rotator values[count];
+                    ("Timespan"): Timespan values[count];
+                    ("Vector"): Vector values[count];
+                    ("Vector2D"): Vector2D values[count];
+                    (_): Properties values[count];
+                }
+            } catch {
+                std::warning(std::format(
+                    "Array {} @ 0x{:X}; Failed to parse array of structs size {} in {}",
+                    tag.name.data, addressof(this), tag.size, structName));
+                // Wrap the unknown data
+                std::mem::Bytes<end - $> values;
+            }
+        }
+        ("TextProperty"): FText values[count];
+        (_): {
+            std::warning(std::format(
+                "Unknown array element type {} in {}",
+                tag_inner_type(tag), tag.name.data));
+            // Wrap the unknown data
+            std::mem::Bytes<end - $> values;
+        }
+    }
+} [[format("format_arrayproperty")]];
+
+fn format_arrayproperty(auto array) {
+    return array.values;
+};
+
+/// A property tag followed by the property value it describes.
+struct TaggedProperty {
+    FPropertyTag tag;
+    const u128 start = $;
+    match (tag.typeName) {
+        ("ArrayProperty"): ArrayProperty<tag> value;
+        ("BoolProperty"): {
+            const bool value = propertyTagCompleteTypeName ? tag.boolValue : tag.boolVal;
         }
         ("ByteProperty"): {
-            match (size) {
+            match (tag.size) {
                 (0|1): u8 value;
                 (_): FString value;
             }
@@ -814,82 +856,78 @@ struct FPropertyTag {
         ("SoftObjectProperty"): SoftObject value;
         ("EnumProperty" | "StrProperty" | "NameProperty" | "ObjectProperty"): FString value;
         ("MapProperty"): {
-            if (propertyTagCompleteTypeName && flags.hasBinaryOrNativeSerialize) {
+            if (propertyTagCompleteTypeName && tag.flags.hasBinaryOrNativeSerialize) {
                 // Wrap the unknown data
-                std::mem::Bytes<size> value;
+                std::mem::Bytes<tag.size> value;
             } else {
-                const str k = propertyTagCompleteTypeName ? type.child[0].name.data : keyType.data;
-                const str v = propertyTagCompleteTypeName ? type.child[1].name.data : valueType.data;
+                const str k = tag_inner_type(tag);
+                const str v = tag_value_type(tag);
                 try {
                     MapProperty<k, v> value;
                 } catch {
                     std::warning(std::format(
                         "MapProperty<{}, {}> {} @ 0x{:04X}; Failed to parse",
-                        k, v, name.data, $));
+                        k, v, tag.name.data, $));
                     // Wrap the unknown data
-                    std::mem::Bytes<size> value;
+                    std::mem::Bytes<tag.size> value;
                 }
             }
         }
         ("SetProperty"): {
-            const str t = propertyTagCompleteTypeName ? type.child[0].name.data : propertyType.data;
+            const str t = tag_inner_type(tag);
             try {
                 SetProperty<t> value;
             } catch {
                 std::warning(std::format(
                     "SetProperty<{}> {} @ 0x{:04X}; Failed to parse",
-                    t, name.data, $));
+                    t, tag.name.data, $));
                 // Wrap the unknown data
-                std::mem::Bytes<size> value;
+                std::mem::Bytes<tag.size> value;
             }
         }
-        ("StructProperty"): StructPropertyValue<propertyTagCompleteTypeName ? type.child[0].name.data : typeName.data, size> value;
+        ("StructProperty"): StructPropertyValue<tag_struct_name(tag), tag.size> value;
         ("TextProperty"): {
             try {
                 FText value;
             } catch {
                 std::warning(std::format(
                     "FText {} @ 0x{:04X}; Failed to parse",
-                    name.data, $));
+                    tag.name.data, $));
                 // Wrap the unknown data
-                std::mem::Bytes<size> value;
+                std::mem::Bytes<tag.size> value;
             }
         }
         (_): {
             std::warning(std::format(
                 "Unknown property type {} in {}",
-                type, name));
+                tag, tag.name.data));
             // Wrap the unknown data
-            std::mem::Bytes<size> value;
+            std::mem::Bytes<tag.size> value;
         }
     }
 
-    s32 bytesRemaining = size + start - $;
+    s32 bytesRemaining = tag.size + start - $;
     if (bytesRemaining != 0) {
         std::warning(std::format(
             "Property length mismatch while parsing {} {}. Bytes {}: {}",
-            type,
-            name,
+            tag,
+            tag.name.data,
             bytesRemaining < 0 ? "overrun" : "remaining",
             std::math::abs(bytesRemaining)));
         // Adjust the file offset
         $ += bytesRemaining;
     }
-} [[name(name.length == 0 ? "null" : name.data), format("format_fpropertytag")]];
+} [[name(tag.name.length == 0 ? "null" : tag.name.data), format("format_taggedproperty")]];
 
-fn format_fpropertytag(FPropertyTag property) {
-    if (property.name.data == "None") {
+fn format_taggedproperty(TaggedProperty property) {
+    if (!std::core::has_member(property, "value")) {
         return "";
-    }
-    match (propertyTagCompleteTypeName ? property.type.name.data : property.type.data) {
-        ("ArrayProperty"): return property.values;
-        ("StructProperty"): return property.value.value;
     }
     return property.value;
 };
 
 struct Properties {
-    FPropertyTag values[while(true)] [[inline]];
+    TaggedProperty values[while(true)] [[inline]];
 };
 
 struct SaveGameFile {
