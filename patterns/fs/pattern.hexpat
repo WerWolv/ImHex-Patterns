@@ -8,6 +8,7 @@ import type.magic;
 import type.guid;
 import type.base;
 
+import * from fs.fat16 as FAT16Partition;
 import * from fs.fat32 as FAT32Partition;
 import * from fs.exfat as ExFATPartition;
 import * from fs.ntfs as NTFSPartition;
@@ -198,6 +199,9 @@ struct PartitionEntry {
     u64 partitionOffset = lbaFirstSectorAddress * SectorSize [[export]];
     match (type) {
         (MBRPartitionType::Empty): continue;
+        (MBRPartitionType::FAT12 | MBRPartitionType::FAT16_16_32MB | MBRPartitionType::FAT16_32MBPlus | MBRPartitionType::FAT16_LBA |
+         MBRPartitionType::HiddenFAT12 | MBRPartitionType::HiddenFAT16_16_32MB | MBRPartitionType::HiddenFAT16_32MBPlus | MBRPartitionType::HiddenFAT16_LBA):
+            FAT16Partition fat16Partition @ partitionOffset;
         (MBRPartitionType::FAT32_LBA | MBRPartitionType::FAT32_CHS): 
             FAT32Partition fat32Partition @ partitionOffset;
         (MBRPartitionType::NTFS): {
