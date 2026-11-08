@@ -57,6 +57,7 @@ Everything will immediately show up in ImHex's Content Store and gets bundled wi
 | BIN  | | [`patterns/selinux.hexpat`](patterns/selinux.pat) | SE Linux modules |
 | BINK Container | `video/vnd.radgamettools.bink` | [`patterns/bink_container.hexpat`](patterns/bink_container.hexpat) | [RAD Game Tools Bink Video Container files](https://en.wikipedia.org/wiki/Bink_Video) |
 | BINKA  | | [`patterns/binka.hexpat`](patterns/binka.pat) | RAD Game Tools Bink Audio (BINKA) files |
+| Bitcoin Transaction | `application/x-bitcoin-transaction` | [`patterns/bitcoin_transaction.hexpat`](patterns/bitcoin_transaction.hexpat) | Raw Bitcoin transaction (legacy, SegWit, Taproot) |
 | BroEngine .anim | | [`patterns/BroEngine/anim.hexpat`](patterns/BroEngine/anim.hexpat) | Bro Engine (World of Tanks: HEAT) Animation |
 | BroEngine .dds | | [`patterns/BroEngine/dds.hexpat`](patterns/BroEngine/dds.hexpat) | Bro Engine (World of Tanks: HEAT) Texture |
 | BroEngine .mesh | | [`patterns/BroEngine/mesh.hexpat`](patterns/BroEngine/mesh.hexpat) | Bro Engine (World of Tanks: HEAT) Mesh |
