@@ -88,5 +88,13 @@ jobs:
         for file in ./[!_]*; do jsonschema -i $file _schema.json; done
         cd ..
 
+    # The .tbl files and README table are generated from Python's stdlib codecs,
+    # whose codec and alias set changes between Python versions. Check them with
+    # the same Python version that generated them.
+    - name: 🐍 Set up Python for the encoding check
+      uses: actions/setup-python@v7
+      with:
+        python-version: '3.14'
+
     - name: 🔤 Validate Encoding Tables
       run: python3 scripts/generate_encodings.py --check
