@@ -72,7 +72,7 @@ namespace auto std::core {
         return builtin::std::core::get_endian();
     };
 
-    
+
     /**
         @warning Removed in 1.28.0
     */
@@ -104,7 +104,7 @@ namespace auto std::core {
         @return The number of members in `pattern`
     */
     fn member_count(ref auto pattern) {
-        return builtin::std::core::member_count(pattern);  
+        return builtin::std::core::member_count(pattern);
     };
 
     /**
@@ -114,7 +114,7 @@ namespace auto std::core {
         @return True if a member called `name` exists, false otherwise
     */
     fn has_member(ref auto pattern, str name) {
-        return builtin::std::core::has_member(pattern, name);  
+        return builtin::std::core::has_member(pattern, name);
     };
 
     /**
@@ -128,7 +128,7 @@ namespace auto std::core {
     };
 
     /**
-        Checks if the given enum value corresponds has a corresponding constant
+        Checks if the given enum value has a corresponding constant
         @param pattern The enum value to check
         @return True if pattern has a valid enum representation, false if not
     */
@@ -140,7 +140,7 @@ namespace auto std::core {
     /**
         Changes the color of the given pattern to a new color
         @param pattern The pattern to modify
-        @param color The RGBA8 color 
+        @param color The RGBA8 color
     */
     fn set_pattern_color(ref auto pattern, u32 color) {
         builtin::std::core::set_pattern_color(pattern, color);
@@ -153,7 +153,7 @@ namespace auto std::core {
     */
     fn set_display_name(ref auto pattern, str name) {
         builtin::std::core::set_display_name(pattern, name);
-    }; 
+    };
 
 
     /**
@@ -163,7 +163,7 @@ namespace auto std::core {
     */
     fn set_pattern_comment(ref auto pattern, str comment) {
         builtin::std::core::set_pattern_comment(pattern, comment);
-    }; 
+    };
 
     /**
         Executes the function with the given name, passing in all given arguments
